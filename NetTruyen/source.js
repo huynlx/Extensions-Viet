@@ -338,7 +338,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.NetTruyen = exports.NetTruyenInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 exports.NetTruyenInfo = {
-    version: '1.0.0',
+    version: '1.0.1',
     name: 'NetTruyen',
     icon: 'icon.png',
     author: 'Huynhzip3',
