@@ -335,9 +335,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NhatTruyen = exports.NhatTruyenInfo = void 0;
+exports.NetTruyen = exports.NetTruyenInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
-exports.NhatTruyenInfo = {
+exports.NetTruyenInfo = {
     version: '1.0.0',
     name: 'NetTruyen',
     icon: 'icon.png',
@@ -353,7 +353,7 @@ exports.NhatTruyenInfo = {
         }
     ]
 };
-class NhatTruyen extends paperback_extensions_common_1.Source {
+class NetTruyen extends paperback_extensions_common_1.Source {
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const url = `http://www.nettruyenvip.com/truyen-tranh/${mangaId}`;
@@ -550,7 +550,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
         };
     }
 }
-exports.NhatTruyen = NhatTruyen;
+exports.NetTruyen = NetTruyen;
 
 },{"paperback-extensions-common":4}]},{},[26])(26)
 });
