@@ -520,11 +520,11 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
             let newUpdatedItems = [];
-            for (let index in $('div.Module-243 > div.ModuleContent > div.items > div.row > div.item > figure.clearfix').toArray()) {
-                let title = $(`div.Module-243 > div.ModuleContent > div.items > div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > figcaption > h3 > a`).text();
-                let subtitle = $(`div.Module-243 > div.ModuleContent > div.items > div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > figcaption > ul > li.chapter > a`)[0];
-                let image = $(`div.Module-243 > div.ModuleContent > div.items > div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a > img`).attr("data-original");
-                let id = (_b = $(`div.Module-243 > div.ModuleContent > div.items > div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a`).attr("href")) === null || _b === void 0 ? void 0 : _b.split("/").pop();
+            for (let index in $('div.Module-163 > div.ModuleContent > div.items > div.row > div.item > figure.clearfix').toArray()) {
+                let title = $(`div.Module-163 > div.ModuleContent > div.items > div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > figcaption > h3 > a`).text();
+                let subtitle = $(`div.Module-163 > div.ModuleContent > div.items > div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > figcaption > ul > li.chapter > a`)[0];
+                let image = $(`div.Module-163 > div.ModuleContent > div.items > div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a > img`).attr("data-original");
+                let id = (_b = $(`div.Module-163 > div.ModuleContent > div.items > div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a`).attr("href")) === null || _b === void 0 ? void 0 : _b.split("/").pop();
                 if (!id || !subtitle)
                     continue;
                 newUpdatedItems.push(createMangaTile({
