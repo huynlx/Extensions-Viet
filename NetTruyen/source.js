@@ -664,7 +664,9 @@ class NetTruyen extends paperback_extensions_common_1.Source {
                 }));
             }
             const manga = mangas;
-            metadata = exports.isLastPage($) ? undefined : { page: page + 1 };
+            metadata = setTimeout(() => {
+                exports.isLastPage($) ? undefined : { page: page + 1 };
+            }, 1000);
             return createPagedResults({
                 results: manga,
                 metadata
