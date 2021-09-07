@@ -363,7 +363,10 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            let tags = [];
+            let tags = [{
+                    label: 'Action',
+                    id: 'http://www.nettruyenvip.com/tim-truyen/action'
+                }];
             for (let obj of $('li.kind > p.col-xs-8 > a').toArray()) {
                 if (!obj.data)
                     continue;
