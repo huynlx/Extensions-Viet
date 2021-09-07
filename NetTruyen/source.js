@@ -367,7 +367,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             let tags = [];
             for (let obj of $('li.kind > p.col-xs-8 > a').toArray()) {
                 const label = $(obj).text();
-                const id = (_b = (_a = $(obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[4]) !== null && _b !== void 0 ? _b : label;
+                const id = (_b = (_a = $(obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop()) !== null && _b !== void 0 ? _b : label;
                 tags.push(createTag({
                     label: label,
                     id: id,
@@ -493,11 +493,15 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let topWeekItems = [];
-            for (let index in $('div.row > div.item > figure.clearfix').toArray()) {
-                let title = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > figcaption > h3 > a`).text();
-                let subtitle = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > figcaption > ul > li.chapter > a`)[0];
-                let image = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a > img`).attr("data-original");
-                let id = (_a = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a`).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop();
+            for (let item in $('div.item', 'div.row').toArray()) {
+                // let title = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > figcaption > h3 > a`).text();
+                // let subtitle = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > figcaption > ul > li.chapter > a`)[0];
+                // let image = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a > img`).attr("data-original");
+                // let id = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a`).attr("href")?.split("/").pop();
+                let title = $('figure.clearfix > figcaption > h3 > a', item).text();
+                let subtitle = $('figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a', item).text();
+                let image = $('figure.clearfix > div.image > a > img', item).attr("data-original");
+                let id = (_a = $('figure.clearfix > div.image > a', item).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop();
                 if (!id || !subtitle)
                     continue;
                 topWeekItems.push(createMangaTile({
@@ -507,7 +511,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
                         text: title,
                     }),
                     subtitleText: createIconText({
-                        text: subtitle.attribs['title'],
+                        text: subtitle,
                     }),
                 }));
             }
