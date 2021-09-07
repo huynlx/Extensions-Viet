@@ -337,6 +337,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NetTruyen = exports.NetTruyenInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
+const DOMAIN = 'http://www.nettruyenvip.com/';
 exports.NetTruyenInfo = {
     version: '1.0.1',
     name: 'NetTruyen',
@@ -470,8 +471,8 @@ class NetTruyen extends paperback_extensions_common_1.Source {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             let topWeek = createHomeSection({
-                id: 'top_week',
-                title: "Top tuần",
+                id: 'hot',
+                title: "Truyện hot nhất",
                 view_more: true,
             });
             let newUpdated = createHomeSection({
@@ -479,7 +480,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
                 title: "Truyện mới cập nhật",
                 view_more: true,
             });
-            //Top Week
+            //Hot
             let url = 'http://www.nettruyenvip.com/tim-truyen?status=-1&sort=12';
             let request = createRequestObject({
                 url: url,
@@ -531,6 +532,36 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
         });
     }
+    // async getViewMoreItems(homepageSectionId: string, metadata: any): Promise<PagedResults> {
+    //     let page: number = metadata?.page ?? 1;
+    //     let param = "";
+    //     switch (homepageSectionId) {
+    //         case "top_week":
+    //             param = "?type=topview"
+    //             break;
+    //         case "latest_update":
+    //             param = ""
+    //             break;
+    //         case "new_manga":
+    //             param = "?type=newest"
+    //             break;
+    //         default:
+    //             throw new Error("Requested to getViewMoreItems for a section ID which doesn't exist");
+    //     }
+    //     const request = createRequestObject({
+    //         url: `${DOMAIN}/genre-all/${page}`,
+    //         method,
+    //         param,
+    //     });
+    //     const response = await this.requestManager.schedule(request, 1);
+    //     const $ = this.cheerio.load(response.data);
+    //     const manga = parseViewMore($);
+    //     metadata = !isLastPage($) ? { page: page + 1 } : undefined;
+    //     return createPagedResults({
+    //         results: manga,
+    //         metadata
+    //     });
+    // }
     globalRequestHeaders() {
         return {
             referer: "http://www.nettruyenvip.com/"
