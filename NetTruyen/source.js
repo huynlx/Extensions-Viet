@@ -667,7 +667,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             metadata = exports.isLastPage($) ? undefined : { page: page + 1 };
             return createPagedResults({
                 results: manga,
-                metadata
+                metadata: false
             });
         });
     }
