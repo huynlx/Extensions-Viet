@@ -470,7 +470,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
     getHomePageSections(sectionCallback) {
         var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
-            let topWeek = createHomeSection({
+            let hot = createHomeSection({
                 id: 'hot',
                 title: "Truyện hot nhất",
                 view_more: true,
@@ -508,8 +508,8 @@ class NetTruyen extends paperback_extensions_common_1.Source {
                     subtitleText: createIconText({ text: subtitle }),
                 }));
             }
-            topWeek.items = TopWeek;
-            sectionCallback(topWeek);
+            hot.items = TopWeek;
+            sectionCallback(hot);
             //New Updates
             url = 'http://www.nettruyenvip.com/';
             request = createRequestObject({
