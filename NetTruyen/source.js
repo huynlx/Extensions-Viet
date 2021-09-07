@@ -457,7 +457,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
                     id: id,
                     image: image,
                     title: createIconText({
-                        text: title,
+                        text: 'test',
                     }),
                     subtitleText: createIconText({
                         text: subtitle.attribs['title'],
