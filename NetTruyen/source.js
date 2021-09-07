@@ -340,8 +340,8 @@ const paperback_extensions_common_1 = require("paperback-extensions-common");
 const DOMAIN = 'http://www.nettruyenvip.com/';
 exports.isLastPage = ($) => {
     var _a;
-    const current = $('.page-select').text();
-    let total = $('.page-last').text();
+    const current = $('ul.pagination > li:nth-of-type(2) > a').text();
+    let total = $('ul.pagination > li.PagerSSCCells:last-child').text();
     if (current) {
         total = ((_a = /(\d+)/g.exec(total)) !== null && _a !== void 0 ? _a : [''])[0];
         return (+total) === (+current);
@@ -616,7 +616,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
                 //     param = ""
                 //     break;
                 case "new_added":
-                    param = `?status=-1&sort=15&${page}`;
+                    param = `?status=-1&sort=15&page=${page}`;
                     break;
                 default:
                     throw new Error("Requested to getViewMoreItems for a section ID which doesn't exist");
