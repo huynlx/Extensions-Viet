@@ -448,10 +448,10 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             const tiles = [];
             for (let index in $('div.row > div.item').toArray()) {
-                let title = $(`div.row > div.item:nth-of-type(${index + 2}) > figure.clearfix > figcaption > h3 > a`).text();
-                let subtitle = $(`div.row > div.item:nth-of-type(${index + 2}) > figure.clearfix > figcaption > ul > li.chapter > a`)[0];
-                let image = $(`div.row > div.item:nth-of-type(${index + 2}) > figure.clearfix > div.image > a > img`).attr("data-original");
-                let id = (_b = $(`div.row > div.item:nth-of-type(${index + 2}) > figure.clearfix > div.image > a`).attr("href")) === null || _b === void 0 ? void 0 : _b.split("/").pop();
+                let title = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > figcaption > h3 > a`).text();
+                let subtitle = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > figcaption > ul > li.chapter > a`)[0];
+                let image = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a > img`).attr("data-original");
+                let id = (_b = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a`).attr("href")) === null || _b === void 0 ? void 0 : _b.split("/").pop();
                 // if (!id || !subtitle) continue;
                 tiles.push(createMangaTile({
                     id: id,
