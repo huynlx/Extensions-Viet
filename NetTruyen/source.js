@@ -608,15 +608,23 @@ class NetTruyen extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             let param = "";
+            let url = 'http://www.nettruyenvip.com';
             switch (homepageSectionId) {
-                // case "top_week":
-                //     param = "?type=topview"
-                //     break;
-                // case "latest_update":
-                //     param = ""
-                //     break;
+                case "viewest":
+                    param = `?status=-1&sort=10&page=${page}`;
+                    url = `${url}/tim-truyen`;
+                    break;
+                case "hot":
+                    param = `?page=${page}`;
+                    url = `${url}/hot`;
+                    break;
+                case "new_updated":
+                    param = "";
+                    url = url;
+                    break;
                 case "new_added":
                     param = `?status=-1&sort=15&page=${page}`;
+                    url = `${url}/tim-truyen`;
                     break;
                 default:
                     throw new Error("Requested to getViewMoreItems for a section ID which doesn't exist");
