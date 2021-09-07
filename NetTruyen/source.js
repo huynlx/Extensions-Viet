@@ -363,18 +363,13 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            let tags = [{
-                    label: 'Action',
-                    id: 'http://www.nettruyenvip.com/tim-truyen/action'
-                }];
+            let tags = [];
             for (let obj of $('li.kind > p.col-xs-8 > a').toArray()) {
                 if (!obj.data)
                     continue;
                 tags.push(createTag({
-                    // label: obj.data,
-                    // id: obj.attribs['href'],
-                    label: 'Action',
-                    id: 'http://www.nettruyenvip.com/tim-truyen/action',
+                    label: obj.data,
+                    id: obj.attribs['href'],
                 }));
             }
             const creator = $('ul.list-info > li.author > p.col-xs-8').text();
