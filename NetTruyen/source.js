@@ -400,7 +400,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            for (let obj of $('div.list-chapter > nav > ul > li.row:not(.heading)', 'div.list-chapter').toArray()) {
+            for (let obj of $('li.row:not(.heading)', 'div.list-chapter').toArray()) {
                 let chapterNumber = 0;
                 if (!obj.attribs['href'] || !obj.children[0].data)
                     continue;
