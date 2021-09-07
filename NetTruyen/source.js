@@ -368,8 +368,10 @@ class NetTruyen extends paperback_extensions_common_1.Source {
                 if (!obj.data)
                     continue;
                 tags.push(createTag({
-                    label: obj.data,
-                    id: obj.attribs['href'],
+                    // label: obj.data,
+                    // id: obj.attribs['href'],
+                    label: 'Action',
+                    id: 'http://www.nettruyenvip.com/tim-truyen/action',
                 }));
             }
             const creator = $('ul.list-info > li.author > p.col-xs-8').text();
