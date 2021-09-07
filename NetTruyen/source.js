@@ -468,7 +468,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             let topWeek = createHomeSection({
                 id: 'hot',
@@ -478,6 +478,11 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             let newUpdated = createHomeSection({
                 id: 'new_updated',
                 title: "Truyện mới cập nhật",
+                view_more: true,
+            });
+            let newAdded = createHomeSection({
+                id: 'new_added',
+                title: "Truyện mới thêm gần đây",
                 view_more: true,
             });
             //Hot
@@ -530,6 +535,31 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             }
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
+            //New added
+            url = 'http://www.nettruyenvip.com/tim-truyen?status=-1&sort=15';
+            request = createRequestObject({
+                url: url,
+                method: "GET",
+            });
+            data = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(data.data);
+            let newAddedItems = [];
+            for (let manga of $('div.item', 'div.Module-163').toArray()) {
+                const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
+                const id = (_c = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _c === void 0 ? void 0 : _c.split('/').pop();
+                const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
+                const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
+                if (!id || !title)
+                    continue;
+                newAddedItems.push(createMangaTile({
+                    id: id,
+                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
+                    title: createIconText({ text: title }),
+                    subtitleText: createIconText({ text: subtitle }),
+                }));
+            }
+            newAdded.items = newUpdatedItems;
+            sectionCallback(newAdded);
         });
     }
     // async getViewMoreItems(homepageSectionId: string, metadata: any): Promise<PagedResults> {
