@@ -390,7 +390,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
         });
     }
     getChapters(mangaId) {
-        var _a, _b;
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const chapters = [];
             const url = `http://www.nettruyenvip.com/truyen-tranh/${mangaId}`;
@@ -401,16 +401,15 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             for (let obj of $('li.row:not(.heading)', 'div.list-chapter').toArray()) {
-                let chapterNumber = 0;
-                if (!obj.attribs['href'] || !obj.children[0].data)
+                let id = (_a = $('div.chapter > a', obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+                if (!id)
                     continue;
                 chapters.push(createChapter({
-                    id: (_a = $('div.chapter > a', obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop(),
-                    chapNum: chapterNumber,
+                    id,
+                    chapNum: parseFloat($('a', obj).text().split(' ')[1]),
                     name: $('div.chapter > a', obj).text(),
-                    mangaId: mangaId,
+                    mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: new Date((_b = $('div.col-xs-4', obj).text()) !== null && _b !== void 0 ? _b : ""),
                 }));
             }
             return chapters;
