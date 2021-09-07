@@ -390,7 +390,6 @@ class NetTruyen extends paperback_extensions_common_1.Source {
         });
     }
     getChapters(mangaId) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const chapters = [];
             const url = `http://www.nettruyenvip.com/truyen-tranh/${mangaId}`;
@@ -401,7 +400,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             for (let obj of $('li.row:not(.heading)', 'div.list-chapter').toArray()) {
-                let id = (_a = $('div.chapter > a', obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+                let id = $('div.chapter > a', obj).attr('href');
                 if (!id)
                     continue;
                 chapters.push(createChapter({
