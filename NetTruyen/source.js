@@ -481,7 +481,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
                 view_more: true,
             });
             //Hot
-            let url = 'http://www.nettruyenvip.com/tim-truyen?status=-1&sort=12';
+            let url = 'http://www.nettruyenvip.com/hot';
             let request = createRequestObject({
                 url: url,
                 method: "GET",
