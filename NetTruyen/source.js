@@ -339,11 +339,10 @@ exports.NetTruyen = exports.NetTruyenInfo = exports.isLastPage = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const DOMAIN = 'http://www.nettruyenvip.com/';
 exports.isLastPage = ($) => {
-    var _a;
-    const current = $('ul.pagination > li:nth-of-type(2) > a').text();
+    const current = $('ul.pagination > li.active > a').text();
     let total = $('ul.pagination > li.PagerSSCCells:last-child').text();
     if (current) {
-        total = ((_a = /(\d+)/g.exec(total)) !== null && _a !== void 0 ? _a : [''])[0];
+        total = total !== null && total !== void 0 ? total : '';
         return (+total) === (+current);
     }
     return true;
@@ -608,30 +607,29 @@ class NetTruyen extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             let param = "";
-            let domain = 'http://www.nettruyenvip.com';
             let url = "";
             switch (homepageSectionId) {
                 case "viewest":
                     param = `?status=-1&sort=10&page=${page}`;
-                    url = `${domain}/tim-truyen`;
+                    url = `${DOMAIN}tim-truyen`;
                     break;
                 case "hot":
                     param = `?page=${page}`;
-                    url = `${domain}/hot`;
+                    url = `${DOMAIN}hot`;
                     break;
                 case "new_updated":
                     param = `?page=${page}`;
-                    url = domain;
+                    url = DOMAIN;
                     break;
                 case "new_added":
                     param = `?status=-1&sort=15&page=${page}`;
-                    url = `${domain}/tim-truyen`;
+                    url = `${DOMAIN}tim-truyen`;
                     break;
                 default:
                     throw new Error("Requested to getViewMoreItems for a section ID which doesn't exist");
             }
             const request = createRequestObject({
-                url: url,
+                url,
                 method: 'GET',
                 param,
             });
@@ -666,7 +664,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
                 }));
             }
             const manga = mangas;
-            metadata = !exports.isLastPage($) ? { page: page + 1 } : undefined;
+            metadata = exports.isLastPage($) ? undefined : { page: page + 1 };
             return createPagedResults({
                 results: manga,
                 metadata
