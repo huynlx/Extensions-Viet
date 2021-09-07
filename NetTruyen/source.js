@@ -437,7 +437,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            const url = `http://www.nettruyenvip.com/the-loai?keyword=${encodeURI(query.title)}`;
+            const url = `http://www.nettruyenvip.com/tim-truyen?keyword=${encodeURI(query.title)}`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
