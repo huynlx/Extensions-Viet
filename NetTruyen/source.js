@@ -343,9 +343,7 @@ exports.isLastPage = ($) => {
     let total = $('ul.pagination > li.PagerSSCCells:last-child').text();
     if (current) {
         total = total !== null && total !== void 0 ? total : '';
-        setTimeout(() => {
-            return (+total) === (+current);
-        }, 300);
+        return (+total) === (+current);
     }
     return true;
 };
