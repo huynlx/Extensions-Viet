@@ -604,7 +604,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
-        var _a, _b, _c, _d;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             let param = "";
@@ -638,11 +638,24 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const mangas = [];
-            for (const manga of $("div.content-genres-item", "div.panel-content-genres").toArray()) {
-                const title = (_b = $('img', manga).first().attr('alt')) !== null && _b !== void 0 ? _b : "";
-                const id = (_c = $('a.genres-item-name', manga).attr('href')) === null || _c === void 0 ? void 0 : _c.split('/').pop();
-                const image = (_d = $('img', manga).first().attr('src')) !== null && _d !== void 0 ? _d : "";
-                const subtitle = $("a.genres-item-chap.text-nowrap", manga).last().text().trim();
+            // for (const manga of $("div.content-genres-item", "div.panel-content-genres").toArray()) {
+            //     const title = $('img', manga).first().attr('alt') ?? "";
+            //     const id = $('a.genres-item-name', manga).attr('href')?.split('/').pop();
+            //     const image = $('img', manga).first().attr('src') ?? "";
+            //     const subtitle = $("a.genres-item-chap.text-nowrap", manga).last().text().trim();
+            //     if (!id || !title) continue;
+            //     mangas.push(createMangaTile({
+            //         id: id,
+            //         image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
+            //         title: createIconText({ text: title }),
+            //         subtitleText: createIconText({ text: subtitle }),
+            //     }));
+            // }
+            for (const manga of $('div.item', 'div.row').toArray()) {
+                const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
+                const id = (_b = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _b === void 0 ? void 0 : _b.split('/').pop();
+                const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
+                const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
                 if (!id || !title)
                     continue;
                 mangas.push(createMangaTile({
