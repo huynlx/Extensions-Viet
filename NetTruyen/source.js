@@ -483,8 +483,8 @@ class NetTruyen extends paperback_extensions_common_1.Source {
                 title: "Truyện mới cập nhật",
                 view_more: true,
             });
-            sectionCallback(topWeek);
-            sectionCallback(newUpdated);
+            // sectionCallback(topWeek);
+            // sectionCallback(newUpdated);
             let url = 'http://www.nettruyenvip.com/tim-truyen?status=-1&sort=12';
             let request = createRequestObject({
                 url: url,
@@ -492,31 +492,50 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             });
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            let topWeekItems = [];
-            for (let item in $('div.item', 'div.row').toArray()) {
-                // let title = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > figcaption > h3 > a`).text();
-                // let subtitle = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > figcaption > ul > li.chapter > a`)[0];
-                // let image = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a > img`).attr("data-original");
-                // let id = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a`).attr("href")?.split("/").pop();
-                let title = $('figure.clearfix > figcaption > h3 > a', item).text();
-                let subtitle = $('figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a', item).text();
-                let image = $('figure.clearfix > div.image > a > img', item).attr("data-original");
-                let id = (_a = $('figure.clearfix > div.image > a', item).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop();
-                if (!id || !subtitle)
+            // let topWeekItems: MangaTile[] = [];
+            // for (let item in $('div.item', 'div.row').toArray()) {
+            //     // let title = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > figcaption > h3 > a`).text();
+            //     // let subtitle = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > figcaption > ul > li.chapter > a`)[0];
+            //     // let image = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a > img`).attr("data-original");
+            //     // let id = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a`).attr("href")?.split("/").pop();
+            //     let title = $('figure.clearfix > figcaption > h3 > a', item).text();
+            //     let subtitle = $('figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a', item).text();
+            //     let image = $('figure.clearfix > div.image > a > img', item).attr("data-original");
+            //     let id = $('figure.clearfix > div.image > a', item).attr("href")?.split("/").pop();
+            //     if (!id || !subtitle) continue;
+            //     topWeekItems.push(createMangaTile(<MangaTile>{
+            //         id: id,
+            //         image: image,
+            //         title: createIconText({
+            //             text: title,
+            //         }),
+            //         subtitleText: createIconText({
+            //             text: subtitle,
+            //         }),
+            //     }))
+            // }
+            //test
+            //Top Week
+            const TopWeek = [];
+            for (const manga of $('div.item', 'div.row').toArray()) {
+                const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
+                const id = (_a = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+                const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
+                const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1)", manga).last().text().trim();
+                if (!id || !title)
                     continue;
-                topWeekItems.push(createMangaTile({
+                TopWeek.push(createMangaTile({
                     id: id,
-                    image: image,
-                    title: createIconText({
-                        text: title,
-                    }),
-                    subtitleText: createIconText({
-                        text: subtitle,
-                    }),
+                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
+                    title: createIconText({ text: title }),
+                    subtitleText: createIconText({ text: subtitle }),
                 }));
             }
-            topWeek.items = topWeekItems;
+            // sections[0].items = TopWeek;
+            // sectionCallback(sections[0]);
+            topWeek.items = TopWeek;
             sectionCallback(topWeek);
+            //!test
             url = 'http://www.nettruyenvip.com/';
             request = createRequestObject({
                 url: url,
@@ -544,8 +563,6 @@ class NetTruyen extends paperback_extensions_common_1.Source {
                 }));
             }
             newUpdated.items = newUpdatedItems;
-            sectionCallback(newUpdated);
-            sectionCallback(topWeek);
             sectionCallback(newUpdated);
         });
     }
