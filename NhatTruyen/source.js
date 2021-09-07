@@ -355,6 +355,7 @@ exports.NhatTruyenInfo = {
 };
 class NhatTruyen extends paperback_extensions_common_1.Source {
     getMangaDetails(mangaId) {
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             const url = `http://nhattruyenhay.com/truyen-tranh/${mangaId}`;
             const request = createRequestObject({
@@ -365,11 +366,11 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             let tags = [];
             for (let obj of $('li.kind > p.col-xs-8 > a').toArray()) {
-                if (!obj.data)
-                    continue;
+                const label = $(obj).text();
+                const id = (_b = (_a = $(obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[4]) !== null && _b !== void 0 ? _b : label;
                 tags.push(createTag({
-                    label: obj.data,
-                    id: obj.attribs['href'],
+                    label: label,
+                    id: id,
                 }));
             }
             const creator = $('ul.list-info > li.author > p.col-xs-8').text();
