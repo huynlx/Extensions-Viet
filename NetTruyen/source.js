@@ -447,28 +447,11 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             const tiles = [];
-            // for (let index in $('div.row > div.item').toArray()) {
-            //     let title = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > figcaption > h3 > a`).text();
-            //     let subtitle = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > figcaption > ul > li.chapter > a`)[0];
-            //     let image = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a > img`).attr("data-original");
-            //     let id = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a`).attr("href")?.split("/").pop();
-            //     if (!id || !subtitle) continue;
-            //     tiles.push(createMangaTile(<MangaTile>{
-            //         id: id,
-            //         image: image,
-            //         title: createIconText({
-            //             text: title,
-            //         }),
-            //         subtitleText: createIconText({
-            //             text: subtitle.attribs['title'],
-            //         }),
-            //     }))
-            // }
             for (const manga of $('div.item', 'div.row').toArray()) {
                 const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
                 const id = (_b = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _b === void 0 ? void 0 : _b.split('/').pop();
                 const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
-                const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1)", manga).last().text().trim();
+                const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
                 if (!id || !title)
                     continue;
                 tiles.push(createMangaTile({
@@ -509,7 +492,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
                 const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
                 const id = (_a = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
                 const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
-                const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1)", manga).last().text().trim();
+                const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
                 if (!id || !title)
                     continue;
                 TopWeek.push(createMangaTile({
@@ -534,7 +517,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
                 const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
                 const id = (_b = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _b === void 0 ? void 0 : _b.split('/').pop();
                 const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
-                const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1)", manga).last().text().trim();
+                const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
                 if (!id || !title)
                     continue;
                 newUpdatedItems.push(createMangaTile({
