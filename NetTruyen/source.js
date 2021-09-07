@@ -472,22 +472,22 @@ class NetTruyen extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             let viewest = createHomeSection({
                 id: 'viewest',
-                title: "Truyện xem nhiều nhất",
+                title: "TRUYỆN XEM NHIỀU NHẤT",
                 view_more: true,
             });
             let hot = createHomeSection({
                 id: 'hot',
-                title: "Truyện hot nhất",
+                title: "TRUYỆN HOT NHẤT",
                 view_more: true,
             });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
-                title: "Truyện mới cập nhật",
+                title: "TRUYỆN MỚI CẬP NHẬT",
                 view_more: true,
             });
             let newAdded = createHomeSection({
                 id: 'new_added',
-                title: "Truyện mới thêm gần đây",
+                title: "TRUYỆN MỚI THÊM GẦN ĐÂY",
                 view_more: true,
             });
             //View
