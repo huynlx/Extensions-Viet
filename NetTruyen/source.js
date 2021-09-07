@@ -558,7 +558,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
                     subtitleText: createIconText({ text: subtitle }),
                 }));
             }
-            newAdded.items = newUpdatedItems;
+            newAdded.items = newAddedItems;
             sectionCallback(newAdded);
         });
     }
