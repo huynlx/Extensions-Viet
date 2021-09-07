@@ -343,7 +343,9 @@ exports.isLastPage = ($) => {
     let total = $('ul.pagination > li.PagerSSCCells:last-child').text();
     if (current) {
         total = total !== null && total !== void 0 ? total : '';
-        return (+total) === (+current);
+        setTimeout(() => {
+            return (+total) === (+current);
+        }, 300);
     }
     return true;
 };
@@ -664,9 +666,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
                 }));
             }
             const manga = mangas;
-            metadata = setTimeout(() => {
-                exports.isLastPage($) ? undefined : { page: page + 1 };
-            }, 1000);
+            metadata = exports.isLastPage($) ? undefined : { page: page + 1 };
             return createPagedResults({
                 results: manga,
                 metadata
