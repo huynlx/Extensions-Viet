@@ -471,8 +471,10 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
                     subtitleText: createIconText({ text: subtitle }),
                 }));
             }
+            metadata = !exports.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: tiles,
+                metadata
             });
         });
     }
