@@ -409,7 +409,6 @@ class NetTruyen extends paperback_extensions_common_1.Source {
                     name: $('div.chapter > a', obj).text(),
                     mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: new Date($('div.col-xs-4', obj).text())
                 }));
             }
             return chapters;
