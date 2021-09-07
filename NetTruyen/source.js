@@ -452,8 +452,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
                 let subtitle = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > figcaption > ul > li.chapter > a`)[0];
                 let image = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a > img`).attr("data-original");
                 let id = (_b = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a`).attr("href")) === null || _b === void 0 ? void 0 : _b.split("/").pop();
-                if (!id || !subtitle)
-                    continue;
+                // if (!id || !subtitle) continue;
                 tiles.push(createMangaTile({
                     id: id,
                     image: image,
@@ -467,6 +466,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             }
             return createPagedResults({
                 results: tiles,
+                metadata: { page: (page + 1) }
             });
         });
     }
