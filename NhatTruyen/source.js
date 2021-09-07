@@ -508,7 +508,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let viewestItems = [];
-            for (let manga of $('div.item', 'div.Module-170').toArray()) {
+            for (let manga of $('div.item', 'div.row').toArray()) {
                 const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
                 const id = (_a = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
                 const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
@@ -558,7 +558,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
             let newUpdatedItems = [];
-            for (let manga of $('div.item', 'div.Module-163').toArray()) {
+            for (let manga of $('div.item', 'div.row').toArray()) {
                 const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
                 const id = (_c = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _c === void 0 ? void 0 : _c.split('/').pop();
                 const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
@@ -583,7 +583,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
             let newAddedItems = [];
-            for (let manga of $('div.item', 'div.Module-170').toArray()) {
+            for (let manga of $('div.item', 'div.row').toArray()) {
                 const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
                 const id = (_d = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _d === void 0 ? void 0 : _d.split('/').pop();
                 const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
