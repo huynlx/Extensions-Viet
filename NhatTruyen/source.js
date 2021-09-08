@@ -360,6 +360,10 @@ exports.NhatTruyenInfo = {
         {
             text: "Notifications",
             type: paperback_extensions_common_1.TagType.GREEN
+        },
+        {
+            text: "Cloudflare",
+            type: paperback_extensions_common_1.TagType.RED
         }
     ]
 };
@@ -674,10 +678,10 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
                 createTagSection({ id: '2', label: 'Tình Trạng', tags: [] }),
                 createTagSection({ id: '3', label: 'Dành Cho', tags: [] }),
                 createTagSection({ id: '4', label: 'Sắp Xếp Theo', tags: [] })];
-            for (const obj of $('div.mrb10', 'div.row').toArray()) {
+            for (const obj of $('div.col-md-3.col-sm-4.col-xs-6.mrb10', 'div.col-sm-10 > div.row').toArray()) {
                 const genre = $('div.genre-item', obj).text().trim();
                 const id = (_a = $('div.genre-item > span', obj).attr('data-id')) !== null && _a !== void 0 ? _a : genre;
-                tagSections[0].tags.push(createTag({ id: id, label: 'cc' }));
+                tagSections[0].tags.push(createTag({ id: id, label: genre }));
             }
             // tagSections[1].tags.push(createTag({ id: 'manga', label: 'Manga' }))
             return tagSections;
