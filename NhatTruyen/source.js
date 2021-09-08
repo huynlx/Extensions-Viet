@@ -668,10 +668,13 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            let tagSections = [createTagSection({ id: '0', label: 'genres', tags: [] }),
-                createTagSection({ id: '1', label: 'format', tags: [] })];
+            let tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: [] }),
+                createTagSection({ id: '1', label: 'Số Lượng Chapter', tags: [] }),
+                createTagSection({ id: '2', label: 'Tình Trạng', tags: [] }),
+                createTagSection({ id: '3', label: 'Dành Cho', tags: [] }),
+                createTagSection({ id: '4', label: 'Sắp Xếp Theo', tags: [] })];
             for (let obj of $('div.mrb10', 'div.row').toArray()) {
-                let genre = $('div.genre-item > span', obj).text().trim();
+                let genre = $('div.genre-item', obj).text().trim();
                 let id = (_a = $('div.genre-item > span', obj).attr('data-id')) !== null && _a !== void 0 ? _a : genre;
                 tagSections[0].tags.push(createTag({ id: id, label: genre }));
             }
