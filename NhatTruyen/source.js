@@ -662,9 +662,10 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
     getTags() {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
+            const url = `http://nhattruyenhay.com/tim-truyen-nang-cao`;
             const request = createRequestObject({
-                url: `${DOMAIN}tim-truyen-nang-cao`,
-                method: 'GET'
+                url: url,
+                method: "GET",
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
