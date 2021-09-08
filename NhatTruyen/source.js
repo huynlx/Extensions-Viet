@@ -343,7 +343,7 @@ exports.isLastPage = ($) => {
     let total = $('ul.pagination > li.PagerSSCCells:last-child').text();
     if (current) {
         total = total !== null && total !== void 0 ? total : '';
-        return (+total) === (+current);
+        return (+total) === (+current); //+ => convert value to number
     }
     return true;
 };
@@ -670,6 +670,22 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
                 results: manga,
                 metadata
             });
+        });
+    }
+    getTags() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const request = createRequestObject({
+                url: `${DOMAIN}/tim-truyen-nang-cao/`,
+                method: 'GET'
+            });
+            const response = yield this.requestManager.schedule(request, 1);
+            const $ = this.cheerio.load(response.data);
+            let tagSections = [createTagSection({ id: '0', label: 'genres', tags: [] })];
+            for (let obj of $('div.mrb10', 'div.row').toArray()) {
+                let label = $('span', obj).text().trim();
+                tagSections[0].tags.push(createTag({ id: label, label: label }));
+            }
+            return tagSections;
         });
     }
     globalRequestHeaders() {
