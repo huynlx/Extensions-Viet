@@ -682,7 +682,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             let tagSections = [createTagSection({ id: '0', label: 'genres', tags: [] })];
             for (let obj of $('div.mrb10', 'div.row').toArray()) {
-                let label = $('span', obj).text().trim();
+                let label = $('div.genre-item > span', obj).text().trim();
                 tagSections[0].tags.push(createTag({ id: label, label: label }));
             }
             return tagSections;
