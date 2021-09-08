@@ -676,7 +676,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             for (const obj of $('div.mrb10', 'div.row').toArray()) {
                 const genre = $('div.genre-item', obj).text().trim();
                 const id = (_a = $('div.genre-item > span', obj).attr('data-id')) !== null && _a !== void 0 ? _a : genre;
-                tagSections[0].tags.push(createTag({ id: id, label: genre }));
+                tagSections[0].tags.push(createTag({ id: id, label: 'cc' }));
             }
             // tagSections[1].tags.push(createTag({ id: 'manga', label: 'Manga' }))
             return tagSections;
