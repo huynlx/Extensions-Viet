@@ -637,19 +637,6 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const mangas = [];
-            // for (const manga of $("div.content-genres-item", "div.panel-content-genres").toArray()) {
-            //     const title = $('img', manga).first().attr('alt') ?? "";
-            //     const id = $('a.genres-item-name', manga).attr('href')?.split('/').pop();
-            //     const image = $('img', manga).first().attr('src') ?? "";
-            //     const subtitle = $("a.genres-item-chap.text-nowrap", manga).last().text().trim();
-            //     if (!id || !title) continue;
-            //     mangas.push(createMangaTile({
-            //         id: id,
-            //         image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
-            //         title: createIconText({ text: title }),
-            //         subtitleText: createIconText({ text: subtitle }),
-            //     }));
-            // }
             for (const manga of $('div.item', 'div.row').toArray()) {
                 const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
                 const id = (_b = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _b === void 0 ? void 0 : _b.split('/').pop();
@@ -673,6 +660,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
         });
     }
     getTags() {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
                 url: `${DOMAIN}/tim-truyen-nang-cao`,
@@ -680,11 +668,14 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            let tagSections = [createTagSection({ id: '0', label: 'genres', tags: [] })];
+            let tagSections = [createTagSection({ id: '0', label: 'genres', tags: [] }),
+                createTagSection({ id: '1', label: 'format', tags: [] })];
             for (let obj of $('div.mrb10', 'div.row').toArray()) {
-                let label = $('div.genre-item > span', obj).text().trim();
-                tagSections[0].tags.push(createTag({ id: label, label: label }));
+                let genre = $('div.genre-item > span', obj).text().trim();
+                let id = (_a = $('div.genre-item > span', obj).attr('data-id')) !== null && _a !== void 0 ? _a : genre;
+                tagSections[0].tags.push(createTag({ id: id, label: genre }));
             }
+            tagSections[1].tags.push(createTag({ id: 'manga', label: 'Manga' }));
             return tagSections;
         });
     }
