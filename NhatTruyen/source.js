@@ -675,7 +675,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
     getTags() {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${DOMAIN}/tim-truyen-nang-cao/`,
+                url: `${DOMAIN}/tim-truyen-nang-cao`,
                 method: 'GET'
             });
             const response = yield this.requestManager.schedule(request, 1);
