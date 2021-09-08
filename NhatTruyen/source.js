@@ -673,17 +673,15 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: [] }),
-                createTagSection({ id: '1', label: 'Số Lượng Chapter', tags: [] }),
-                createTagSection({ id: '2', label: 'Tình Trạng', tags: [] }),
-                createTagSection({ id: '3', label: 'Dành Cho', tags: [] }),
-                createTagSection({ id: '4', label: 'Sắp Xếp Theo', tags: [] })];
-            for (const obj of $('div.col-md-3.col-sm-4.col-xs-6.mrb10', 'div.col-sm-10 > div.row').toArray()) {
-                const genre = $('div.genre-item', obj).text().trim();
-                const id = (_a = $('div.genre-item > span', obj).attr('data-id')) !== null && _a !== void 0 ? _a : genre;
-                tagSections[0].tags.push(createTag({ id: id, label: genre }));
+            const arrayTags = [];
+            for (const tag of $('div.col-md-3.col-sm-4.col-xs-6.mrb10', 'div.col-sm-10 > div.row').toArray()) {
+                const label = $('div.genre-item', tag).text().trim();
+                const id = (_a = $('div.genre-item > span', tag).attr('data-id')) !== null && _a !== void 0 ? _a : label;
+                if (!id || !label)
+                    continue;
+                arrayTags.push({ id: id, label: label });
             }
-            // tagSections[1].tags.push(createTag({ id: 'manga', label: 'Manga' }))
+            const tagSections = [createTagSection({ id: '0', label: 'genres', tags: arrayTags.map(x => createTag(x)) })];
             return tagSections;
         });
     }
