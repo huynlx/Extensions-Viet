@@ -337,7 +337,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NetTruyen = exports.NetTruyenInfo = exports.isLastPage = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
-const DOMAIN = 'http://www.nettruyenvip.com/';
+const DOMAIN = 'http://www.nettruyenpro.com/';
 exports.isLastPage = ($) => {
     const current = $('ul.pagination > li.active > a').text();
     let total = $('ul.pagination > li.PagerSSCCells:last-child').text();
@@ -355,7 +355,7 @@ exports.NetTruyenInfo = {
     authorWebsite: 'https://github.com/tristanphan',
     description: 'Extension that pulls manga from NetTruyen.',
     hentaiSource: false,
-    websiteBaseURL: "http://www.nettruyenvip.com/",
+    websiteBaseURL: DOMAIN,
     sourceTags: [
         {
             text: "Notifications",
@@ -367,7 +367,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
     getMangaDetails(mangaId) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `http://www.nettruyenvip.com/truyen-tranh/${mangaId}`;
+            const url = `${DOMAIN}truyen-tranh/${mangaId}`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -401,7 +401,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const chapters = [];
-            const url = `http://www.nettruyenvip.com/truyen-tranh/${mangaId}`;
+            const url = `${DOMAIN}truyen-tranh/${mangaId}`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -449,7 +449,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            const url = `http://www.nettruyenvip.com/tim-truyen?keyword=${encodeURI(query.title)}`;
+            const url = `${DOMAIN}tim-truyen?keyword=${encodeURI(query.title)}`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -501,7 +501,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
                 view_more: true,
             });
             //View
-            let url = 'http://www.nettruyenvip.com/tim-truyen?status=-1&sort=10';
+            let url = `${DOMAIN}tim-truyen?status=-1&sort=10`;
             let request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -526,7 +526,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             viewest.items = viewestItems;
             sectionCallback(viewest);
             //Hot
-            url = 'http://www.nettruyenvip.com/hot';
+            url = `${DOMAIN}hot`;
             request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -551,7 +551,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             hot.items = TopWeek;
             sectionCallback(hot);
             //New Updates
-            url = 'http://www.nettruyenvip.com/';
+            url = `${DOMAIN}`;
             request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -576,7 +576,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
             //New added
-            url = 'http://www.nettruyenvip.com/tim-truyen?status=-1&sort=15';
+            url = `${DOMAIN}tim-truyen?status=-1&sort=15`;
             request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -673,7 +673,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: "http://www.nettruyenvip.com/"
+            referer: DOMAIN
         };
     }
 }
