@@ -414,8 +414,8 @@ exports.NhatTruyenInfo = {
             type: paperback_extensions_common_1.TagType.GREEN
         },
         {
-            text: "Cloudflare",
-            type: paperback_extensions_common_1.TagType.RED
+            text: "Recommended",
+            type: paperback_extensions_common_1.TagType.BLUE
         }
     ]
 };
