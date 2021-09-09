@@ -513,9 +513,9 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = ((_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : []).join(',');
-            const url = `${DOMAIN}tim-truyen-nang-cao`;
+            const url = `${DOMAIN}`;
             const request = createRequestObject({
-                url: url,
+                url: query.title ? (url + '/theloai') : (url + '/tim-truyen-nang-cao'),
                 method: "GET",
                 // param: `&page=${page}`
                 param: encodeURI(`?keyword=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&genres=${tags}&page=${page}`)
