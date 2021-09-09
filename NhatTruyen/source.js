@@ -518,7 +518,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
                 url: query.title ? (url + '/the-loai') : (url + '/tim-truyen-nang-cao'),
                 method: "GET",
                 // param: `&page=${page}`
-                param: encodeURI(`?keyword=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&genres=${tags}&page=${page}`)
+                param: encodeURI(`?keyword=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&genres=${tags}&gender=-1&status=-1&minchapter=1&sort=0&page=${page}`)
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
