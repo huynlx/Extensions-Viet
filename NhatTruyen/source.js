@@ -514,7 +514,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let viewestItems = [];
-            for (let manga of $('div.item', 'div.row').toArray()) {
+            for (let manga of $('div.item', 'div.row').toArray().splice(0, 11)) {
                 const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
                 const id = (_a = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
                 const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
