@@ -762,7 +762,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
         });
     }
     getSearchTags() {
-        var _a, _b;
+        var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function* () {
             const url = `${DOMAIN}tim-truyen-nang-cao`;
             const request = createRequestObject({
@@ -793,28 +793,34 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
                 arrayTags2.push({ id: id, label: label });
             }
             // //Tình trạng
-            // for (const tag of $('div.col-md-3.col-sm-4.col-xs-6.mrb10', 'div.col-sm-10 > div.row').toArray()) {
-            //     const label = $('div.genre-item', tag).text().trim();
-            //     const id = $('div.genre-item > span', tag).attr('data-id') ?? label;
-            //     if (!id || !label) continue;
-            //     arrayTags.push({ id: id, label: label });
-            // }
+            for (const tag of $('option', '.select-status').toArray()) {
+                const label = $(tag).text().trim();
+                const id = (_c = $(tag).attr('value')) !== null && _c !== void 0 ? _c : label;
+                if (!id || !label)
+                    continue;
+                arrayTags3.push({ id: id, label: label });
+            }
             // //Dành cho
-            // for (const tag of $('div.col-md-3.col-sm-4.col-xs-6.mrb10', 'div.col-sm-10 > div.row').toArray()) {
-            //     const label = $('div.genre-item', tag).text().trim();
-            //     const id = $('div.genre-item > span', tag).attr('data-id') ?? label;
-            //     if (!id || !label) continue;
-            //     arrayTags.push({ id: id, label: label });
-            // }
+            for (const tag of $('option', '.select-gender').toArray()) {
+                const label = $(tag).text().trim();
+                const id = (_d = $(tag).attr('value')) !== null && _d !== void 0 ? _d : label;
+                if (!id || !label)
+                    continue;
+                arrayTags4.push({ id: id, label: label });
+            }
             // //Sắp xếp theo
-            // for (const tag of $('div.col-md-3.col-sm-4.col-xs-6.mrb10', 'div.col-sm-10 > div.row').toArray()) {
-            //     const label = $('div.genre-item', tag).text().trim();
-            //     const id = $('div.genre-item > span', tag).attr('data-id') ?? label;
-            //     if (!id || !label) continue;
-            //     arrayTags.push({ id: id, label: label });
-            // }
+            for (const tag of $('option', '.select-sort').toArray()) {
+                const label = $(tag).text().trim();
+                const id = (_e = $(tag).attr('value')) !== null && _e !== void 0 ? _e : label;
+                if (!id || !label)
+                    continue;
+                arrayTags5.push({ id: id, label: label });
+            }
             const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) }),
                 createTagSection({ id: '1', label: 'Số Lượng Chapter', tags: arrayTags2.map(x => createTag(x)) }),
+                createTagSection({ id: '2', label: 'Tình Trạng', tags: arrayTags3.map(x => createTag(x)) }),
+                createTagSection({ id: '3', label: 'Dành Cho', tags: arrayTags4.map(x => createTag(x)) }),
+                createTagSection({ id: '4', label: 'Sắp xếp theo', tags: arrayTags5.map(x => createTag(x)) })
             ];
             return tagSections;
         });
