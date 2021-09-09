@@ -426,12 +426,6 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             requestsPerSecond: 5,
             requestTimeout: 20000
         });
-        // override getCloudflareBypassRequest(): Request {
-        //     return createRequestObject({
-        //         url: DOMAIN,
-        //         method: 'GET',
-        //     })
-        // }
     }
     getMangaDetails(mangaId) {
         var _a, _b;
