@@ -449,21 +449,23 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
         });
     }
     searchRequest(query, metadata) {
-        var _a, _b;
+        var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            const url = `${DOMAIN}the-loai?keyword=${encodeURI(query.title)}`;
+            const tags = ((_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : []).join('');
+            const url = `${DOMAIN}the-loai`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
-                param: `&page=${page}`
+                // param: `&page=${page}`
+                param: encodeURI(`?keyword=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}${tags}&page=${page}`)
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             const tiles = [];
             for (const manga of $('div.item', 'div.row').toArray()) {
                 const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
-                const id = (_b = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _b === void 0 ? void 0 : _b.split('/').pop();
+                const id = (_e = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _e === void 0 ? void 0 : _e.split('/').pop();
                 const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
                 const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
                 if (!id || !title)
@@ -664,7 +666,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
         });
     }
     getTags() {
-        var _a;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             const url = `${DOMAIN}tim-truyen-nang-cao`;
             const request = createRequestObject({
@@ -674,6 +676,11 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const arrayTags = [];
+            const arrayTags2 = [];
+            const arrayTags3 = [];
+            const arrayTags4 = [];
+            const arrayTags5 = [];
+            //The loai
             for (const tag of $('div.col-md-3.col-sm-4.col-xs-6.mrb10', 'div.col-sm-10 > div.row').toArray()) {
                 const label = $('div.genre-item', tag).text().trim();
                 const id = (_a = $('div.genre-item > span', tag).attr('data-id')) !== null && _a !== void 0 ? _a : label;
@@ -681,7 +688,38 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
                     continue;
                 arrayTags.push({ id: id, label: label });
             }
-            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) })];
+            //Số lượng chapter
+            for (const tag of $('option', 'select.select-minchapter').toArray()) {
+                const label = $(tag).text().trim();
+                const id = (_b = $(tag).attr('value')) !== null && _b !== void 0 ? _b : label;
+                if (!id || !label)
+                    continue;
+                arrayTags2.push({ id: id, label: label });
+            }
+            // //Tình trạng
+            // for (const tag of $('div.col-md-3.col-sm-4.col-xs-6.mrb10', 'div.col-sm-10 > div.row').toArray()) {
+            //     const label = $('div.genre-item', tag).text().trim();
+            //     const id = $('div.genre-item > span', tag).attr('data-id') ?? label;
+            //     if (!id || !label) continue;
+            //     arrayTags.push({ id: id, label: label });
+            // }
+            // //Dành cho
+            // for (const tag of $('div.col-md-3.col-sm-4.col-xs-6.mrb10', 'div.col-sm-10 > div.row').toArray()) {
+            //     const label = $('div.genre-item', tag).text().trim();
+            //     const id = $('div.genre-item > span', tag).attr('data-id') ?? label;
+            //     if (!id || !label) continue;
+            //     arrayTags.push({ id: id, label: label });
+            // }
+            // //Sắp xếp theo
+            // for (const tag of $('div.col-md-3.col-sm-4.col-xs-6.mrb10', 'div.col-sm-10 > div.row').toArray()) {
+            //     const label = $('div.genre-item', tag).text().trim();
+            //     const id = $('div.genre-item > span', tag).attr('data-id') ?? label;
+            //     if (!id || !label) continue;
+            //     arrayTags.push({ id: id, label: label });
+            // }
+            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) }),
+                createTagSection({ id: '1', label: 'Số Lượng Chapter', tags: arrayTags.map(x => createTag(x)) }),
+            ];
             return tagSections;
         });
     }
