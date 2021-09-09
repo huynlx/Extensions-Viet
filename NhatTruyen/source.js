@@ -762,7 +762,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
         });
     }
     getSearchTags() {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function* () {
             const url = `${DOMAIN}tim-truyen-nang-cao`;
             const request = createRequestObject({
@@ -774,7 +774,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             //id tag đéo đc trùng nhau
             const arrayTags = [];
             const arrayTags2 = [];
-            const arrayTags3 = [{ id: '99', label: 'Đang tiến hành' }, { id: '98', label: 'Đã hoàn thành' }, { id: '97', label: 'Tất cả' }];
+            const arrayTags3 = [];
             const arrayTags4 = [];
             const arrayTags5 = [];
             //The loai
@@ -787,23 +787,24 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             }
             //Số lượng chapter
             for (const tag of $('option', 'select.select-minchapter').toArray()) {
-                const label = $(tag).text().trim();
+                const label = 's2 ' + $(tag).text().trim();
                 const id = (_b = $(tag).attr('value')) !== null && _b !== void 0 ? _b : label;
                 if (!id || !label)
                     continue;
                 arrayTags2.push({ id: id, label: label });
             }
             // // //Tình trạng
-            // for (const tag of $('option', '.select-status').toArray()) {
-            //     const label = $(tag).text().trim();
-            //     const id = $(tag).attr('value') ?? label;
-            //     if (!id || !label) continue;
-            //     arrayTags3.push({ id: id, label: label });
-            // }
+            for (const tag of $('option', '.select-status').toArray()) {
+                const label = $(tag).text().trim();
+                const id = (_c = 's3 ' + $(tag).attr('value')) !== null && _c !== void 0 ? _c : label;
+                if (!id || !label)
+                    continue;
+                arrayTags3.push({ id: id, label: label });
+            }
             // //Dành cho
             for (const tag of $('option', '.select-gender').toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_c = $(tag).attr('value')) !== null && _c !== void 0 ? _c : label;
+                const id = (_d = 's4 ' + $(tag).attr('value')) !== null && _d !== void 0 ? _d : label;
                 if (!id || !label)
                     continue;
                 arrayTags4.push({ id: id, label: label });
@@ -811,7 +812,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             // //Sắp xếp theo
             for (const tag of $('option', '.select-sort').toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_d = $(tag).attr('value')) !== null && _d !== void 0 ? _d : label;
+                const id = (_e = 's5 ' + $(tag).attr('value')) !== null && _e !== void 0 ? _e : label;
                 if (!id || !label)
                     continue;
                 arrayTags5.push({ id: id, label: label });
