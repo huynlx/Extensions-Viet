@@ -572,8 +572,14 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
                 title: "Truyện Mới Thêm Gần Đây",
                 view_more: true,
             });
-            //Featured
+            //Load empty sections
             sectionCallback(featured);
+            sectionCallback(viewest);
+            sectionCallback(hot);
+            sectionCallback(newUpdated);
+            sectionCallback(newAdded);
+            ///Get the section data
+            //Featured
             let url = `${DOMAIN}`;
             let request = createRequestObject({
                 url: url,
@@ -598,7 +604,6 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             featured.items = featuredItems;
             sectionCallback(featured);
             //View
-            sectionCallback(viewest);
             url = `${DOMAIN}tim-truyen?status=-1&sort=10`;
             request = createRequestObject({
                 url: url,
@@ -624,7 +629,6 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             viewest.items = viewestItems;
             sectionCallback(viewest);
             //Hot
-            sectionCallback(hot);
             url = `${DOMAIN}hot`;
             request = createRequestObject({
                 url: url,
@@ -650,7 +654,6 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             hot.items = TopWeek;
             sectionCallback(hot);
             //New Updates
-            sectionCallback(newUpdated);
             url = `${DOMAIN}`;
             request = createRequestObject({
                 url: url,
@@ -676,7 +679,6 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
             //New added
-            sectionCallback(newAdded);
             url = `${DOMAIN}tim-truyen?status=-1&sort=15`;
             request = createRequestObject({
                 url: url,
