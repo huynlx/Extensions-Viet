@@ -773,9 +773,10 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             const arrayTags = [];
             const arrayTags2 = [];
-            const arrayTags3 = [{ id: '1', label: 'Đang tiến hành' }, { id: '2', label: 'Đã hoàn thành' }, { id: '-1', label: 'Tất cả' }];
+            const arrayTags3 = [{ id: '99', label: 'Đang tiến hành' }, { id: '98', label: 'Đã hoàn thành' }, { id: '97', label: 'Tất cả' }];
             const arrayTags4 = [];
             const arrayTags5 = [];
+            // const arrayTags6: Tag[] = [{ id: '1', label: 'Đang tiến hành' }, { id: '2', label: 'Đã hoàn thành' }, { id: '-1', label: 'Tất cả' }];
             //The loai
             for (const tag of $('div.col-md-3.col-sm-4.col-xs-6.mrb10', 'div.col-sm-10 > div.row').toArray()) {
                 const label = $('div.genre-item', tag).text().trim();
@@ -819,7 +820,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
                 createTagSection({ id: '1', label: 'Số Lượng Chapter', tags: arrayTags2.map(x => createTag(x)) }),
                 createTagSection({ id: '2', label: 'Tình Trạng', tags: arrayTags3.map(x => createTag(x)) }),
                 createTagSection({ id: '3', label: 'Dành Cho', tags: arrayTags4.map(x => createTag(x)) }),
-                createTagSection({ id: '4', label: 'Sắp xếp theo', tags: arrayTags5.map(x => createTag(x)) })
+                createTagSection({ id: '4', label: 'Sắp xếp theo', tags: arrayTags5.map(x => createTag(x)) }),
             ];
             return tagSections;
         });
