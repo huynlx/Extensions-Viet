@@ -458,7 +458,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
                 url: url,
                 method: "GET",
                 // param: `&page=${page}`
-                param: encodeURI(`?keyword=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}${tags}&page=${page}`)
+                param: encodeURI(`?keyword=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&genres=${tags}&page=${page}`)
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
@@ -718,7 +718,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             //     arrayTags.push({ id: id, label: label });
             // }
             const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) }),
-                createTagSection({ id: '1', label: 'Số Lượng Chapter', tags: arrayTags.map(x => createTag(x)) }),
+                createTagSection({ id: '1', label: 'Số Lượng Chapter', tags: arrayTags2.map(x => createTag(x)) }),
             ];
             return tagSections;
         });
