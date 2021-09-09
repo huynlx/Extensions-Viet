@@ -787,7 +787,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             }
             //Số lượng chapter
             for (const tag of $('option', 'select.select-minchapter').toArray()) {
-                const label = 's2 ' + $(tag).text().trim();
+                const label = 's2.' + $(tag).text().trim();
                 const id = (_b = $(tag).attr('value')) !== null && _b !== void 0 ? _b : label;
                 if (!id || !label)
                     continue;
@@ -796,7 +796,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             // // //Tình trạng
             for (const tag of $('option', '.select-status').toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_c = 's3 ' + $(tag).attr('value')) !== null && _c !== void 0 ? _c : label;
+                const id = (_c = 's3.' + $(tag).attr('value')) !== null && _c !== void 0 ? _c : label;
                 if (!id || !label)
                     continue;
                 arrayTags3.push({ id: id, label: label });
@@ -804,7 +804,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             // //Dành cho
             for (const tag of $('option', '.select-gender').toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_d = 's4 ' + $(tag).attr('value')) !== null && _d !== void 0 ? _d : label;
+                const id = (_d = 's4.' + $(tag).attr('value')) !== null && _d !== void 0 ? _d : label;
                 if (!id || !label)
                     continue;
                 arrayTags4.push({ id: id, label: label });
@@ -812,7 +812,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             // //Sắp xếp theo
             for (const tag of $('option', '.select-sort').toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_e = 's5 ' + $(tag).attr('value')) !== null && _e !== void 0 ? _e : label;
+                const id = (_e = 's5.' + $(tag).attr('value')) !== null && _e !== void 0 ? _e : label;
                 if (!id || !label)
                     continue;
                 arrayTags5.push({ id: id, label: label });
