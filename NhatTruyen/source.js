@@ -512,7 +512,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
         var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            const tags = ((_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : []).join('');
+            const tags = ((_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : []).join(',');
             const url = `${DOMAIN}tim-truyen-nang-cao`;
             const request = createRequestObject({
                 url: url,
@@ -771,12 +771,12 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
+            //id tag đéo đc trùng nhau
             const arrayTags = [];
             const arrayTags2 = [];
             const arrayTags3 = [{ id: '99', label: 'Đang tiến hành' }, { id: '98', label: 'Đã hoàn thành' }, { id: '97', label: 'Tất cả' }];
             const arrayTags4 = [];
             const arrayTags5 = [];
-            // const arrayTags6: Tag[] = [{ id: '1', label: 'Đang tiến hành' }, { id: '2', label: 'Đã hoàn thành' }, { id: '-1', label: 'Tất cả' }];
             //The loai
             for (const tag of $('div.col-md-3.col-sm-4.col-xs-6.mrb10', 'div.col-sm-10 > div.row').toArray()) {
                 const label = $('div.genre-item', tag).text().trim();
