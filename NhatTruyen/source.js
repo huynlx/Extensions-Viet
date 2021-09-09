@@ -762,7 +762,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
         });
     }
     getSearchTags() {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
             const url = `${DOMAIN}tim-truyen-nang-cao`;
             const request = createRequestObject({
@@ -773,7 +773,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             const arrayTags = [];
             const arrayTags2 = [];
-            const arrayTags3 = [];
+            const arrayTags3 = [{ id: '1', label: 'Đang tiến hành' }, { id: '2', label: 'Đã hoàn thành' }, { id: '-1', label: 'Tất cả' }];
             const arrayTags4 = [];
             const arrayTags5 = [];
             //The loai
@@ -792,18 +792,17 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
                     continue;
                 arrayTags2.push({ id: id, label: label });
             }
-            // //Tình trạng
-            for (const tag of $('option', '.select-status').toArray()) {
-                const label = $(tag).text().trim();
-                const id = (_c = $(tag).attr('value')) !== null && _c !== void 0 ? _c : label;
-                if (!id || !label)
-                    continue;
-                arrayTags3.push({ id: id, label: label });
-            }
+            // // //Tình trạng
+            // for (const tag of $('option', '.select-status').toArray()) {
+            //     const label = $(tag).text().trim();
+            //     const id = $(tag).attr('value') ?? label;
+            //     if (!id || !label) continue;
+            //     arrayTags3.push({ id: id, label: label });
+            // }
             // //Dành cho
             for (const tag of $('option', '.select-gender').toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_d = $(tag).attr('value')) !== null && _d !== void 0 ? _d : label;
+                const id = (_c = $(tag).attr('value')) !== null && _c !== void 0 ? _c : label;
                 if (!id || !label)
                     continue;
                 arrayTags4.push({ id: id, label: label });
@@ -811,7 +810,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             // //Sắp xếp theo
             for (const tag of $('option', '.select-sort').toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_e = $(tag).attr('value')) !== null && _e !== void 0 ? _e : label;
+                const id = (_d = $(tag).attr('value')) !== null && _d !== void 0 ? _d : label;
                 if (!id || !label)
                     continue;
                 arrayTags5.push({ id: id, label: label });
