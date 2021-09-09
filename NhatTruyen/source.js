@@ -793,13 +793,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
                 arrayTags2.push({ id: id, label: label });
             }
             // //Tình trạng
-            // for (const tag of $('option', '.select-status').toArray()) {
-            //     const label = $(tag).text().trim();
-            //     const id = $(tag).attr('value') ?? label;
-            //     if (!id || !label) continue;
-            //     arrayTags3.push({ id: id, label: label });
-            // }
-            for (const tag of $('option', '.select-gender').toArray()) {
+            for (const tag of $('option', '.select-status').toArray()) {
                 const label = $(tag).text().trim();
                 const id = (_c = $(tag).attr('value')) !== null && _c !== void 0 ? _c : label;
                 if (!id || !label)
