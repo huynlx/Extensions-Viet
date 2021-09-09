@@ -787,8 +787,8 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             }
             //Số lượng chapter
             for (const tag of $('option', 'select.select-minchapter').toArray()) {
-                const label = 'chapter.' + $(tag).text().trim();
-                const id = (_b = $(tag).attr('value')) !== null && _b !== void 0 ? _b : label;
+                const label = $(tag).text().trim();
+                const id = (_b = 'chapter.' + $(tag).attr('value')) !== null && _b !== void 0 ? _b : label;
                 if (!id || !label)
                     continue;
                 arrayTags2.push({ id: id, label: label });
