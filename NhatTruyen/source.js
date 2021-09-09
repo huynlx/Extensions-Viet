@@ -588,10 +588,10 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let featuredItems = [];
-            for (let manga of $('div.owl-item', 'div.owl-wrapper').toArray()) {
-                const title = $('div.item > div.slide-caption > h3 > a', manga).first().text();
-                const id = (_a = $('div.item > div.slide-caption > h3 > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-                const image = $('div.item > a > img', manga).first().attr('src');
+            for (let manga of $('div.item', 'div.altcontent1').toArray()) {
+                const title = $('.slide-caption > h3 > a', manga).text();
+                const id = (_a = $('.slide-caption > h3 > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+                const image = $('a > img', manga).attr('src');
                 // const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
                 if (!id || !title)
                     continue;
