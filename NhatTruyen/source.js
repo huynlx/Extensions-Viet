@@ -545,7 +545,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function* () {
             let featured = createHomeSection({
                 id: 'featured',
@@ -572,18 +572,42 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
                 title: "Truyện Mới Thêm Gần Đây",
                 view_more: true,
             });
-            //View
-            let url = `${DOMAIN}tim-truyen?status=-1&sort=10`;
+            //Featured
+            let url = `${DOMAIN}`;
             let request = createRequestObject({
                 url: url,
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
+            let featuredItems = [];
+            for (let manga of $('div.owl-item', 'div.owl-wrapper').toArray()) {
+                const title = $('div.item > div.slide-caption > h3 > a', manga).first().text();
+                const id = (_a = $('div.item > div.slide-caption > h3 > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+                const image = $('div.item > a > img', manga).first().attr('src');
+                // const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
+                if (!id || !title)
+                    continue;
+                featuredItems.push(createMangaTile({
+                    id: id,
+                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
+                    title: createIconText({ text: title })
+                }));
+            }
+            featured.items = featuredItems;
+            sectionCallback(featured);
+            //View
+            url = `${DOMAIN}tim-truyen?status=-1&sort=10`;
+            request = createRequestObject({
+                url: url,
+                method: "GET",
+            });
+            data = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(data.data);
             let viewestItems = [];
             for (let manga of $('div.item', 'div.row').toArray().splice(0, 20)) {
                 const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
-                const id = (_a = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+                const id = (_b = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _b === void 0 ? void 0 : _b.split('/').pop();
                 const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
                 const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
                 if (!id || !title)
@@ -608,7 +632,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             const TopWeek = [];
             for (const manga of $('div.item', 'div.row').toArray().splice(0, 20)) {
                 const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
-                const id = (_b = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _b === void 0 ? void 0 : _b.split('/').pop();
+                const id = (_c = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _c === void 0 ? void 0 : _c.split('/').pop();
                 const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
                 const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
                 if (!id || !title)
@@ -633,7 +657,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             let newUpdatedItems = [];
             for (let manga of $('div.item', 'div.row').toArray().splice(0, 20)) {
                 const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
-                const id = (_c = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _c === void 0 ? void 0 : _c.split('/').pop();
+                const id = (_d = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _d === void 0 ? void 0 : _d.split('/').pop();
                 const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
                 const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
                 if (!id || !title)
@@ -658,7 +682,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             let newAddedItems = [];
             for (let manga of $('div.item', 'div.row').toArray().splice(0, 20)) {
                 const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
-                const id = (_d = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _d === void 0 ? void 0 : _d.split('/').pop();
+                const id = (_e = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _e === void 0 ? void 0 : _e.split('/').pop();
                 const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
                 const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
                 if (!id || !title)
