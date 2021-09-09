@@ -512,13 +512,19 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
         var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
+            const search = {
+                genres: '',
+                gender: -1,
+                status: -1,
+                minchapter: 1,
+                sort: 0
+            };
             const tags = ((_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : []).join(',');
             const url = `${DOMAIN}`;
             const request = createRequestObject({
                 url: query.title ? (url + '/the-loai') : (url + '/tim-truyen-nang-cao'),
                 method: "GET",
-                // param: `&page=${page}`
-                param: encodeURI(`?keyword=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&genres=${tags}&gender=-1&status=-1&minchapter=1&sort=0&page=${page}`)
+                param: encodeURI(`?keyword=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&genres=${tags}&gender=${search.gender}&status=${search.status}&minchapter=${search.minchapter}&sort=${search.sort}&page=${page}`)
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
@@ -788,7 +794,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             //Số lượng chapter
             for (const tag of $('option', 'select.select-minchapter').toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_b = 'chapter.' + $(tag).attr('value')) !== null && _b !== void 0 ? _b : label;
+                const id = (_b = 'minchapter.' + $(tag).attr('value')) !== null && _b !== void 0 ? _b : label;
                 if (!id || !label)
                     continue;
                 arrayTags2.push({ id: id, label: label });
@@ -804,7 +810,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             // //Dành cho
             for (const tag of $('option', '.select-gender').toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_d = 'for.' + $(tag).attr('value')) !== null && _d !== void 0 ? _d : label;
+                const id = (_d = 'gender.' + $(tag).attr('value')) !== null && _d !== void 0 ? _d : label;
                 if (!id || !label)
                     continue;
                 arrayTags4.push({ id: id, label: label });
