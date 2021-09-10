@@ -525,15 +525,8 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
                 minchapter: "1",
                 sort: "0"
             };
-            // const tags: string = (query.includedTags
-            //     ?.map(tag => tag.id) ?? []).join(',');
-            // search.genres = tags;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const genres = [];
-            // const gender = [];
-            // const status = [];
-            // const minchapter = [];
-            // const sort = [];
             tags.map((value) => {
                 if (value.indexOf('.') === -1) {
                     genres.push(value);
@@ -860,10 +853,10 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
                 arrayTags5.push({ id: id, label: label });
             }
             const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) }),
-                createTagSection({ id: '1', label: 'Số Lượng Chapter', tags: arrayTags2.map(x => createTag(x)) }),
-                createTagSection({ id: '2', label: 'Tình Trạng', tags: arrayTags3.map(x => createTag(x)) }),
-                createTagSection({ id: '3', label: 'Dành Cho', tags: arrayTags4.map(x => createTag(x)) }),
-                createTagSection({ id: '4', label: 'Sắp xếp theo', tags: arrayTags5.map(x => createTag(x)) }),
+                createTagSection({ id: '1', label: 'Số Lượng Chapter (Chỉ chọn 1)', tags: arrayTags2.map(x => createTag(x)) }),
+                createTagSection({ id: '2', label: 'Tình Trạng (Chỉ chọn 1)', tags: arrayTags3.map(x => createTag(x)) }),
+                createTagSection({ id: '3', label: 'Dành Cho (Chỉ chọn 1)', tags: arrayTags4.map(x => createTag(x)) }),
+                createTagSection({ id: '4', label: 'Sắp xếp theo (Chỉ chọn 1)', tags: arrayTags5.map(x => createTag(x)) }),
             ];
             return tagSections;
         });
