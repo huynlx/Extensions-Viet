@@ -387,11 +387,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HentaiVN = exports.NetTruyenInfo = void 0;
+exports.HentaiVN = exports.HentaiVNInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const HentaiVNParser_1 = require("./HentaiVNParser");
 const DOMAIN = 'https://hentaivn.tv/';
-exports.NetTruyenInfo = {
+exports.HentaiVNInfo = {
     version: '1.0.0',
     name: 'HentaiVN',
     icon: 'icon.png',
