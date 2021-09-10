@@ -402,7 +402,7 @@ exports.isLastPage = ($) => {
 };
 exports.NhatTruyenInfo = {
     version: '3.0.0',
-    name: 'NhatTruyen',
+    name: 'NetTruyen',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
