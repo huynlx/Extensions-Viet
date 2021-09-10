@@ -410,12 +410,12 @@ exports.NhatTruyenInfo = {
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
         {
-            text: "Notifications",
-            type: paperback_extensions_common_1.TagType.GREEN
-        },
-        {
             text: "Recommended",
             type: paperback_extensions_common_1.TagType.BLUE
+        },
+        {
+            text: "Notifications",
+            type: paperback_extensions_common_1.TagType.GREEN
         }
     ]
 };
@@ -499,7 +499,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
                 if (!obj.attribs['data-original'])
                     continue;
                 let link = obj.attribs['data-original'];
-                if (link.indexOf('https') === -1) {
+                if (link.indexOf('https') === -1) { //nếu link ko có 'https'
                     pages.push('http:' + obj.attribs['data-original']);
                 }
                 else {
@@ -520,13 +520,42 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const search = {
                 genres: '',
-                gender: -1,
-                status: -1,
-                minchapter: 1,
-                sort: 0
+                gender: "-1",
+                status: "-1",
+                minchapter: "1",
+                sort: "0"
             };
-            const tags = ((_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : []).join(',');
-            search.genres = tags;
+            // const tags: string = (query.includedTags
+            //     ?.map(tag => tag.id) ?? []).join(',');
+            // search.genres = tags;
+            const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
+            const genres = [];
+            // const gender = [];
+            // const status = [];
+            // const minchapter = [];
+            // const sort = [];
+            tags.map((value) => {
+                if (value.indexOf('.') === -1) {
+                    genres.push(value);
+                }
+                else {
+                    switch (value.split(".")[0]) {
+                        case 'minchapter':
+                            search.minchapter = (value.split(".")[1]);
+                            break;
+                        case 'gender':
+                            search.gender = (value.split(".")[1]);
+                            break;
+                        case 'sort':
+                            search.sort = (value.split(".")[1]);
+                            break;
+                        case 'status':
+                            search.status = (value.split(".")[1]);
+                            break;
+                    }
+                }
+            });
+            search.genres = (genres !== null && genres !== void 0 ? genres : []).join(",");
             const url = `${DOMAIN}`;
             const request = createRequestObject({
                 url: query.title ? (url + '/the-loai') : (url + '/tim-truyen-nang-cao'),
@@ -806,7 +835,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
                     continue;
                 arrayTags2.push({ id: id, label: label });
             }
-            // // //Tình trạng
+            //Tình trạng
             for (const tag of $('option', '.select-status').toArray()) {
                 const label = $(tag).text().trim();
                 const id = (_c = 'status.' + $(tag).attr('value')) !== null && _c !== void 0 ? _c : label;
@@ -814,7 +843,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
                     continue;
                 arrayTags3.push({ id: id, label: label });
             }
-            // //Dành cho
+            //Dành cho
             for (const tag of $('option', '.select-gender').toArray()) {
                 const label = $(tag).text().trim();
                 const id = (_d = 'gender.' + $(tag).attr('value')) !== null && _d !== void 0 ? _d : label;
@@ -822,7 +851,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
                     continue;
                 arrayTags4.push({ id: id, label: label });
             }
-            // //Sắp xếp theo
+            //Sắp xếp theo
             for (const tag of $('option', '.select-sort').toArray()) {
                 const label = $(tag).text().trim();
                 const id = (_e = 'sort.' + $(tag).attr('value')) !== null && _e !== void 0 ? _e : label;
