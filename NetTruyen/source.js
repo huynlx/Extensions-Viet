@@ -387,7 +387,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NhatTruyen = exports.NhatTruyenInfo = exports.isLastPage = void 0;
+exports.NetTruyen = exports.NetTruyenInfo = exports.isLastPage = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const NetTruyenParser_1 = require("./NetTruyenParser");
 const DOMAIN = 'http://www.nettruyenpro.com/';
@@ -400,7 +400,7 @@ exports.isLastPage = ($) => {
     }
     return true;
 };
-exports.NhatTruyenInfo = {
+exports.NetTruyenInfo = {
     version: '3.0.0',
     name: 'NetTruyen',
     icon: 'icon.png',
@@ -420,7 +420,7 @@ exports.NhatTruyenInfo = {
         }
     ]
 };
-class NhatTruyen extends paperback_extensions_common_1.Source {
+class NetTruyen extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
         this.parser = new NetTruyenParser_1.Parser();
@@ -667,7 +667,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
         };
     }
 }
-exports.NhatTruyen = NhatTruyen;
+exports.NetTruyen = NetTruyen;
 
 },{"./NetTruyenParser":49,"paperback-extensions-common":5}],49:[function(require,module,exports){
 "use strict";
