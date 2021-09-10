@@ -507,7 +507,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             search.genres = (genres !== null && genres !== void 0 ? genres : []).join(",");
             const url = `${DOMAIN}`;
             const request = createRequestObject({
-                url: query.title ? (url + '/the-loai') : (url + '/tim-truyen-nang-cao'),
+                url: query.title ? (url + '/tim-truyen') : (url + '/tim-truyen-nang-cao'),
                 method: "GET",
                 param: encodeURI(`?keyword=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&genres=${search.genres}&gender=${search.gender}&status=${search.status}&minchapter=${search.minchapter}&sort=${search.sort}&page=${page}`)
             });
