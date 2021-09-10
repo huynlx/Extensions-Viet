@@ -562,13 +562,13 @@ class Parser {
         for (let manga of $('.item', '.page-item').toArray()) {
             const title = $('ul > span > a > h2', manga).first().text();
             const id = (_a = $('ul > span > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-            const image = $('ul > a > div', manga).first().attr('style').match(/url\("(.*?)"/)[1];
+            const image = "https://i.imgur.com/GYUxEX8.png";
             const subtitle = $("ul > a > span > b", manga).last().text().trim();
             if (!id || !title)
                 continue;
             newUpdatedItems.push(createMangaTile({
                 id: id,
-                image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
+                image,
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
