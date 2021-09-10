@@ -498,7 +498,13 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             for (let obj of $('div.reading-detail > div.page-chapter > img').toArray()) {
                 if (!obj.attribs['data-original'])
                     continue;
-                pages.push(obj.attribs['data-original']);
+                let link = obj.attribs['data-original'];
+                if (link.indexOf('https') === -1) {
+                    pages.push('http:' + obj.attribs['data-original']);
+                }
+                else {
+                    pages.push(link);
+                }
             }
             return createChapterDetails({
                 pages: pages,
