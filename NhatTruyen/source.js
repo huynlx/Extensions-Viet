@@ -496,9 +496,9 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             const pages = [];
             for (let obj of $('div.reading-detail > div.page-chapter > img').toArray()) {
-                if (!obj.attribs['src'])
+                if (!obj.attribs['data-original'])
                     continue;
-                pages.push('http:' + obj.attribs['src']);
+                pages.push('http:' + obj.attribs['data-original']);
             }
             return createChapterDetails({
                 pages: pages,
