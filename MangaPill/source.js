@@ -685,7 +685,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MangaPill = exports.MangaPillInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
-const HentaiVNParser_1 = require("./HentaiVNParser");
+const Parser_1 = require("./Parser");
 const MANGAPILL_DOMAIN = 'https://www.mangapill.com';
 exports.MangaPillInfo = {
     version: '2.0.8',
@@ -710,7 +710,7 @@ exports.MangaPillInfo = {
 class MangaPill extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
-        this.parser = new HentaiVNParser_1.Parser();
+        this.parser = new Parser_1.Parser();
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
             requestTimeout: 20000
@@ -920,7 +920,7 @@ class MangaPill extends paperback_extensions_common_1.Source {
 }
 exports.MangaPill = MangaPill;
 
-},{"./HentaiVNParser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
+},{"./Parser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
 "use strict";
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 Object.defineProperty(exports, "__esModule", { value: true });
