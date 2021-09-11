@@ -758,16 +758,24 @@ class HentaiHere extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             const section0 = createHomeSection({ id: 'popular', title: 'Tiêu điểm', view_more: false });
             const section1 = createHomeSection({ id: 'recently-updated', title: 'Mới cập nhật', view_more: true });
-            const section2 = createHomeSection({ id: 'random', title: 'Truyện ngẫu nhiên', view_more: false });
+            // const section2 = createHomeSection({ id: 'random', title: 'Truyện ngẫu nhiên', view_more: false });
             const section3 = createHomeSection({ id: 'recently_added', title: 'Truyện mới đăng', view_more: true });
-            const sections = [section0, section1, section2, section3];
-            const request = createRequestObject({
+            const sections = [section0, section1, section3];
+            let request = createRequestObject({
                 url: `https://hentaivn.tv`,
                 method,
             });
-            const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
+            let response = yield this.requestManager.schedule(request, 1);
+            let $ = this.cheerio.load(response.data);
             HentaiHereParser_1.parseHomeSections($, sections, sectionCallback);
+            //added
+            request = createRequestObject({
+                url: `https://hentaivn.tv/danh-sach.html`,
+                method,
+            });
+            response = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(response.data);
+            HentaiHereParser_1.parseAddedSections($, sections, sectionCallback);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
@@ -845,7 +853,7 @@ exports.HentaiHere = HentaiHere;
 },{"./HentaiHereParser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isLastPage = exports.parseTags = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.parseHomeSections = exports.parseChapterDetails = exports.parseChapters = exports.parseMangaDetails = void 0;
+exports.isLastPage = exports.parseTags = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.parseAddedSections = exports.parseHomeSections = exports.parseChapterDetails = exports.parseChapters = exports.parseMangaDetails = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const entities = require("entities"); //Import package for decoding HTML entities
 const HH_DOMAIN = 'https://hentaihere.com';
@@ -947,7 +955,7 @@ exports.parseChapterDetails = (data, mangaId, chapterId) => {
     return chapterDetails;
 };
 exports.parseHomeSections = ($, sections, sectionCallback) => {
-    var _a, _b, _c, _d, _e, _f, _g;
+    var _a, _b;
     for (const section of sections)
         sectionCallback(section);
     //Popular
@@ -988,43 +996,30 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
     }
     sections[1].items = staffPick;
     sectionCallback(sections[1]);
-    //Random
-    let random = [];
-    for (let manga of $('li', 'ul.page-random').toArray()) {
-        const title = $('.des-same > a > b', manga).first().text();
-        const id = (_c = $('.des-same > a', manga).attr('href')) === null || _c === void 0 ? void 0 : _c.split('/').pop();
-        const image = $('.img-same > a > div', manga).css('background');
-        const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
-        const subtitle = $("b", manga).last().text().trim();
-        if (!id || !title)
-            continue;
-        random.push(createMangaTile({
-            id: id,
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
-            title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: subtitle }),
-        }));
-    }
-    sections[2].items = random;
+    // for (const section of sections) sectionCallback(section);
+};
+exports.parseAddedSections = ($, sections, sectionCallback) => {
+    var _a;
+    //Recently Updated
     sectionCallback(sections[2]);
-    //Recently Added
-    const Trending = [];
-    for (const manga of $("li.list-group-item", "ul.list-group").toArray()) {
-        const id = (_d = $("a", manga).attr('href')) === null || _d === void 0 ? void 0 : _d.split(`/m/`)[1]; //Method required since authors pages are included in the list, but don't use /m/
-        const image = (_e = $("img", manga).attr('src')) !== null && _e !== void 0 ? _e : "";
-        const title = decodeHTMLEntity((_g = String((_f = $("img", manga).attr('alt')) === null || _f === void 0 ? void 0 : _f.trim())) !== null && _g !== void 0 ? _g : "");
+    let added = [];
+    for (let manga of $('.item', '.block-item').toArray()) {
+        const title = $('.box-description > p > a', manga).text();
+        const id = (_a = $('.box-cover > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+        const image = $('.box-cover > a > img', manga).attr('data-src');
+        const subtitle = $(".box-description p:first-child", manga).text().trim();
+        const fixsub = subtitle.split(' - ')[1];
         if (!id || !title)
             continue;
-        Trending.push(createMangaTile({
+        added.push(createMangaTile({
             id: id,
-            image: image,
-            title: createIconText({ text: decodeHTMLEntity(title) }),
+            image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
+            title: createIconText({ text: title }),
+            subtitleText: createIconText({ text: fixsub }),
         }));
     }
-    sections[3].items = Trending;
-    sectionCallback(sections[3]);
-    for (const section of sections)
-        sectionCallback(section);
+    sections[2].items = added;
+    sectionCallback(sections[2]);
 };
 exports.generateSearch = (query) => {
     var _a;
