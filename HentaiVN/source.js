@@ -887,15 +887,15 @@ exports.parseMangaDetails = ($, mangaId) => {
                 break;
         }
     }
-    const image = $('.page-right .page-ava > img').attr('src');
-    const imageFix = image === null || image === void 0 ? void 0 : image.replace("190", "300");
+    const image = $('.page-ava > img').attr('src');
+    // const imageFix = image?.replace("190", "300");
     return createManga({
         id: mangaId,
         author: creator,
         artist: creator,
         desc,
         titles: [$('.page-info > h1').text().trim()],
-        image: imageFix !== null && imageFix !== void 0 ? imageFix : '',
+        image: image !== null && image !== void 0 ? image : '',
         status,
         // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
         hentai: true,
