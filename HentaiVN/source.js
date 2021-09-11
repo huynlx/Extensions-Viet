@@ -568,7 +568,7 @@ class Parser {
                 continue;
             newUpdatedItems.push(createMangaTile({
                 id: id,
-                image,
+                image: "https://i.imgur.com/GYUxEX8.png",
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
