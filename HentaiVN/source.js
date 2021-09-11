@@ -863,21 +863,36 @@ const HH_DOMAIN = 'https://hentaihere.com';
 exports.parseMangaDetails = ($, mangaId) => {
     var _a;
     let tags = [];
-    for (const obj of $('span:not(.info)', '.page-info > p:nth-child(3)').toArray()) {
-        const genre = $('a', obj).text().trim();
-        const id = (_a = $('a', obj).attr('href')) !== null && _a !== void 0 ? _a : genre;
-        tags.push(createTag({ id: id, label: genre }));
+    let creator = '';
+    let status = 1;
+    let desc = '';
+    for (const obj of $('p', '.page-info').toArray()) {
+        switch ($('span.info', 'obj').text()) {
+            case "Thể Loại:":
+                const genre = $('a', obj).text().trim();
+                const id = (_a = $('a', obj).attr('href')) !== null && _a !== void 0 ? _a : genre;
+                tags.push(createTag({ id: id, label: genre }));
+                break;
+            case "Tác giả: ":
+                creator = $('span:nth-child(2) > a', obj).text();
+                break;
+            case "Tình Trạng: ":
+                status = $('span:nth-child(2) > a', obj).text().toLowerCase().includes("hoàn thành") ? 0 : 1;
+                break;
+            case "Nội dung:":
+                desc = $($(obj) + 'p').text();
+                break;
+        }
     }
-    const creator = $('span:not(.info) > a', '.page-info > p:nth-child(5)').text();
     const image = $('.page-right .page-ava > img').attr('src');
     return createManga({
         id: mangaId,
         author: creator,
         artist: creator,
-        desc: $('.page-info > p:last-of-type').text(),
+        desc,
         titles: [$('.page-info > h1').text().trim()],
         image: image !== null && image !== void 0 ? image : '',
-        status: $('.page-info > p:nth-child(7) > span:nth-child(2) > a').text().toLowerCase().includes("hoàn thành") ? 0 : 1,
+        status,
         // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
         hentai: true,
         tags: [createTagSection({ label: "genres", tags: tags, id: '0' })],
