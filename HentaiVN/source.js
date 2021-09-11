@@ -1049,7 +1049,7 @@ exports.parseSearch = ($) => {
     return mangas;
 };
 exports.parseViewMore = ($, select) => {
-    var _a, _b, _c, _d;
+    var _a, _b;
     const manga = [];
     const collectedIds = [];
     if (select = 1) {
@@ -1072,22 +1072,21 @@ exports.parseViewMore = ($, select) => {
         }
     }
     else {
-        for (const obj of $("div.item", "div.row.row-sm").toArray()) {
-            const id = (_b = $("a", obj).attr('href')) === null || _b === void 0 ? void 0 : _b.replace(`${HH_DOMAIN}/m/`, "").trim();
-            const image = (_c = $("img", obj).attr('src')) !== null && _c !== void 0 ? _c : "";
-            const title = decodeHTMLEntity(String((_d = $("img", obj).attr('alt')) === null || _d === void 0 ? void 0 : _d.trim()));
-            const subtitle = $("b.text-danger", obj).text();
+        for (let obj of $('.item', '.block-item').toArray()) {
+            const title = $('.box-description > p > a', obj).text();
+            const id = (_b = $('.box-cover > a', obj).attr('href')) === null || _b === void 0 ? void 0 : _b.split('/').pop();
+            const image = $('.box-cover > a > img', obj).attr('data-src');
+            const subtitle = $(".box-description p:first-child", obj).text().trim();
+            const fixsub = subtitle.split(' - ')[1];
             if (!id || !title)
                 continue;
-            if (!collectedIds.includes(id)) {
-                manga.push(createMangaTile({
-                    id,
-                    image: image,
-                    title: createIconText({ text: decodeHTMLEntity(title) }),
-                    subtitleText: createIconText({ text: subtitle }),
-                }));
-                collectedIds.push(id);
-            }
+            manga.push(createMangaTile({
+                id: id,
+                image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: fixsub }),
+            }));
+            collectedIds.push(id);
         }
     }
     return manga;
@@ -1109,13 +1108,13 @@ exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
     for (const page of $("li", "ul.pagination").toArray()) {
-        const p = Number($(page).text().trim());
+        const p = Number($('a', page).text().trim());
         if (isNaN(p))
             continue;
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($("li.active").text().trim());
+    const currentPage = Number($("li > b").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
