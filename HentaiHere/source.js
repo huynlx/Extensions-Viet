@@ -709,7 +709,7 @@ class HentaiHere extends paperback_extensions_common_1.Source {
         super(...arguments);
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
-            requestTimeout: 100
+            requestTimeout: 20000
         });
     }
     getMangaShareUrl(mangaId) { return `${HH_DOMAIN}/m/${mangaId}`; }
@@ -829,7 +829,7 @@ class HentaiHere extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: 'https://hentaivn.tv'
+            referer: 'https://hentaivn.tv' + '/'
         };
     }
     getCloudflareBypassRequest() {
