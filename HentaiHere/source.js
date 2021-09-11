@@ -752,8 +752,8 @@ class HentaiHere extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             const section0 = createHomeSection({ id: 'popular', title: 'Tiêu điểm', view_more: true });
             const section1 = createHomeSection({ id: 'recently-updated', title: 'Mới cập nhật', view_more: true });
-            const section2 = createHomeSection({ id: 'recently_added', title: 'Truyện mới đăng', view_more: true });
-            const section3 = createHomeSection({ id: 'trending', title: 'Trending', view_more: true });
+            const section2 = createHomeSection({ id: 'random', title: 'Truyện ngẫu nhiên', view_more: true });
+            const section3 = createHomeSection({ id: 'recently_added', title: 'Truyện mới đăng', view_more: true });
             const sections = [section0, section1, section2, section3];
             const request = createRequestObject({
                 url: `https://hentaivn.tv`,
@@ -947,7 +947,7 @@ exports.parseChapterDetails = (data, mangaId, chapterId) => {
     return chapterDetails;
 };
 exports.parseHomeSections = ($, sections, sectionCallback) => {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+    var _a, _b, _c, _d, _e, _f, _g;
     for (const section of sections)
         sectionCallback(section);
     //Popular
@@ -988,28 +988,31 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
     }
     sections[1].items = staffPick;
     sectionCallback(sections[1]);
-    //Recently Added
-    const recentlyAdded = [];
-    for (const manga of $($("div.row.row-sm")[1]).children("div").toArray()) {
-        const id = (_c = $("a", manga).attr('href')) === null || _c === void 0 ? void 0 : _c.replace(`${HH_DOMAIN}/m/`, "").trim();
-        const image = (_d = $("img", manga).attr('src')) !== null && _d !== void 0 ? _d : "";
-        const title = decodeHTMLEntity(String((_f = (_e = $("img", manga).attr('alt')) === null || _e === void 0 ? void 0 : _e.trim()) !== null && _f !== void 0 ? _f : ""));
+    //Random
+    let random = [];
+    for (let manga of $('li', 'ul.page-random').toArray()) {
+        const title = $('.des-same b', manga).first().text();
+        const id = (_c = $('.des-same a', manga).attr('href')) === null || _c === void 0 ? void 0 : _c.split('/').pop();
+        const image = $('div.img-same > a >div', manga).css('background');
+        const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+        const subtitle = $("b", manga).last().text().trim();
         if (!id || !title)
             continue;
-        recentlyAdded.push(createMangaTile({
+        random.push(createMangaTile({
             id: id,
-            image: image,
-            title: createIconText({ text: decodeHTMLEntity(title) }),
+            image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
+            title: createIconText({ text: title }),
+            subtitleText: createIconText({ text: subtitle }),
         }));
     }
-    sections[2].items = recentlyAdded;
+    sections[2].items = staffPick;
     sectionCallback(sections[2]);
-    //Trending
+    //Recently Added
     const Trending = [];
     for (const manga of $("li.list-group-item", "ul.list-group").toArray()) {
-        const id = (_g = $("a", manga).attr('href')) === null || _g === void 0 ? void 0 : _g.split(`/m/`)[1]; //Method required since authors pages are included in the list, but don't use /m/
-        const image = (_h = $("img", manga).attr('src')) !== null && _h !== void 0 ? _h : "";
-        const title = decodeHTMLEntity((_k = String((_j = $("img", manga).attr('alt')) === null || _j === void 0 ? void 0 : _j.trim())) !== null && _k !== void 0 ? _k : "");
+        const id = (_d = $("a", manga).attr('href')) === null || _d === void 0 ? void 0 : _d.split(`/m/`)[1]; //Method required since authors pages are included in the list, but don't use /m/
+        const image = (_e = $("img", manga).attr('src')) !== null && _e !== void 0 ? _e : "";
+        const title = decodeHTMLEntity((_g = String((_f = $("img", manga).attr('alt')) === null || _f === void 0 ? void 0 : _f.trim())) !== null && _g !== void 0 ? _g : "");
         if (!id || !title)
             continue;
         Trending.push(createMangaTile({
