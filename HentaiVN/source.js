@@ -875,7 +875,7 @@ exports.parseMangaDetails = ($, mangaId) => {
         author: creator,
         artist: creator,
         desc: $('.page-info > p:last-child').text(),
-        titles: [$('.page-info > h1').text()],
+        titles: [$('.page-info > h1').text().trim()],
         image: image !== null && image !== void 0 ? image : '',
         status: $('.page-info > p:nth-child(7) > span:nth-child(2) > a').text().toLowerCase().includes("hoàn thành") ? 0 : 1,
         // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
