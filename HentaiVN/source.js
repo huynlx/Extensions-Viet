@@ -586,7 +586,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             hot.items = this.parser.parseHotSection($);
             sectionCallback(hot);
             //New Updates
-            url = `https://hentaivn.tv/`;
+            url = `${DOMAIN}`;
             request = createRequestObject({
                 url: url,
                 method: "GET",
