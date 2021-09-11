@@ -690,7 +690,7 @@ const HH_DOMAIN = 'https://hentaihere.com';
 const method = 'GET';
 exports.HentaiHereInfo = {
     version: '1.0.4',
-    name: 'HentaiHere',
+    name: 'HentaiVN',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
@@ -991,9 +991,9 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
     //Random
     let random = [];
     for (let manga of $('li', 'ul.page-random').toArray()) {
-        const title = $('.des-same b', manga).first().text();
-        const id = (_c = $('.des-same a', manga).attr('href')) === null || _c === void 0 ? void 0 : _c.split('/').pop();
-        const image = $('div.img-same > a >div', manga).css('background');
+        const title = $('.des-same > a > b', manga).first().text();
+        const id = (_c = $('.des-same > a', manga).attr('href')) === null || _c === void 0 ? void 0 : _c.split('/').pop();
+        const image = $('.img-same > a > div', manga).css('background');
         const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
         const subtitle = $("b", manga).last().text().trim();
         if (!id || !title)
