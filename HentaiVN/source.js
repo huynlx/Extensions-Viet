@@ -586,7 +586,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             hot.items = this.parser.parseHotSection($);
             sectionCallback(hot);
             //New Updates
-            url = `${DOMAIN}`;
+            url = `https://hentaivn.tv/`;
             request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -660,6 +660,11 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             return this.parser.parseTags($);
         });
+    }
+    globalRequestHeaders() {
+        return {
+            referer: DOMAIN
+        };
     }
     getCloudflareBypassRequest() {
         return createRequestObject({
@@ -866,13 +871,11 @@ class Parser {
     parseNewUpdatedSection($) {
         var _a;
         let newUpdatedItems = [];
-        for (let manga of $('div.item', 'div.row').toArray()) {
-            const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
-            const id = (_a = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-            const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
-            const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
-            if (!id || !title)
-                continue;
+        for (const obj of $('.item', '.page-item').toArray()) {
+            const title = $('ul > span > a > h2', obj).first().text();
+            const id = (_a = $('ul > span > a', obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+            const image = 'https://i.imgur.com/GYUxEX8.png';
+            const subtitle = $("ul > a > span > b", obj).last().text().trim();
             newUpdatedItems.push(createMangaTile({
                 id: id,
                 image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
