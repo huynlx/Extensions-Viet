@@ -723,7 +723,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `https://hentaihere.com/`,
+                url: `https://hentaivn.tv/`,
                 method,
                 param: mangaId,
             });
