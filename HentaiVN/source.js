@@ -723,7 +723,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${HH_DOMAIN}/m/`,
+                url: `https://hentaihere.com/`,
                 method,
                 param: mangaId,
             });
@@ -861,59 +861,26 @@ const paperback_extensions_common_1 = require("paperback-extensions-common");
 const entities = require("entities"); //Import package for decoding HTML entities
 const HH_DOMAIN = 'https://hentaihere.com';
 exports.parseMangaDetails = ($, mangaId) => {
-    var _a, _b, _c, _d, _e;
-    const titles = [];
-    const title = $("h4 > a").first().text().trim();
-    if (!title)
-        throw new Error("Unable to parse title!"); //If not title is present, throw error!
-    titles.push(decodeHTMLEntity(title));
-    const artist = $("span:contains(Artist:)").next().text().trim(); //Only displays first artist, can't find any hentai that had multiple artists lol
-    const image = (_a = $("img", "div#cover").attr('src')) !== null && _a !== void 0 ? _a : "https://i.imgur.com/GYUxEX8.png"; //Super cool fallback image, since the app doesn't have one yet.
-    //Content Tags
-    const arrayTags = [];
-    for (const tag of $("a.tagbutton", $("span:contains(Content:)").parent()).toArray()) {
-        const label = $(tag).text().trim();
-        const id = encodeURI((_c = (_b = $(tag).attr("href")) === null || _b === void 0 ? void 0 : _b.replace(`/search/`, "").trim()) !== null && _c !== void 0 ? _c : "");
-        if (!id || !label)
-            continue;
-        arrayTags.push({ id: id, label: label });
+    var _a;
+    let tags = [];
+    for (const obj of $('span:not(.info)', '.page-info > p:nth-child(3)').toArray()) {
+        const genre = $('a', obj).text().trim();
+        const id = (_a = $('a', obj).attr('href')) !== null && _a !== void 0 ? _a : genre;
+        tags.push(createTag({ id: id, label: genre }));
     }
-    //Category Tags
-    for (const tag of $("a.tagbutton", $("span:contains(Catergory:)").parent()).toArray()) {
-        const label = $(tag).text().trim();
-        const id = encodeURI((_e = (_d = $(tag).attr("href")) === null || _d === void 0 ? void 0 : _d.replace(`/search/`, "").trim()) !== null && _e !== void 0 ? _e : "");
-        if (!id || !label)
-            continue;
-        arrayTags.push({ id: id, label: label });
-    }
-    const tagSections = [createTagSection({ id: '0', label: 'genres', tags: arrayTags.map(x => createTag(x)) })];
-    const description = decodeHTMLEntity($("span:contains(Brief Summary:)").parent().text().replace($("span:contains(Brief Summary:)").text(), "").trim());
-    const customDescription = `Description \n${description == "" ? "No description available!" : description}\n\nTags \n${arrayTags.map(t => t.label).join(", ")}`;
-    const rawStatus = $("span:contains(Status:)").next().text().trim();
-    let status = paperback_extensions_common_1.MangaStatus.ONGOING;
-    switch (rawStatus.toUpperCase()) {
-        case 'ONGOING':
-            status = paperback_extensions_common_1.MangaStatus.ONGOING;
-            break;
-        case 'COMPLETED':
-            status = paperback_extensions_common_1.MangaStatus.COMPLETED;
-            break;
-        default:
-            status = paperback_extensions_common_1.MangaStatus.ONGOING;
-            break;
-    }
+    const creator = $('span:not(.info) > a', '.page-info > p:nth-child(5)').text();
+    const image = $('.page-right .page-ava > img').attr('src');
     return createManga({
         id: mangaId,
-        titles: titles,
-        image,
-        rating: 0,
-        status: status,
-        author: artist,
-        artist: artist,
-        tags: tagSections,
-        desc: customDescription,
-        //hentai: true
-        hentai: false //MangaDex down
+        author: creator,
+        artist: creator,
+        desc: $('.page-info > p:last-child').text(),
+        titles: [$('.page-info > h1').text()],
+        image: image !== null && image !== void 0 ? image : '',
+        status: $('.page-info > p:nth-child(7) > span:nth-child(2) > a').text().toLowerCase().includes("hoàn thành") ? 0 : 1,
+        // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
+        hentai: true,
+        tags: [createTagSection({ label: "genres", tags: tags, id: '0' })],
     });
 };
 exports.parseChapters = ($, mangaId) => {
