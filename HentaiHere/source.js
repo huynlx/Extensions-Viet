@@ -688,7 +688,6 @@ const paperback_extensions_common_1 = require("paperback-extensions-common");
 const HentaiHereParser_1 = require("./HentaiHereParser");
 const HH_DOMAIN = 'https://hentaihere.com';
 const method = 'GET';
-const headers = { "content-type": "application/x-www-form-urlencoded" };
 exports.HentaiHereInfo = {
     version: '1.0.4',
     name: 'HentaiHere',
@@ -710,7 +709,7 @@ class HentaiHere extends paperback_extensions_common_1.Source {
         super(...arguments);
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
-            requestTimeout: 20000
+            requestTimeout: 100
         });
     }
     getMangaShareUrl(mangaId) { return `${HH_DOMAIN}/m/${mangaId}`; }
@@ -830,7 +829,7 @@ class HentaiHere extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: 'https://hentaivn.tv' + '/'
+            referer: 'https://hentaivn.tv'
         };
     }
     getCloudflareBypassRequest() {
