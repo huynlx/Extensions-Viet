@@ -586,7 +586,8 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             hot.items = this.parser.parseHotSection($);
             sectionCallback(hot);
             //New Updates
-            url = `${DOMAIN}`;
+            // url = `${DOMAIN}`
+            url = 'https://hentaivn.tv/';
             request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -862,19 +863,36 @@ class Parser {
         }
         return TopWeek;
     }
+    // parseNewUpdatedSection($: any): MangaTile[] {
+    //     let newUpdatedItems: MangaTile[] = [];
+    //     for (let manga of $('div.item', 'div.row').toArray().splice(0, 20)) {
+    //         const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
+    //         const id = $('figure.clearfix > div.image > a', manga).attr('href')?.split('/').pop();
+    //         const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
+    //         const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
+    //         if (!id || !title) continue;
+    //         newUpdatedItems.push(createMangaTile({
+    //             id: id,
+    //             image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
+    //             title: createIconText({ text: title }),
+    //             subtitleText: createIconText({ text: subtitle }),
+    //         }));
+    //     }
+    //     return newUpdatedItems;
+    // }
     parseNewUpdatedSection($) {
         var _a;
         let newUpdatedItems = [];
-        for (let manga of $('div.item', 'div.row').toArray().splice(0, 20)) {
-            const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
-            const id = (_a = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-            const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
-            const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
+        for (let manga of $('.item', '.page-item').toArray()) {
+            const title = $('ul > span > a > h2', manga).first().text();
+            const id = (_a = $('ul > span > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+            const image = "https://i.imgur.com/GYUxEX8.png";
+            const subtitle = $("ul > a > span > b", manga).last().text().trim();
             if (!id || !title)
                 continue;
             newUpdatedItems.push(createMangaTile({
                 id: id,
-                image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
+                image: "https://i.imgur.com/GYUxEX8.png",
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
