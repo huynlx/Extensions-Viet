@@ -867,16 +867,16 @@ exports.parseMangaDetails = ($, mangaId) => {
     let status = 1;
     let desc = '';
     for (const obj of $('p', '.page-info').toArray()) {
-        switch ($('span.info', 'obj').text()) {
+        switch ($('span.info', 'obj').text().trim()) {
             case "Thể Loại:":
                 const genre = $('a', obj).text().trim();
                 const id = (_a = $('a', obj).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ id: id, label: genre }));
                 break;
-            case "Tác giả: ":
+            case "Tác giả:":
                 creator = $('span:nth-child(2) > a', obj).text();
                 break;
-            case "Tình Trạng: ":
+            case "Tình Trạng:":
                 status = $('span:nth-child(2) > a', obj).text().toLowerCase().includes("hoàn thành") ? 0 : 1;
                 break;
             case "Nội dung:":
@@ -885,13 +885,14 @@ exports.parseMangaDetails = ($, mangaId) => {
         }
     }
     const image = $('.page-right .page-ava > img').attr('src');
+    const imageFix = image === null || image === void 0 ? void 0 : image.replace("190", "300");
     return createManga({
         id: mangaId,
         author: creator,
         artist: creator,
         desc,
         titles: [$('.page-info > h1').text().trim()],
-        image: image !== null && image !== void 0 ? image : '',
+        image: imageFix !== null && imageFix !== void 0 ? imageFix : '',
         status,
         // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
         hentai: true,
