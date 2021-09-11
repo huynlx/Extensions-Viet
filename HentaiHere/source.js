@@ -755,7 +755,7 @@ class HentaiHere extends paperback_extensions_common_1.Source {
             const section3 = createHomeSection({ id: 'trending', title: 'Trending', view_more: true });
             const sections = [section1, section2, section3];
             const request = createRequestObject({
-                url: `http://nettruyenpro.com/tim-truyen?status=-1&sort=10`,
+                url: `https://hentaivn.tv`,
                 method,
             });
             const response = yield this.requestManager.schedule(request, 1);
@@ -954,11 +954,11 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
     //     }));
     // }
     let staffPick = [];
-    for (let manga of $('div.item', 'div.row').toArray().splice(0, 20)) {
-        const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
-        const id = (_a = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+    for (let manga of $('ul', 'ul.page-item').toArray()) {
+        const title = $('span > a > h2', manga).first().text();
+        const id = (_a = $('a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
         const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
-        const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
+        const subtitle = $("a > span > b", manga).last().text().trim();
         if (!id || !title)
             continue;
         staffPick.push(createMangaTile({
