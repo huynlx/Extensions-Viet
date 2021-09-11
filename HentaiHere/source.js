@@ -688,6 +688,7 @@ const paperback_extensions_common_1 = require("paperback-extensions-common");
 const HentaiHereParser_1 = require("./HentaiHereParser");
 const HH_DOMAIN = 'https://hentaihere.com';
 const method = 'GET';
+const headers = { "content-type": "application/x-www-form-urlencoded" };
 exports.HentaiHereInfo = {
     version: '1.0.4',
     name: 'HentaiHere',
