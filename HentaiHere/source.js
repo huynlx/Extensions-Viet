@@ -755,7 +755,7 @@ class HentaiHere extends paperback_extensions_common_1.Source {
             const section3 = createHomeSection({ id: 'trending', title: 'Trending', view_more: true });
             const sections = [section1, section2, section3];
             const request = createRequestObject({
-                url: HH_DOMAIN,
+                url: `http://nettruyenpro.com/tim-truyen?status=-1&sort=10`,
                 method,
             });
             const response = yield this.requestManager.schedule(request, 1);
@@ -935,22 +935,36 @@ exports.parseChapterDetails = (data, mangaId, chapterId) => {
     return chapterDetails;
 };
 exports.parseHomeSections = ($, sections, sectionCallback) => {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
     for (const section of sections)
         sectionCallback(section);
     //Staff Pick
-    const staffPick = [];
-    for (const manga of $("div.item", "div#staffpick").toArray()) {
-        const id = (_a = $("a", manga).attr('href')) === null || _a === void 0 ? void 0 : _a.replace(`${HH_DOMAIN}/m/`, "").trim();
-        const image = (_b = $("img", manga).attr('src')) !== null && _b !== void 0 ? _b : "";
-        const title = decodeHTMLEntity((_d = String((_c = $("img", manga).attr('alt')) === null || _c === void 0 ? void 0 : _c.trim())) !== null && _d !== void 0 ? _d : "");
-        const subtitle = $("b.text-danger", manga).text();
+    // const staffPick: MangaTile[] = [];
+    // for (const manga of $("div.item", "div#staffpick").toArray()) {
+    //     const id = $("a", manga).attr('href')?.replace(`${HH_DOMAIN}/m/`, "").trim();
+    //     const image = $("img", manga).attr('src') ?? "";
+    //     const title = decodeHTMLEntity(String($("img", manga).attr('alt')?.trim()) ?? "");
+    //     const subtitle = $("b.text-danger", manga).text();
+    //     if (!id || !title) continue;
+    //     staffPick.push(createMangaTile({
+    //         id: id,
+    //         image: image,
+    //         title: createIconText({ text: decodeHTMLEntity(title) }),
+    //         subtitleText: createIconText({ text: subtitle }),
+    //     }));
+    // }
+    let staffPick = [];
+    for (let manga of $('div.item', 'div.row').toArray().splice(0, 20)) {
+        const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
+        const id = (_a = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+        const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
+        const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
         if (!id || !title)
             continue;
         staffPick.push(createMangaTile({
             id: id,
-            image: image,
-            title: createIconText({ text: decodeHTMLEntity(title) }),
+            image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
+            title: createIconText({ text: title }),
             subtitleText: createIconText({ text: subtitle }),
         }));
     }
@@ -959,9 +973,9 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
     //Recently Added
     const recentlyAdded = [];
     for (const manga of $($("div.row.row-sm")[1]).children("div").toArray()) {
-        const id = (_e = $("a", manga).attr('href')) === null || _e === void 0 ? void 0 : _e.replace(`${HH_DOMAIN}/m/`, "").trim();
-        const image = (_f = $("img", manga).attr('src')) !== null && _f !== void 0 ? _f : "";
-        const title = decodeHTMLEntity(String((_h = (_g = $("img", manga).attr('alt')) === null || _g === void 0 ? void 0 : _g.trim()) !== null && _h !== void 0 ? _h : ""));
+        const id = (_b = $("a", manga).attr('href')) === null || _b === void 0 ? void 0 : _b.replace(`${HH_DOMAIN}/m/`, "").trim();
+        const image = (_c = $("img", manga).attr('src')) !== null && _c !== void 0 ? _c : "";
+        const title = decodeHTMLEntity(String((_e = (_d = $("img", manga).attr('alt')) === null || _d === void 0 ? void 0 : _d.trim()) !== null && _e !== void 0 ? _e : ""));
         if (!id || !title)
             continue;
         recentlyAdded.push(createMangaTile({
@@ -975,9 +989,9 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
     //Trending
     const Trending = [];
     for (const manga of $("li.list-group-item", "ul.list-group").toArray()) {
-        const id = (_j = $("a", manga).attr('href')) === null || _j === void 0 ? void 0 : _j.split(`/m/`)[1]; //Method required since authors pages are included in the list, but don't use /m/
-        const image = (_k = $("img", manga).attr('src')) !== null && _k !== void 0 ? _k : "";
-        const title = decodeHTMLEntity((_m = String((_l = $("img", manga).attr('alt')) === null || _l === void 0 ? void 0 : _l.trim())) !== null && _m !== void 0 ? _m : "");
+        const id = (_f = $("a", manga).attr('href')) === null || _f === void 0 ? void 0 : _f.split(`/m/`)[1]; //Method required since authors pages are included in the list, but don't use /m/
+        const image = (_g = $("img", manga).attr('src')) !== null && _g !== void 0 ? _g : "";
+        const title = decodeHTMLEntity((_j = String((_h = $("img", manga).attr('alt')) === null || _h === void 0 ? void 0 : _h.trim())) !== null && _j !== void 0 ? _j : "");
         if (!id || !title)
             continue;
         Trending.push(createMangaTile({
