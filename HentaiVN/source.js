@@ -685,7 +685,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HentaiHere = exports.HentaiHereInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
-const HentaiHereParser_1 = require("./HentaiHereParser");
+const HentaiVNParser_1 = require("./HentaiVNParser");
 const HH_DOMAIN = 'https://hentaihere.com';
 const method = 'GET';
 exports.HentaiHereInfo = {
@@ -729,7 +729,7 @@ class HentaiHere extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            return HentaiHereParser_1.parseMangaDetails($, mangaId);
+            return HentaiVNParser_1.parseMangaDetails($, mangaId);
         });
     }
     getChapters(mangaId) {
@@ -741,7 +741,7 @@ class HentaiHere extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            return HentaiHereParser_1.parseChapters($, mangaId);
+            return HentaiVNParser_1.parseChapters($, mangaId);
         });
     }
     getChapterDetails(mangaId, chapterId) {
@@ -751,7 +751,7 @@ class HentaiHere extends paperback_extensions_common_1.Source {
                 method: method,
             });
             const response = yield this.requestManager.schedule(request, 1);
-            return HentaiHereParser_1.parseChapterDetails(response.data, mangaId, chapterId);
+            return HentaiVNParser_1.parseChapterDetails(response.data, mangaId, chapterId);
         });
     }
     getHomePageSections(sectionCallback) {
@@ -767,7 +767,7 @@ class HentaiHere extends paperback_extensions_common_1.Source {
             });
             let response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
-            HentaiHereParser_1.parseHomeSections($, sections, sectionCallback);
+            HentaiVNParser_1.parseHomeSections($, sections, sectionCallback);
             //added
             request = createRequestObject({
                 url: `https://hentaivn.tv/danh-sach.html`,
@@ -775,36 +775,39 @@ class HentaiHere extends paperback_extensions_common_1.Source {
             });
             response = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(response.data);
-            HentaiHereParser_1.parseAddedSections($, sections, sectionCallback);
+            HentaiVNParser_1.parseAddedSections($, sections, sectionCallback);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
+            let select = 1;
             let param = '';
+            let url = '';
             switch (homepageSectionId) {
-                case "staff_pick":
-                    param = `/directory/staff-pick?page=${page}`;
+                case "recently-updated":
+                    url = 'https://hentaivn.tv/';
+                    param = `?page=${page}`;
+                    select = 1;
                     break;
                 case "recently_added":
-                    param = `/directory/newest?page=${page}`;
-                    break;
-                case "trending":
-                    param = `/directory/trending?page=${page}`;
+                    url = 'https://hentaivn.tv/danh-sach.html';
+                    param = `?page=${page}`;
+                    select = 2;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
             }
             const request = createRequestObject({
-                url: HH_DOMAIN,
+                url,
                 method,
                 param
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            const manga = HentaiHereParser_1.parseViewMore($);
-            metadata = !HentaiHereParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            const manga = HentaiVNParser_1.parseViewMore($, select);
+            metadata = !HentaiVNParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: manga,
                 metadata,
@@ -815,7 +818,7 @@ class HentaiHere extends paperback_extensions_common_1.Source {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            const search = HentaiHereParser_1.generateSearch(query);
+            const search = HentaiVNParser_1.generateSearch(query);
             const request = createRequestObject({
                 url: `${HH_DOMAIN}/search?s=`,
                 method,
@@ -823,8 +826,8 @@ class HentaiHere extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            const manga = HentaiHereParser_1.parseSearch($);
-            metadata = !HentaiHereParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            const manga = HentaiVNParser_1.parseSearch($);
+            metadata = !HentaiVNParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: manga,
                 metadata
@@ -839,7 +842,7 @@ class HentaiHere extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            return HentaiHereParser_1.parseTags($);
+            return HentaiVNParser_1.parseTags($);
         });
     }
     globalRequestHeaders() {
@@ -850,7 +853,7 @@ class HentaiHere extends paperback_extensions_common_1.Source {
 }
 exports.HentaiHere = HentaiHere;
 
-},{"./HentaiHereParser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
+},{"./HentaiVNParser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isLastPage = exports.parseTags = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.parseAddedSections = exports.parseHomeSections = exports.parseChapterDetails = exports.parseChapters = exports.parseMangaDetails = void 0;
@@ -1045,25 +1048,46 @@ exports.parseSearch = ($) => {
     }
     return mangas;
 };
-exports.parseViewMore = ($) => {
-    var _a, _b, _c;
+exports.parseViewMore = ($, select) => {
+    var _a, _b, _c, _d;
     const manga = [];
     const collectedIds = [];
-    for (const obj of $("div.item", "div.row.row-sm").toArray()) {
-        const id = (_a = $("a", obj).attr('href')) === null || _a === void 0 ? void 0 : _a.replace(`${HH_DOMAIN}/m/`, "").trim();
-        const image = (_b = $("img", obj).attr('src')) !== null && _b !== void 0 ? _b : "";
-        const title = decodeHTMLEntity(String((_c = $("img", obj).attr('alt')) === null || _c === void 0 ? void 0 : _c.trim()));
-        const subtitle = $("b.text-danger", obj).text();
-        if (!id || !title)
-            continue;
-        if (!collectedIds.includes(id)) {
-            manga.push(createMangaTile({
-                id,
-                image: image,
-                title: createIconText({ text: decodeHTMLEntity(title) }),
-                subtitleText: createIconText({ text: subtitle }),
-            }));
-            collectedIds.push(id);
+    if (select = 1) {
+        for (const obj of $(".item", "ul").toArray()) {
+            const title = $("span > a > h2", obj).text();
+            const id = (_a = $("a", obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+            const image = $("a > img", obj).attr('data-src');
+            const subtitle = $("a > span > b", obj).text().trim();
+            if (!id || !title)
+                continue;
+            if (!collectedIds.includes(id)) {
+                manga.push(createMangaTile({
+                    id,
+                    image: image !== null && image !== void 0 ? image : "",
+                    title: createIconText({ text: decodeHTMLEntity(title) }),
+                    subtitleText: createIconText({ text: subtitle }),
+                }));
+                collectedIds.push(id);
+            }
+        }
+    }
+    else {
+        for (const obj of $("div.item", "div.row.row-sm").toArray()) {
+            const id = (_b = $("a", obj).attr('href')) === null || _b === void 0 ? void 0 : _b.replace(`${HH_DOMAIN}/m/`, "").trim();
+            const image = (_c = $("img", obj).attr('src')) !== null && _c !== void 0 ? _c : "";
+            const title = decodeHTMLEntity(String((_d = $("img", obj).attr('alt')) === null || _d === void 0 ? void 0 : _d.trim()));
+            const subtitle = $("b.text-danger", obj).text();
+            if (!id || !title)
+                continue;
+            if (!collectedIds.includes(id)) {
+                manga.push(createMangaTile({
+                    id,
+                    image: image,
+                    title: createIconText({ text: decodeHTMLEntity(title) }),
+                    subtitleText: createIconText({ text: subtitle }),
+                }));
+                collectedIds.push(id);
+            }
         }
     }
     return manga;
