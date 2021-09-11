@@ -782,7 +782,7 @@ class HentaiHere extends paperback_extensions_common_1.Source {
                     return Promise.resolve(createPagedResults({ results: [] }));
             }
             const request = createRequestObject({
-                url: 'https://hentaivn.tv',
+                url: HH_DOMAIN,
                 method,
                 param
             });
@@ -935,16 +935,16 @@ exports.parseChapterDetails = (data, mangaId, chapterId) => {
     return chapterDetails;
 };
 exports.parseHomeSections = ($, sections, sectionCallback) => {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
     for (const section of sections)
         sectionCallback(section);
     //Staff Pick
     const staffPick = [];
-    for (const manga of $('.item', '.page-item').toArray()) {
-        const title = $('ul > span > a > h2', manga).first().text();
-        const id = (_a = $('ul > span > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-        const image = 'https://i.imgur.com/GYUxEX8.png';
-        const subtitle = $("ul > a > span > b", manga).last().text().trim();
+    for (const manga of $("div.item", "div#staffpick").toArray()) {
+        const id = (_a = $("a", manga).attr('href')) === null || _a === void 0 ? void 0 : _a.replace(`${HH_DOMAIN}/m/`, "").trim();
+        const image = (_b = $("img", manga).attr('src')) !== null && _b !== void 0 ? _b : "";
+        const title = decodeHTMLEntity((_d = String((_c = $("img", manga).attr('alt')) === null || _c === void 0 ? void 0 : _c.trim())) !== null && _d !== void 0 ? _d : "");
+        const subtitle = $("b.text-danger", manga).text();
         if (!id || !title)
             continue;
         staffPick.push(createMangaTile({
@@ -959,9 +959,9 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
     //Recently Added
     const recentlyAdded = [];
     for (const manga of $($("div.row.row-sm")[1]).children("div").toArray()) {
-        const id = (_b = $("a", manga).attr('href')) === null || _b === void 0 ? void 0 : _b.replace(`${HH_DOMAIN}/m/`, "").trim();
-        const image = (_c = $("img", manga).attr('src')) !== null && _c !== void 0 ? _c : "";
-        const title = decodeHTMLEntity(String((_e = (_d = $("img", manga).attr('alt')) === null || _d === void 0 ? void 0 : _d.trim()) !== null && _e !== void 0 ? _e : ""));
+        const id = (_e = $("a", manga).attr('href')) === null || _e === void 0 ? void 0 : _e.replace(`${HH_DOMAIN}/m/`, "").trim();
+        const image = (_f = $("img", manga).attr('src')) !== null && _f !== void 0 ? _f : "";
+        const title = decodeHTMLEntity(String((_h = (_g = $("img", manga).attr('alt')) === null || _g === void 0 ? void 0 : _g.trim()) !== null && _h !== void 0 ? _h : ""));
         if (!id || !title)
             continue;
         recentlyAdded.push(createMangaTile({
@@ -975,9 +975,9 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
     //Trending
     const Trending = [];
     for (const manga of $("li.list-group-item", "ul.list-group").toArray()) {
-        const id = (_f = $("a", manga).attr('href')) === null || _f === void 0 ? void 0 : _f.split(`/m/`)[1]; //Method required since authors pages are included in the list, but don't use /m/
-        const image = (_g = $("img", manga).attr('src')) !== null && _g !== void 0 ? _g : "";
-        const title = decodeHTMLEntity((_j = String((_h = $("img", manga).attr('alt')) === null || _h === void 0 ? void 0 : _h.trim())) !== null && _j !== void 0 ? _j : "");
+        const id = (_j = $("a", manga).attr('href')) === null || _j === void 0 ? void 0 : _j.split(`/m/`)[1]; //Method required since authors pages are included in the list, but don't use /m/
+        const image = (_k = $("img", manga).attr('src')) !== null && _k !== void 0 ? _k : "";
+        const title = decodeHTMLEntity((_m = String((_l = $("img", manga).attr('alt')) === null || _l === void 0 ? void 0 : _l.trim())) !== null && _m !== void 0 ? _m : "");
         if (!id || !title)
             continue;
         Trending.push(createMangaTile({
