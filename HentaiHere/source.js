@@ -711,6 +711,12 @@ class HentaiHere extends paperback_extensions_common_1.Source {
             requestsPerSecond: 5,
             requestTimeout: 20000
         });
+        // getCloudflareBypassRequest() {
+        //     return createRequestObject({
+        //         url: `https://hentaivn.tv`,
+        //         method: 'GET',
+        //     })
+        // }
     }
     getMangaShareUrl(mangaId) { return `${HH_DOMAIN}/m/${mangaId}`; }
     ;
@@ -832,12 +838,6 @@ class HentaiHere extends paperback_extensions_common_1.Source {
         return {
             referer: 'https://hentaivn.tv' + '/'
         };
-    }
-    getCloudflareBypassRequest() {
-        return createRequestObject({
-            url: `https://hentaivn.tv`,
-            method: 'GET',
-        });
     }
 }
 exports.HentaiHere = HentaiHere;
