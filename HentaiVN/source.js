@@ -387,7 +387,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NhatTruyen = exports.NhatTruyenInfo = exports.isLastPage = void 0;
+exports.HentaiVN = exports.HentaiVNInfo = exports.isLastPage = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const NhatTruyenParser_1 = require("../NhatTruyen/NhatTruyenParser");
 const DOMAIN = 'http://www.nhattruyenvip.com/';
@@ -400,13 +400,13 @@ exports.isLastPage = ($) => {
     }
     return true;
 };
-exports.NhatTruyenInfo = {
+exports.HentaiVNInfo = {
     version: '3.0.0',
     name: 'NhatTruyen',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from NhatTruyen.',
+    description: 'Extension that pulls manga from HentaiVN.',
     websiteBaseURL: DOMAIN,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
@@ -420,7 +420,7 @@ exports.NhatTruyenInfo = {
         }
     ]
 };
-class NhatTruyen extends paperback_extensions_common_1.Source {
+class HentaiVN extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
         this.parser = new NhatTruyenParser_1.Parser();
@@ -667,7 +667,7 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
         };
     }
 }
-exports.NhatTruyen = NhatTruyen;
+exports.HentaiVN = HentaiVN;
 
 },{"../NhatTruyen/NhatTruyenParser":49,"paperback-extensions-common":5}],49:[function(require,module,exports){
 "use strict";
