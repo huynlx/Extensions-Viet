@@ -867,7 +867,7 @@ exports.parseMangaDetails = ($, mangaId) => {
     let status = 1;
     let desc = '';
     for (const obj of $('p', '.page-info').toArray()) {
-        switch ($('span.info', 'obj').text().trim()) {
+        switch ($('span.info', obj).text().trim()) {
             case "Thể Loại:":
                 const genre = $('a', obj).text().trim();
                 const id = (_a = $('a', obj).attr('href')) !== null && _a !== void 0 ? _a : genre;
