@@ -683,12 +683,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HentaiHere = exports.HentaiHereInfo = void 0;
+exports.HentaiVN = exports.HentaiVNInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const HentaiVNParser_1 = require("./HentaiVNParser");
 const HH_DOMAIN = 'https://hentaihere.com';
 const method = 'GET';
-exports.HentaiHereInfo = {
+exports.HentaiVNInfo = {
     version: '1.0.4',
     name: 'HentaiVN',
     icon: 'icon.png',
@@ -704,7 +704,7 @@ exports.HentaiHereInfo = {
         }
     ]
 };
-class HentaiHere extends paperback_extensions_common_1.Source {
+class HentaiVN extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
         this.requestManager = createRequestManager({
@@ -851,7 +851,7 @@ class HentaiHere extends paperback_extensions_common_1.Source {
         };
     }
 }
-exports.HentaiHere = HentaiHere;
+exports.HentaiVN = HentaiVN;
 
 },{"./HentaiVNParser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
 "use strict";
