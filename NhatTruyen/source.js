@@ -661,11 +661,6 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             return this.parser.parseTags($);
         });
     }
-    globalRequestHeaders() {
-        return {
-            referer: DOMAIN
-        };
-    }
 }
 exports.NhatTruyen = NhatTruyen;
 
