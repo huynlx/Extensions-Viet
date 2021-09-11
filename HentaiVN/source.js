@@ -893,7 +893,7 @@ exports.parseMangaDetails = ($, mangaId) => {
         id: mangaId,
         author: creator,
         artist: creator,
-        desc,
+        desc: desc === "" ? 'Không có mô tả.' : desc,
         titles: [$('.page-info > h1').text().trim()],
         image: image !== null && image !== void 0 ? image : '',
         status,
