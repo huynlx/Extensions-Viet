@@ -1052,7 +1052,7 @@ exports.parseViewMore = ($, select) => {
     var _a, _b;
     const manga = [];
     const collectedIds = [];
-    if (select = 1) {
+    if (select === 1) {
         for (const obj of $(".item", "ul").toArray()) {
             const title = $("span > a > h2", obj).text();
             const id = (_a = $("a", obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
