@@ -883,7 +883,7 @@ exports.parseMangaDetails = ($, mangaId) => {
                 status = $('span:nth-child(2) > a', obj).text().toLowerCase().includes("hoàn thành") ? 0 : 1;
                 break;
             case "Nội dung:":
-                desc = 'kho vai lon';
+                desc = desc = $(obj).next().text();
                 break;
         }
     }
