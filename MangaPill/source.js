@@ -715,6 +715,12 @@ class MangaPill extends paperback_extensions_common_1.Source {
             requestsPerSecond: 5,
             requestTimeout: 20000
         });
+        // override getCloudflareBypassRequest(): Request {
+        //     return createRequestObject({
+        //         url: `${MANGAPILL_DOMAIN}`,
+        //         method: 'GET',
+        //     })
+        // }
     }
     getMangaShareUrl(mangaId) {
         return `${MANGAPILL_DOMAIN}/manga/${mangaId}`;
@@ -909,12 +915,6 @@ class MangaPill extends paperback_extensions_common_1.Source {
                 results: manga,
                 metadata: mData
             });
-        });
-    }
-    getCloudflareBypassRequest() {
-        return createRequestObject({
-            url: `${MANGAPILL_DOMAIN}`,
-            method: 'GET',
         });
     }
 }
