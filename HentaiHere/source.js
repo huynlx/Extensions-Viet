@@ -1005,7 +1005,7 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
             subtitleText: createIconText({ text: subtitle }),
         }));
     }
-    sections[2].items = staffPick;
+    sections[2].items = random;
     sectionCallback(sections[2]);
     //Recently Added
     const Trending = [];
