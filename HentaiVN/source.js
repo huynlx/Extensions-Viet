@@ -1080,12 +1080,14 @@ exports.parseViewMore = ($, select) => {
             const fixsub = subtitle.split(' - ')[1];
             if (!id || !title)
                 continue;
-            manga.push(createMangaTile({
-                id: id,
-                image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
-                title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: fixsub }),
-            }));
+            if (!collectedIds.includes(id)) {
+                manga.push(createMangaTile({
+                    id,
+                    image: image !== null && image !== void 0 ? image : "",
+                    title: createIconText({ text: decodeHTMLEntity(title) }),
+                    subtitleText: createIconText({ text: fixsub }),
+                }));
+            }
             collectedIds.push(id);
         }
     }
