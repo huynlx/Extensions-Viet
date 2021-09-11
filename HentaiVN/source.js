@@ -869,9 +869,12 @@ exports.parseMangaDetails = ($, mangaId) => {
     for (const obj of $('p', '.page-info').toArray()) {
         switch ($('span.info', obj).text().trim()) {
             case "Thể Loại:":
-                const genre = $('a', obj).text().trim();
-                const id = (_a = $('a', obj).attr('href')) !== null && _a !== void 0 ? _a : genre;
-                tags.push(createTag({ id: id, label: genre }));
+            case "Thể Loại:":
+                for (const genres of $('span:not(.info)', obj).toArray()) {
+                    const genre = $('a', genres).text().trim();
+                    const id = (_a = $('a', genres).attr('href')) !== null && _a !== void 0 ? _a : genre;
+                    tags.push(createTag({ id: id, label: genre }));
+                }
                 break;
             case "Tác giả:":
                 creator = $('span:nth-child(2) > a', obj).text();
@@ -880,7 +883,7 @@ exports.parseMangaDetails = ($, mangaId) => {
                 status = $('span:nth-child(2) > a', obj).text().toLowerCase().includes("hoàn thành") ? 0 : 1;
                 break;
             case "Nội dung:":
-                desc = $($(obj) + 'p').text();
+                desc = 'kho vai lon';
                 break;
         }
     }
