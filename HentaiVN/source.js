@@ -492,9 +492,19 @@ class HentaiVN extends paperback_extensions_common_1.Source {
     // }
     // async getSearchTags(): Promise<TagSection[]> {
     // }
+    // async getSearchTags(): Promise<TagSection[]> {
+    //     const url = `https://hentaivn.tv`
+    //     const request = createRequestObject({
+    //         url: url,
+    //         method: "GET",
+    //     });
+    //     const response = await this.requestManager.schedule(request, 1)
+    //     const $ = this.cheerio.load(response.data);
+    //     return this.parser.parseTags($);
+    // }
     getSearchTags() {
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://hentaivn.tv`;
+            const url = `${DOMAIN}tim-truyen-nang-cao`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -592,9 +602,15 @@ class Parser {
         //id tag đéo đc trùng nhau
         const arrayTags = [];
         //The loai
-        for (const tag of $('li', 'ul.drop-menu.drop-2').toArray()) {
-            const label = $('a', tag).text().trim();
-            const id = (_a = $('a', tag).attr('href')) !== null && _a !== void 0 ? _a : label;
+        // for (const tag of $('li', 'ul.drop-menu.drop-2').toArray()) {
+        //     const label = $('a', tag).text().trim();
+        //     const id = $('a', tag).attr('href') ?? label;
+        //     if (!id || !label) continue;
+        //     arrayTags.push({ id: id, label: label });
+        // }
+        for (const tag of $('div.col-md-3.col-sm-4.col-xs-6.mrb10', 'div.col-sm-10 > div.row').toArray()) {
+            const label = $('div.genre-item', tag).text().trim();
+            const id = (_a = $('div.genre-item > span', tag).attr('data-id')) !== null && _a !== void 0 ? _a : label;
             if (!id || !label)
                 continue;
             arrayTags.push({ id: id, label: label });
