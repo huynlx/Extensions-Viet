@@ -750,8 +750,8 @@ class HentaiHere extends paperback_extensions_common_1.Source {
     }
     getHomePageSections(sectionCallback) {
         return __awaiter(this, void 0, void 0, function* () {
-            const section1 = createHomeSection({ id: 'staff_pick', title: 'Staff Pick', view_more: true });
-            const section2 = createHomeSection({ id: 'recently_added', title: 'Recently Added', view_more: true });
+            const section1 = createHomeSection({ id: 'recently-updated', title: 'Mới cập nhật', view_more: true });
+            const section2 = createHomeSection({ id: 'recently_added', title: 'Truyện mới đăng', view_more: true });
             const section3 = createHomeSection({ id: 'trending', title: 'Trending', view_more: true });
             const sections = [section1, section2, section3];
             const request = createRequestObject({
@@ -949,26 +949,12 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j;
     for (const section of sections)
         sectionCallback(section);
-    //Staff Pick
-    // const staffPick: MangaTile[] = [];
-    // for (const manga of $("div.item", "div#staffpick").toArray()) {
-    //     const id = $("a", manga).attr('href')?.replace(`${HH_DOMAIN}/m/`, "").trim();
-    //     const image = $("img", manga).attr('src') ?? "";
-    //     const title = decodeHTMLEntity(String($("img", manga).attr('alt')?.trim()) ?? "");
-    //     const subtitle = $("b.text-danger", manga).text();
-    //     if (!id || !title) continue;
-    //     staffPick.push(createMangaTile({
-    //         id: id,
-    //         image: image,
-    //         title: createIconText({ text: decodeHTMLEntity(title) }),
-    //         subtitleText: createIconText({ text: subtitle }),
-    //     }));
-    // }
+    //Recently Updated
     let staffPick = [];
     for (let manga of $('ul', 'ul.page-item').toArray()) {
         const title = $('span > a > h2', manga).first().text();
         const id = (_a = $('a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-        const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
+        const image = 'https://t.htvncdn.net/images/190/1630258454-1.jpg';
         const subtitle = $("a > span > b", manga).last().text().trim();
         if (!id || !title)
             continue;
