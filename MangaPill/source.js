@@ -833,7 +833,8 @@ class MangaPill extends paperback_extensions_common_1.Source {
                 },
                 {
                     request: createRequestObject({
-                        url: `${MANGAPILL_DOMAIN}/chapters`,
+                        // url: `${MANGAPILL_DOMAIN}/chapters`,
+                        url: 'https://hentaivn.tv/',
                         method: 'GET'
                     }),
                     section: createHomeSection({
@@ -1150,10 +1151,10 @@ class Parser {
         var _a;
         const mangaTiles = [];
         const collectedIds = [];
-        for (const obj of $('div.flex.bg-color-bg-secondary.p-2.rounded').toArray()) {
-            const id = (_a = $('a.inilne.block', obj).attr('href')) === null || _a === void 0 ? void 0 : _a.replace('/manga/', '');
-            const titleText = this.decodeHTMLEntity($('a.inilne.block', obj).text());
-            const image = $('img', $('a', $(obj))).attr('data-src');
+        for (const obj of $('.item', '.page-item').toArray()) {
+            const id = (_a = $('ul > span > a', obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+            const titleText = $('ul > span > a > h2', obj).first().text();
+            const image = 'https://i.imgur.com/GYUxEX8.png';
             if (typeof id === 'undefined' || typeof image === 'undefined')
                 continue;
             if (!collectedIds.includes(id)) {
