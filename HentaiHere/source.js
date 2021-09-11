@@ -954,13 +954,14 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
     for (let manga of $('ul', 'ul.page-item').toArray()) {
         const title = $('span > a > h2', manga).first().text();
         const id = (_a = $('a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-        const image = 'https://t.htvncdn.net/images/190/1630258454-1.jpg';
+        const image = $('a > div', manga).css('background');
+        const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
         const subtitle = $("a > span > b", manga).last().text().trim();
         if (!id || !title)
             continue;
         staffPick.push(createMangaTile({
             id: id,
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
+            image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
             title: createIconText({ text: title }),
             subtitleText: createIconText({ text: subtitle }),
         }));
