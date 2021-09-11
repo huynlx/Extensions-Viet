@@ -389,7 +389,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HentaiVN = exports.HentaiVNInfo = exports.isLastPage = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
-const NhatTruyenParser_1 = require("../NhatTruyen/NhatTruyenParser");
+const HentaiVNParser_1 = require("../HentaiVN/HentaiVNParser");
 const DOMAIN = 'http://www.nhattruyenvip.com/';
 exports.isLastPage = ($) => {
     const current = $('ul.pagination > li.active > a').text();
@@ -423,7 +423,7 @@ exports.HentaiVNInfo = {
 class HentaiVN extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
-        this.parser = new NhatTruyenParser_1.Parser();
+        this.parser = new HentaiVNParser_1.Parser();
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
             requestTimeout: 20000
@@ -586,7 +586,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             hot.items = this.parser.parseHotSection($);
             sectionCallback(hot);
             //New Updates
-            url = `${DOMAIN}`;
+            url = `https://hentaivn.tv/`;
             request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -669,7 +669,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
 }
 exports.HentaiVN = HentaiVN;
 
-},{"../NhatTruyen/NhatTruyenParser":49,"paperback-extensions-common":5}],49:[function(require,module,exports){
+},{"../HentaiVN/HentaiVNParser":49,"paperback-extensions-common":5}],49:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Parser = void 0;
@@ -866,10 +866,14 @@ class Parser {
         var _a;
         let newUpdatedItems = [];
         for (let manga of $('div.item', 'div.row').toArray().splice(0, 20)) {
-            const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
-            const id = (_a = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-            const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
-            const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
+            // const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
+            // const id = $('figure.clearfix > div.image > a', manga).attr('href')?.split('/').pop();
+            // const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
+            // const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
+            const title = $('ul > span > a > h2', manga).first().text();
+            const id = (_a = $('ul > span > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+            const image = 'https://i.imgur.com/GYUxEX8.png';
+            const subtitle = $("ul > a > span > b", manga).last().text().trim();
             if (!id || !title)
                 continue;
             newUpdatedItems.push(createMangaTile({
