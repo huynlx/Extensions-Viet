@@ -882,7 +882,7 @@ exports.parseMangaDetails = ($, mangaId) => {
                 creator = $('span:nth-child(2) > a', obj).text();
                 break;
             case "Tình Trạng:":
-                status = $('span:nth-child(2) > a', obj).text().toLowerCase().includes("hoàn thành") ? 0 : 1;
+                status = $('span:nth-child(2) > a', obj).text().toLowerCase().includes("đã hoàn thành") ? 0 : 1;
                 break;
             case "Nội dung:":
                 desc = desc = $(obj).next().text();
