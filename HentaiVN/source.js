@@ -746,11 +746,13 @@ class HentaiVN extends paperback_extensions_common_1.Source {
     getChapterDetails(mangaId, chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${HH_DOMAIN}/m/${mangaId}/${chapterId}/1`,
-                method: method,
+                url: `https://hentaivn.tv/`,
+                method,
+                param: chapterId,
             });
             const response = yield this.requestManager.schedule(request, 1);
-            return HentaiVNParser_1.parseChapterDetails(response.data, mangaId, chapterId);
+            let $ = this.cheerio.load(response.data);
+            return HentaiVNParser_1.parseChapterDetails($, mangaId, chapterId);
         });
     }
     getHomePageSections(sectionCallback) {
@@ -887,7 +889,6 @@ exports.parseMangaDetails = ($, mangaId) => {
         }
     }
     const image = $('.page-ava > img').attr('src');
-    // const imageFix = image?.replace("190", "300");
     return createManga({
         id: mangaId,
         author: creator,
@@ -920,16 +921,13 @@ exports.parseChapters = ($, mangaId) => {
     }
     return chapters;
 };
-exports.parseChapterDetails = (data, mangaId, chapterId) => {
-    var _a, _b;
+exports.parseChapterDetails = ($, mangaId, chapterId) => {
     const pages = [];
-    let obj = (_b = (_a = /var rff_imageList = (.*);/.exec(data)) === null || _a === void 0 ? void 0 : _a[1]) !== null && _b !== void 0 ? _b : ""; //Get the data else return null.
-    if (obj == "")
-        throw new Error("Unable to parse chapter details!"); //If null, throw error, else parse data to json.
-    obj = JSON.parse(obj);
-    for (const i of obj) {
-        const page = "https://hentaicdn.com/hentai" + i;
-        pages.push(page);
+    for (let obj of $('div#image > img').toArray()) {
+        if (!obj.attribs['src'])
+            continue;
+        let link = obj.attribs['src'];
+        pages.push(link);
     }
     const chapterDetails = createChapterDetails({
         id: chapterId,
