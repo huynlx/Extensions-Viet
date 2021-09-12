@@ -707,6 +707,7 @@ exports.HentaiVNInfo = {
 class HentaiVN extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
+        // getMangaShareUrl(mangaId: string): string { return `${HH_DOMAIN}/m/${mangaId}` };
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
             requestTimeout: 20000
@@ -718,8 +719,6 @@ class HentaiVN extends paperback_extensions_common_1.Source {
         //     })
         // }
     }
-    getMangaShareUrl(mangaId) { return `${HH_DOMAIN}/m/${mangaId}`; }
-    ;
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
@@ -910,7 +909,7 @@ exports.parseChapters = ($, mangaId) => {
         const id = (_a = $('td:first-child > a', c).attr('href')) !== null && _a !== void 0 ? _a : "";
         if (id == "")
             continue;
-        const time = new Date($('td:last-child', c).text());
+        // const time = new Date($('td:last-child', c).text());
         const chapterNumber = parseFloat(title.split(" ")[1]);
         chapters.push(createChapter({
             id: id,
