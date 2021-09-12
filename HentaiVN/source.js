@@ -911,14 +911,13 @@ exports.parseChapters = ($, mangaId) => {
         if (id == "")
             continue;
         const time = new Date($('td:last-child', c).text());
-        const chapterNumber = Number(title.split(" ")[1]);
+        const chapterNumber = parseFloat(title.split(" ")[1]);
         chapters.push(createChapter({
             id: id,
             mangaId,
             name: title,
-            langCode: paperback_extensions_common_1.LanguageCode.ENGLISH,
+            langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
             chapNum: Number(chapterNumber),
-            time: time,
         }));
     }
     return chapters;
