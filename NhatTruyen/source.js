@@ -429,6 +429,8 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
     }
+    getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh/${mangaId}`; }
+    ;
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const url = `${DOMAIN}truyen-tranh/${mangaId}`;

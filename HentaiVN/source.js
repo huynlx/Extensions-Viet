@@ -707,7 +707,6 @@ exports.HentaiVNInfo = {
 class HentaiVN extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
-        // getMangaShareUrl(mangaId: string): string { return `${HH_DOMAIN}/m/${mangaId}` };
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
             requestTimeout: 20000
@@ -719,6 +718,8 @@ class HentaiVN extends paperback_extensions_common_1.Source {
         //     })
         // }
     }
+    getMangaShareUrl(mangaId) { return `https://hentaivn.tv/${mangaId}`; }
+    ;
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
