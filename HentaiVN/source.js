@@ -734,8 +734,9 @@ class HentaiVN extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `http://www.nettruyenpro.com/truyen-tranh/tu-la-vo-than-35627`,
+                url: `https://hentaivn.tv/`,
                 method,
+                param: mangaId,
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
@@ -901,29 +902,18 @@ exports.parseMangaDetails = ($, mangaId) => {
     });
 };
 exports.parseChapters = ($, mangaId) => {
-    // const chapters: Chapter[] = [];
-    // for (const obj of $(".listing tr").toArray()) {
-    //     const name = ($("td:first-child > a > h2", obj).text().trim());
-    //     const id = $('td:first-child > a', obj).attr('href') ?? "";
-    //     if (id == "") continue;
-    //     const chapterNumber = name === 'Oneshot' ? Number('1') : Number(name.split(" ")[1]);
-    //     chapters.push(createChapter(<Chapter>{
-    //         id,
-    //         chapNum: chapterNumber,
-    //         name,
-    //         mangaId: mangaId,
-    //         langCode: LanguageCode.VIETNAMESE,
-    //     }));
-    // }
-    // return chapters;
+    var _a;
     const chapters = [];
-    for (let obj of $('div.list-chapter > nav > ul > li.row:not(.heading) > div.chapter > a').toArray()) {
-        if (!obj.attribs['href'] || !obj.children[0].data)
+    for (const obj of $(".listing tr").toArray()) {
+        const name = ($("td:first-child > a > h2", obj).text().trim());
+        const id = (_a = $('td:first-child > a', obj).attr('href')) !== null && _a !== void 0 ? _a : "";
+        if (id == "")
             continue;
+        const chapterNumber = name === 'Oneshot' ? Number('1') : Number(name.split(" ")[1]);
         chapters.push(createChapter({
-            id: obj.attribs['href'],
-            chapNum: parseFloat(obj.children[0].data.split(' ')[1]),
-            name: obj.children[0].data,
+            id,
+            chapNum: chapterNumber,
+            name,
             mangaId: mangaId,
             langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
         }));
