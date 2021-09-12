@@ -735,7 +735,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${HH_DOMAIN}/m/`,
+                url: `https://hentaivn.tv/`,
                 method,
                 param: mangaId,
             });
@@ -905,21 +905,20 @@ exports.parseMangaDetails = ($, mangaId) => {
 exports.parseChapters = ($, mangaId) => {
     var _a;
     const chapters = [];
-    for (const c of $("li.sub-chp", "ul.arf-list").toArray()) {
-        const title = decodeHTMLEntity($("span.pull-left", c).text().replace($("span.pull-left i.text-muted", c).text(), "").trim());
-        const rawID = (_a = $("a", c).attr('href')) !== null && _a !== void 0 ? _a : "";
-        const id = /m\/[A-z0-9]+\/(\d+)/.test(rawID) ? rawID.match(/m\/[A-z0-9]+\/(\d+)/)[1] : "";
+    for (const c of $("tr", ".listing").toArray()) {
+        const title = ($("td:first-child > a > h2", c).text().trim());
+        const id = (_a = $('td:first-child > a', c).attr('href')) !== null && _a !== void 0 ? _a : "";
         if (id == "")
             continue;
-        const date = new Date(Date.now() - 2208986640000); // *Lennyface* 
-        const chapterNumber = isNaN(Number(id)) ? 0 : id;
+        const time = new Date($('td:last-child', c).text());
+        const chapterNumber = title.split(" ")[1];
         chapters.push(createChapter({
             id: id,
             mangaId,
             name: title,
             langCode: paperback_extensions_common_1.LanguageCode.ENGLISH,
             chapNum: Number(chapterNumber),
-            time: date,
+            time: time,
         }));
     }
     return chapters;
