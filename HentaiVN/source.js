@@ -894,7 +894,7 @@ exports.parseMangaDetails = ($, mangaId) => {
         artist: creator,
         desc: desc === "" ? 'Không có mô tả.' : desc,
         titles: [$('.page-info > h1').text().trim()],
-        image: image,
+        image: image.replace("190", "300"),
         status,
         // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
         hentai: true,
