@@ -909,7 +909,7 @@ exports.parseChapters = ($, mangaId) => {
         const id = (_a = $('td:first-child > a', obj).attr('href')) !== null && _a !== void 0 ? _a : "";
         if (id == "")
             continue;
-        const chapterNumber = name === 'Oneshot' ? Number('1') : Number(name.split(" ")[1]);
+        const chapterNumber = name === 'Oneshot' ? 1 : Number(name.split(" ")[1].replace(":", ' '));
         chapters.push(createChapter({
             id,
             chapNum: chapterNumber,
