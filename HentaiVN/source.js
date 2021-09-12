@@ -734,9 +734,8 @@ class HentaiVN extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `https://hentaivn.tv/`,
+                url: `http://www.nettruyenpro.com/truyen-tranh/tu-la-vo-than-35627`,
                 method,
-                param: mangaId,
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
@@ -902,31 +901,29 @@ exports.parseMangaDetails = ($, mangaId) => {
     });
 };
 exports.parseChapters = ($, mangaId) => {
-    var _a;
+    // const chapters: Chapter[] = [];
+    // for (const obj of $(".listing tr").toArray()) {
+    //     const name = ($("td:first-child > a > h2", obj).text().trim());
+    //     const id = $('td:first-child > a', obj).attr('href') ?? "";
+    //     if (id == "") continue;
+    //     const chapterNumber = name === 'Oneshot' ? Number('1') : Number(name.split(" ")[1]);
+    //     chapters.push(createChapter(<Chapter>{
+    //         id,
+    //         chapNum: chapterNumber,
+    //         name,
+    //         mangaId: mangaId,
+    //         langCode: LanguageCode.VIETNAMESE,
+    //     }));
+    // }
+    // return chapters;
     const chapters = [];
-    for (const obj of $(".listing tr").toArray()) {
-        // const title = ($("td:first-child > a > h2", c).text().trim());
-        // const id = $('td:first-child > a', c).attr('href') ?? "";
-        // if (id == "") continue;
-        // // const time = new Date($('td:last-child', c).text());
-        // const chapterNumber = parseFloat(title.split(" ")[1]);
-        // chapters.push(createChapter({
-        //     id: id,
-        //     mangaId,
-        //     name: title,
-        //     langCode: LanguageCode.VIETNAMESE,
-        //     chapNum: Number(chapterNumber),
-        //     // time: time,
-        // }));
-        const name = ($("td:first-child > a > h2", obj).text().trim());
-        const id = (_a = $('td:first-child > a', obj).attr('href')) !== null && _a !== void 0 ? _a : "";
-        if (id == "")
+    for (let obj of $('div.list-chapter > nav > ul > li.row:not(.heading) > div.chapter > a').toArray()) {
+        if (!obj.attribs['href'] || !obj.children[0].data)
             continue;
-        const chapterNumber = name === 'Oneshot' ? Number('1') : Number(name.split(" ")[1]);
         chapters.push(createChapter({
-            id,
-            chapNum: chapterNumber,
-            name,
+            id: obj.attribs['href'],
+            chapNum: parseFloat(obj.children[0].data.split(' ')[1]),
+            name: obj.children[0].data,
             mangaId: mangaId,
             langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
         }));
