@@ -911,7 +911,7 @@ exports.parseChapters = ($, mangaId) => {
         if (id == "")
             continue;
         const time = new Date($('td:last-child', c).text());
-        const chapterNumber = title.split(" ")[1];
+        const chapterNumber = Number(title.split(" ")[1]);
         chapters.push(createChapter({
             id: id,
             mangaId,
