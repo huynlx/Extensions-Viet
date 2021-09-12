@@ -902,21 +902,30 @@ exports.parseMangaDetails = ($, mangaId) => {
     });
 };
 exports.parseChapters = ($, mangaId) => {
-    var _a;
     const chapters = [];
-    for (const c of $("tr", ".listing").toArray()) {
-        const title = ($("td:first-child > a > h2", c).text().trim());
-        const id = (_a = $('td:first-child > a', c).attr('href')) !== null && _a !== void 0 ? _a : "";
-        if (id == "")
+    for (const obj of $(".listing tr").toArray()) {
+        // const title = ($("td:first-child > a > h2", c).text().trim());
+        // const id = $('td:first-child > a', c).attr('href') ?? "";
+        // if (id == "") continue;
+        // // const time = new Date($('td:last-child', c).text());
+        // const chapterNumber = parseFloat(title.split(" ")[1]);
+        // chapters.push(createChapter({
+        //     id: id,
+        //     mangaId,
+        //     name: title,
+        //     langCode: LanguageCode.VIETNAMESE,
+        //     chapNum: Number(chapterNumber),
+        //     // time: time,
+        // }));
+        if (!obj.attribs['href'] || !obj.children[0].data)
             continue;
-        // const time = new Date($('td:last-child', c).text());
-        const chapterNumber = parseFloat(title.split(" ")[1]);
+        let chapNumber = Number(obj.children[0].data.split(' ')[1]);
         chapters.push(createChapter({
-            id: id,
-            mangaId,
-            name: title,
+            id: obj.attribs['href'],
+            chapNum: chapNumber === NaN ? 1 : chapNumber,
+            name: obj.children[0].data,
+            mangaId: mangaId,
             langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-            chapNum: Number(chapterNumber),
         }));
     }
     return chapters;
