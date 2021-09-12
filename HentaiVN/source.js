@@ -902,6 +902,7 @@ exports.parseMangaDetails = ($, mangaId) => {
     });
 };
 exports.parseChapters = ($, mangaId) => {
+    var _a;
     const chapters = [];
     for (const obj of $(".listing tr").toArray()) {
         // const title = ($("td:first-child > a > h2", c).text().trim());
@@ -917,13 +918,15 @@ exports.parseChapters = ($, mangaId) => {
         //     chapNum: Number(chapterNumber),
         //     // time: time,
         // }));
-        if (!obj.attribs['href'] || !obj.children[0].data)
+        const name = ($("td:first-child > a > h2", obj).text().trim());
+        const id = (_a = $('td:first-child > a', obj).attr('href')) !== null && _a !== void 0 ? _a : "";
+        if (id == "")
             continue;
-        let chapNumber = Number(obj.children[0].data.split(' ')[1]);
+        let chapNumber = Number(name.split(" ")[1]);
         chapters.push(createChapter({
-            id: obj.attribs['href'],
-            chapNum: chapNumber === NaN ? 1 : chapNumber,
-            name: obj.children[0].data,
+            id,
+            chapNum: chapNumber == NaN ? 1 : chapNumber,
+            name,
             mangaId: mangaId,
             langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
         }));
