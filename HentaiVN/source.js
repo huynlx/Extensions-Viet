@@ -922,10 +922,10 @@ exports.parseChapters = ($, mangaId) => {
         const id = (_a = $('td:first-child > a', obj).attr('href')) !== null && _a !== void 0 ? _a : "";
         if (id == "")
             continue;
-        let chapNumber = Number(name.split(" ")[1]);
+        const chapterNumber = name === 'Oneshot' ? 1 : Number(name.split(" ")[1]);
         chapters.push(createChapter({
             id,
-            chapNum: chapNumber == NaN ? 1 : chapNumber,
+            chapNum: chapterNumber,
             name,
             mangaId: mangaId,
             langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
