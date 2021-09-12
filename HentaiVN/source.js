@@ -866,7 +866,7 @@ exports.parseMangaDetails = ($, mangaId) => {
     var _a;
     let tags = [];
     let creator = '';
-    let status = 1;
+    let status = 0;
     let desc = '';
     for (const obj of $('p', '.page-info').toArray()) {
         switch ($('span.info', obj).text().trim()) {
