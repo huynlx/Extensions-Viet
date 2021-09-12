@@ -894,7 +894,7 @@ exports.parseMangaDetails = ($, mangaId) => {
         artist: creator,
         desc: desc === "" ? 'Không có mô tả.' : desc,
         titles: [$('.page-info > h1').text().trim()],
-        image: image.replace("190", "300"),
+        image: image,
         status,
         // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
         hentai: true,
@@ -955,7 +955,7 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
             continue;
         popular.push(createMangaTile({
             id: id,
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg.replace("190", "300"),
+            image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
             title: createIconText({ text: title }),
             subtitleText: createIconText({ text: subtitle }),
         }));
@@ -974,7 +974,7 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
             continue;
         staffPick.push(createMangaTile({
             id: id,
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg.replace("190", "300"),
+            image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
             title: createIconText({ text: title }),
             subtitleText: createIconText({ text: subtitle }),
         }));
@@ -998,7 +998,7 @@ exports.parseAddedSections = ($, sections, sectionCallback) => {
             continue;
         added.push(createMangaTile({
             id: id,
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : image.replace("190", "300"),
+            image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
             title: createIconText({ text: title }),
             subtitleText: createIconText({ text: fixsub }),
         }));
