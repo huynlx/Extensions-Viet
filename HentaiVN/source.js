@@ -893,7 +893,7 @@ exports.parseMangaDetails = ($, mangaId) => {
         artist: creator,
         desc: desc === "" ? 'Không có mô tả.' : desc,
         titles: [$('.page-info > h1').text().trim()],
-        image: image !== null && image !== void 0 ? image : '',
+        image: 'http://st.imageinstant.net/data/comics/43/tu-la-vo-than.jpg',
         status,
         // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
         hentai: true,
