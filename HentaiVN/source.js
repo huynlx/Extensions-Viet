@@ -821,14 +821,16 @@ class HentaiVN extends paperback_extensions_common_1.Source {
         });
     }
     getSearchResults(query, metadata) {
-        var _a;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const keyword = HentaiVNParser_1.generateSearch(query);
+            const tag = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
+            let url = '';
             const request = createRequestObject({
-                url: `https://hentaivn.tv/tim-kiem-truyen.html?key=`,
+                url: tag ? `https://hentaivn.tv/${tag}` : `https://hentaivn.tv/tim-kiem-truyen.html?key=${keyword}`,
                 method,
-                param: `${keyword}&page=${page}`
+                param: `&page=${page}`
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
@@ -1007,8 +1009,8 @@ exports.parseAddedSections = ($, sections, sectionCallback) => {
 };
 exports.generateSearch = (query) => {
     var _a;
-    let search = (_a = query.title) !== null && _a !== void 0 ? _a : "";
-    return encodeURI(search);
+    let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
+    return encodeURI(keyword);
 };
 exports.parseSearch = ($) => {
     var _a;
