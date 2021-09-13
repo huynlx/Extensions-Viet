@@ -1557,12 +1557,25 @@ class HentaiVN extends paperback_extensions_common_1.Source {
         });
     }
     getSearchTags() {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
+            var tag = [];
             var fs = require('fs');
             var path = require('path');
             const filePath = path.join(__dirname, './tags.html');
             const $ = this.cheerio.load(fs.readFileSync(filePath));
-            return HentaiVNParser_1.parseTags($);
+            for (const obj of $("li", "ul").toArray()) {
+                const label = ($("a", obj).text().trim());
+                const id = (_a = $('a', obj).attr('href')) !== null && _a !== void 0 ? _a : "";
+                if (id == "")
+                    continue;
+                tag.push({
+                    id: id,
+                    label: label,
+                });
+            }
+            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: tag.map(x => createTag(x)) })];
+            return tagSections;
         });
     }
     globalRequestHeaders() {
