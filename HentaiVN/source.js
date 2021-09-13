@@ -905,12 +905,13 @@ exports.parseMangaDetails = ($, mangaId) => {
 exports.parseChapters = ($, mangaId) => {
     var _a;
     const chapters = [];
-    for (const obj of $(".listing tr").toArray()) {
+    for (const [i, obj] of $(".listing tr").toArray()) {
         const name = ($("td:first-child > a > h2", obj).text().trim());
         const id = (_a = $('td:first-child > a', obj).attr('href')) !== null && _a !== void 0 ? _a : "";
         if (id == "")
             continue;
-        const chapterNumber = name === 'Oneshot' ? 1 : Number(name.split(" ")[1].replace(":", ' '));
+        // const chapterNumber = name === 'Oneshot' ? 1 : Number(name.split(" ")[1].replace(":", ' '));
+        const chapterNumber = i + 1;
         chapters.push(createChapter({
             id,
             chapNum: chapterNumber,
