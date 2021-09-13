@@ -1014,7 +1014,7 @@ exports.generateSearch = (query) => {
 exports.parseSearch = ($) => {
     var _a;
     const mangas = [];
-    for (let manga of $('.item', '.block-item:nth-child(2)').toArray()) {
+    for (let manga of $('.item', '.block-item:last-child').toArray()) {
         const title = $('.box-description > p > a', manga).text();
         const id = (_a = $('.box-cover > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
         const image = $('.box-cover > a > img', manga).attr('data-src');
