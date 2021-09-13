@@ -690,7 +690,7 @@ exports.HentaiVN = exports.HentaiVNInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const HentaiVNParser_1 = require("./HentaiVNParser");
 const tags_json_1 = __importDefault(require("./tags.json"));
-const HH_DOMAIN = 'https://hentaihere.com';
+const DOMAIN = `https://hentaivn.tv/`;
 const method = 'GET';
 exports.HentaiVNInfo = {
     version: '1.0.4',
@@ -717,17 +717,17 @@ class HentaiVN extends paperback_extensions_common_1.Source {
         });
         // getCloudflareBypassRequest() {
         //     return createRequestObject({
-        //         url: `https://hentaivn.tv`,
+        //         url: `${DOMAIN}`,
         //         method: 'GET',
         //     })
         // }
     }
-    getMangaShareUrl(mangaId) { return `https://hentaivn.tv/${mangaId}`; }
+    getMangaShareUrl(mangaId) { return `${DOMAIN}${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `https://hentaivn.tv/`,
+                url: `${DOMAIN}`,
                 method,
                 param: mangaId,
             });
@@ -739,7 +739,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `https://hentaivn.tv/`,
+                url: `${DOMAIN}`,
                 method,
                 param: mangaId,
             });
@@ -751,7 +751,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
     getChapterDetails(mangaId, chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `https://hentaivn.tv/`,
+                url: `${DOMAIN}`,
                 method,
                 param: chapterId,
             });
@@ -768,7 +768,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             const section3 = createHomeSection({ id: 'recently_added', title: 'Truyện mới đăng', view_more: true });
             const sections = [section0, section1, section3];
             let request = createRequestObject({
-                url: `https://hentaivn.tv`,
+                url: `${DOMAIN}`,
                 method,
             });
             let response = yield this.requestManager.schedule(request, 1);
@@ -776,7 +776,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             HentaiVNParser_1.parseHomeSections($, sections, sectionCallback);
             //added
             request = createRequestObject({
-                url: `https://hentaivn.tv/danh-sach.html`,
+                url: `${DOMAIN}danh-sach.html`,
                 method,
             });
             response = yield this.requestManager.schedule(request, 1);
@@ -793,12 +793,12 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             let url = '';
             switch (homepageSectionId) {
                 case "recently-updated":
-                    url = 'https://hentaivn.tv/';
+                    url = `${DOMAIN}`;
                     param = `?page=${page}`;
                     select = 1;
                     break;
                 case "recently_added":
-                    url = 'https://hentaivn.tv/danh-sach.html';
+                    url = '${DOMAIN}danh-sach.html';
                     param = `?page=${page}`;
                     select = 2;
                     break;
@@ -824,10 +824,9 @@ class HentaiVN extends paperback_extensions_common_1.Source {
         var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            // const keyword = generateSearch(query);
             const tag = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: query.title ? `https://hentaivn.tv/tim-kiem-truyen.html?key=${query.title}` : `https://hentaivn.tv${tag[0]}?`,
+                url: query.title ? `${DOMAIN}tim-kiem-truyen.html?key=${query.title}` : `${DOMAIN}${tag[0]}?`,
                 method,
                 param: `&page=${page}`
             });
@@ -849,7 +848,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: 'https://hentaivn.tv' + '/'
+            referer: `${DOMAIN}` + '/'
         };
     }
 }
@@ -861,7 +860,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.isLastPage = exports.parseTags = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.parseAddedSections = exports.parseHomeSections = exports.parseChapterDetails = exports.parseChapters = exports.parseMangaDetails = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const entities = require("entities"); //Import package for decoding HTML entities
-const HH_DOMAIN = 'https://hentaihere.com';
 exports.parseMangaDetails = ($, mangaId) => {
     var _a;
     let tags = [];
