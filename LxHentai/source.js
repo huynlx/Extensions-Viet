@@ -387,7 +387,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NetTruyen = exports.NetTruyenInfo = exports.isLastPage = void 0;
+exports.LxHentai = exports.LxHentaiInfo = exports.isLastPage = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const LxHentaiParser_1 = require("./LxHentaiParser");
 const DOMAIN = 'http://www.nettruyenpro.com/';
@@ -400,27 +400,23 @@ exports.isLastPage = ($) => {
     }
     return true;
 };
-exports.NetTruyenInfo = {
+exports.LxHentaiInfo = {
     version: '3.0.0',
-    name: 'NetTruyen',
+    name: 'LxHentai',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from NetTruyen.',
+    description: 'Extension that pulls manga from LxHentai.',
     websiteBaseURL: DOMAIN,
-    contentRating: paperback_extensions_common_1.ContentRating.MATURE,
+    contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
         {
-            text: "Recommended",
-            type: paperback_extensions_common_1.TagType.BLUE
-        },
-        {
-            text: "Notifications",
-            type: paperback_extensions_common_1.TagType.GREEN
+            text: "18+",
+            type: paperback_extensions_common_1.TagType.YELLOW
         }
     ]
 };
-class NetTruyen extends paperback_extensions_common_1.Source {
+class LxHentai extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
         this.parser = new LxHentaiParser_1.Parser();
@@ -525,70 +521,32 @@ class NetTruyen extends paperback_extensions_common_1.Source {
     }
     getHomePageSections(sectionCallback) {
         return __awaiter(this, void 0, void 0, function* () {
-            let featured = createHomeSection({
-                id: 'featured',
-                title: "Truyện Đề Cử",
-                type: paperback_extensions_common_1.HomeSectionType.featured
-            });
-            let viewest = createHomeSection({
-                id: 'viewest',
-                title: "Truyện Xem Nhiều Nhất",
-                view_more: true,
-            });
             let hot = createHomeSection({
                 id: 'hot',
-                title: "Truyện Hot Nhất",
+                title: "Truyện Hot",
                 view_more: true,
             });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
-                title: "Truyện Mới Cập Nhật",
-                view_more: true,
-            });
-            let newAdded = createHomeSection({
-                id: 'new_added',
-                title: "Truyện Mới Thêm Gần Đây",
+                title: "Truyện Mới",
                 view_more: true,
             });
             //Load empty sections
-            sectionCallback(featured);
-            sectionCallback(viewest);
             sectionCallback(hot);
             sectionCallback(newUpdated);
-            sectionCallback(newAdded);
             ///Get the section data
-            //Featured
-            let url = `${DOMAIN}`;
+            //Hot
+            let url = `https://lxhentai.com/`;
             let request = createRequestObject({
                 url: url,
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            featured.items = this.parser.parseFeaturedSection($);
-            sectionCallback(featured);
-            //View
-            url = `${DOMAIN}tim-truyen?status=-1&sort=10`;
-            request = createRequestObject({
-                url: url,
-                method: "GET",
-            });
-            data = yield this.requestManager.schedule(request, 1);
-            $ = this.cheerio.load(data.data);
-            viewest.items = this.parser.parsePopularSection($);
-            sectionCallback(viewest);
-            //Hot
-            url = `${DOMAIN}hot`;
-            request = createRequestObject({
-                url: url,
-                method: "GET",
-            });
-            data = yield this.requestManager.schedule(request, 1);
-            $ = this.cheerio.load(data.data);
             hot.items = this.parser.parseHotSection($);
             sectionCallback(hot);
             //New Updates
-            url = `${DOMAIN}`;
+            url = `https://lxhentai.com/`;
             request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -597,16 +555,6 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             $ = this.cheerio.load(data.data);
             newUpdated.items = this.parser.parseNewUpdatedSection($);
             sectionCallback(newUpdated);
-            //New added
-            url = `${DOMAIN}tim-truyen?status=-1&sort=15`;
-            request = createRequestObject({
-                url: url,
-                method: "GET",
-            });
-            data = yield this.requestManager.schedule(request, 1);
-            $ = this.cheerio.load(data.data);
-            newAdded.items = this.parser.parseNewAddedSection($);
-            sectionCallback(newAdded);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
@@ -669,7 +617,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
         };
     }
 }
-exports.NetTruyen = NetTruyen;
+exports.LxHentai = LxHentai;
 
 },{"./LxHentaiParser":49,"paperback-extensions-common":5}],49:[function(require,module,exports){
 "use strict";
@@ -846,37 +794,37 @@ class Parser {
         return viewestItems;
     }
     parseHotSection($) {
-        var _a;
-        const TopWeek = [];
-        for (const manga of $('div.item', 'div.row').toArray().splice(0, 20)) {
-            const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
-            const id = (_a = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-            const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
-            const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
+        const Hot = [];
+        for (const manga of $('div', '.swiper-slide.swiper-slide-active > .gridSlide').toArray()) {
+            const title = $('.slideName > a', manga).first().text();
+            const id = $('.slideName > a', manga).attr('href');
+            const image = $('.itemSlide', manga).css('background');
+            const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+            const subtitle = $(".newestChapter > a", manga).last().text().trim();
             if (!id || !title)
                 continue;
-            TopWeek.push(createMangaTile({
+            Hot.push(createMangaTile({
                 id: id,
-                image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
+                image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
         }
-        return TopWeek;
+        return Hot;
     }
     parseNewUpdatedSection($) {
-        var _a;
         let newUpdatedItems = [];
-        for (let manga of $('div.item', 'div.row').toArray().splice(0, 20)) {
-            const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
-            const id = (_a = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-            const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
-            const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
+        for (let manga of $('div.col-md-3.col-6.py-2', 'div.row').toArray().splice(0, 20)) {
+            const title = $('a', manga).first().text();
+            const id = $('a', manga).attr('href');
+            const image = $('div', manga).css('background');
+            const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+            const subtitle = $(".newestChapter > a", manga).last().text().trim();
             if (!id || !title)
                 continue;
             newUpdatedItems.push(createMangaTile({
                 id: id,
-                image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
+                image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
