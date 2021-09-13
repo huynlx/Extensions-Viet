@@ -795,7 +795,7 @@ class Parser {
     }
     parseHotSection($) {
         const Hot = [];
-        for (const manga of $('div', '.swiper-slide.swiper-slide-active > .gridSlide').toArray()) {
+        for (const manga of $('.swiper-slide:first-child > .gridSlide > div').toArray()) {
             const title = $('.slideName > a', manga).first().text();
             const id = $('.slideName > a', manga).attr('href');
             const image = $('.itemSlide', manga).css('background');
