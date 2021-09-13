@@ -827,7 +827,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             // const keyword = generateSearch(query);
             // const tag = query.includedTags?.map(tag => tag.id) ?? [];
             const request = createRequestObject({
-                url: `https://hentaivn.tv/the-loai-254-bondage.html`,
+                url: query.title ? `https://hentaivn.tv/tim-kiem-truyen.html?key=${query.title}` : `https://hentaivn.tv/the-loai-254-bondage.html?`,
                 method,
                 param: `&page=${page}`
             });
