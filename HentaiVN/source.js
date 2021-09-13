@@ -907,7 +907,7 @@ exports.parseChapters = ($, mangaId) => {
     for (const obj of $(".listing tr").toArray().reverse()) {
         i++;
         const name = ($("td:first-child > a > h2", obj).text().trim());
-        const id = (_a = $('td:first-child > a', obj).attr('href')) !== null && _a !== void 0 ? _a : "";
+        const id = (_a = $('td:first-child > a', obj).attr('href').split('/').pop()) !== null && _a !== void 0 ? _a : "";
         if (id == "")
             continue;
         const chapterNumber = i;
