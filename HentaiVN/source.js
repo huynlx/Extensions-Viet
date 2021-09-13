@@ -822,7 +822,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const search = HentaiVNParser_1.generateSearch(query);
             const request = createRequestObject({
-                url: `${HH_DOMAIN}/search?s=`,
+                url: `https://hentaivn.tv/tim-kiem-truyen.html?key=`,
                 method,
                 param: `${search}&page=${page}`
             });
@@ -1012,20 +1012,21 @@ exports.generateSearch = (query) => {
     return encodeURI(search);
 };
 exports.parseSearch = ($) => {
-    var _a, _b, _c;
+    var _a;
     const mangas = [];
-    for (const obj of $("div.item", "div.row.row-sm").toArray()) {
-        const id = (_a = $("a", obj).attr('href')) === null || _a === void 0 ? void 0 : _a.replace(`${HH_DOMAIN}/m/`, "").trim();
-        const image = (_b = $("img", obj).attr('src')) !== null && _b !== void 0 ? _b : "";
-        const title = decodeHTMLEntity(String((_c = $("img", obj).attr('alt')) === null || _c === void 0 ? void 0 : _c.trim()));
-        const subtitle = $("b.text-danger", obj).text();
+    for (let manga of $('.item', '.block-item').toArray()) {
+        const title = $('.box-description > p > a', manga).text();
+        const id = (_a = $('.box-cover > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+        const image = $('.box-cover > a > img', manga).attr('data-src');
+        const subtitle = $(".box-description p:first-child", manga).text().trim();
+        const fixsub = subtitle.split(' - ')[1];
         if (!id || !title)
             continue;
         mangas.push(createMangaTile({
-            id,
-            image: image,
-            title: createIconText({ text: decodeHTMLEntity(title) }),
-            subtitleText: createIconText({ text: subtitle }),
+            id: id,
+            image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
+            title: createIconText({ text: title }),
+            subtitleText: createIconText({ text: fixsub }),
         }));
     }
     return mangas;
