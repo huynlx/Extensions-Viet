@@ -673,6 +673,25 @@ __exportStar(require("./RawData"), exports);
 
 },{"./Chapter":15,"./ChapterDetails":14,"./Constants":16,"./DynamicUI":32,"./HomeSection":33,"./Languages":34,"./Manga":37,"./MangaTile":35,"./MangaUpdate":36,"./PagedResults":38,"./RawData":39,"./RequestHeaders":40,"./RequestInterceptor":41,"./RequestManager":42,"./RequestObject":43,"./ResponseObject":44,"./SearchField":45,"./SearchRequest":46,"./SourceInfo":47,"./SourceManga":48,"./SourceStateManager":49,"./SourceTag":50,"./TagSection":51,"./TrackedManga":53,"./TrackedMangaChapterReadAction":52,"./TrackerActionQueue":54}],56:[function(require,module,exports){
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -686,6 +705,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.HentaiVN = exports.HentaiVNInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const HentaiVNParser_1 = require("./HentaiVNParser");
+const tags = __importStar(require("./tags.json"));
 const HH_DOMAIN = 'https://hentaihere.com';
 const method = 'GET';
 exports.HentaiVNInfo = {
@@ -838,677 +858,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
     }
     getSearchTags() {
         return __awaiter(this, void 0, void 0, function* () {
-            // var tag = [];
-            // var fs = require('fs');
-            // var path = require('path');
-            // const filePath = path.join(__dirname, './tags.html');
-            // const $ = this.cheerio.load(fs.readFileSync(filePath));
-            // for (const obj of $("li", "ul").toArray()) {
-            //     const label = ($("a", obj).text().trim());
-            //     const id = $('a', obj).attr('href') ?? "";
-            //     if (id == "") continue;
-            //     tag.push({
-            //         id: id,
-            //         label: label,
-            //     });
-            // }
-            // const tagSections: TagSection[] = [createTagSection({ id: '0', label: 'Thể Loại', tags: tag.map(x => createTag(x)) })];
-            // return tagSections;
-            var arrayTags = [
-                {
-                    "id": "/the-loai-3-3d_hentai.html",
-                    "label": "3D Hentai"
-                },
-                {
-                    "id": "/the-loai-5-action.html",
-                    "label": "Action"
-                },
-                {
-                    "id": "/the-loai-116-adult.html",
-                    "label": "Adult"
-                },
-                {
-                    "id": "/the-loai-203-adventure.html",
-                    "label": "Adventure"
-                },
-                {
-                    "id": "/the-loai-20-ahegao.html",
-                    "label": "Ahegao"
-                },
-                {
-                    "id": "/the-loai-21-anal.html",
-                    "label": "Anal"
-                },
-                {
-                    "id": "/the-loai-249-angel.html",
-                    "label": "Angel"
-                },
-                {
-                    "id": "/the-loai-131-anh_dong.html",
-                    "label": "Ảnh động"
-                },
-                {
-                    "id": "/the-loai-127-animal.html",
-                    "label": "Animal"
-                },
-                {
-                    "id": "/the-loai-22-animal_girl.html",
-                    "label": "Animal girl"
-                },
-                {
-                    "id": "/the-loai-115-artist.html",
-                    "label": "Artist CG"
-                },
-                {
-                    "id": "/the-loai-257-bbm.html",
-                    "label": "BBM"
-                },
-                {
-                    "id": "/the-loai-251-bbw.html",
-                    "label": "BBW"
-                },
-                {
-                    "id": "/the-loai-24-bdsm.html",
-                    "label": "BDSM"
-                },
-                {
-                    "id": "/the-loai-25-bestiality.html",
-                    "label": "Bestiality"
-                },
-                {
-                    "id": "/the-loai-133-big_ass.html",
-                    "label": "Big Ass"
-                },
-                {
-                    "id": "/the-loai-23-big_boobs.html",
-                    "label": "Big\n            Boobs"
-                },
-                {
-                    "id": "/the-loai-32-big_penis.html",
-                    "label": "Big Penis"
-                },
-                {
-                    "id": "/the-loai-267-blackmail.html",
-                    "label": "Blackmail"
-                },
-                {
-                    "id": "/the-loai-27-bloomers.html",
-                    "label": "Bloomers"
-                },
-                {
-                    "id": "/the-loai-28-blowjobs.html",
-                    "label": "BlowJobs"
-                },
-                {
-                    "id": "/the-loai-29-body_swap.html",
-                    "label": "Body Swap"
-                },
-                {
-                    "id": "/the-loai-30-bodysuit.html",
-                    "label": "Bodysuit"
-                },
-                {
-                    "id": "/the-loai-254-bondage.html",
-                    "label": "Bondage"
-                },
-                {
-                    "id": "/the-loai-33-breast_sucking.html",
-                    "label": "Breast Sucking"
-                },
-                {
-                    "id": "/the-loai-248-boob-jobs.html",
-                    "label": "BreastJobs"
-                },
-                {
-                    "id": "/the-loai-31-brocon.html",
-                    "label": "Brocon"
-                },
-                {
-                    "id": "/the-loai-242-brother.html",
-                    "label": "Brother"
-                },
-                {
-                    "id": "/the-loai-241-business-suit.html",
-                    "label": "Business Suit"
-                },
-                {
-                    "id": "/the-loai-39-catgirls.html",
-                    "label": "Catgirls"
-                },
-                {
-                    "id": "/the-loai-101-che_it.html",
-                    "label": "Che ít"
-                },
-                {
-                    "id": "/the-loai-129-che_nhieu.html",
-                    "label": "Che nhiều"
-                },
-                {
-                    "id": "/the-loai-34-cheating.html",
-                    "label": "Cheating"
-                },
-                {
-                    "id": "/the-loai-35-chikan.html",
-                    "label": "Chikan"
-                },
-                {
-                    "id": "/the-loai-271-chinese-dress.html",
-                    "label": "Chinese Dress"
-                },
-                {
-                    "id": "/the-loai-100-co_che.html",
-                    "label": "Có che"
-                },
-                {
-                    "id": "/the-loai-36-comedy.html",
-                    "label": "Comedy"
-                },
-                {
-                    "id": "/the-loai-120-comic.html",
-                    "label": "Comic"
-                },
-                {
-                    "id": "/the-loai-210-condom.html",
-                    "label": "Condom"
-                },
-                {
-                    "id": "/the-loai-38-cosplay.html",
-                    "label": "Cosplay"
-                },
-                {
-                    "id": "/the-loai-2-cousin.html",
-                    "label": "Cousin"
-                },
-                {
-                    "id": "/the-loai-269-cunnilingus.html",
-                    "label": "Cunnilingus"
-                },
-                {
-                    "id": "/the-loai-40-dark_skin.html",
-                    "label": "Dark Skin"
-                },
-                {
-                    "id": "/the-loai-262-daughter.html",
-                    "label": "Daughter"
-                },
-                {
-                    "id": "/the-loai-268-deepthroat.html",
-                    "label": "Deepthroat"
-                },
-                {
-                    "id": "/the-loai-132-demon.html",
-                    "label": "Demon"
-                },
-                {
-                    "id": "/the-loai-212-demon-girl.html",
-                    "label": "DemonGirl"
-                },
-                {
-                    "id": "/the-loai-104-devil.html",
-                    "label": "Devil"
-                },
-                {
-                    "id": "/the-loai-105-devilgirl.html",
-                    "label": "DevilGirl"
-                },
-                {
-                    "id": "/the-loai-253-dirty.html",
-                    "label": "Dirty"
-                },
-                {
-                    "id": "/the-loai-41-dirty_old_man.html",
-                    "label": "Dirty Old Man"
-                },
-                {
-                    "id": "/the-loai-260-doggirl.html",
-                    "label": "DogGirl"
-                },
-                {
-                    "id": "/the-loai-42-double_penetration.html",
-                    "label": "Double Penetration"
-                },
-                {
-                    "id": "/the-loai-44-doujinshi.html",
-                    "label": "Doujinshi"
-                },
-                {
-                    "id": "/the-loai-4-drama.html",
-                    "label": "Drama"
-                },
-                {
-                    "id": "/the-loai-43-drug.html",
-                    "label": "Drug"
-                },
-                {
-                    "id": "/the-loai-45-ecchi.html",
-                    "label": "Ecchi"
-                },
-                {
-                    "id": "/the-loai-245-elder-sister.html",
-                    "label": "Elder\n            Sister"
-                },
-                {
-                    "id": "/the-loai-125-elf.html",
-                    "label": "Elf"
-                },
-                {
-                    "id": "/the-loai-46-exhibitionism.html",
-                    "label": "Exhibitionism"
-                },
-                {
-                    "id": "/the-loai-123-fantasy.html",
-                    "label": "Fantasy"
-                },
-                {
-                    "id": "/the-loai-243-father.html",
-                    "label": "Father"
-                },
-                {
-                    "id": "/the-loai-47-femdom.html",
-                    "label": "Femdom"
-                },
-                {
-                    "id": "/the-loai-48-fingering.html",
-                    "label": "Fingering"
-                },
-                {
-                    "id": "/the-loai-108-footjob.html",
-                    "label": "Footjob"
-                },
-                {
-                    "id": "/the-loai-259-foxgirl.html",
-                    "label": "Foxgirls"
-                },
-                {
-                    "id": "/the-loai-37-full_color.html",
-                    "label": "Full Color"
-                },
-                {
-                    "id": "/the-loai-202-furry.html",
-                    "label": "Furry"
-                },
-                {
-                    "id": "/the-loai-50-futanari.html",
-                    "label": "Futanari"
-                },
-                {
-                    "id": "/the-loai-130-game.html",
-                    "label": "Game"
-                },
-                {
-                    "id": "/the-loai-51-gangbang.html",
-                    "label": "GangBang"
-                },
-                {
-                    "id": "/the-loai-206-garter_belts.html",
-                    "label": "Garter Belts"
-                },
-                {
-                    "id": "/the-loai-52-gender_bender.html",
-                    "label": "Gender Bender"
-                },
-                {
-                    "id": "/the-loai-106-ghost.html",
-                    "label": "Ghost"
-                },
-                {
-                    "id": "/the-loai-56-glasses.html",
-                    "label": "Glasses"
-                },
-                {
-                    "id": "/the-loai-264-gothic-lolita.html",
-                    "label": "Gothic Lolita"
-                },
-                {
-                    "id": "/the-loai-53-group.html",
-                    "label": "Group"
-                },
-                {
-                    "id": "/the-loai-55-guro.html",
-                    "label": "Guro"
-                },
-                {
-                    "id": "/the-loai-247-hairy.html",
-                    "label": "Hairy"
-                },
-                {
-                    "id": "/the-loai-57-handjob.html",
-                    "label": "Handjob"
-                },
-                {
-                    "id": "/the-loai-58-harem.html",
-                    "label": "Harem"
-                },
-                {
-                    "id": "/the-loai-102-hentaivn.html",
-                    "label": "HentaiVN"
-                },
-                {
-                    "id": "/the-loai-80-historical.html",
-                    "label": "Historical"
-                },
-                {
-                    "id": "/the-loai-122-horror.html",
-                    "label": "Horror"
-                },
-                {
-                    "id": "/the-loai-59-housewife.html",
-                    "label": "Housewife"
-                },
-                {
-                    "id": "/the-loai-60-humiliation.html",
-                    "label": "Humiliation"
-                },
-                {
-                    "id": "/the-loai-61-idol.html",
-                    "label": "Idol"
-                },
-                {
-                    "id": "/the-loai-244-imouto.html",
-                    "label": "Imouto"
-                },
-                {
-                    "id": "/the-loai-62-incest.html",
-                    "label": "Incest"
-                },
-                {
-                    "id": "/the-loai-26-insect.html",
-                    "label": "Insect (Côn Trùng)"
-                },
-                {
-                    "id": "/the-loai-99-khong_che.html",
-                    "label": "Không che"
-                },
-                {
-                    "id": "/the-loai-110-kimono.html",
-                    "label": "Kimono"
-                },
-                {
-                    "id": "/the-loai-265-kuudere.html",
-                    "label": "Kuudere"
-                },
-                {
-                    "id": "/the-loai-63-loli.html",
-                    "label": "Lolicon"
-                },
-                {
-                    "id": "/the-loai-64-maids.html",
-                    "label": "Maids"
-                },
-                {
-                    "id": "/the-loai-273-manhua.html",
-                    "label": "Manhua"
-                },
-                {
-                    "id": "/the-loai-114-manhwa.html",
-                    "label": "Manhwa"
-                },
-                {
-                    "id": "/the-loai-65-tu_suong.html",
-                    "label": "Masturbation"
-                },
-                {
-                    "id": "/the-loai-119-mature.html",
-                    "label": "Mature"
-                },
-                {
-                    "id": "/the-loai-124-miko.html",
-                    "label": "Miko"
-                },
-                {
-                    "id": "/the-loai-126-milf.html",
-                    "label": "Milf"
-                },
-                {
-                    "id": "/the-loai-121-mind_break.html",
-                    "label": "Mind Break"
-                },
-                {
-                    "id": "/the-loai-113-mind_control.html",
-                    "label": "Mind Control"
-                },
-                {
-                    "id": "/the-loai-263-mizugi.html",
-                    "label": "Mizugi"
-                },
-                {
-                    "id": "/the-loai-66-monster.html",
-                    "label": "Monster"
-                },
-                {
-                    "id": "/the-loai-67-monstergirl.html",
-                    "label": "Monstergirl"
-                },
-                {
-                    "id": "/the-loai-103-mother.html",
-                    "label": "Mother"
-                },
-                {
-                    "id": "/the-loai-205-nakadashi.html",
-                    "label": "Nakadashi"
-                },
-                {
-                    "id": "/the-loai-1-netori.html",
-                    "label": "Netori"
-                },
-                {
-                    "id": "/the-loai-201-non_hen.html",
-                    "label": "Non-hen"
-                },
-                {
-                    "id": "/the-loai-68-ntr.html",
-                    "label": "NTR"
-                },
-                {
-                    "id": "/the-loai-272-nun.html",
-                    "label": "Nun"
-                },
-                {
-                    "id": "/the-loai-69-nurse.html",
-                    "label": "Nurse"
-                },
-                {
-                    "id": "/the-loai-211-old-man.html",
-                    "label": "Old Man"
-                },
-                {
-                    "id": "/the-loai-71-oneshot.html",
-                    "label": "Oneshot"
-                },
-                {
-                    "id": "/the-loai-70-oral.html",
-                    "label": "Oral"
-                },
-                {
-                    "id": "/the-loai-209-osananajimi.html",
-                    "label": "Osananajimi"
-                },
-                {
-                    "id": "/the-loai-72-paizuri.html",
-                    "label": "Paizuri"
-                },
-                {
-                    "id": "/the-loai-204-pantyhose.html",
-                    "label": "Pantyhose"
-                },
-                {
-                    "id": "/the-loai-73-pregnant.html",
-                    "label": "Pregnant"
-                },
-                {
-                    "id": "/the-loai-98-rape.html",
-                    "label": "Rape"
-                },
-                {
-                    "id": "/the-loai-258-rimjob.html",
-                    "label": "Rimjob"
-                },
-                {
-                    "id": "/the-loai-117-romance.html",
-                    "label": "Romance"
-                },
-                {
-                    "id": "/the-loai-207-ryona.html",
-                    "label": "Ryona"
-                },
-                {
-                    "id": "/the-loai-134-scat.html",
-                    "label": "Scat"
-                },
-                {
-                    "id": "/the-loai-74-school_uniform.html",
-                    "label": "School Uniform"
-                },
-                {
-                    "id": "/the-loai-75-schoolgirl.html",
-                    "label": "SchoolGirl"
-                },
-                {
-                    "id": "/the-loai-87-series.html",
-                    "label": "Series"
-                },
-                {
-                    "id": "/the-loai-88-sex_toys.html",
-                    "label": "Sex Toys"
-                },
-                {
-                    "id": "/the-loai-246-shimapan.html",
-                    "label": "Shimapan"
-                },
-                {
-                    "id": "/the-loai-118-short_hentai.html",
-                    "label": "Short Hentai"
-                },
-                {
-                    "id": "/the-loai-77-shota.html",
-                    "label": "Shota"
-                },
-                {
-                    "id": "/the-loai-76-shoujo.html",
-                    "label": "Shoujo"
-                },
-                {
-                    "id": "/the-loai-79-siscon.html",
-                    "label": "Siscon"
-                },
-                {
-                    "id": "/the-loai-78-sister.html",
-                    "label": "Sister"
-                },
-                {
-                    "id": "/the-loai-82-slave.html",
-                    "label": "Slave"
-                },
-                {
-                    "id": "/the-loai-213-sleeping.html",
-                    "label": "Sleeping"
-                },
-                {
-                    "id": "/the-loai-84-small_boobs.html",
-                    "label": "Small\n            Boobs"
-                },
-                {
-                    "id": "/the-loai-83-sports.html",
-                    "label": "Sports"
-                },
-                {
-                    "id": "/the-loai-81-stockings.html",
-                    "label": "Stockings"
-                },
-                {
-                    "id": "/the-loai-85-supernatural.html",
-                    "label": "Supernatural"
-                },
-                {
-                    "id": "/the-loai-250-sweating.html",
-                    "label": "Sweating"
-                },
-                {
-                    "id": "/the-loai-86-swimsuit.html",
-                    "label": "Swimsuit"
-                },
-                {
-                    "id": "/the-loai-266-tall-girls.html",
-                    "label": "Tall Girl"
-                },
-                {
-                    "id": "/the-loai-91-teacher.html",
-                    "label": "Teacher"
-                },
-                {
-                    "id": "/the-loai-89-tentacles.html",
-                    "label": "Tentacles"
-                },
-                {
-                    "id": "/the-loai-109-time_stop.html",
-                    "label": "Time Stop"
-                },
-                {
-                    "id": "/the-loai-90-tomboy.html",
-                    "label": "Tomboy"
-                },
-                {
-                    "id": "/the-loai-252-tracksuit.html",
-                    "label": "Tracksuit"
-                },
-                {
-                    "id": "/the-loai-256-transformation.html",
-                    "label": "Transformation"
-                },
-                {
-                    "id": "/the-loai-92-trap.html",
-                    "label": "Trap"
-                },
-                {
-                    "id": "/the-loai-111-tsundere.html",
-                    "label": "Tsundere"
-                },
-                {
-                    "id": "/the-loai-93-twins.html",
-                    "label": "Twins"
-                },
-                {
-                    "id": "/the-loai-261-twintails.html",
-                    "label": "Twintails"
-                },
-                {
-                    "id": "/the-loai-107-vampire.html",
-                    "label": "Vampire"
-                },
-                {
-                    "id": "/the-loai-208-vanilla.html",
-                    "label": "Vanilla"
-                },
-                {
-                    "id": "/the-loai-95-virgin.html",
-                    "label": "Virgin"
-                },
-                {
-                    "id": "/the-loai-270-webtoon.html",
-                    "label": "Webtoon"
-                },
-                {
-                    "id": "/the-loai-94-x_ray.html",
-                    "label": "X-ray"
-                },
-                {
-                    "id": "/the-loai-112-yandere.html",
-                    "label": "Yandere"
-                },
-                {
-                    "id": "/the-loai-96-yaoi.html",
-                    "label": "Yaoi"
-                },
-                {
-                    "id": "/the-loai-97-yuri.html",
-                    "label": "Yuri"
-                },
-                {
-                    "id": "/the-loai-128-zombie.html",
-                    "label": "Zombie"
-                }
-            ];
-            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) })];
+            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) })];
             return tagSections;
         });
     }
@@ -1520,7 +870,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
 }
 exports.HentaiVN = HentaiVN;
 
-},{"./HentaiVNParser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
+},{"./HentaiVNParser":57,"./tags.json":58,"paperback-extensions-common":13}],57:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isLastPage = exports.parseTags = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.parseAddedSections = exports.parseHomeSections = exports.parseChapterDetails = exports.parseChapters = exports.parseMangaDetails = void 0;
@@ -1776,5 +1126,661 @@ const decodeHTMLEntity = (str) => {
     return entities.decodeHTML(str);
 };
 
-},{"entities":5,"paperback-extensions-common":13}]},{},[56])(56)
+},{"entities":5,"paperback-extensions-common":13}],58:[function(require,module,exports){
+module.exports=[
+    {
+        "id": "/the-loai-3-3d_hentai.html",
+        "label": "3D Hentai"
+    },
+    {
+        "id": "/the-loai-5-action.html",
+        "label": "Action"
+    },
+    {
+        "id": "/the-loai-116-adult.html",
+        "label": "Adult"
+    },
+    {
+        "id": "/the-loai-203-adventure.html",
+        "label": "Adventure"
+    },
+    {
+        "id": "/the-loai-20-ahegao.html",
+        "label": "Ahegao"
+    },
+    {
+        "id": "/the-loai-21-anal.html",
+        "label": "Anal"
+    },
+    {
+        "id": "/the-loai-249-angel.html",
+        "label": "Angel"
+    },
+    {
+        "id": "/the-loai-131-anh_dong.html",
+        "label": "Ảnh động"
+    },
+    {
+        "id": "/the-loai-127-animal.html",
+        "label": "Animal"
+    },
+    {
+        "id": "/the-loai-22-animal_girl.html",
+        "label": "Animal girl"
+    },
+    {
+        "id": "/the-loai-115-artist.html",
+        "label": "Artist CG"
+    },
+    {
+        "id": "/the-loai-257-bbm.html",
+        "label": "BBM"
+    },
+    {
+        "id": "/the-loai-251-bbw.html",
+        "label": "BBW"
+    },
+    {
+        "id": "/the-loai-24-bdsm.html",
+        "label": "BDSM"
+    },
+    {
+        "id": "/the-loai-25-bestiality.html",
+        "label": "Bestiality"
+    },
+    {
+        "id": "/the-loai-133-big_ass.html",
+        "label": "Big Ass"
+    },
+    {
+        "id": "/the-loai-23-big_boobs.html",
+        "label": "Big\n            Boobs"
+    },
+    {
+        "id": "/the-loai-32-big_penis.html",
+        "label": "Big Penis"
+    },
+    {
+        "id": "/the-loai-267-blackmail.html",
+        "label": "Blackmail"
+    },
+    {
+        "id": "/the-loai-27-bloomers.html",
+        "label": "Bloomers"
+    },
+    {
+        "id": "/the-loai-28-blowjobs.html",
+        "label": "BlowJobs"
+    },
+    {
+        "id": "/the-loai-29-body_swap.html",
+        "label": "Body Swap"
+    },
+    {
+        "id": "/the-loai-30-bodysuit.html",
+        "label": "Bodysuit"
+    },
+    {
+        "id": "/the-loai-254-bondage.html",
+        "label": "Bondage"
+    },
+    {
+        "id": "/the-loai-33-breast_sucking.html",
+        "label": "Breast Sucking"
+    },
+    {
+        "id": "/the-loai-248-boob-jobs.html",
+        "label": "BreastJobs"
+    },
+    {
+        "id": "/the-loai-31-brocon.html",
+        "label": "Brocon"
+    },
+    {
+        "id": "/the-loai-242-brother.html",
+        "label": "Brother"
+    },
+    {
+        "id": "/the-loai-241-business-suit.html",
+        "label": "Business Suit"
+    },
+    {
+        "id": "/the-loai-39-catgirls.html",
+        "label": "Catgirls"
+    },
+    {
+        "id": "/the-loai-101-che_it.html",
+        "label": "Che ít"
+    },
+    {
+        "id": "/the-loai-129-che_nhieu.html",
+        "label": "Che nhiều"
+    },
+    {
+        "id": "/the-loai-34-cheating.html",
+        "label": "Cheating"
+    },
+    {
+        "id": "/the-loai-35-chikan.html",
+        "label": "Chikan"
+    },
+    {
+        "id": "/the-loai-271-chinese-dress.html",
+        "label": "Chinese Dress"
+    },
+    {
+        "id": "/the-loai-100-co_che.html",
+        "label": "Có che"
+    },
+    {
+        "id": "/the-loai-36-comedy.html",
+        "label": "Comedy"
+    },
+    {
+        "id": "/the-loai-120-comic.html",
+        "label": "Comic"
+    },
+    {
+        "id": "/the-loai-210-condom.html",
+        "label": "Condom"
+    },
+    {
+        "id": "/the-loai-38-cosplay.html",
+        "label": "Cosplay"
+    },
+    {
+        "id": "/the-loai-2-cousin.html",
+        "label": "Cousin"
+    },
+    {
+        "id": "/the-loai-269-cunnilingus.html",
+        "label": "Cunnilingus"
+    },
+    {
+        "id": "/the-loai-40-dark_skin.html",
+        "label": "Dark Skin"
+    },
+    {
+        "id": "/the-loai-262-daughter.html",
+        "label": "Daughter"
+    },
+    {
+        "id": "/the-loai-268-deepthroat.html",
+        "label": "Deepthroat"
+    },
+    {
+        "id": "/the-loai-132-demon.html",
+        "label": "Demon"
+    },
+    {
+        "id": "/the-loai-212-demon-girl.html",
+        "label": "DemonGirl"
+    },
+    {
+        "id": "/the-loai-104-devil.html",
+        "label": "Devil"
+    },
+    {
+        "id": "/the-loai-105-devilgirl.html",
+        "label": "DevilGirl"
+    },
+    {
+        "id": "/the-loai-253-dirty.html",
+        "label": "Dirty"
+    },
+    {
+        "id": "/the-loai-41-dirty_old_man.html",
+        "label": "Dirty Old Man"
+    },
+    {
+        "id": "/the-loai-260-doggirl.html",
+        "label": "DogGirl"
+    },
+    {
+        "id": "/the-loai-42-double_penetration.html",
+        "label": "Double Penetration"
+    },
+    {
+        "id": "/the-loai-44-doujinshi.html",
+        "label": "Doujinshi"
+    },
+    {
+        "id": "/the-loai-4-drama.html",
+        "label": "Drama"
+    },
+    {
+        "id": "/the-loai-43-drug.html",
+        "label": "Drug"
+    },
+    {
+        "id": "/the-loai-45-ecchi.html",
+        "label": "Ecchi"
+    },
+    {
+        "id": "/the-loai-245-elder-sister.html",
+        "label": "Elder\n            Sister"
+    },
+    {
+        "id": "/the-loai-125-elf.html",
+        "label": "Elf"
+    },
+    {
+        "id": "/the-loai-46-exhibitionism.html",
+        "label": "Exhibitionism"
+    },
+    {
+        "id": "/the-loai-123-fantasy.html",
+        "label": "Fantasy"
+    },
+    {
+        "id": "/the-loai-243-father.html",
+        "label": "Father"
+    },
+    {
+        "id": "/the-loai-47-femdom.html",
+        "label": "Femdom"
+    },
+    {
+        "id": "/the-loai-48-fingering.html",
+        "label": "Fingering"
+    },
+    {
+        "id": "/the-loai-108-footjob.html",
+        "label": "Footjob"
+    },
+    {
+        "id": "/the-loai-259-foxgirl.html",
+        "label": "Foxgirls"
+    },
+    {
+        "id": "/the-loai-37-full_color.html",
+        "label": "Full Color"
+    },
+    {
+        "id": "/the-loai-202-furry.html",
+        "label": "Furry"
+    },
+    {
+        "id": "/the-loai-50-futanari.html",
+        "label": "Futanari"
+    },
+    {
+        "id": "/the-loai-130-game.html",
+        "label": "Game"
+    },
+    {
+        "id": "/the-loai-51-gangbang.html",
+        "label": "GangBang"
+    },
+    {
+        "id": "/the-loai-206-garter_belts.html",
+        "label": "Garter Belts"
+    },
+    {
+        "id": "/the-loai-52-gender_bender.html",
+        "label": "Gender Bender"
+    },
+    {
+        "id": "/the-loai-106-ghost.html",
+        "label": "Ghost"
+    },
+    {
+        "id": "/the-loai-56-glasses.html",
+        "label": "Glasses"
+    },
+    {
+        "id": "/the-loai-264-gothic-lolita.html",
+        "label": "Gothic Lolita"
+    },
+    {
+        "id": "/the-loai-53-group.html",
+        "label": "Group"
+    },
+    {
+        "id": "/the-loai-55-guro.html",
+        "label": "Guro"
+    },
+    {
+        "id": "/the-loai-247-hairy.html",
+        "label": "Hairy"
+    },
+    {
+        "id": "/the-loai-57-handjob.html",
+        "label": "Handjob"
+    },
+    {
+        "id": "/the-loai-58-harem.html",
+        "label": "Harem"
+    },
+    {
+        "id": "/the-loai-102-hentaivn.html",
+        "label": "HentaiVN"
+    },
+    {
+        "id": "/the-loai-80-historical.html",
+        "label": "Historical"
+    },
+    {
+        "id": "/the-loai-122-horror.html",
+        "label": "Horror"
+    },
+    {
+        "id": "/the-loai-59-housewife.html",
+        "label": "Housewife"
+    },
+    {
+        "id": "/the-loai-60-humiliation.html",
+        "label": "Humiliation"
+    },
+    {
+        "id": "/the-loai-61-idol.html",
+        "label": "Idol"
+    },
+    {
+        "id": "/the-loai-244-imouto.html",
+        "label": "Imouto"
+    },
+    {
+        "id": "/the-loai-62-incest.html",
+        "label": "Incest"
+    },
+    {
+        "id": "/the-loai-26-insect.html",
+        "label": "Insect (Côn Trùng)"
+    },
+    {
+        "id": "/the-loai-99-khong_che.html",
+        "label": "Không che"
+    },
+    {
+        "id": "/the-loai-110-kimono.html",
+        "label": "Kimono"
+    },
+    {
+        "id": "/the-loai-265-kuudere.html",
+        "label": "Kuudere"
+    },
+    {
+        "id": "/the-loai-63-loli.html",
+        "label": "Lolicon"
+    },
+    {
+        "id": "/the-loai-64-maids.html",
+        "label": "Maids"
+    },
+    {
+        "id": "/the-loai-273-manhua.html",
+        "label": "Manhua"
+    },
+    {
+        "id": "/the-loai-114-manhwa.html",
+        "label": "Manhwa"
+    },
+    {
+        "id": "/the-loai-65-tu_suong.html",
+        "label": "Masturbation"
+    },
+    {
+        "id": "/the-loai-119-mature.html",
+        "label": "Mature"
+    },
+    {
+        "id": "/the-loai-124-miko.html",
+        "label": "Miko"
+    },
+    {
+        "id": "/the-loai-126-milf.html",
+        "label": "Milf"
+    },
+    {
+        "id": "/the-loai-121-mind_break.html",
+        "label": "Mind Break"
+    },
+    {
+        "id": "/the-loai-113-mind_control.html",
+        "label": "Mind Control"
+    },
+    {
+        "id": "/the-loai-263-mizugi.html",
+        "label": "Mizugi"
+    },
+    {
+        "id": "/the-loai-66-monster.html",
+        "label": "Monster"
+    },
+    {
+        "id": "/the-loai-67-monstergirl.html",
+        "label": "Monstergirl"
+    },
+    {
+        "id": "/the-loai-103-mother.html",
+        "label": "Mother"
+    },
+    {
+        "id": "/the-loai-205-nakadashi.html",
+        "label": "Nakadashi"
+    },
+    {
+        "id": "/the-loai-1-netori.html",
+        "label": "Netori"
+    },
+    {
+        "id": "/the-loai-201-non_hen.html",
+        "label": "Non-hen"
+    },
+    {
+        "id": "/the-loai-68-ntr.html",
+        "label": "NTR"
+    },
+    {
+        "id": "/the-loai-272-nun.html",
+        "label": "Nun"
+    },
+    {
+        "id": "/the-loai-69-nurse.html",
+        "label": "Nurse"
+    },
+    {
+        "id": "/the-loai-211-old-man.html",
+        "label": "Old Man"
+    },
+    {
+        "id": "/the-loai-71-oneshot.html",
+        "label": "Oneshot"
+    },
+    {
+        "id": "/the-loai-70-oral.html",
+        "label": "Oral"
+    },
+    {
+        "id": "/the-loai-209-osananajimi.html",
+        "label": "Osananajimi"
+    },
+    {
+        "id": "/the-loai-72-paizuri.html",
+        "label": "Paizuri"
+    },
+    {
+        "id": "/the-loai-204-pantyhose.html",
+        "label": "Pantyhose"
+    },
+    {
+        "id": "/the-loai-73-pregnant.html",
+        "label": "Pregnant"
+    },
+    {
+        "id": "/the-loai-98-rape.html",
+        "label": "Rape"
+    },
+    {
+        "id": "/the-loai-258-rimjob.html",
+        "label": "Rimjob"
+    },
+    {
+        "id": "/the-loai-117-romance.html",
+        "label": "Romance"
+    },
+    {
+        "id": "/the-loai-207-ryona.html",
+        "label": "Ryona"
+    },
+    {
+        "id": "/the-loai-134-scat.html",
+        "label": "Scat"
+    },
+    {
+        "id": "/the-loai-74-school_uniform.html",
+        "label": "School Uniform"
+    },
+    {
+        "id": "/the-loai-75-schoolgirl.html",
+        "label": "SchoolGirl"
+    },
+    {
+        "id": "/the-loai-87-series.html",
+        "label": "Series"
+    },
+    {
+        "id": "/the-loai-88-sex_toys.html",
+        "label": "Sex Toys"
+    },
+    {
+        "id": "/the-loai-246-shimapan.html",
+        "label": "Shimapan"
+    },
+    {
+        "id": "/the-loai-118-short_hentai.html",
+        "label": "Short Hentai"
+    },
+    {
+        "id": "/the-loai-77-shota.html",
+        "label": "Shota"
+    },
+    {
+        "id": "/the-loai-76-shoujo.html",
+        "label": "Shoujo"
+    },
+    {
+        "id": "/the-loai-79-siscon.html",
+        "label": "Siscon"
+    },
+    {
+        "id": "/the-loai-78-sister.html",
+        "label": "Sister"
+    },
+    {
+        "id": "/the-loai-82-slave.html",
+        "label": "Slave"
+    },
+    {
+        "id": "/the-loai-213-sleeping.html",
+        "label": "Sleeping"
+    },
+    {
+        "id": "/the-loai-84-small_boobs.html",
+        "label": "Small\n            Boobs"
+    },
+    {
+        "id": "/the-loai-83-sports.html",
+        "label": "Sports"
+    },
+    {
+        "id": "/the-loai-81-stockings.html",
+        "label": "Stockings"
+    },
+    {
+        "id": "/the-loai-85-supernatural.html",
+        "label": "Supernatural"
+    },
+    {
+        "id": "/the-loai-250-sweating.html",
+        "label": "Sweating"
+    },
+    {
+        "id": "/the-loai-86-swimsuit.html",
+        "label": "Swimsuit"
+    },
+    {
+        "id": "/the-loai-266-tall-girls.html",
+        "label": "Tall Girl"
+    },
+    {
+        "id": "/the-loai-91-teacher.html",
+        "label": "Teacher"
+    },
+    {
+        "id": "/the-loai-89-tentacles.html",
+        "label": "Tentacles"
+    },
+    {
+        "id": "/the-loai-109-time_stop.html",
+        "label": "Time Stop"
+    },
+    {
+        "id": "/the-loai-90-tomboy.html",
+        "label": "Tomboy"
+    },
+    {
+        "id": "/the-loai-252-tracksuit.html",
+        "label": "Tracksuit"
+    },
+    {
+        "id": "/the-loai-256-transformation.html",
+        "label": "Transformation"
+    },
+    {
+        "id": "/the-loai-92-trap.html",
+        "label": "Trap"
+    },
+    {
+        "id": "/the-loai-111-tsundere.html",
+        "label": "Tsundere"
+    },
+    {
+        "id": "/the-loai-93-twins.html",
+        "label": "Twins"
+    },
+    {
+        "id": "/the-loai-261-twintails.html",
+        "label": "Twintails"
+    },
+    {
+        "id": "/the-loai-107-vampire.html",
+        "label": "Vampire"
+    },
+    {
+        "id": "/the-loai-208-vanilla.html",
+        "label": "Vanilla"
+    },
+    {
+        "id": "/the-loai-95-virgin.html",
+        "label": "Virgin"
+    },
+    {
+        "id": "/the-loai-270-webtoon.html",
+        "label": "Webtoon"
+    },
+    {
+        "id": "/the-loai-94-x_ray.html",
+        "label": "X-ray"
+    },
+    {
+        "id": "/the-loai-112-yandere.html",
+        "label": "Yandere"
+    },
+    {
+        "id": "/the-loai-96-yaoi.html",
+        "label": "Yaoi"
+    },
+    {
+        "id": "/the-loai-97-yuri.html",
+        "label": "Yuri"
+    },
+    {
+        "id": "/the-loai-128-zombie.html",
+        "label": "Zombie"
+    }
+]
+
+},{}]},{},[56])(56)
 });
