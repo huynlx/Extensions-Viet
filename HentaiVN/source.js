@@ -938,21 +938,21 @@ exports.parseChapterDetails = ($, mangaId, chapterId) => {
     return chapterDetails;
 };
 exports.parseHomeSections = ($, sections, sectionCallback) => {
-    var _a, _b, _c, _d;
+    var _a, _b;
     for (const section of sections)
         sectionCallback(section);
     //Popular
     let popular = [];
     for (let manga of $('li', '.block-top').toArray()) {
         const title = $('.box-description h2', manga).first().text();
-        const id = ((_b = (_a = $('a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop()) === null || _b === void 0 ? void 0 : _b.split('doc-truyen-')[0]) + 'doc-truyen-.html';
+        const id = (_a = $('a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
         const image = $('a > div', manga).css('background');
         const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
         const subtitle = $(".info-detail", manga).last().text().trim();
         if (!id || !title)
             continue;
         popular.push(createMangaTile({
-            id: id,
+            id: encodeURIComponent(id),
             image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
             title: createIconText({ text: title }),
             subtitleText: createIconText({ text: subtitle }),
@@ -964,14 +964,14 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
     let staffPick = [];
     for (let manga of $('ul', 'ul.page-item').toArray()) {
         const title = $('span > a > h2', manga).first().text();
-        const id = ((_d = (_c = $('a', manga).attr('href')) === null || _c === void 0 ? void 0 : _c.split('/').pop()) === null || _d === void 0 ? void 0 : _d.split('doc-truyen-')[0]) + 'doc-truyen-.html';
+        const id = (_b = $('a', manga).attr('href')) === null || _b === void 0 ? void 0 : _b.split('/').pop();
         const image = $('a > div', manga).css('background');
         const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
         const subtitle = $("a > span > b", manga).last().text().trim();
         if (!id || !title)
             continue;
         staffPick.push(createMangaTile({
-            id: id,
+            id: encodeURIComponent(id),
             image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
             title: createIconText({ text: title }),
             subtitleText: createIconText({ text: subtitle }),
@@ -982,20 +982,20 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
     // for (const section of sections) sectionCallback(section);
 };
 exports.parseAddedSections = ($, sections, sectionCallback) => {
-    var _a, _b;
+    var _a;
     //Recently Updated
     sectionCallback(sections[2]);
     let added = [];
     for (let manga of $('.item', '.block-item').toArray()) {
         const title = $('.box-description > p > a', manga).text();
-        const id = ((_b = (_a = $('.box-cover > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop()) === null || _b === void 0 ? void 0 : _b.split('doc-truyen-')[0]) + 'doc-truyen-.html';
+        const id = (_a = $('.box-cover > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
         const image = $('.box-cover > a > img', manga).attr('data-src');
         const subtitle = $(".box-description p:first-child", manga).text().trim();
         const fixsub = subtitle.split(' - ')[1];
         if (!id || !title)
             continue;
         added.push(createMangaTile({
-            id: id,
+            id: encodeURIComponent(id),
             image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
             title: createIconText({ text: title }),
             subtitleText: createIconText({ text: fixsub }),
@@ -1010,18 +1010,18 @@ exports.generateSearch = (query) => {
     return encodeURI(keyword);
 };
 exports.parseSearch = ($) => {
-    var _a, _b;
+    var _a;
     const mangas = [];
     for (let manga of $('.item', '.block-item').toArray()) {
         const title = $('.box-description > p > a', manga).text();
-        const id = ((_b = (_a = $('.box-cover > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop()) === null || _b === void 0 ? void 0 : _b.split('doc-truyen-')[0]) + 'doc-truyen-.html';
+        const id = (_a = $('.box-cover > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
         const image = $('.box-cover > a > img', manga).attr('data-src');
         const subtitle = $(".box-description p:first-child", manga).text().trim();
         const fixsub = subtitle.split(' - ')[1];
         if (!id || !title)
             continue;
         mangas.push(createMangaTile({
-            id: id,
+            id: encodeURIComponent(id),
             image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
             title: createIconText({ text: title }),
             subtitleText: createIconText({ text: fixsub }),
@@ -1030,20 +1030,20 @@ exports.parseSearch = ($) => {
     return mangas;
 };
 exports.parseViewMore = ($, select) => {
-    var _a, _b, _c, _d;
+    var _a, _b;
     const manga = [];
     const collectedIds = [];
     if (select === 1) {
         for (const obj of $(".item", "ul").toArray()) {
             const title = $("span > a > h2", obj).text();
-            const id = ((_b = (_a = $("a", obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop()) === null || _b === void 0 ? void 0 : _b.split('doc-truyen-')[0]) + 'doc-truyen-.html';
+            const id = (_a = $("a", obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
             const image = $("a > img", obj).attr('data-src');
             const subtitle = $("a > span > b", obj).text().trim();
             if (!id || !title)
                 continue;
             if (!collectedIds.includes(id)) {
                 manga.push(createMangaTile({
-                    id,
+                    id: encodeURIComponent(id),
                     image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({ text: decodeHTMLEntity(title) }),
                     subtitleText: createIconText({ text: subtitle }),
@@ -1055,7 +1055,7 @@ exports.parseViewMore = ($, select) => {
     else {
         for (let obj of $('.item', '.block-item').toArray()) {
             const title = $('.box-description > p > a', obj).text();
-            const id = ((_d = (_c = $('.box-cover > a', obj).attr('href')) === null || _c === void 0 ? void 0 : _c.split('/').pop()) === null || _d === void 0 ? void 0 : _d.split('doc-truyen-')[0]) + 'doc-truyen-.html';
+            const id = (_b = $('.box-cover > a', obj).attr('href')) === null || _b === void 0 ? void 0 : _b.split('/').pop();
             const image = $('.box-cover > a > img', obj).attr('data-src');
             const subtitle = $(".box-description p:first-child", obj).text().trim();
             const fixsub = subtitle.split(' - ')[1];
@@ -1063,7 +1063,7 @@ exports.parseViewMore = ($, select) => {
                 continue;
             if (!collectedIds.includes(id)) {
                 manga.push(createMangaTile({
-                    id,
+                    id: encodeURIComponent(id),
                     image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({ text: decodeHTMLEntity(title) }),
                     subtitleText: createIconText({ text: fixsub }),
