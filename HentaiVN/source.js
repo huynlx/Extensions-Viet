@@ -821,13 +821,13 @@ class HentaiVN extends paperback_extensions_common_1.Source {
         });
     }
     getSearchResults(query, metadata) {
-        var _a;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             // const keyword = generateSearch(query);
-            // const tag = query.includedTags?.map(tag => tag.id) ?? [];
+            const tag = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: query.title ? `https://hentaivn.tv/tim-kiem-truyen.html?key=${query.title}` : `https://hentaivn.tv/the-loai-254-bondage.html?`,
+                url: query.title ? `https://hentaivn.tv/tim-kiem-truyen.html?key=${query.title}` : `https://hentaivn.tv${tag[0]}?`,
                 method,
                 param: `&page=${page}`
             });
@@ -1014,7 +1014,7 @@ exports.generateSearch = (query) => {
 exports.parseSearch = ($) => {
     var _a;
     const mangas = [];
-    for (let manga of $('.item', '.block-item:last-child').toArray()) {
+    for (let manga of $('.item', '.block-item').toArray()) {
         const title = $('.box-description > p > a', manga).text();
         const id = (_a = $('.box-cover > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
         const image = $('.box-cover > a > img', manga).attr('data-src');
