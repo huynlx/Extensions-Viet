@@ -866,11 +866,10 @@ exports.parseMangaDetails = ($, mangaId) => {
     var _a;
     let tags = [];
     let creator = '';
-    let status = 0;
+    let status = 1; //completed, 1 = Ongoing
     let desc = '';
     for (const obj of $('p', '.page-info').toArray()) {
-        switch ($('span.info', obj).text().trim()) {
-            case "Thể Loại:":
+        switch ($('span.info:first-child', obj).text().trim()) {
             case "Thể Loại:":
                 for (const genres of $('span:not(.info)', obj).toArray()) {
                     const genre = $('a', genres).text().trim();
