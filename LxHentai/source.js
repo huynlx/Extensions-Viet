@@ -804,14 +804,14 @@ class Parser {
         for (const manga of $('.swiper-slide:first-child > .gridSlide > div').toArray()) {
             const title = $('.slideName > a', manga).first().text();
             const id = $('.slideName > a', manga).attr('href');
-            // const image = $('.itemSlide', manga).css('background');
-            // const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+            const image = $('.itemSlide', manga).css('background');
+            const bg = image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
             const subtitle = $(".newestChapter > a", manga).last().text().trim();
             if (!id || !title)
                 continue;
             Hot.push(createMangaTile({
                 id: id,
-                image: "https://i.imgur.com/GYUxEX8.png",
+                image: !image ? "https://i.imgur.com/GYUxEX8.png" : ("https://lxhentai.com" + (bg === null || bg === void 0 ? void 0 : bg.split("'")[1])),
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
