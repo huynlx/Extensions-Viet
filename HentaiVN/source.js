@@ -842,7 +842,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
     }
     getSearchTags() {
         return __awaiter(this, void 0, void 0, function* () {
-            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags_json_1.default.map(x => createTag(x)) })];
+            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại (Chỉ chọn 1)', tags: tags_json_1.default.map(x => createTag(x)) })];
             return tagSections;
         });
     }
@@ -912,7 +912,7 @@ exports.parseChapters = ($, mangaId) => {
             continue;
         const chapterNumber = i;
         chapters.push(createChapter({
-            id,
+            id: encodeURIComponent(id),
             chapNum: chapterNumber,
             name,
             mangaId: mangaId,
