@@ -695,7 +695,7 @@ exports.HentaiVNInfo = {
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from HentaiHere',
-    websiteBaseURL: '',
+    websiteBaseURL: 'https://hentaivn.tv/',
     contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
         {
