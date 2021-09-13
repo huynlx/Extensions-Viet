@@ -407,7 +407,7 @@ exports.LxHentaiInfo = {
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from LxHentai.',
-    websiteBaseURL: DOMAIN,
+    websiteBaseURL: 'https://lxhentai.com/',
     contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
         {
@@ -615,6 +615,12 @@ class LxHentai extends paperback_extensions_common_1.Source {
         return {
             referer: 'https://lxhentai.com/'
         };
+    }
+    getCloudflareBypassRequest() {
+        return createRequestObject({
+            url: 'https://lxhentai.com/',
+            method: 'GET',
+        });
     }
 }
 exports.LxHentai = LxHentai;
