@@ -537,8 +537,9 @@ exports.Parser = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 class Parser {
     parseMangaDetails($, mangaId) {
+        var _a;
         let tags = [];
-        const cc = $('.page-header > p').text();
+        const cc = (_a = $('.page-header > p').text() !== "") !== null && _a !== void 0 ? _a : "Không có mô tả";
         tags.push(createTag({
             label: 'Horror',
             id: 'Horror',
