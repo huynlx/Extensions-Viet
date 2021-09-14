@@ -732,9 +732,9 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             let creator = '';
             let status = 1; //completed, 1 = Ongoing
             let desc = $('.story-detail-info > p').text();
-            for (const t of $('a', '.list01').toArray()) {
-                const genre = $(t).text().trim();
-                const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
+            for (const t of $('.li03', '.list01').toArray()) {
+                const genre = $('a', t).text().trim();
+                const id = (_a = $('a', t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push({ label: genre, id });
             }
             creator = $('.txt > p:nth-of-type(1) > a').text();
@@ -787,9 +787,9 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(response.data);
             const pages = [];
             for (let obj of $('.story-see-content > img').toArray()) {
-                if (!obj.attribs['data-original'])
+                if (!obj.attribs['src'])
                     continue;
-                let link = obj.attribs['data-original'];
+                let link = obj.attribs['src'];
                 pages.push(link);
             }
             const chapterDetails = createChapterDetails({
