@@ -617,8 +617,7 @@ class HorrorFC extends paperback_extensions_common_1.Source {
             let url = "";
             switch (homepageSectionId) {
                 case "viewest":
-                    param = `?status=-1&sort=10&page=${page}`;
-                    url = `${DOMAIN}tim-truyen`;
+                    url = `https://horrorfc.net/`;
                     break;
                 case "hot":
                     param = `?page=${page}`;
@@ -901,20 +900,17 @@ class Parser {
         return newAddedItems;
     }
     parseViewMoreItems($) {
-        var _a;
         const mangas = [];
-        for (const manga of $('div.item', 'div.row').toArray()) {
-            const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
-            const id = (_a = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-            const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
-            const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
+        for (let manga of $('li', 'ul.row').toArray().splice(0, 10)) {
+            const title = $('a', manga).attr('title');
+            const id = $('a', manga).attr('href');
+            const image = $('a > img', manga).first().attr('src');
             if (!id || !title)
                 continue;
             mangas.push(createMangaTile({
                 id: id,
                 image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
                 title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: subtitle }),
             }));
         }
         return mangas;
