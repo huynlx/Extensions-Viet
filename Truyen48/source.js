@@ -1167,12 +1167,6 @@ class Truyen48 extends paperback_extensions_common_1.Source {
             referer: `${DOMAIN} `
         };
     }
-    getCloudflareBypassRequest() {
-        return createRequestObject({
-            url: `${DOMAIN}`,
-            method: 'GET',
-        });
-    }
 }
 exports.Truyen48 = Truyen48;
 
