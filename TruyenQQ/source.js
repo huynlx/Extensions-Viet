@@ -683,19 +683,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LxHentai = exports.LxHentaiInfo = void 0;
+exports.TruyenQQ = exports.TruyenQQInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
-const LxHentaiParser_1 = require("./LxHentaiParser");
+const TruyenQQParser_1 = require("./TruyenQQParser");
 const DOMAIN = `https://hentaivn.tv/`;
 const method = 'GET';
-exports.LxHentaiInfo = {
+exports.TruyenQQInfo = {
     version: '2.5.0',
     name: 'LxHentai',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from LxHentai',
-    websiteBaseURL: "http://m.lxhentai.com/",
+    description: 'Extension that pulls manga from TruyenQQ',
+    websiteBaseURL: "http://truyenqqtop.com/",
     contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
         {
@@ -704,7 +704,7 @@ exports.LxHentaiInfo = {
         }
     ]
 };
-class LxHentai extends paperback_extensions_common_1.Source {
+class TruyenQQ extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
         // getMangaShareUrl(mangaId: string): string { return `${DOMAIN}${mangaId}` };
@@ -714,7 +714,7 @@ class LxHentai extends paperback_extensions_common_1.Source {
         });
         // globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
         //     return {
-        //         referer: "http://www.nhattruyenvip.com/"
+        //         referer: "http://truyenqqtop.com/"
         //     }
         // }
     }
@@ -727,7 +727,7 @@ class LxHentai extends paperback_extensions_common_1.Source {
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            return LxHentaiParser_1.parseMangaDetails($, mangaId);
+            return TruyenQQParser_1.parseMangaDetails($, mangaId);
         });
     }
     getChapters(mangaId) {
@@ -739,7 +739,7 @@ class LxHentai extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            return LxHentaiParser_1.parseChapters($, mangaId);
+            return TruyenQQParser_1.parseChapters($, mangaId);
         });
     }
     getChapterDetails(mangaId, chapterId) {
@@ -751,7 +751,7 @@ class LxHentai extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
-            return LxHentaiParser_1.parseChapterDetails($, mangaId, chapterId);
+            return TruyenQQParser_1.parseChapterDetails($, mangaId, chapterId);
         });
     }
     getHomePageSections(sectionCallback) {
@@ -859,39 +859,42 @@ class LxHentai extends paperback_extensions_common_1.Source {
             sectionCallback(newAdded);
         });
     }
-    // async getViewMoreItems(homepageSectionId: string, metadata: any): Promise<PagedResults> {
-    //     let page: number = metadata?.page ?? 1;
-    //     let select = 1;
-    //     let param = '';
-    //     let url = '';
-    //     switch (homepageSectionId) {
-    //         case "recently-updated":
-    //             url = `${DOMAIN}`;
-    //             param = `?page=${page}`;
-    //             select = 1;
-    //             break;
-    //         case "recently_added":
-    //             url = '${DOMAIN}danh-sach.html';
-    //             param = `?page=${page}`;
-    //             select = 2;
-    //             break;
-    //         default:
-    //             return Promise.resolve(createPagedResults({ results: [] }))
-    //     }
-    //     const request = createRequestObject({
-    //         url,
-    //         method,
-    //         param
-    //     });
-    //     const response = await this.requestManager.schedule(request, 1);
-    //     const $ = this.cheerio.load(response.data);
-    //     const manga = parseViewMore($, select);
-    //     metadata = !isLastPage($) ? { page: page + 1 } : undefined;
-    //     return createPagedResults({
-    //         results: manga,
-    //         metadata,
-    //     });
-    // }
+    getViewMoreItems(homepageSectionId, metadata) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
+            let select = 1;
+            let param = '';
+            let url = '';
+            switch (homepageSectionId) {
+                case "recently-updated":
+                    url = `${DOMAIN}`;
+                    param = `?page=${page}`;
+                    select = 1;
+                    break;
+                case "recently_added":
+                    url = '${DOMAIN}danh-sach.html';
+                    param = `?page=${page}`;
+                    select = 2;
+                    break;
+                default:
+                    return Promise.resolve(createPagedResults({ results: [] }));
+            }
+            const request = createRequestObject({
+                url,
+                method,
+                param
+            });
+            const response = yield this.requestManager.schedule(request, 1);
+            const $ = this.cheerio.load(response.data);
+            const manga = TruyenQQParser_1.parseViewMore($, select);
+            metadata = !TruyenQQParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            return createPagedResults({
+                results: manga,
+                metadata,
+            });
+        });
+    }
     getSearchResults(query, metadata) {
         var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
@@ -904,8 +907,8 @@ class LxHentai extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            const manga = LxHentaiParser_1.parseSearch($);
-            metadata = !LxHentaiParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            const manga = TruyenQQParser_1.parseSearch($);
+            metadata = !TruyenQQParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: manga,
                 metadata
@@ -935,9 +938,9 @@ class LxHentai extends paperback_extensions_common_1.Source {
         });
     }
 }
-exports.LxHentai = LxHentai;
+exports.TruyenQQ = TruyenQQ;
 
-},{"./LxHentaiParser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
+},{"./TruyenQQParser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isLastPage = exports.parseTags = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.parseNewUpdatedSection = exports.parseHotSection = exports.parseChapterDetails = exports.parseChapters = exports.parseMangaDetails = void 0;
