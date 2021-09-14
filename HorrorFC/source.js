@@ -545,7 +545,6 @@ class Parser {
         }));
         return createManga({
             id: mangaId.split("::")[0],
-            // desc: ($('.page-header > p').text()) ?? "",,
             desc: $('<div/>').html(cc).text(),
             titles: [$('.page-title').text()],
             image: mangaId.split("::")[1],
