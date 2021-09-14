@@ -729,7 +729,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let tags = [];
-            let creator = '';
+            let creator = [];
             let status = 1; //completed, 1 = Ongoing
             let desc = $('.story-detail-info > p').text();
             for (const t of $('a', '.list01').toArray()) {
@@ -737,13 +737,16 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            creator = $('.txt > p:nth-of-type(1) > a').text();
+            for (const c of $('a', '.txt > p:nth-of-type(1)').toArray()) {
+                const name = $(c).text().trim();
+                creator.push(name);
+            }
             status = $('.txt > p:nth-of-type(2)').text().toLowerCase().includes("đang cập nhật") ? 1 : 0;
             const image = (_b = $('.left > img').attr('src')) !== null && _b !== void 0 ? _b : "";
             return createManga({
                 id: mangaId,
-                author: creator,
-                artist: creator,
+                author: creator.join(', '),
+                artist: creator.join(', '),
                 desc: desc === "" ? 'Không có mô tả' : desc,
                 titles: [$('.center > h1').text().trim()],
                 image: image,
