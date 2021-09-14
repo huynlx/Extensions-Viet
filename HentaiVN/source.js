@@ -865,21 +865,34 @@ exports.parseMangaDetails = ($, mangaId) => {
     let tags = [];
     let creator = '';
     let status = 1; //completed, 1 = Ongoing
-    let desc = $('.detail-content > p').text();
-    for (const t of $('a', '.row.mt-2 > div:nth-child(6)').toArray()) {
-        const genre = $(t).text().trim();
-        const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : t;
-        tags.push({ label: genre, id });
+    let desc = '';
+    for (const obj of $('p', '.page-info').toArray()) {
+        switch ($('span.info:first-child', obj).text().trim()) {
+            case "Thể Loại:":
+                for (const genres of $('span:not(.info)', obj).toArray()) {
+                    const genre = $('a', genres).text().trim();
+                    const id = (_a = $('a', genres).attr('href')) !== null && _a !== void 0 ? _a : genre;
+                    tags.push(createTag({ id: id, label: genre }));
+                }
+                break;
+            case "Tác giả:":
+                creator = $('span:nth-child(2) > a', obj).text();
+                break;
+            case "Tình Trạng:":
+                status = $('span:nth-child(2) > a', obj).text().toLowerCase().includes("đã hoàn thành") ? 0 : 1;
+                break;
+            case "Nội dung:":
+                desc = desc = $(obj).next().text();
+                break;
+        }
     }
-    creator = $('.row.mt-2 > div:nth-child(2)').text();
-    status = $('.row.mt-2 > div:nth-child(4)').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
-    const image = $('.col-md-4.text-center > img').attr('src');
+    const image = $('.page-ava > img').attr('src');
     return createManga({
         id: mangaId,
         author: creator,
         artist: creator,
         desc: desc === "" ? 'Không có mô tả' : desc,
-        titles: $('.title-detail').text().trim(),
+        titles: [$('.page-info > h1').text().trim()],
         image: image.replace("190", "300"),
         status,
         // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
