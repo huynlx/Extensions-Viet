@@ -715,6 +715,11 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             requestsPerSecond: 5,
             requestTimeout: 20000
         });
+        // globalRequestHeaders(): RequestHeaders {
+        //     return {
+        //         referer: `${DOMAIN}` + '/'
+        //     }
+        // }
         // getCloudflareBypassRequest() {
         //     return createRequestObject({
         //         url: `${DOMAIN}`,
@@ -845,11 +850,6 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             const tagSections = [createTagSection({ id: '0', label: 'Thể Loại (Chỉ chọn 1)', tags: tags_json_1.default.map(x => createTag(x)) })];
             return tagSections;
         });
-    }
-    globalRequestHeaders() {
-        return {
-            referer: `${DOMAIN}` + '/'
-        };
     }
 }
 exports.HentaiVN = HentaiVN;
