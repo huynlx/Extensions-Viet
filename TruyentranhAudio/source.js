@@ -859,7 +859,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                 const title = $('.series-title', manga).text().trim();
                 const id = (_a = $('.series-title > a', manga).attr('href')) !== null && _a !== void 0 ? _a : title;
                 const image = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', manga).attr('data-bg');
-                const sub = $('.more-chapter > a', manga).text().trim();
+                const sub = $('a', manga).last().text().trim();
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
@@ -886,7 +886,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                 const title = $('.series-title', manga).text().trim();
                 const id = (_b = $('.series-title > a', manga).attr('href')) !== null && _b !== void 0 ? _b : title;
                 const image = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', manga).attr('data-bg');
-                const sub = $('.more-chapter > a', manga).text().trim();
+                const sub = $('a', manga).last().text().trim();
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
                     id: id,
