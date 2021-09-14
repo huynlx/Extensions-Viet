@@ -716,12 +716,12 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
     }
-    getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh / ${mangaId} `; }
+    getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh/${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `${DOMAIN} truyen - tranh / ${mangaId} `;
+            const url = `${DOMAIN}truyen-tranh/${mangaId}`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -761,7 +761,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${DOMAIN} truyen - tranh / ${mangaId} `,
+                url: `${DOMAIN}truyen-tranh/${mangaId}`,
                 method,
             });
             const response = yield this.requestManager.schedule(request, 1);
@@ -783,7 +783,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
     getChapterDetails(mangaId, chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${DOMAIN} truyen - tranh / ${chapterId} `,
+                url: `${DOMAIN}truyen-tranh/${chapterId} `,
                 method
             });
             const response = yield this.requestManager.schedule(request, 1);
@@ -870,7 +870,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             featured.items = cc;
             sectionCallback(featured);
             //Hot
-            url = `${DOMAIN} truyen - yeu - thich.html`;
+            url = `${DOMAIN}truyen-yeu-thich.html`;
             request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -922,7 +922,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
             //New Added
-            url = `${DOMAIN} truyen - tranh - moi.html`;
+            url = `${DOMAIN}truyen-tranh-moi.html`;
             request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -950,7 +950,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             newAdded.items = newAddItems;
             sectionCallback(newAdded);
             //Boy
-            url = `${DOMAIN} truyen - con - trai.html`;
+            url = `${DOMAIN}truyen-con-trai.html`;
             request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -978,7 +978,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             boy.items = boyItems;
             sectionCallback(boy);
             //Girl
-            url = `${DOMAIN} truyen - con - gai.html`;
+            url = `${DOMAIN}truyen-con-gai.html`;
             request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -1015,19 +1015,19 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             let url = '';
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `${DOMAIN} truyen - moi - cap - nhat / trang - ${page}.html`;
+                    url = `${DOMAIN}truyen-moi-cap-nhat/trang-${page}.html`;
                     break;
                 case "new_added":
-                    url = `${DOMAIN} truyen - tranh - moi / trang - ${page}.html`;
+                    url = `${DOMAIN}truyen-tranh-moi/trang-${page}.html`;
                     break;
                 case "hot":
-                    url = `${DOMAIN} truyen - yeu - thich / trang - ${page}.html`;
+                    url = `${DOMAIN}truyen-yeu-thich/trang-${page}.html`;
                     break;
                 case "boy":
-                    url = `${DOMAIN} truyen - con - trai / trang - ${page}.html`;
+                    url = `${DOMAIN}truyen-con-trai/trang-${page}.html`;
                     break;
                 case "girl":
-                    url = `${DOMAIN} truyen - con - gai / trang - ${page}.html`;
+                    url = `${DOMAIN}truyen-con-gai/trang-${page}.html`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
@@ -1083,7 +1083,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             });
             search.category = (category !== null && category !== void 0 ? category : []).join(",");
             const request = createRequestObject({
-                url: query.title ? `${DOMAIN} tim - kiem / trang - ${page}.html` : `${DOMAIN} tim - kiem - nang - cao / trang - ${page}.html`,
+                url: query.title ? `${DOMAIN}tim-kiem/trang-${page}.html` : `${DOMAIN}tim-kiem-nang-cao/trang-${page}.html`,
                 method: "GET",
                 param: encodeURI(`? q = ${(_d = query.title) !== null && _d !== void 0 ? _d : ''}& category=${search.category}& country=${search.country}& status=${search.status}& minchapter=${search.minchapter}& sort=${search.sort} `)
             });
@@ -1100,7 +1100,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
     getSearchTags() {
         var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `${DOMAIN} tim - kiem - nang - cao.html`;
+            const url = `${DOMAIN}tim-kiem-nang-cao.html`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
