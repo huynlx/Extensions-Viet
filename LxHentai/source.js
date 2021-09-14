@@ -776,14 +776,14 @@ class LxHentai extends paperback_extensions_common_1.Source {
             hot.items = LxHentaiParser_1.parseHotSection($);
             sectionCallback(hot);
             //New Updates
-            // url = "http://m.lxhentai.com/"
-            // request = createRequestObject({
-            //     url: url,
-            //     method: "GET",
-            // });
-            // data = await this.requestManager.schedule(request, 1);
-            // $ = this.cheerio.load(data.data);
-            newUpdated.items = LxHentaiParser_1.parseNewUpdatedSection();
+            url = "http://m.lxhentai.com/";
+            request = createRequestObject({
+                url: url,
+                method: "GET",
+            });
+            data = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(data.data);
+            newUpdated.items = LxHentaiParser_1.parseNewUpdatedSection($);
             sectionCallback(newUpdated);
         });
     }
@@ -958,7 +958,7 @@ exports.parseHotSection = ($) => {
     }
     return popular;
 };
-exports.parseNewUpdatedSection = () => {
+exports.parseNewUpdatedSection = ($) => {
     let newUpdatedItems = [];
     // for (let manga of $('div', '.row').toArray()) {
     //     const title = $('a > b', manga).last().text();
