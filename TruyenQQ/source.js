@@ -879,10 +879,10 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
             for (let manga of $('li', '.list-stories').toArray().splice(0, 20)) {
-                let title = $(`h3.title - book > a`, manga).text().trim();
-                let subtitle = $(`.episode - book > a`, manga).text().trim();
+                let title = $(`h3.title-book > a`, manga).text().trim();
+                let subtitle = $(`.episode-book > a`, manga).text().trim();
                 let image = (_d = $(`a > img`, manga).attr("src")) !== null && _d !== void 0 ? _d : "";
-                let id = (_f = (_e = $(`.story - item > a`, manga).attr("href")) === null || _e === void 0 ? void 0 : _e.split("/").pop()) !== null && _f !== void 0 ? _f : title;
+                let id = (_f = (_e = $(`.story-item > a`, manga).attr("href")) === null || _e === void 0 ? void 0 : _e.split("/").pop()) !== null && _f !== void 0 ? _f : title;
                 // if (!id || !title) continue;
                 popular.push(createMangaTile({
                     id: id,
@@ -903,8 +903,8 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
             for (let obj of $('li', '.latest').toArray().splice(0, 20)) {
-                let title = $(`h3.title - book > a`, obj).text().trim();
-                let subtitle = $(`.episode - book > a`, obj).text().trim();
+                let title = $(`h3.title-book > a`, obj).text().trim();
+                let subtitle = $(`.episode-book > a`, obj).text().trim();
                 let image = (_g = $(`a > img`, obj).attr("src")) !== null && _g !== void 0 ? _g : "";
                 let id = (_j = (_h = $(`a`, obj).attr("href")) === null || _h === void 0 ? void 0 : _h.split("/").pop()) !== null && _j !== void 0 ? _j : title;
                 // if (!id || !subtitle) continue;
@@ -931,8 +931,8 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
             for (let manga of $('li', '.list-stories').toArray().splice(0, 20)) {
-                let title = $(`h3.title - book > a`, manga).text().trim();
-                let subtitle = $(`.episode - book > a`, manga).text().trim();
+                let title = $(`h3.title-book > a`, manga).text().trim();
+                let subtitle = $(`.episode-book > a`, manga).text().trim();
                 let image = (_k = $(`a > img`, manga).attr("src")) !== null && _k !== void 0 ? _k : "";
                 let id = (_m = (_l = $(`a`, manga).attr("href")) === null || _l === void 0 ? void 0 : _l.split("/").pop()) !== null && _m !== void 0 ? _m : title;
                 // if (!id || !subtitle) continue;
@@ -959,8 +959,8 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
             for (let manga of $('li', '.list-stories').toArray().splice(0, 12)) {
-                let title = $(`h3.title - book > a`, manga).text().trim();
-                let subtitle = $(`.episode - book > a`, manga).text().trim();
+                let title = $(`h3.title-book > a`, manga).text().trim();
+                let subtitle = $(`.episode-book > a`, manga).text().trim();
                 let image = (_o = $(`a > img`, manga).attr("src")) !== null && _o !== void 0 ? _o : "";
                 let id = (_q = (_p = $(`a`, manga).attr("href")) === null || _p === void 0 ? void 0 : _p.split("/").pop()) !== null && _q !== void 0 ? _q : title;
                 // if (!id || !subtitle) continue;
@@ -987,8 +987,8 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
             for (let manga of $('li', '.list-stories').toArray().splice(0, 12)) {
-                let title = $(`h3.title - book > a`, manga).text().trim();
-                let subtitle = $(`.episode - book > a`, manga).text().trim();
+                let title = $(`h3.title-book > a`, manga).text().trim();
+                let subtitle = $(`.episode-book > a`, manga).text().trim();
                 let image = (_r = $(`a > img`, manga).attr("src")) !== null && _r !== void 0 ? _r : "";
                 let id = (_t = (_s = $(`a`, manga).attr("href")) === null || _s === void 0 ? void 0 : _s.split("/").pop()) !== null && _t !== void 0 ? _t : title;
                 // if (!id || !subtitle) continue;
@@ -1085,7 +1085,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             const request = createRequestObject({
                 url: query.title ? `${DOMAIN}tim-kiem/trang-${page}.html` : `${DOMAIN}tim-kiem-nang-cao/trang-${page}.html`,
                 method: "GET",
-                param: encodeURI(`? q = ${(_d = query.title) !== null && _d !== void 0 ? _d : ''}& category=${search.category}& country=${search.country}& status=${search.status}& minchapter=${search.minchapter}& sort=${search.sort} `)
+                param: encodeURI(`? q = ${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&category=${search.category}&country=${search.country}&status=${search.status}&minchapter=${search.minchapter}&sort=${search.sort}`)
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
