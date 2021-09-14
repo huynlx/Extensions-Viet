@@ -538,6 +538,7 @@ const paperback_extensions_common_1 = require("paperback-extensions-common");
 class Parser {
     parseMangaDetails($, mangaId) {
         let tags = [];
+        const cc = $('.page-header > p').text();
         tags.push(createTag({
             label: 'Horror',
             id: 'Horror',
@@ -545,7 +546,7 @@ class Parser {
         return createManga({
             id: mangaId.split("::")[0],
             // desc: ($('.page-header > p').text()) ?? "",,
-            desc: $('<div/>').html($('.page-header > p').text()).text(),
+            desc: $('<div/>').html(cc).text(),
             titles: [$('.page-title').text()],
             image: mangaId.split("::")[1],
             status: 1,
