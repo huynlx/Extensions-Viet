@@ -874,7 +874,7 @@ class LxHentai extends paperback_extensions_common_1.Source {
     // }
     globalRequestHeaders() {
         return {
-            referer: "http://m.lxhentai.com/",
+            referer: "http://www.nhattruyenvip.com/"
         };
     }
 }
