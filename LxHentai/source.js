@@ -846,7 +846,7 @@ class LxHentai extends paperback_extensions_common_1.Source {
     // }
     globalRequestHeaders() {
         return {
-            referer: `https://lxhentai.com` + '/'
+            referer: "http://m.lxhentai.com/",
         };
     }
     getCloudflareBypassRequest() {
