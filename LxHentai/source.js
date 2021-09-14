@@ -750,7 +750,7 @@ class LxHentai extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
@@ -772,9 +772,25 @@ class LxHentai extends paperback_extensions_common_1.Source {
                 url: url,
                 method: "GET",
             });
+            let popular = [];
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            hot.items = LxHentaiParser_1.parseHotSection($);
+            for (let manga of $('li', '.block-top').toArray()) {
+                const title = $('.box-description h2', manga).first().text();
+                const id = (_a = $('a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+                const image = $('a > div', manga).css('background');
+                const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+                const subtitle = $(".info-detail", manga).last().text().trim();
+                if (!id || !title)
+                    continue;
+                popular.push(createMangaTile({
+                    id: encodeURIComponent(id),
+                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
+                    title: createIconText({ text: title }),
+                    subtitleText: createIconText({ text: subtitle }),
+                }));
+            }
+            hot.items = popular;
             sectionCallback(hot);
             //New Updates
             url = 'http://nhattruyenhay.com/tim-truyen?status=-1&sort=12';
@@ -797,7 +813,7 @@ class LxHentai extends paperback_extensions_common_1.Source {
                 let title = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > figcaption > h3 > a`).text();
                 let subtitle = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > figcaption > ul > li.chapter > a`)[0];
                 let image = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a > img`).attr("data-original");
-                let id = (_a = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a`).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop();
+                let id = (_b = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a`).attr("href")) === null || _b === void 0 ? void 0 : _b.split("/").pop();
                 if (!id || !subtitle)
                     continue;
                 newUpdatedItems.push(createMangaTile({
