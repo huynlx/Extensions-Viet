@@ -1162,10 +1162,16 @@ class Truyen48 extends paperback_extensions_common_1.Source {
             return tagSections;
         });
     }
-    globalRequestHeaders() {
-        return {
-            referer: `${DOMAIN} `
-        };
+    // globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
+    //     return {
+    //         referer: `${DOMAIN} `
+    //     }
+    // }
+    getCloudflareBypassRequest() {
+        return createRequestObject({
+            url: `${DOMAIN}`,
+            method: 'GET',
+        });
     }
 }
 exports.Truyen48 = Truyen48;
