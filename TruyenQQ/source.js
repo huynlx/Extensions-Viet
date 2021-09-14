@@ -759,6 +759,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
         });
     }
     getChapters(mangaId) {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
                 url: `http://truyenqqtop.com/truyen-tranh/${mangaId}`,
@@ -770,7 +771,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             for (const obj of $(".works-chapter-list > .works-chapter-item").toArray().reverse()) {
                 // if (!obj.attribs['href'] || !obj.children[0].data) continue;
                 chapters.push(createChapter({
-                    id: $('.col-md-10.col-sm-10.col-xs-8 > a', obj).attr('href'),
+                    id: (_a = $('.col-md-10.col-sm-10.col-xs-8 > a', obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop(),
                     chapNum: parseFloat($('.col-md-10.col-sm-10.col-xs-8 > a', obj).text().split(' ')[1]),
                     name: $('.col-md-10.col-sm-10.col-xs-8 > a', obj).text(),
                     mangaId: mangaId,
@@ -783,13 +784,26 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
     getChapterDetails(mangaId, chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${DOMAIN}`,
+                url: `http://truyenqqtop.com/truyen-tranh/`,
                 method,
                 param: chapterId,
             });
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
-            return TruyenQQParser_1.parseChapterDetails($, mangaId, chapterId);
+            const pages = [];
+            for (let obj of $('.story-see-content > img').toArray()) {
+                if (!obj.attribs['data-original'])
+                    continue;
+                let link = obj.attribs['data-original'];
+                pages.push(link);
+            }
+            const chapterDetails = createChapterDetails({
+                id: chapterId,
+                mangaId: mangaId,
+                pages: pages,
+                longStrip: false
+            });
+            return chapterDetails;
         });
     }
     getHomePageSections(sectionCallback) {
