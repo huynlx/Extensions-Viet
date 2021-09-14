@@ -731,14 +731,14 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             let tags = [];
             let creator = '';
             let status = 1; //completed, 1 = Ongoing
-            let desc = '';
+            let desc = $('.story-detail-info > p').text();
             // for (const t of $('a', '.list01').toArray()) {
             //     const genre = $(t).text().trim()
             //     const id = $(t).attr('href') ?? genre
             //     tags.push({ label: genre, id });
             // }
-            // creator = $('.txt > p:nth-of-type(1) > a').text();
-            // status = $('.txt > p:nth-of-type(2)').text().toLowerCase().includes("đang cập nhật") ? 1 : 0;
+            creator = $('.txt > p:nth-of-type(1) > a').text();
+            status = $('.txt > p:nth-of-type(2)').text().toLowerCase().includes("đang cập nhật") ? 1 : 0;
             const image = (_a = $('.left > img').attr('src')) !== null && _a !== void 0 ? _a : "";
             return createManga({
                 id: mangaId,
