@@ -711,12 +711,13 @@ exports.TruyenQQInfo = {
 class TruyenQQ extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
-        // getMangaShareUrl(mangaId: string): string { return `${DOMAIN}${mangaId}` };
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
             requestTimeout: 20000
         });
     }
+    getMangaShareUrl(mangaId) { return `http://truyenqqtop.com/truyen-tranh/${mangaId}`; }
+    ;
     getMangaDetails(mangaId) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
