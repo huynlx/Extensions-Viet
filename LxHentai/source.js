@@ -707,6 +707,7 @@ exports.LxHentaiInfo = {
 class LxHentai extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
+        // getMangaShareUrl(mangaId: string): string { return `${DOMAIN}${mangaId}` };
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
             requestTimeout: 20000
@@ -718,8 +719,6 @@ class LxHentai extends paperback_extensions_common_1.Source {
         //     })
         // }
     }
-    getMangaShareUrl(mangaId) { return `${DOMAIN}${mangaId}`; }
-    ;
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const url = `https://lxhentai.com${mangaId}`;
@@ -856,7 +855,7 @@ class LxHentai extends paperback_extensions_common_1.Source {
     // }
     globalRequestHeaders() {
         return {
-            referer: `${DOMAIN}` + '/'
+            referer: `https://lxhentai.com` + '/'
         };
     }
 }
