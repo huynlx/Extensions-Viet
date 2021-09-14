@@ -712,6 +712,15 @@ class LxHentai extends paperback_extensions_common_1.Source {
             requestsPerSecond: 5,
             requestTimeout: 20000
         });
+        // async getSearchTags(): Promise<TagSection[]> {
+        //     const tagSections: TagSection[] = [createTagSection({ id: '0', label: 'Thể Loại (Chỉ chọn 1)', tags: tags.map(x => createTag(x)) })]
+        //     return tagSections;
+        // }
+        // globalRequestHeaders(): RequestHeaders {
+        //     return {
+        //         referer: "http://www.nhattruyenvip.com/"
+        //     }
+        // }
     }
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -883,15 +892,6 @@ class LxHentai extends paperback_extensions_common_1.Source {
                 metadata
             });
         });
-    }
-    // async getSearchTags(): Promise<TagSection[]> {
-    //     const tagSections: TagSection[] = [createTagSection({ id: '0', label: 'Thể Loại (Chỉ chọn 1)', tags: tags.map(x => createTag(x)) })]
-    //     return tagSections;
-    // }
-    globalRequestHeaders() {
-        return {
-            referer: "http://www.nhattruyenvip.com/"
-        };
     }
 }
 exports.LxHentai = LxHentai;
