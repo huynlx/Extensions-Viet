@@ -893,7 +893,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            const manga = TruyenQQParser_1.parseViewMore($, select);
+            const manga = TruyenQQParser_1.parseViewMore($);
             metadata = !TruyenQQParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: manga,
@@ -1118,64 +1118,24 @@ exports.parseSearch = ($) => {
     }
     return mangas;
 };
-exports.parseViewMore = ($, select) => {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+exports.parseViewMore = ($) => {
+    var _a, _b, _c;
     const manga = [];
     const collectedIds = [];
-    if (select === 1) {
-        for (let obj of $('li', '.list-stories').toArray()) {
-            let title = $(`h3.title-book > a`, obj).text().trim();
-            let subtitle = $(`.episode-book > a`, obj).text().trim();
-            let image = (_a = $(`a > img`, obj).attr("src")) !== null && _a !== void 0 ? _a : "";
-            let id = (_c = (_b = $(`a`, obj).attr("href")) === null || _b === void 0 ? void 0 : _b.split("/").pop()) !== null && _c !== void 0 ? _c : title;
-            if (!id || !title)
-                continue;
-            if (!collectedIds.includes(id)) {
-                manga.push(createMangaTile({
-                    id: encodeURIComponent(id),
-                    image: image !== null && image !== void 0 ? image : "",
-                    title: createIconText({ text: decodeHTMLEntity(title) }),
-                    subtitleText: createIconText({ text: subtitle }),
-                }));
-                collectedIds.push(id);
-            }
-        }
-    }
-    else if (select === 2) {
-        for (let obj of $('li', '.list-stories').toArray()) {
-            let title = $(`h3.title-book > a`, obj).text().trim();
-            let subtitle = $(`.episode-book > a`, obj).text().trim();
-            let image = (_d = $(`a > img`, obj).attr("src")) !== null && _d !== void 0 ? _d : "";
-            let id = (_f = (_e = $(`a`, obj).attr("href")) === null || _e === void 0 ? void 0 : _e.split("/").pop()) !== null && _f !== void 0 ? _f : title;
-            if (!id || !title)
-                continue;
-            if (!collectedIds.includes(id)) {
-                manga.push(createMangaTile({
-                    id: encodeURIComponent(id),
-                    image: image !== null && image !== void 0 ? image : "",
-                    title: createIconText({ text: decodeHTMLEntity(title) }),
-                    subtitleText: createIconText({ text: subtitle }),
-                }));
-            }
-            collectedIds.push(id);
-        }
-    }
-    else {
-        for (let obj of $('li', '.list-stories').toArray()) {
-            let title = $(`h3.title-book > a`, obj).text().trim();
-            let subtitle = $(`.episode-book > a`, obj).text().trim();
-            let image = (_g = $(`a > img`, obj).attr("src")) !== null && _g !== void 0 ? _g : "";
-            let id = (_j = (_h = $(`a`, obj).attr("href")) === null || _h === void 0 ? void 0 : _h.split("/").pop()) !== null && _j !== void 0 ? _j : title;
-            if (!id || !title)
-                continue;
-            if (!collectedIds.includes(id)) {
-                manga.push(createMangaTile({
-                    id: encodeURIComponent(id),
-                    image: image !== null && image !== void 0 ? image : "",
-                    title: createIconText({ text: decodeHTMLEntity(title) }),
-                    subtitleText: createIconText({ text: subtitle }),
-                }));
-            }
+    for (let obj of $('li', '.list-stories').toArray()) {
+        let title = $(`h3.title-book > a`, obj).text().trim();
+        let subtitle = $(`.episode-book > a`, obj).text().trim();
+        let image = (_a = $(`a > img`, obj).attr("src")) !== null && _a !== void 0 ? _a : "";
+        let id = (_c = (_b = $(`a`, obj).attr("href")) === null || _b === void 0 ? void 0 : _b.split("/").pop()) !== null && _c !== void 0 ? _c : title;
+        if (!id || !title)
+            continue;
+        if (!collectedIds.includes(id)) {
+            manga.push(createMangaTile({
+                id: encodeURIComponent(id),
+                image: image !== null && image !== void 0 ? image : "",
+                title: createIconText({ text: decodeHTMLEntity(title) }),
+                subtitleText: createIconText({ text: subtitle }),
+            }));
             collectedIds.push(id);
         }
     }
