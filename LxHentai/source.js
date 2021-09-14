@@ -781,9 +781,25 @@ class LxHentai extends paperback_extensions_common_1.Source {
                 url: url,
                 method: "GET",
             });
+            let newUpdatedItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            newUpdated.items = LxHentaiParser_1.parseNewUpdatedSection($);
+            for (let manga of $('div', '.row').toArray()) {
+                const title = $('a > b', manga).last().text();
+                const id = $('a', manga).attr('href');
+                const image = $('.thumb_mob', manga).css('background');
+                const bg = image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+                const subtitle = $(".small > a", manga).last().text().trim();
+                if (!id || !title)
+                    continue;
+                newUpdatedItems.push(createMangaTile({
+                    id: id,
+                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : ("http://m.lxhentai.com" + (bg === null || bg === void 0 ? void 0 : bg.split("'")[1])),
+                    title: createIconText({ text: title }),
+                    subtitleText: createIconText({ text: subtitle }),
+                }));
+            }
+            newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
         });
     }
@@ -980,7 +996,7 @@ exports.parseNewUpdatedSection = ($) => {
         title: createIconText({ text: 'le' }),
         subtitleText: createIconText({ text: 'chap3' }),
     }));
-    return newUpdatedItems; //ko return đc cái này
+    return newUpdatedItems; //ko return đc cái này (đéo hiểu lỗi kiểu j)
     // return newUpdatedItems;
     // let staffPick: MangaTile[] = [];
     // for (let manga of $('ul', 'ul.page-item').toArray()) {
