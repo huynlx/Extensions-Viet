@@ -716,7 +716,7 @@ class LxHentai extends paperback_extensions_common_1.Source {
         //     const tagSections: TagSection[] = [createTagSection({ id: '0', label: 'Thể Loại (Chỉ chọn 1)', tags: tags.map(x => createTag(x)) })]
         //     return tagSections;
         // }
-        // globalRequestHeaders(): RequestHeaders {
+        // globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
         //     return {
         //         referer: "http://www.nhattruyenvip.com/"
         //     }
@@ -759,11 +759,11 @@ class LxHentai extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e, _f;
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
-                title: "Truyện Hot",
+                title: "Truyện Thịnh Hành",
                 view_more: true,
             });
             let newUpdated = createHomeSection({
@@ -776,7 +776,7 @@ class LxHentai extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             ///Get the section data
             //Hot
-            let url = "https://hentaivn.tv/";
+            let url = "http://truyenqqtop.com/truyen-yeu-thich.html";
             let request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -784,16 +784,15 @@ class LxHentai extends paperback_extensions_common_1.Source {
             let popular = [];
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            for (let manga of $('li', '.block-top').toArray()) {
-                const title = $('.box-description h2', manga).first().text();
-                const id = (_a = $('a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-                const image = $('a > div', manga).css('background');
-                const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
-                const subtitle = $(".info-detail", manga).last().text().trim();
+            for (let manga of $('li', '.list-stories').toArray()) {
+                let title = $(`h3.title-book > a`, manga).text().trim();
+                let subtitle = $(`.episode-book > a`, manga).text().trim();
+                let image = (_a = $(`a > img`, manga).attr("src")) !== null && _a !== void 0 ? _a : "";
+                let id = (_c = (_b = $(`a`, manga).attr("href")) === null || _b === void 0 ? void 0 : _b.split("/").pop()) !== null && _c !== void 0 ? _c : title;
                 // if (!id || !title) continue;
                 popular.push(createMangaTile({
                     id: id,
-                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
+                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
                     title: createIconText({ text: title }),
                     subtitleText: createIconText({ text: subtitle }),
                 }));
@@ -812,8 +811,8 @@ class LxHentai extends paperback_extensions_common_1.Source {
             for (let obj of $('li', '.latest').toArray()) {
                 let title = $(`h3.title-book > a`, obj).text().trim();
                 let subtitle = $(`.episode-book > a`, obj).text().trim();
-                let image = (_b = $(`a > img`, obj).attr("src")) !== null && _b !== void 0 ? _b : "";
-                let id = (_d = (_c = $(`a`, obj).attr("href")) === null || _c === void 0 ? void 0 : _c.split("/").pop()) !== null && _d !== void 0 ? _d : title;
+                let image = (_d = $(`a > img`, obj).attr("src")) !== null && _d !== void 0 ? _d : "";
+                let id = (_f = (_e = $(`a`, obj).attr("href")) === null || _e === void 0 ? void 0 : _e.split("/").pop()) !== null && _f !== void 0 ? _f : title;
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
