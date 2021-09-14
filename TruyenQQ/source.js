@@ -719,9 +719,9 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
     getMangaShareUrl(mangaId) { return `http://truyenqqtop.com/truyen-tranh/${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
-        var _a, _b;
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `http://truyenqqtop.com/truyen-tranh/dao-hai-tac-128-chap-1025.html`;
+            const url = `http://truyenqqtop.com/truyen-tranh/${mangaId}`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -731,15 +731,15 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             let tags = [];
             let creator = '';
             let status = 1; //completed, 1 = Ongoing
-            let desc = $('.story-detail-info > p').text();
-            for (const t of $('a', '.list01').toArray()) {
-                const genre = $(t).text().trim();
-                const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
-                tags.push({ label: genre, id });
-            }
-            creator = $('.txt > p:nth-of-type(1) > a').text();
-            status = $('.txt > p:nth-of-type(2)').text().toLowerCase().includes("đang cập nhật") ? 1 : 0;
-            const image = (_b = $('.left > img').attr('src')) !== null && _b !== void 0 ? _b : "";
+            let desc = '';
+            // for (const t of $('a', '.list01').toArray()) {
+            //     const genre = $(t).text().trim()
+            //     const id = $(t).attr('href') ?? genre
+            //     tags.push({ label: genre, id });
+            // }
+            // creator = $('.txt > p:nth-of-type(1) > a').text();
+            // status = $('.txt > p:nth-of-type(2)').text().toLowerCase().includes("đang cập nhật") ? 1 : 0;
+            const image = (_a = $('.left > img').attr('src')) !== null && _a !== void 0 ? _a : "";
             return createManga({
                 id: mangaId,
                 author: creator,
@@ -780,9 +780,8 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
     getChapterDetails(mangaId, chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `http://truyenqqtop.com/truyen-tranh/`,
-                method,
-                param: chapterId,
+                url: `http://truyenqqtop.com/truyen-tranh/${chapterId}`,
+                method
             });
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
