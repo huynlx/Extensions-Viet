@@ -911,7 +911,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             let url = '';
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `https://truyentranhaudio.com/danh-sach-truyen.html`;
+                    url = `https://truyentranhaudio.com/manga-list.html?page=${page}`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
