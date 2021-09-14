@@ -801,7 +801,7 @@ class LxHentai extends paperback_extensions_common_1.Source {
             hot.items = popular;
             sectionCallback(hot);
             //New Updates
-            url = 'https://cmangatop.com/';
+            url = 'http://truyenqqtop.com/#';
             request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -817,11 +817,11 @@ class LxHentai extends paperback_extensions_common_1.Source {
             //     const subtitle = $(".small > a", manga).last().text().trim();
             //     if (!id || !title) continue;
             // }
-            for (let obj of $('li', 'ul.list_grid grid').toArray()) {
-                let title = $(`.book_info > .book_name > h3 > a`, obj).text();
-                let subtitle = $(`.book_info > .last_chapter a`, obj).text();
-                let image = (_b = $(`.book_avatar > a > img`, obj).attr("src")) !== null && _b !== void 0 ? _b : "";
-                let id = (_d = (_c = $(`.book_avatar > a`, obj).attr("href")) === null || _c === void 0 ? void 0 : _c.split("/").pop()) !== null && _d !== void 0 ? _d : title;
+            for (let obj of $('li', '.latest').toArray()) {
+                let title = $(`h3.title-book > a`, obj).text().trim();
+                let subtitle = $(`.episode-book > a`, obj).text().trim();
+                let image = (_b = $(`a > img`, obj).attr("src")) !== null && _b !== void 0 ? _b : "";
+                let id = (_d = (_c = $(`a`, obj).attr("href")) === null || _c === void 0 ? void 0 : _c.split("/").pop()) !== null && _d !== void 0 ? _d : title;
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
