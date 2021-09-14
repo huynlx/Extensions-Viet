@@ -792,7 +792,7 @@ class Truyen48 extends paperback_extensions_common_1.Source {
             for (let obj of $('.story-see-content > img').toArray()) {
                 if (!obj.attribs['src'])
                     continue;
-                let link = obj.attribs['src'];
+                let link = "http://" + obj.attribs['src'];
                 pages.push(link);
             }
             const chapterDetails = createChapterDetails({
