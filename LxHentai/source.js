@@ -818,7 +818,7 @@ class LxHentai extends paperback_extensions_common_1.Source {
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
-                    image: image,
+                    image: bg,
                     title: createIconText({
                         text: title,
                     }),
