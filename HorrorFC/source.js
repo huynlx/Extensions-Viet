@@ -827,11 +827,10 @@ class Parser {
         return featuredItems;
     }
     parsePopularSection($) {
-        var _a;
         let viewestItems = [];
         for (let manga of $('li', 'ul.row').toArray().splice(0, 10)) {
-            const title = $('a > span', manga).first().text();
-            const id = (_a = $('a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+            const title = $('a', manga).attr('title');
+            const id = $('a', manga).attr('href');
             const image = $('a > img', manga).first().attr('src');
             // const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
             if (!id || !title)
