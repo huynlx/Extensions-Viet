@@ -433,7 +433,7 @@ class HorrorFC extends paperback_extensions_common_1.Source {
     ;
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `${DOMAIN}truyen-tranh/${mangaId}`;
+            const url = `${mangaId}`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -677,40 +677,27 @@ exports.Parser = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 class Parser {
     parseMangaDetails($, mangaId) {
-        var _a, _b;
-        let tags = [];
-        for (let obj of $('li.kind > p.col-xs-8 > a').toArray()) {
-            const label = $(obj).text();
-            const id = (_b = (_a = $(obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[4]) !== null && _b !== void 0 ? _b : label;
-            tags.push(createTag({
-                label: label,
-                id: id,
-            }));
-        }
-        const creator = $('ul.list-info > li.author > p.col-xs-8').text();
-        const image = $('div.col-image > img').attr('src');
+        // const image = $('div.col-image > img').attr('src');
         return createManga({
             id: mangaId,
-            author: creator,
-            artist: creator,
-            desc: $('div.detail-content > p').text(),
-            titles: [$('h1.title-detail').text()],
-            image: image !== null && image !== void 0 ? image : '',
-            status: $('li.status > p.col-xs-8').text().toLowerCase().includes("hoàn thành") ? 0 : 1,
-            rating: parseFloat($('span[itemprop="ratingValue"]').text()),
+            desc: $('.page-header > p').text(),
+            titles: [$('.page-title').text()],
+            image: '',
+            status: 1,
             hentai: false,
-            tags: [createTagSection({ label: "genres", tags: tags, id: '0' })],
+            rating: 1000
         });
     }
     parseChapterList($, mangaId) {
         const chapters = [];
-        for (let obj of $('div.list-chapter > nav > ul > li.row:not(.heading) > div.chapter > a').toArray()) {
-            if (!obj.attribs['href'] || !obj.children[0].data)
-                continue;
+        var i = 0;
+        for (let obj of $('.page-header > h2 > a').toArray().reverse()) {
+            // if (!obj.attribs['href'] || !obj.children[0].data) continue;
+            i++;
             chapters.push(createChapter({
-                id: obj.attribs['href'],
-                chapNum: parseFloat(obj.children[0].data.split(' ')[1]),
-                name: obj.children[0].data,
+                id: $(obj).attr('href'),
+                chapNum: i,
+                name: $(obj).text(),
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
             }));
@@ -901,7 +888,7 @@ class Parser {
     }
     parseViewMoreItems($) {
         const mangas = [];
-        for (let manga of $('li', 'ul.row').toArray().splice(0, 10)) {
+        for (let manga of $('li', 'ul.row').toArray()) {
             const title = $('a', manga).attr('title');
             const id = $('a', manga).attr('href');
             const image = $('a > img', manga).first().attr('src');
