@@ -1069,7 +1069,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
                     continue;
                 arrayTags.push({ id: id, label: label });
             }
-            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại (Chỉ chọn 1)', tags: arrayTags.map(x => createTag(x)) })];
+            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) })];
             return tagSections;
         });
     }
@@ -1231,7 +1231,7 @@ exports.generateSearch = (query) => {
 exports.parseSearch = ($) => {
     var _a, _b, _c;
     const mangas = [];
-    for (let manga of $('li', '.list-stories').toArray().splice(0, 20)) {
+    for (let manga of $('li', '.list-stories').toArray()) {
         let title = $(`h3.title-book > a`, manga).text().trim();
         let subtitle = $(`.episode-book > a`, manga).text().trim();
         let image = (_a = $(`a > img`, manga).attr("src")) !== null && _a !== void 0 ? _a : "";
