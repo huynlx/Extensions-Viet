@@ -767,30 +767,33 @@ class LxHentai extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             ///Get the section data
             //Hot
-            let url = "https://hentaivn.tv/";
+            let url = 'http://nhattruyenhay.com/tim-truyen?status=-1&sort=12';
             let request = createRequestObject({
                 url: url,
                 method: "GET",
             });
-            let popular = [];
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            for (let manga of $('li', '.block-top').toArray()) {
-                const title = $('.box-description h2', manga).first().text();
-                const id = (_a = $('a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-                const image = $('a > div', manga).css('background');
-                const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
-                const subtitle = $(".info-detail", manga).last().text().trim();
-                if (!id || !title)
+            let topWeekItems = [];
+            for (let index in $('div.row > div.item > figure.clearfix').toArray()) {
+                let title = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > figcaption > h3 > a`).text();
+                let subtitle = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > figcaption > ul > li.chapter > a`)[0];
+                let image = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a > img`).attr("data-original");
+                let id = (_a = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a`).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop();
+                if (!id || !subtitle)
                     continue;
-                popular.push(createMangaTile({
-                    id: encodeURIComponent(id),
-                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
-                    title: createIconText({ text: title }),
-                    subtitleText: createIconText({ text: subtitle }),
+                topWeekItems.push(createMangaTile({
+                    id: id,
+                    image: image,
+                    title: createIconText({
+                        text: title,
+                    }),
+                    subtitleText: createIconText({
+                        text: subtitle.attribs['title'],
+                    }),
                 }));
             }
-            hot.items = popular;
+            hot.items = topWeekItems;
             sectionCallback(hot);
             //New Updates
             url = 'http://nhattruyenhay.com/tim-truyen?status=-1&sort=12';
