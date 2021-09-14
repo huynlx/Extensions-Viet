@@ -1086,7 +1086,7 @@ exports.parseSearch = ($) => {
 exports.parseViewMore = ($) => {
     const manga = [];
     const collectedIds = [];
-    for (let obj of $('.thumb-item-flow:not(:last-child)', '.col-md-8 > .card:nth-child(2) .row-last-update').toArray()) {
+    for (let obj of $('.thumb-item-flow', '.col-md-8 > .card:nth-child(2) .row-last-update').toArray()) {
         const title = $('.series-title', obj).text().trim();
         const id = $('.series-title > a', obj).attr('href');
         const image = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', obj).attr('data-bg');
