@@ -798,7 +798,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
                     select = 1;
                     break;
                 case "recently_added":
-                    url = '${DOMAIN}danh-sach.html';
+                    url = `${DOMAIN}danh-sach.html`;
                     param = `?page=${page}`;
                     select = 2;
                     break;
