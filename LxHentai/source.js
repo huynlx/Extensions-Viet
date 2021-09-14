@@ -429,7 +429,7 @@ class LxHentai extends paperback_extensions_common_1.Source {
     ;
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `${DOMAIN}truyen-tranh/${mangaId}`;
+            const url = `https://lxhentai.com${mangaId}`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -632,28 +632,39 @@ exports.Parser = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 class Parser {
     parseMangaDetails($, mangaId) {
-        var _a, _b;
+        var _a;
         let tags = [];
-        for (let obj of $('li.kind > p.col-xs-8 > a').toArray()) {
-            const label = $(obj).text();
-            const id = (_b = (_a = $(obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[4]) !== null && _b !== void 0 ? _b : label;
-            tags.push(createTag({
-                label: label,
-                id: id,
-            }));
+        let creator = '';
+        let status = 1; //completed, 1 = Ongoing
+        let desc = $('.detail-content > p').text();
+        for (const obj of $('.col-4.py-1', '.row.mt-2').toArray()) {
+            switch ($(obj).text().trim()) {
+                case "Thể loại":
+                    for (const genres of $('a', $(obj) + '.col-8.py-1').toArray()) {
+                        const genre = $('a', genres).text().trim();
+                        const id = (_a = $('a', genres).attr('href')) !== null && _a !== void 0 ? _a : genre;
+                        tags.push(createTag({ id: id, label: genre }));
+                    }
+                    break;
+                case "Tác giả":
+                    creator = $('a', $(obj) + '.col-8.py-1').text();
+                    break;
+                case "Tình trạng":
+                    status = $($(obj) + '.col-8.py-1').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
+                    break;
+            }
         }
-        const creator = $('ul.list-info > li.author > p.col-xs-8').text();
-        const image = $('div.col-image > img').attr('src');
+        const image = $('.col-md-4.text-center > img').attr('src');
         return createManga({
             id: mangaId,
             author: creator,
             artist: creator,
-            desc: $('div.detail-content > p').text(),
-            titles: [$('h1.title-detail').text()],
-            image: image !== null && image !== void 0 ? image : '',
-            status: $('li.status > p.col-xs-8').text().toLowerCase().includes("hoàn thành") ? 0 : 1,
-            rating: parseFloat($('span[itemprop="ratingValue"]').text()),
-            hentai: false,
+            desc: desc === "" ? 'Không có mô tả' : desc,
+            titles: [$('.page-info > h1').text().trim()],
+            image: image.replace("190", "300"),
+            status,
+            // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
+            hentai: true,
             tags: [createTagSection({ label: "genres", tags: tags, id: '0' })],
         });
     }
@@ -762,43 +773,6 @@ class Parser {
         ];
         return tagSections;
     }
-    parseFeaturedSection($) {
-        var _a;
-        let featuredItems = [];
-        for (let manga of $('div.item', 'div.altcontent1').toArray()) {
-            const title = $('.slide-caption > h3 > a', manga).text();
-            const id = (_a = $('a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-            const image = $('a > img.lazyOwl', manga).attr('data-src');
-            // const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
-            if (!id || !title)
-                continue;
-            featuredItems.push(createMangaTile({
-                id: id,
-                image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
-                title: createIconText({ text: title })
-            }));
-        }
-        return featuredItems;
-    }
-    parsePopularSection($) {
-        var _a;
-        let viewestItems = [];
-        for (let manga of $('div.item', 'div.row').toArray().splice(0, 20)) {
-            const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
-            const id = (_a = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-            const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
-            const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
-            if (!id || !title)
-                continue;
-            viewestItems.push(createMangaTile({
-                id: id,
-                image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
-                title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: subtitle }),
-            }));
-        }
-        return viewestItems;
-    }
     parseHotSection($) {
         const Hot = [];
         for (const manga of $('.swiper-slide:first-child > .gridSlide > div').toArray()) {
@@ -821,40 +795,21 @@ class Parser {
     parseNewUpdatedSection($) {
         let newUpdatedItems = [];
         for (let manga of $('div.col-md-3.col-6.py-2', 'div.row').toArray().splice(0, 20)) {
-            const title = $('a', manga).first().text();
+            const title = $('a', manga).last().text();
             const id = $('a', manga).attr('href');
             const image = $('div', manga).css('background');
-            const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+            const bg = image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
             const subtitle = $(".newestChapter > a", manga).last().text().trim();
             if (!id || !title)
                 continue;
             newUpdatedItems.push(createMangaTile({
                 id: id,
-                image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
+                image: !image ? "https://i.imgur.com/GYUxEX8.png" : ("https://lxhentai.com" + (bg === null || bg === void 0 ? void 0 : bg.split("'")[1])),
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
         }
         return newUpdatedItems;
-    }
-    parseNewAddedSection($) {
-        var _a;
-        let newAddedItems = [];
-        for (let manga of $('div.item', 'div.row').toArray().splice(0, 20)) {
-            const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
-            const id = (_a = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-            const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
-            const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
-            if (!id || !title)
-                continue;
-            newAddedItems.push(createMangaTile({
-                id: id,
-                image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
-                title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: subtitle }),
-            }));
-        }
-        return newAddedItems;
     }
     parseViewMoreItems($) {
         var _a;
