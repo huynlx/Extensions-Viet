@@ -568,7 +568,7 @@ class HorrorFC extends paperback_extensions_common_1.Source {
             featured.items = this.parser.parseFeaturedSection($);
             sectionCallback(featured);
             //View
-            url = `${DOMAIN}tim-truyen?status=-1&sort=10`;
+            url = `https://horrorfc.net/`;
             request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -829,18 +829,17 @@ class Parser {
     parsePopularSection($) {
         var _a;
         let viewestItems = [];
-        for (let manga of $('div.item', 'div.row').toArray().splice(0, 20)) {
-            const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
-            const id = (_a = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-            const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
-            const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
+        for (let manga of $('li', 'ul.row').toArray().splice(0, 10)) {
+            const title = $('a > span', manga).first().text();
+            const id = (_a = $('a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+            const image = $('a > img', manga).first().attr('src');
+            // const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
             if (!id || !title)
                 continue;
             viewestItems.push(createMangaTile({
                 id: id,
                 image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
                 title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: subtitle }),
             }));
         }
         return viewestItems;
