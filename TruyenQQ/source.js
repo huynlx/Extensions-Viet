@@ -723,6 +723,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
         // }
     }
     getMangaDetails(mangaId) {
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             const url = `http://truyenqqtop.com/truyen-tranh/${mangaId}`;
             const request = createRequestObject({
@@ -731,7 +732,30 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            return TruyenQQParser_1.parseMangaDetails($, mangaId);
+            let tags = [];
+            let creator = '';
+            let status = 1; //completed, 1 = Ongoing
+            let desc = $('.story-detail-info > p').text();
+            for (const t of $('a', '.list01').toArray()) {
+                const genre = $(t).text().trim();
+                const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
+                tags.push({ label: genre, id });
+            }
+            creator = $('.txt > p:nth-of-type(1) > a').text();
+            status = $('.txt > p:nth-of-type(2)').text().toLowerCase().includes("đang cập nhật") ? 1 : 0;
+            const image = (_b = $('.left > img').attr('src')) !== null && _b !== void 0 ? _b : "";
+            return createManga({
+                id: mangaId,
+                author: creator,
+                artist: creator,
+                desc: desc === "" ? 'Không có mô tả' : desc,
+                titles: [$('.center > h1').text().trim()],
+                image: image,
+                status,
+                // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
+                hentai: true,
+                tags: [createTagSection({ label: "genres", tags: tags, id: '0' })],
+            });
         });
     }
     getChapters(mangaId) {
