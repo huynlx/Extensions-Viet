@@ -392,7 +392,7 @@ const paperback_extensions_common_1 = require("paperback-extensions-common");
 const HorrorFCParser_1 = require("./HorrorFCParser");
 const DOMAIN = 'https://horrorfc.net/';
 exports.HorrorFCInfo = {
-    version: '3.0.0',
+    version: '1.0.0',
     name: 'HorrorFC',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -562,7 +562,7 @@ class Parser {
             chapters.push(createChapter({
                 id: $(obj).attr('href'),
                 chapNum: i,
-                name: $(obj).text(),
+                name: decodeURIComponent($(obj).text()),
                 mangaId: mangaId.split("::")[0],
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
             }));
