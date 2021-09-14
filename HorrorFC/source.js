@@ -549,7 +549,7 @@ class Parser {
         }));
         return createManga({
             id: mangaId.split("::")[0],
-            desc: (_a = htmlDecode($('.page-header > p').text())) !== null && _a !== void 0 ? _a : "",
+            desc: (_a = ($('.page-header > p').text())) !== null && _a !== void 0 ? _a : "",
             titles: [$('.page-title').text()],
             image: mangaId.split("::")[1],
             status: 1,
@@ -567,7 +567,7 @@ class Parser {
             chapters.push(createChapter({
                 id: $(obj).attr('href'),
                 chapNum: i,
-                name: htmlDecode($(obj).text()),
+                name: ($(obj).text()),
                 mangaId: mangaId.split("::")[0],
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
             }));
