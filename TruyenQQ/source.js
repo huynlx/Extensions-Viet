@@ -872,14 +872,16 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             let url = '';
             switch (homepageSectionId) {
                 case "recently-updated":
-                    url = `${DOMAIN}`;
-                    param = `?page=${page}`;
+                    url = `http://truyenqqtop.com/truyen-moi-cap-nhat/trang-${page}.html`;
                     select = 1;
                     break;
                 case "recently_added":
-                    url = '${DOMAIN}danh-sach.html';
-                    param = `?page=${page}`;
+                    url = `http://truyenqqtop.com/truyen-tranh-moi/trang-${page}.html`;
                     select = 2;
+                    break;
+                case "hot":
+                    url = `http://truyenqqtop.com/truyen-yeu-thich/trang-${page}.html`;
+                    select = 3;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
@@ -931,7 +933,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             const arrayTags = [];
             for (const tag of $('div.genre-item', 'div.col-sm-10').toArray()) {
-                const label = tag.children[0].data;
+                const label = $(tag).text().trim();
                 const id = (_a = $('span', tag).attr('data-id')) !== null && _a !== void 0 ? _a : label;
                 if (!id || !label)
                     continue;
@@ -1117,15 +1119,15 @@ exports.parseSearch = ($) => {
     return mangas;
 };
 exports.parseViewMore = ($, select) => {
-    var _a, _b;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
     const manga = [];
     const collectedIds = [];
     if (select === 1) {
-        for (const obj of $(".item", "ul").toArray()) {
-            const title = $("span > a > h2", obj).text();
-            const id = (_a = $("a", obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-            const image = $("a > img", obj).attr('data-src');
-            const subtitle = $("a > span > b", obj).text().trim();
+        for (let obj of $('li', '.list-stories').toArray()) {
+            let title = $(`h3.title-book > a`, obj).text().trim();
+            let subtitle = $(`.episode-book > a`, obj).text().trim();
+            let image = (_a = $(`a > img`, obj).attr("src")) !== null && _a !== void 0 ? _a : "";
+            let id = (_c = (_b = $(`a`, obj).attr("href")) === null || _b === void 0 ? void 0 : _b.split("/").pop()) !== null && _c !== void 0 ? _c : title;
             if (!id || !title)
                 continue;
             if (!collectedIds.includes(id)) {
@@ -1139,13 +1141,12 @@ exports.parseViewMore = ($, select) => {
             }
         }
     }
-    else {
-        for (let obj of $('.item', '.block-item').toArray()) {
-            const title = $('.box-description > p > a', obj).text();
-            const id = (_b = $('.box-cover > a', obj).attr('href')) === null || _b === void 0 ? void 0 : _b.split('/').pop();
-            const image = $('.box-cover > a > img', obj).attr('data-src');
-            const subtitle = $(".box-description p:first-child", obj).text().trim();
-            const fixsub = subtitle.split(' - ')[1];
+    else if (select === 2) {
+        for (let obj of $('li', '.list-stories').toArray()) {
+            let title = $(`h3.title-book > a`, obj).text().trim();
+            let subtitle = $(`.episode-book > a`, obj).text().trim();
+            let image = (_d = $(`a > img`, obj).attr("src")) !== null && _d !== void 0 ? _d : "";
+            let id = (_f = (_e = $(`a`, obj).attr("href")) === null || _e === void 0 ? void 0 : _e.split("/").pop()) !== null && _f !== void 0 ? _f : title;
             if (!id || !title)
                 continue;
             if (!collectedIds.includes(id)) {
@@ -1153,7 +1154,26 @@ exports.parseViewMore = ($, select) => {
                     id: encodeURIComponent(id),
                     image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({ text: decodeHTMLEntity(title) }),
-                    subtitleText: createIconText({ text: fixsub }),
+                    subtitleText: createIconText({ text: subtitle }),
+                }));
+            }
+            collectedIds.push(id);
+        }
+    }
+    else {
+        for (let obj of $('li', '.list-stories').toArray()) {
+            let title = $(`h3.title-book > a`, obj).text().trim();
+            let subtitle = $(`.episode-book > a`, obj).text().trim();
+            let image = (_g = $(`a > img`, obj).attr("src")) !== null && _g !== void 0 ? _g : "";
+            let id = (_j = (_h = $(`a`, obj).attr("href")) === null || _h === void 0 ? void 0 : _h.split("/").pop()) !== null && _j !== void 0 ? _j : title;
+            if (!id || !title)
+                continue;
+            if (!collectedIds.includes(id)) {
+                manga.push(createMangaTile({
+                    id: encodeURIComponent(id),
+                    image: image !== null && image !== void 0 ? image : "",
+                    title: createIconText({ text: decodeHTMLEntity(title) }),
+                    subtitleText: createIconText({ text: subtitle }),
                 }));
             }
             collectedIds.push(id);
@@ -1180,14 +1200,14 @@ exports.parseTags = ($) => {
 exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
-    for (const page of $("li", "ul.pagination").toArray()) {
+    for (const page of $("li", "ul.pagination-list").toArray()) {
         const p = Number($('a', page).text().trim());
         if (isNaN(p))
             continue;
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($("li > b").text().trim());
+    const currentPage = Number($("li > a.is-current").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
