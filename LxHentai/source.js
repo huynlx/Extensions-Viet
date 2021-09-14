@@ -759,21 +759,27 @@ class LxHentai extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
-                title: "Truyện Thịnh Hành",
+                title: "Truyện Yêu Thích",
                 view_more: true,
             });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
+                title: "Truyện Vừa Cập Nhật",
+                view_more: true,
+            });
+            let newAdded = createHomeSection({
+                id: 'new_added',
                 title: "Truyện Mới",
                 view_more: true,
             });
             //Load empty sections
             sectionCallback(hot);
             sectionCallback(newUpdated);
+            sectionCallback(newAdded);
             ///Get the section data
             //Hot
             let url = "http://truyenqqtop.com/truyen-yeu-thich.html";
@@ -827,6 +833,34 @@ class LxHentai extends paperback_extensions_common_1.Source {
             }
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
+            //New Added
+            url = 'http://truyenqqtop.com/truyen-tranh-moi.html';
+            request = createRequestObject({
+                url: url,
+                method: "GET",
+            });
+            let newAddItems = [];
+            data = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(data.data);
+            for (let obj of $('li', '.latest').toArray()) {
+                let title = $(`h3.title-book > a`, obj).text().trim();
+                let subtitle = $(`.episode-book > a`, obj).text().trim();
+                let image = (_g = $(`a > img`, obj).attr("src")) !== null && _g !== void 0 ? _g : "";
+                let id = (_j = (_h = $(`a`, obj).attr("href")) === null || _h === void 0 ? void 0 : _h.split("/").pop()) !== null && _j !== void 0 ? _j : title;
+                // if (!id || !subtitle) continue;
+                newUpdatedItems.push(createMangaTile({
+                    id: id,
+                    image: image,
+                    title: createIconText({
+                        text: title,
+                    }),
+                    subtitleText: createIconText({
+                        text: subtitle,
+                    }),
+                }));
+            }
+            newAdded.items = newAddItems;
+            sectionCallback(newAdded);
         });
     }
     // async getViewMoreItems(homepageSectionId: string, metadata: any): Promise<PagedResults> {
