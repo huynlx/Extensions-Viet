@@ -781,24 +781,624 @@ class LxHentai extends paperback_extensions_common_1.Source {
                 url: url,
                 method: "GET",
             });
-            let newUpdatedItems = [];
-            data = yield this.requestManager.schedule(request, 1);
-            $ = this.cheerio.load(data.data);
-            for (let manga of $('div', '.row').toArray()) {
-                const title = $('a > b', manga).last().text();
-                const id = $('a', manga).attr('href');
-                const image = $('.thumb_mob', manga).css('background');
-                const bg = image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
-                const subtitle = $(".small > a", manga).last().text().trim();
-                if (!id || !title)
-                    continue;
-                newUpdatedItems.push(createMangaTile({
-                    id: id,
-                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : ("http://m.lxhentai.com" + (bg === null || bg === void 0 ? void 0 : bg.split("'")[1])),
-                    title: createIconText({ text: title }),
-                    subtitleText: createIconText({ text: subtitle }),
-                }));
-            }
+            let newUpdatedItems = [
+                {
+                    "id": "/story/view.php?id=16570",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1631586626768.jpg?",
+                    "title": {
+                        "text": "ASUNAsan NO EROHON "
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16569",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1631586220722.jpg?",
+                    "title": {
+                        "text": "Light my fire"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=14735",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1609692251313.jpg?",
+                    "title": {
+                        "text": "I Can See the Number of Times People Org..."
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=5018",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1602755919951.jpg?",
+                    "title": {
+                        "text": "Hình Cosplay"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16568",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1631546764251.jpg?",
+                    "title": {
+                        "text": "A Way of Making the Hakurei Shrine Maide..."
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16466",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1630593534506.jpg?",
+                    "title": {
+                        "text": "Tan Rã & Tái Hợp"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16482",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1630771976890.jpg?",
+                    "title": {
+                        "text": "Thân Phận Bí Mật"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16567",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1631541998855.jpg?",
+                    "title": {
+                        "text": "Kunoichi no Mitsuyaku"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=9",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1599372704534.jpg?",
+                    "title": {
+                        "text": "Mẹ kế và những người bạn"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16566",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1631541791443.jpg?",
+                    "title": {
+                        "text": "Moto InCha no Kyonyuu Yariman"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16565",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1631541620872.jpg?",
+                    "title": {
+                        "text": "Samejima Shachou wa Keisanpu ga Osuki"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=341",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1599485872346.jpg?",
+                    "title": {
+                        "text": "Đừng như thế mà! Con rể!"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16564",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1631541503922.jpg?",
+                    "title": {
+                        "text": "Please have sex with my wife"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16563",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1631541231980.jpg?",
+                    "title": {
+                        "text": "Kaa-san ni Ore no Chinpo Ataetara Yokkyu..."
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=15355",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1617535921900.jpg?",
+                    "title": {
+                        "text": "Xin lỗi! Đây là phòng của tôi!"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=137",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/159940884021.jpg?",
+                    "title": {
+                        "text": "Thanh niên động kinh =))"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=210",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1599452740915.jpg?",
+                    "title": {
+                        "text": "Chị (Noona)"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=273",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1599470308763.jpg?",
+                    "title": {
+                        "text": "Cặp đôi S"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=279",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1599470961496.jpg?",
+                    "title": {
+                        "text": "Cô giáo gợi cảm"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=196",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1599451077632.jpg?",
+                    "title": {
+                        "text": "Mẹ Bạn"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=292",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1599472509211.jpg?",
+                    "title": {
+                        "text": "Bầu Sữa Vú Nuôi"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=15730",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1622557888705.jpg?",
+                    "title": {
+                        "text": "Thưa nhóm trưởng! Đây là báo c�..."
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16458",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1630548527281.jpg?",
+                    "title": {
+                        "text": "Phép Màu Phòng Khám"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16480",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1630756638621.jpg?",
+                    "title": {
+                        "text": "Học Bổng Đặc Biệt"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16510",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1630978337227.jpg?",
+                    "title": {
+                        "text": "Ngoài Sức Tưởng Tượng"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16521",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1631031400929.jpg?",
+                    "title": {
+                        "text": "Chuyên Gia Tình Dục"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16562",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1631528419548.jpg?",
+                    "title": {
+                        "text": "Having Cheating Sex wih the Strong-minde..."
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16561",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1631513429455.jpg?",
+                    "title": {
+                        "text": "Welcome To The Butterfly Mansion"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16560",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/163149614762.jpg?",
+                    "title": {
+                        "text": "Help me! Dr.Succubus!"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16559",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1631495964665.jpg?",
+                    "title": {
+                        "text": "Sparkling Influencer Co-Ed Falls Into En..."
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=8196",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1605201792189.jpg?",
+                    "title": {
+                        "text": "Artist Zumi"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16558",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1631462404885.jpg?",
+                    "title": {
+                        "text": "Maid Service Double Fox"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16557",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1631460889791.jpg?",
+                    "title": {
+                        "text": "Touhou Deisuikan 3 Inubashiri Momiji"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=6041",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1603560060169.jpg?",
+                    "title": {
+                        "text": "Hình Hentai"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=8964",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1605791033472.jpg?",
+                    "title": {
+                        "text": "Trả thù cô ta"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=14914",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1610769518737.jpg?",
+                    "title": {
+                        "text": "Mẹ con cô ấy"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=14954",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1611494058758.jpg?",
+                    "title": {
+                        "text": "Hoán đổi vợ chồng"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=14681",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1609646217211.jpg?",
+                    "title": {
+                        "text": "Vui vẻ với sếp nữ"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=15016",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1612322226798.jpg?",
+                    "title": {
+                        "text": "Noryangjin"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=6477",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1603883579339.jpg?",
+                    "title": {
+                        "text": "Nữ Thần Instagram"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=15273",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1615797250266.jpg?",
+                    "title": {
+                        "text": "Nữ Thần Bãi Biển"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=15345",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1617270734383.jpg?",
+                    "title": {
+                        "text": "Khao khát dục vọng"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16556",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1631444191891.jpg?",
+                    "title": {
+                        "text": "Sexy Code"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16347",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1629440793114.jpg?",
+                    "title": {
+                        "text": "Cắm Trại Cùng Mẹ Và Thằng Bạ..."
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16555",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1631413667953.jpg?",
+                    "title": {
+                        "text": "Banging Gyaru Sluts"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16554",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1631380428122.jpg?",
+                    "title": {
+                        "text": "A Sweet Night with Sanae-san"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16553",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1631380191178.jpg?",
+                    "title": {
+                        "text": "How to Raise a Cute Dog"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=11536",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1607395420869.jpg?",
+                    "title": {
+                        "text": "Kizashi"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16552",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1631378870540.jpg?",
+                    "title": {
+                        "text": "Marshmallow Vacation"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16551",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1631378710574.jpg?",
+                    "title": {
+                        "text": "Multiple Jade"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16550",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/163137845777.jpg?",
+                    "title": {
+                        "text": "All-Cuckold Summer Camp"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16549",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1631378246875.jpg?",
+                    "title": {
+                        "text": "Saiminjutsu de Kyonyuu Osananajimi JK o ..."
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=13894",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1608689065898.jpg?",
+                    "title": {
+                        "text": "Sinful Mother"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16548",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1631377237118.jpg?",
+                    "title": {
+                        "text": "Osananajimi no Onee-san ga Netorareta no..."
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=16547",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1631377046831.jpg?",
+                    "title": {
+                        "text": "Chiru Out"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=286",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1599471515971.jpg?",
+                    "title": {
+                        "text": "Lớp học gia đình"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=293",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1599472630121.jpg?",
+                    "title": {
+                        "text": "Thầy giáo thực tập"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=5790",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1603361285877.jpg?",
+                    "title": {
+                        "text": "Sứ Mệnh Người Anh"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=5117",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1602832289690.jpg?",
+                    "title": {
+                        "text": "Xoa dịu em đi"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                },
+                {
+                    "id": "/story/view.php?id=4440",
+                    "image": "http://m.lxhentai.com//lxhentai.com/assets/hentai/1602216736313.jpg?",
+                    "title": {
+                        "text": "Sống chung với vợ cũ"
+                    },
+                    "subtitleText": {
+                        "text": ""
+                    }
+                }
+            ];
+            // data = await this.requestManager.schedule(request, 1);
+            // $ = this.cheerio.load(data.data);
+            // for (let manga of $('div', '.row').toArray()) {
+            //     const title = $('a > b', manga).last().text();
+            //     const id = $('a', manga).attr('href');
+            //     const image = $('.thumb_mob', manga).css('background');
+            //     const bg = image?.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+            //     const subtitle = $(".small > a", manga).last().text().trim();
+            //     if (!id || !title) continue;
+            //     newUpdatedItems.push(createMangaTile({
+            //         id: id,
+            //         image: !image ? "https://i.imgur.com/GYUxEX8.png" : ("http://m.lxhentai.com" + bg?.split("'")[1]),
+            //         title: createIconText({ text: title }),
+            //         subtitleText: createIconText({ text: subtitle }),
+            //     }));
+            // }
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
         });
