@@ -960,21 +960,26 @@ exports.parseHotSection = ($) => {
 };
 exports.parseNewUpdatedSection = ($) => {
     let newUpdatedItems = [];
-    for (let manga of $('div', '.row').toArray()) {
-        const title = $('a > b', manga).last().text();
-        const id = $('a', manga).attr('href');
-        const image = $('.thumb_mob', manga).css('background');
-        const bg = image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
-        const subtitle = $(".small > a", manga).last().text().trim();
-        if (!id || !title)
-            continue;
-        newUpdatedItems.push(createMangaTile({
-            id: id,
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : ("http://m.lxhentai.com" + (bg === null || bg === void 0 ? void 0 : bg.split("'")[1])),
-            title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: subtitle }),
-        }));
-    }
+    // for (let manga of $('div', '.row').toArray()) {
+    //     const title = $('a > b', manga).last().text();
+    //     const id = $('a', manga).attr('href');
+    //     const image = $('.thumb_mob', manga).css('background');
+    //     const bg = image?.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+    //     const subtitle = $(".small > a", manga).last().text().trim();
+    //     if (!id || !title) continue;
+    //     newUpdatedItems.push(createMangaTile({
+    //         id: id,
+    //         image: !image ? "https://i.imgur.com/GYUxEX8.png" : ("http://m.lxhentai.com" + bg?.split("'")[1]),
+    //         title: createIconText({ text: title }),
+    //         subtitleText: createIconText({ text: subtitle }),
+    //     }));
+    // }
+    newUpdatedItems.push(createMangaTile({
+        id: 'huynh',
+        image: "https://i.imgur.com/GYUxEX8.png",
+        title: createIconText({ text: 'le' }),
+        subtitleText: createIconText({ text: 'chap3' }),
+    }));
     return newUpdatedItems;
     // return newUpdatedItems;
     // let staffPick: MangaTile[] = [];
