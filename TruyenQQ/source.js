@@ -690,17 +690,21 @@ const DOMAIN = `https://hentaivn.tv/`;
 const method = 'GET';
 exports.TruyenQQInfo = {
     version: '2.5.0',
-    name: 'LxHentai',
+    name: 'TruyenQQ',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from TruyenQQ',
     websiteBaseURL: "http://truyenqqtop.com/",
-    contentRating: paperback_extensions_common_1.ContentRating.ADULT,
+    contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
         {
-            text: "18+",
-            type: paperback_extensions_common_1.TagType.YELLOW
+            text: "Recommended",
+            type: paperback_extensions_common_1.TagType.BLUE
+        },
+        {
+            text: "Notifications",
+            type: paperback_extensions_common_1.TagType.GREEN
         }
     ]
 };
