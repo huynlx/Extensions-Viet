@@ -562,7 +562,7 @@ class Parser {
             chapters.push(createChapter({
                 id: $(obj).attr('href'),
                 chapNum: i,
-                name: decodeURIComponent($(obj).text()),
+                name: unescape($(obj).text()),
                 mangaId: mangaId.split("::")[0],
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
             }));
