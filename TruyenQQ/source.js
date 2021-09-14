@@ -931,7 +931,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             const arrayTags = [];
             for (const tag of $('div.genre-item', 'div.col-sm-10').toArray()) {
-                const label = $(tag).text().trim();
+                const label = tag.children[0].data;
                 const id = (_a = $('span', tag).attr('data-id')) !== null && _a !== void 0 ? _a : label;
                 if (!id || !label)
                     continue;
