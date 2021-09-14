@@ -867,21 +867,17 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            let select = 1;
             let param = '';
             let url = '';
             switch (homepageSectionId) {
-                case "recently-updated":
+                case "new_updated":
                     url = `http://truyenqqtop.com/truyen-moi-cap-nhat/trang-${page}.html`;
-                    select = 1;
                     break;
-                case "recently_added":
+                case "new_added":
                     url = `http://truyenqqtop.com/truyen-tranh-moi/trang-${page}.html`;
-                    select = 2;
                     break;
                 case "hot":
                     url = `http://truyenqqtop.com/truyen-yeu-thich/trang-${page}.html`;
-                    select = 3;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
