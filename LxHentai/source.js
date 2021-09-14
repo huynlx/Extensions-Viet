@@ -848,7 +848,7 @@ class LxHentai extends paperback_extensions_common_1.Source {
                 let image = (_g = $(`a > img`, manga).attr("src")) !== null && _g !== void 0 ? _g : "";
                 let id = (_j = (_h = $(`a`, manga).attr("href")) === null || _h === void 0 ? void 0 : _h.split("/").pop()) !== null && _j !== void 0 ? _j : title;
                 // if (!id || !subtitle) continue;
-                newUpdatedItems.push(createMangaTile({
+                newAddItems.push(createMangaTile({
                     id: id,
                     image: image,
                     title: createIconText({
