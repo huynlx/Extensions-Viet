@@ -537,16 +537,15 @@ exports.Parser = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 class Parser {
     parseMangaDetails($, mangaId) {
-        var _a;
         let tags = [];
-        const cc = (_a = $('.page-header > p').text() !== "") !== null && _a !== void 0 ? _a : "Không có mô tả";
+        const cc = $('.page-header > p').text();
         tags.push(createTag({
             label: 'Horror',
             id: 'Horror',
         }));
         return createManga({
             id: mangaId.split("::")[0],
-            desc: $('<div/>').html(cc).text(),
+            desc: cc === "" ? 'Không có mô tả' : cc,
             titles: [$('.page-title').text()],
             image: mangaId.split("::")[1],
             status: 1,
@@ -559,7 +558,6 @@ class Parser {
         const chapters = [];
         var i = 0;
         for (let obj of $('.page-header > h2 > a').toArray().reverse()) {
-            // if (!obj.attribs['href'] || !obj.children[0].data) continue;
             i++;
             chapters.push(createChapter({
                 id: $(obj).attr('href'),
@@ -574,7 +572,6 @@ class Parser {
     parseChapterDetails($) {
         const pages = [];
         for (let obj of $('p > img').toArray()) {
-            // if (!obj.attribs['data-original']) continue;
             let link = obj.attribs['src'];
             pages.push(link);
         }
@@ -586,7 +583,6 @@ class Parser {
             const title = $('a', manga).attr('title');
             const id = $('a', manga).attr('href');
             const image = $('a > img', manga).first().attr('src');
-            // const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
             if (!id || !title)
                 continue;
             viewestItems.push(createMangaTile({
