@@ -761,9 +761,8 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${DOMAIN}`,
+                url: `http://truyenqqtop.com/truyen-tranh/${mangaId}`,
                 method,
-                param: mangaId,
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
