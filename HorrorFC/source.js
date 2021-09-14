@@ -706,16 +706,10 @@ class Parser {
     }
     parseChapterDetails($) {
         const pages = [];
-        for (let obj of $('div.reading-detail > div.page-chapter > img').toArray()) {
-            if (!obj.attribs['data-original'])
-                continue;
-            let link = obj.attribs['data-original'];
-            if (link.indexOf('https') === -1) { //nếu link ko có 'https'
-                pages.push('http:' + obj.attribs['data-original']);
-            }
-            else {
-                pages.push(link);
-            }
+        for (let obj of $('p > img').toArray()) {
+            // if (!obj.attribs['data-original']) continue;
+            let link = obj.attribs['src'];
+            pages.push(link);
         }
         return pages;
     }
