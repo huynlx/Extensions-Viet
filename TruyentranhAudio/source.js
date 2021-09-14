@@ -888,7 +888,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                 const image = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', manga).attr('data-bg');
                 const sub = $('.more-chapter > a', manga).text().trim();
                 // if (!id || !subtitle) continue;
-                newUpdatedItems.push(createMangaTile({
+                newAddItems.push(createMangaTile({
                     id: id,
                     image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? (image) : ("https:" + image),
                     title: createIconText({
