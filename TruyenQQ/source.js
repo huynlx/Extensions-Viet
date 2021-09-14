@@ -1093,8 +1093,8 @@ exports.parseMangaDetails = ($, mangaId) => {
         const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : t;
         tags.push({ label: genre, id });
     }
-    creator = $('.txt > p:first-child > a').text();
-    status = $('.txt > p:last-child').text().toLowerCase().includes("đang cập nhật") ? 1 : 0;
+    creator = $('.txt > p:nth-of-type(1) > a').text();
+    status = $('.txt > p:nth-of-type(2)').text().toLowerCase().includes("đang cập nhật") ? 1 : 0;
     const image = $('.left > img').attr('src');
     return createManga({
         id: mangaId,
