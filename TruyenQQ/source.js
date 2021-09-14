@@ -724,7 +724,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
     }
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `http://truyenqqtop.com/truyen-tranh/${mangaId}`;
+            const url = `http://truyenqqtop.com/truyen-tranh/dao-hai-tac-128`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
