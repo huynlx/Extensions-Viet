@@ -759,7 +759,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q;
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
@@ -776,10 +776,22 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
                 title: "Truyện Mới",
                 view_more: true,
             });
+            let boy = createHomeSection({
+                id: 'boy',
+                title: "Truyện Con Trai",
+                view_more: true,
+            });
+            let girl = createHomeSection({
+                id: 'girl',
+                title: "Truyện Con Gái",
+                view_more: true,
+            });
             //Load empty sections
             sectionCallback(hot);
             sectionCallback(newUpdated);
             sectionCallback(newAdded);
+            sectionCallback(boy);
+            sectionCallback(girl);
             ///Get the section data
             //Hot
             let url = "http://truyenqqtop.com/truyen-yeu-thich.html";
@@ -861,6 +873,62 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             }
             newAdded.items = newAddItems;
             sectionCallback(newAdded);
+            //Boy
+            url = 'http://truyenqqtop.com/truyen-con-trai.html';
+            request = createRequestObject({
+                url: url,
+                method: "GET",
+            });
+            let boyItems = [];
+            data = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(data.data);
+            for (let manga of $('li', '.list-stories').toArray().splice(0, 20)) {
+                let title = $(`h3.title-book > a`, manga).text().trim();
+                let subtitle = $(`.episode-book > a`, manga).text().trim();
+                let image = (_k = $(`a > img`, manga).attr("src")) !== null && _k !== void 0 ? _k : "";
+                let id = (_m = (_l = $(`a`, manga).attr("href")) === null || _l === void 0 ? void 0 : _l.split("/").pop()) !== null && _m !== void 0 ? _m : title;
+                // if (!id || !subtitle) continue;
+                boyItems.push(createMangaTile({
+                    id: id,
+                    image: image,
+                    title: createIconText({
+                        text: title,
+                    }),
+                    subtitleText: createIconText({
+                        text: subtitle,
+                    }),
+                }));
+            }
+            boy.items = boyItems;
+            sectionCallback(boy);
+            //Girl
+            url = 'http://truyenqqtop.com/truyen-con-gai.html';
+            request = createRequestObject({
+                url: url,
+                method: "GET",
+            });
+            let girlItems = [];
+            data = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(data.data);
+            for (let manga of $('li', '.list-stories').toArray().splice(0, 20)) {
+                let title = $(`h3.title-book > a`, manga).text().trim();
+                let subtitle = $(`.episode-book > a`, manga).text().trim();
+                let image = (_o = $(`a > img`, manga).attr("src")) !== null && _o !== void 0 ? _o : "";
+                let id = (_q = (_p = $(`a`, manga).attr("href")) === null || _p === void 0 ? void 0 : _p.split("/").pop()) !== null && _q !== void 0 ? _q : title;
+                // if (!id || !subtitle) continue;
+                girlItems.push(createMangaTile({
+                    id: id,
+                    image: image,
+                    title: createIconText({
+                        text: title,
+                    }),
+                    subtitleText: createIconText({
+                        text: subtitle,
+                    }),
+                }));
+            }
+            girl.items = girlItems;
+            sectionCallback(girl);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
@@ -878,6 +946,12 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
                     break;
                 case "hot":
                     url = `http://truyenqqtop.com/truyen-yeu-thich/trang-${page}.html`;
+                    break;
+                case "boy":
+                    url = `http://truyenqqtop.com/truyen-con-trai/trang-${page}.html`;
+                    break;
+                case "girl":
+                    url = `http://truyenqqtop.com/truyen-con-gai/trang-${page}.html`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
