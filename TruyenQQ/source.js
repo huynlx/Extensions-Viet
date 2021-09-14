@@ -836,7 +836,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
                 let title = $(`h3.title-book > a`, manga).text().trim();
                 let subtitle = $(`.episode-book > a`, manga).text().trim();
                 let image = (_d = $(`a > img`, manga).attr("src")) !== null && _d !== void 0 ? _d : "";
-                let id = (_f = (_e = $(`a`, manga).attr("href")) === null || _e === void 0 ? void 0 : _e.split("/").pop()) !== null && _f !== void 0 ? _f : title;
+                let id = (_f = (_e = $(`.story-item > a`, manga).attr("href")) === null || _e === void 0 ? void 0 : _e.split("/").pop()) !== null && _f !== void 0 ? _f : title;
                 // if (!id || !title) continue;
                 popular.push(createMangaTile({
                     id: id,
