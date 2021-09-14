@@ -695,7 +695,7 @@ exports.LxHentaiInfo = {
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from LxHentai',
-    websiteBaseURL: '',
+    websiteBaseURL: "http://m.lxhentai.com/",
     contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
         {
@@ -776,14 +776,14 @@ class LxHentai extends paperback_extensions_common_1.Source {
             hot.items = LxHentaiParser_1.parseHotSection($);
             sectionCallback(hot);
             //New Updates
-            url = "http://m.lxhentai.com/";
-            request = createRequestObject({
-                url: url,
-                method: "GET",
-            });
-            data = yield this.requestManager.schedule(request, 1);
-            $ = this.cheerio.load(data.data);
-            newUpdated.items = LxHentaiParser_1.parseNewUpdatedSection($);
+            // url = "http://m.lxhentai.com/"
+            // request = createRequestObject({
+            //     url: url,
+            //     method: "GET",
+            // });
+            // data = await this.requestManager.schedule(request, 1);
+            // $ = this.cheerio.load(data.data);
+            newUpdated.items = LxHentaiParser_1.parseNewUpdatedSection();
             sectionCallback(newUpdated);
         });
     }
@@ -958,7 +958,7 @@ exports.parseHotSection = ($) => {
     }
     return popular;
 };
-exports.parseNewUpdatedSection = ($) => {
+exports.parseNewUpdatedSection = () => {
     let newUpdatedItems = [];
     // for (let manga of $('div', '.row').toArray()) {
     //     const title = $('a > b', manga).last().text();
@@ -980,7 +980,7 @@ exports.parseNewUpdatedSection = ($) => {
         title: createIconText({ text: 'le' }),
         subtitleText: createIconText({ text: 'chap3' }),
     }));
-    return newUpdatedItems;
+    return newUpdatedItems; //ko return đc cái này
     // return newUpdatedItems;
     // let staffPick: MangaTile[] = [];
     // for (let manga of $('ul', 'ul.page-item').toArray()) {
