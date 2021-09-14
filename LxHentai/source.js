@@ -712,10 +712,6 @@ class LxHentai extends paperback_extensions_common_1.Source {
             requestsPerSecond: 5,
             requestTimeout: 20000
         });
-        // async getSearchTags(): Promise<TagSection[]> {
-        //     const tagSections: TagSection[] = [createTagSection({ id: '0', label: 'Thể Loại (Chỉ chọn 1)', tags: tags.map(x => createTag(x)) })]
-        //     return tagSections;
-        // }
         // globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
         //     return {
         //         referer: "http://www.nhattruyenvip.com/"
@@ -790,7 +786,7 @@ class LxHentai extends paperback_extensions_common_1.Source {
             let popular = [];
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            for (let manga of $('li', '.list-stories').toArray()) {
+            for (let manga of $('li', '.list-stories').toArray().splice(0, 20)) {
                 let title = $(`h3.title-book > a`, manga).text().trim();
                 let subtitle = $(`.episode-book > a`, manga).text().trim();
                 let image = (_a = $(`a > img`, manga).attr("src")) !== null && _a !== void 0 ? _a : "";
@@ -814,7 +810,7 @@ class LxHentai extends paperback_extensions_common_1.Source {
             let newUpdatedItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('li', '.latest').toArray()) {
+            for (let obj of $('li', '.latest').toArray().splice(0, 20)) {
                 let title = $(`h3.title-book > a`, obj).text().trim();
                 let subtitle = $(`.episode-book > a`, obj).text().trim();
                 let image = (_d = $(`a > img`, obj).attr("src")) !== null && _d !== void 0 ? _d : "";
@@ -842,7 +838,7 @@ class LxHentai extends paperback_extensions_common_1.Source {
             let newAddItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let manga of $('li', '.list-stories').toArray()) {
+            for (let manga of $('li', '.list-stories').toArray().splice(0, 20)) {
                 let title = $(`h3.title-book > a`, manga).text().trim();
                 let subtitle = $(`.episode-book > a`, manga).text().trim();
                 let image = (_g = $(`a > img`, manga).attr("src")) !== null && _g !== void 0 ? _g : "";
@@ -914,6 +910,28 @@ class LxHentai extends paperback_extensions_common_1.Source {
                 results: manga,
                 metadata
             });
+        });
+    }
+    getSearchTags() {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            const url = `http://truyenqqtop.com/tim-kiem-nang-cao.html`;
+            const request = createRequestObject({
+                url: url,
+                method: "GET",
+            });
+            const response = yield this.requestManager.schedule(request, 1);
+            const $ = this.cheerio.load(response.data);
+            const arrayTags = [];
+            for (const tag of $('div.genre-item', 'div.col-sm-10').toArray()) {
+                const label = $(tag).text().trim();
+                const id = (_a = $('span', tag).attr('data-id')) !== null && _a !== void 0 ? _a : label;
+                if (!id || !label)
+                    continue;
+                arrayTags.push({ id: id, label: label });
+            }
+            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại (Chỉ chọn 1)', tags: arrayTags.map(x => createTag(x)) })];
+            return tagSections;
         });
     }
 }
