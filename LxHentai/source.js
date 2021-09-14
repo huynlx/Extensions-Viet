@@ -802,7 +802,7 @@ class LxHentai extends paperback_extensions_common_1.Source {
             hot.items = popular;
             sectionCallback(hot);
             //New Updates
-            url = 'http://nhattruyenvip.com/tim-truyen?status=-1&sort=12';
+            url = 'https://cmangatop.com/';
             request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -818,11 +818,11 @@ class LxHentai extends paperback_extensions_common_1.Source {
             //     const subtitle = $(".small > a", manga).last().text().trim();
             //     if (!id || !title) continue;
             // }
-            for (let index in $('div.row > div.item > figure.clearfix').toArray()) {
-                let title = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > figcaption > h3 > a`).text();
-                let subtitle = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > figcaption > ul > li.chapter > a`)[0];
-                let image = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a > img`).attr("data-original");
-                let id = (_b = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a`).attr("href")) === null || _b === void 0 ? void 0 : _b.split("/").pop();
+            for (let obj of $('li', 'ul.list_grid grid').toArray()) {
+                let title = $(`.book_info > .book_name > h3 > a`, obj).text();
+                let subtitle = $(`.book_info > .last_chapter a`, obj).text();
+                let image = $(`.book_avatar > a > img`, obj).attr("src");
+                let id = (_b = $(`.book_avatar > a`, obj).attr("href")) === null || _b === void 0 ? void 0 : _b.split("/").pop();
                 if (!id || !subtitle)
                     continue;
                 newUpdatedItems.push(createMangaTile({
@@ -832,7 +832,7 @@ class LxHentai extends paperback_extensions_common_1.Source {
                         text: title,
                     }),
                     subtitleText: createIconText({
-                        text: subtitle.attribs['title'],
+                        text: subtitle,
                     }),
                 }));
             }
