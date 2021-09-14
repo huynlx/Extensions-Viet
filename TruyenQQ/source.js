@@ -754,6 +754,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
                 tags: [createTagSection({ label: "genres", tags: tags, id: '0' })],
+                views: 11681972
             });
         });
     }
