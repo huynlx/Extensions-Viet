@@ -787,42 +787,39 @@ class LxHentai extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
         });
     }
-    getViewMoreItems(homepageSectionId, metadata) {
-        var _a;
-        return __awaiter(this, void 0, void 0, function* () {
-            let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            let select = 1;
-            let param = '';
-            let url = '';
-            switch (homepageSectionId) {
-                case "recently-updated":
-                    url = `${DOMAIN}`;
-                    param = `?page=${page}`;
-                    select = 1;
-                    break;
-                case "recently_added":
-                    url = '${DOMAIN}danh-sach.html';
-                    param = `?page=${page}`;
-                    select = 2;
-                    break;
-                default:
-                    return Promise.resolve(createPagedResults({ results: [] }));
-            }
-            const request = createRequestObject({
-                url,
-                method,
-                param
-            });
-            const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
-            const manga = LxHentaiParser_1.parseViewMore($, select);
-            metadata = !LxHentaiParser_1.isLastPage($) ? { page: page + 1 } : undefined;
-            return createPagedResults({
-                results: manga,
-                metadata,
-            });
-        });
-    }
+    // async getViewMoreItems(homepageSectionId: string, metadata: any): Promise<PagedResults> {
+    //     let page: number = metadata?.page ?? 1;
+    //     let select = 1;
+    //     let param = '';
+    //     let url = '';
+    //     switch (homepageSectionId) {
+    //         case "recently-updated":
+    //             url = `${DOMAIN}`;
+    //             param = `?page=${page}`;
+    //             select = 1;
+    //             break;
+    //         case "recently_added":
+    //             url = '${DOMAIN}danh-sach.html';
+    //             param = `?page=${page}`;
+    //             select = 2;
+    //             break;
+    //         default:
+    //             return Promise.resolve(createPagedResults({ results: [] }))
+    //     }
+    //     const request = createRequestObject({
+    //         url,
+    //         method,
+    //         param
+    //     });
+    //     const response = await this.requestManager.schedule(request, 1);
+    //     const $ = this.cheerio.load(response.data);
+    //     const manga = parseViewMore($, select);
+    //     metadata = !isLastPage($) ? { page: page + 1 } : undefined;
+    //     return createPagedResults({
+    //         results: manga,
+    //         metadata,
+    //     });
+    // }
     getSearchResults(query, metadata) {
         var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
@@ -873,30 +870,20 @@ exports.parseMangaDetails = ($, mangaId) => {
     let creator = '';
     let status = 1; //completed, 1 = Ongoing
     let desc = $('.detail-content > p').text();
-    for (const obj of $('.col-4.py-1', '.row.mt-2').toArray()) {
-        switch ($(obj).text().trim()) {
-            case "Thể loại":
-                for (const genres of $('a', $(obj) + '.col-8.py-1').toArray()) {
-                    const genre = $('a', genres).text().trim();
-                    const id = (_a = $('a', genres).attr('href')) !== null && _a !== void 0 ? _a : genre;
-                    tags.push(createTag({ id: id, label: genre }));
-                }
-                break;
-            case "Tác giả":
-                creator = $('a', $(obj) + '.col-8.py-1').text();
-                break;
-            case "Tình trạng":
-                status = $($(obj) + '.col-8.py-1').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
-                break;
-        }
+    for (const t of $('a', '.row.mt-2 > div:nth-child(6)').toArray()) {
+        const genre = $(t).text().trim();
+        const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : t;
+        tags.push({ label: genre, id });
     }
+    creator = $('.row.mt-2 > div:nth-child(2)').text();
+    status = $('.row.mt-2 > div:nth-child(4)').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
     const image = $('.col-md-4.text-center > img').attr('src');
     return createManga({
         id: mangaId,
         author: creator,
         artist: creator,
         desc: desc === "" ? 'Không có mô tả' : desc,
-        titles: [$('.page-info > h1').text().trim()],
+        titles: $('.title-detail').text().trim(),
         image: image.replace("190", "300"),
         status,
         // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
