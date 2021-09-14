@@ -715,11 +715,6 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             requestsPerSecond: 5,
             requestTimeout: 20000
         });
-        // globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
-        //     return {
-        //         referer: "http://truyenqqtop.com/"
-        //     }
-        // }
     }
     getMangaShareUrl(mangaId) { return `http://truyenqqtop.com/truyen-tranh/${mangaId}`; }
     ;
@@ -1103,7 +1098,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
         });
     }
     getSearchTags() {
-        var _a;
+        var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function* () {
             const url = `http://truyenqqtop.com/tim-kiem-nang-cao.html`;
             const request = createRequestObject({
@@ -1113,6 +1108,11 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const arrayTags = [];
+            const arrayTags2 = [];
+            const arrayTags3 = [];
+            const arrayTags4 = [];
+            const arrayTags5 = [];
+            //the loai
             for (const tag of $('div.genre-item', 'div.col-sm-10').toArray()) {
                 const label = $(tag).text().trim();
                 const id = (_a = $('span', tag).attr('data-id')) !== null && _a !== void 0 ? _a : label;
@@ -1120,9 +1120,52 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
                     continue;
                 arrayTags.push({ id: id, label: label });
             }
-            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) })];
+            //quoc gia
+            for (const tag of $('option', 'select#country').toArray()) {
+                const label = $(tag).text().trim();
+                const id = (_b = 'country.' + $(tag).attr('value')) !== null && _b !== void 0 ? _b : label;
+                if (!id || !label)
+                    continue;
+                arrayTags2.push({ id: id, label: label });
+            }
+            //tinh trang
+            for (const tag of $('option', 'select#status').toArray()) {
+                const label = $(tag).text().trim();
+                const id = (_c = 'status.' + $(tag).attr('value')) !== null && _c !== void 0 ? _c : label;
+                if (!id || !label)
+                    continue;
+                arrayTags3.push({ id: id, label: label });
+            }
+            //so luong chuong
+            for (const tag of $('option', 'select#minchapter').toArray()) {
+                const label = $(tag).text().trim();
+                const id = (_d = 'minchapter.' + $(tag).attr('value')) !== null && _d !== void 0 ? _d : label;
+                if (!id || !label)
+                    continue;
+                arrayTags4.push({ id: id, label: label });
+            }
+            //sap xep
+            for (const tag of $('option', 'select#sort').toArray()) {
+                const label = $(tag).text().trim();
+                const id = (_e = 'sort.' + $(tag).attr('value')) !== null && _e !== void 0 ? _e : label;
+                if (!id || !label)
+                    continue;
+                arrayTags5.push({ id: id, label: label });
+            }
+            const tagSections = [
+                createTagSection({ id: '0', label: 'Thể Loại Truyện', tags: arrayTags.map(x => createTag(x)) }),
+                createTagSection({ id: '1', label: 'Quốc Gia (Chỉ chọn 1)', tags: arrayTags2.map(x => createTag(x)) }),
+                createTagSection({ id: '2', label: 'Tình Trạng (Chỉ chọn 1)', tags: arrayTags3.map(x => createTag(x)) }),
+                createTagSection({ id: '3', label: 'Số Lượng Chương (Chỉ chọn 1)', tags: arrayTags4.map(x => createTag(x)) }),
+                createTagSection({ id: '4', label: 'Sắp xếp (Chỉ chọn 1)', tags: arrayTags5.map(x => createTag(x)) }),
+            ];
             return tagSections;
         });
+    }
+    globalRequestHeaders() {
+        return {
+            referer: "http://truyenqqtop.com/"
+        };
     }
 }
 exports.TruyenQQ = TruyenQQ;
