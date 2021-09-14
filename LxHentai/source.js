@@ -842,11 +842,11 @@ class LxHentai extends paperback_extensions_common_1.Source {
             let newAddItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('li', '.latest').toArray()) {
-                let title = $(`h3.title-book > a`, obj).text().trim();
-                let subtitle = $(`.episode-book > a`, obj).text().trim();
-                let image = (_g = $(`a > img`, obj).attr("src")) !== null && _g !== void 0 ? _g : "";
-                let id = (_j = (_h = $(`a`, obj).attr("href")) === null || _h === void 0 ? void 0 : _h.split("/").pop()) !== null && _j !== void 0 ? _j : title;
+            for (let manga of $('li', '.list-stories').toArray()) {
+                let title = $(`h3.title-book > a`, manga).text().trim();
+                let subtitle = $(`.episode-book > a`, manga).text().trim();
+                let image = (_g = $(`a > img`, manga).attr("src")) !== null && _g !== void 0 ? _g : "";
+                let id = (_j = (_h = $(`a`, manga).attr("href")) === null || _h === void 0 ? void 0 : _h.split("/").pop()) !== null && _j !== void 0 ? _j : title;
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
