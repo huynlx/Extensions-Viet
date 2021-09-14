@@ -428,6 +428,11 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             requestsPerSecond: 5,
             requestTimeout: 20000
         });
+        // globalRequestHeaders(): RequestHeaders {
+        //     return {
+        //         referer: DOMAIN
+        //     }
+        // }
     }
     getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh/${mangaId}`; }
     ;
@@ -662,11 +667,6 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             return this.parser.parseTags($);
         });
-    }
-    globalRequestHeaders() {
-        return {
-            referer: DOMAIN
-        };
     }
 }
 exports.NetTruyen = NetTruyen;
