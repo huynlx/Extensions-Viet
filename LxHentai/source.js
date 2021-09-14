@@ -759,7 +759,7 @@ class LxHentai extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b;
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
@@ -790,10 +790,9 @@ class LxHentai extends paperback_extensions_common_1.Source {
                 const image = $('a > div', manga).css('background');
                 const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
                 const subtitle = $(".info-detail", manga).last().text().trim();
-                if (!id || !title)
-                    continue;
+                // if (!id || !title) continue;
                 popular.push(createMangaTile({
-                    id: encodeURIComponent(id),
+                    id: id,
                     image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
                     title: createIconText({ text: title }),
                     subtitleText: createIconText({ text: subtitle }),
@@ -821,10 +820,9 @@ class LxHentai extends paperback_extensions_common_1.Source {
             for (let obj of $('li', 'ul.list_grid grid').toArray()) {
                 let title = $(`.book_info > .book_name > h3 > a`, obj).text();
                 let subtitle = $(`.book_info > .last_chapter a`, obj).text();
-                let image = $(`.book_avatar > a > img`, obj).attr("src");
-                let id = (_b = $(`.book_avatar > a`, obj).attr("href")) === null || _b === void 0 ? void 0 : _b.split("/").pop();
-                if (!id || !subtitle)
-                    continue;
+                let image = (_b = $(`.book_avatar > a > img`, obj).attr("src")) !== null && _b !== void 0 ? _b : "";
+                let id = (_d = (_c = $(`.book_avatar > a`, obj).attr("href")) === null || _c === void 0 ? void 0 : _c.split("/").pop()) !== null && _d !== void 0 ? _d : title;
+                // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
                     image: image,
