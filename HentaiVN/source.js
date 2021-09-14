@@ -715,12 +715,6 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             requestsPerSecond: 5,
             requestTimeout: 20000
         });
-        // getCloudflareBypassRequest() {
-        //     return createRequestObject({
-        //         url: `${DOMAIN}`,
-        //         method: 'GET',
-        //     })
-        // }
     }
     getMangaShareUrl(mangaId) { return `${DOMAIN}${mangaId}`; }
     ;
@@ -846,10 +840,16 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             return tagSections;
         });
     }
-    globalRequestHeaders() {
-        return {
-            referer: `${DOMAIN}` + '/'
-        };
+    // globalRequestHeaders(): RequestHeaders {
+    //     return {
+    //         referer: `${DOMAIN}` + '/'
+    //     }
+    // }
+    getCloudflareBypassRequest() {
+        return createRequestObject({
+            url: `${DOMAIN}`,
+            method: 'GET',
+        });
     }
 }
 exports.HentaiVN = HentaiVN;
