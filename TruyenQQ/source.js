@@ -686,7 +686,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TruyenQQ = exports.TruyenQQInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const TruyenQQParser_1 = require("./TruyenQQParser");
-const DOMAIN = `http://truyenqqtop.com/`;
+const DOMAIN = 'http://truyenqqtop.com/';
 const method = 'GET';
 exports.TruyenQQInfo = {
     version: '3.0.0',
@@ -783,7 +783,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
     getChapterDetails(mangaId, chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${DOMAIN}truyen-tranh/${chapterId} `,
+                url: `${DOMAIN}truyen-tranh/${chapterId}`,
                 method
             });
             const response = yield this.requestManager.schedule(request, 1);
@@ -846,7 +846,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             sectionCallback(girl);
             ///Get the section data
             //Featured
-            let url = `${DOMAIN} `;
+            let url = `${DOMAIN}`;
             let request = createRequestObject({
                 url: url,
                 method: "GET",
