@@ -724,7 +724,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
     }
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `http://truyenqqtop.com/truyen-tranh/dao-hai-tac-128`;
+            const url = `http://truyenqqtop.com/truyen-tranh/${mangaId}`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -1113,10 +1113,10 @@ exports.parseChapters = ($, mangaId) => {
     var _a;
     const chapters = [];
     var i = 0;
-    for (const obj of $(".listing tr").toArray().reverse()) {
+    for (const obj of $(".works-chapter-item").toArray().reverse()) {
         i++;
-        const name = ($("td:first-child > a > h2", obj).text().trim());
-        const id = (_a = $('td:first-child > a', obj).attr('href').split('/').pop()) !== null && _a !== void 0 ? _a : "";
+        const name = ($("div:first-child > a", obj).text().trim());
+        const id = (_a = $('div:first-child > a', obj).attr('href').split('/').pop()) !== null && _a !== void 0 ? _a : "";
         if (id == "")
             continue;
         const chapterNumber = i;
