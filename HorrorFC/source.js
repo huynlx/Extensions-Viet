@@ -468,7 +468,7 @@ class HorrorFC extends paperback_extensions_common_1.Source {
                 pages: pages,
                 longStrip: false,
                 id: chapterId,
-                mangaId: mangaId,
+                mangaId: mangaId.split("::")[0],
             });
         });
     }
@@ -567,7 +567,7 @@ class HorrorFC extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             const manga = this.parser.parseViewMoreItems($);
             ;
-            metadata = exports.isLastPage($) ? undefined : { page: page + 1 };
+            metadata = undefined;
             return createPagedResults({
                 results: manga,
                 metadata
@@ -589,6 +589,11 @@ exports.Parser = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 class Parser {
     parseMangaDetails($, mangaId) {
+        let tags = [];
+        tags.push(createTag({
+            label: 'Horror',
+            id: 'Horror',
+        }));
         // const image = $('div.col-image > img').attr('src');
         return createManga({
             id: mangaId.split("::")[0],
@@ -597,7 +602,8 @@ class Parser {
             image: mangaId.split("::")[1],
             status: 1,
             hentai: false,
-            rating: 1000
+            rating: 1000,
+            tags: [createTagSection({ label: "genres", tags: tags, id: '0' })],
         });
     }
     parseChapterList($, mangaId) {
@@ -612,12 +618,6 @@ class Parser {
                 name: $(obj).text(),
                 mangaId: mangaId.split("::")[0],
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                tags: [createTagSection({
-                        label: "genres", tags: [createTag({
-                                label: 'Horror',
-                                id: 'Horror',
-                            })], id: '0'
-                    })],
             }));
         }
         return chapters;

@@ -729,7 +729,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             const request = createRequestObject({
                 url: `${DOMAIN}`,
                 method,
-                param: mangaId,
+                param: mangaId.split("::")[0],
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
@@ -741,7 +741,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             const request = createRequestObject({
                 url: `${DOMAIN}`,
                 method,
-                param: mangaId,
+                param: mangaId.split("::")[0],
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
@@ -886,14 +886,14 @@ exports.parseMangaDetails = ($, mangaId) => {
                 break;
         }
     }
-    const image = $('.page-ava > img').attr('src');
+    // const image = $('.page-ava > img').attr('src');
     return createManga({
-        id: mangaId,
+        id: mangaId.split("::")[0],
         author: creator,
         artist: creator,
         desc: desc === "" ? 'Không có mô tả' : desc,
         titles: [$('.page-info > h1').text().trim()],
-        image: image.replace("190", "300"),
+        image: mangaId.split("::")[1],
         status,
         // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
         hentai: true,
@@ -915,7 +915,7 @@ exports.parseChapters = ($, mangaId) => {
             id: encodeURIComponent(id),
             chapNum: chapterNumber,
             name,
-            mangaId: mangaId,
+            mangaId: mangaId.split("::")[0],
             langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
         }));
     }
@@ -931,7 +931,7 @@ exports.parseChapterDetails = ($, mangaId, chapterId) => {
     }
     const chapterDetails = createChapterDetails({
         id: chapterId,
-        mangaId: mangaId,
+        mangaId: mangaId.split("::")[0],
         pages: pages,
         longStrip: false
     });
@@ -952,7 +952,7 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
         if (!id || !title)
             continue;
         popular.push(createMangaTile({
-            id: encodeURIComponent(id),
+            id: encodeURIComponent(id) + "::" + bg,
             image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
             title: createIconText({ text: title }),
             subtitleText: createIconText({ text: subtitle }),
@@ -971,7 +971,7 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
         if (!id || !title)
             continue;
         staffPick.push(createMangaTile({
-            id: encodeURIComponent(id),
+            id: encodeURIComponent(id) + "::" + bg,
             image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
             title: createIconText({ text: title }),
             subtitleText: createIconText({ text: subtitle }),
@@ -995,7 +995,7 @@ exports.parseAddedSections = ($, sections, sectionCallback) => {
         if (!id || !title)
             continue;
         added.push(createMangaTile({
-            id: encodeURIComponent(id),
+            id: encodeURIComponent(id) + "::" + image,
             image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
             title: createIconText({ text: title }),
             subtitleText: createIconText({ text: fixsub }),
@@ -1021,7 +1021,7 @@ exports.parseSearch = ($) => {
         if (!id || !title)
             continue;
         mangas.push(createMangaTile({
-            id: encodeURIComponent(id),
+            id: encodeURIComponent(id) + "::" + image,
             image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
             title: createIconText({ text: title }),
             subtitleText: createIconText({ text: fixsub }),
@@ -1043,7 +1043,7 @@ exports.parseViewMore = ($, select) => {
                 continue;
             if (!collectedIds.includes(id)) {
                 manga.push(createMangaTile({
-                    id: encodeURIComponent(id),
+                    id: encodeURIComponent(id) + "::" + image,
                     image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({ text: decodeHTMLEntity(title) }),
                     subtitleText: createIconText({ text: subtitle }),
@@ -1063,7 +1063,7 @@ exports.parseViewMore = ($, select) => {
                 continue;
             if (!collectedIds.includes(id)) {
                 manga.push(createMangaTile({
-                    id: encodeURIComponent(id),
+                    id: encodeURIComponent(id) + "::" + image,
                     image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({ text: decodeHTMLEntity(title) }),
                     subtitleText: createIconText({ text: fixsub }),
