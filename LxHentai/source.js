@@ -712,12 +712,6 @@ class LxHentai extends paperback_extensions_common_1.Source {
             requestsPerSecond: 5,
             requestTimeout: 20000
         });
-        // getCloudflareBypassRequest() {
-        //     return createRequestObject({
-        //         url: `${DOMAIN}`,
-        //         method: 'GET',
-        //     })
-        // }
     }
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -857,6 +851,12 @@ class LxHentai extends paperback_extensions_common_1.Source {
         return {
             referer: `https://lxhentai.com` + '/'
         };
+    }
+    getCloudflareBypassRequest() {
+        return createRequestObject({
+            url: `https://lxhentai.com` + '/',
+            method: 'GET',
+        });
     }
 }
 exports.LxHentai = LxHentai;
