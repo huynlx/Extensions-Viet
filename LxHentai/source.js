@@ -751,38 +751,38 @@ class LxHentai extends paperback_extensions_common_1.Source {
     }
     getHomePageSections(sectionCallback) {
         return __awaiter(this, void 0, void 0, function* () {
-            let hot = createHomeSection({
-                id: 'hot',
-                title: "Truyện Hot",
-                view_more: true,
-            });
+            // let hot: HomeSection = createHomeSection({
+            //     id: 'hot',
+            //     title: "Truyện Hot",
+            //     view_more: true,
+            // });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
                 title: "Truyện Mới",
                 view_more: true,
             });
             //Load empty sections
-            sectionCallback(hot);
+            // sectionCallback(hot);
             sectionCallback(newUpdated);
             ///Get the section data
             //Hot
-            let url = `https://lxhentai.com/`;
+            // let url = `https://lxhentai.com/`
+            // let request = createRequestObject({
+            //     url: url,
+            //     method: "GET",
+            // });
+            // let data = await this.requestManager.schedule(request, 1);
+            // let $ = this.cheerio.load(data.data);
+            // hot.items = parseHotSection($);
+            // sectionCallback(hot);
+            //New Updates
+            let url = "https://hentaivn.tv/";
             let request = createRequestObject({
                 url: url,
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            hot.items = LxHentaiParser_1.parseHotSection($);
-            sectionCallback(hot);
-            //New Updates
-            url = `https://lxhentai.com/`;
-            request = createRequestObject({
-                url: url,
-                method: "GET",
-            });
-            data = yield this.requestManager.schedule(request, 1);
-            $ = this.cheerio.load(data.data);
             newUpdated.items = LxHentaiParser_1.parseNewUpdatedSection($);
             sectionCallback(newUpdated);
         });
@@ -948,23 +948,40 @@ exports.parseHotSection = ($) => {
     return Hot;
 };
 exports.parseNewUpdatedSection = ($) => {
-    let newUpdatedItems = [];
-    for (let manga of $('div.col-md-3.col-6.py-2', 'div.row').toArray().splice(0, 20)) {
-        const title = $('a', manga).last().text();
-        const id = $('a', manga).attr('href');
-        const image = $('div', manga).css('background');
-        const bg = image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
-        const subtitle = $(".newestChapter > a", manga).last().text().trim();
+    // let newUpdatedItems: MangaTile[] = [];
+    // for (let manga of $('div.col-md-3.col-6.py-2', 'div.row').toArray()) {
+    //     const title = $('a', manga).last().text();
+    //     const id = $('a', manga).attr('href');
+    //     const image = $('div', manga).css('background');
+    //     const bg = image?.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+    //     const subtitle = $(".newestChapter > a", manga).last().text().trim();
+    //     if (!id || !title) continue;
+    //     newUpdatedItems.push(createMangaTile({
+    //         id: id,
+    //         image: !image ? "https://i.imgur.com/GYUxEX8.png" : ("https://lxhentai.com" + bg?.split("'")[1]),
+    //         title: createIconText({ text: title }),
+    //         subtitleText: createIconText({ text: subtitle }),
+    //     }));
+    // }
+    var _a;
+    // return newUpdatedItems;
+    let staffPick = [];
+    for (let manga of $('ul', 'ul.page-item').toArray()) {
+        const title = $('span > a > h2', manga).first().text();
+        const id = (_a = $('a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+        const image = $('a > div', manga).css('background');
+        const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+        const subtitle = $("a > span > b", manga).last().text().trim();
         if (!id || !title)
             continue;
-        newUpdatedItems.push(createMangaTile({
-            id: id,
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : ("https://lxhentai.com" + (bg === null || bg === void 0 ? void 0 : bg.split("'")[1])),
+        staffPick.push(createMangaTile({
+            id: encodeURIComponent(id),
+            image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
             title: createIconText({ text: title }),
             subtitleText: createIconText({ text: subtitle }),
         }));
     }
-    return newUpdatedItems;
+    return staffPick;
 };
 exports.generateSearch = (query) => {
     var _a;
