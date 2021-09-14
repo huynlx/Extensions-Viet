@@ -1002,21 +1002,51 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
         });
     }
     getSearchResults(query, metadata) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            const tag = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
-            const request = createRequestObject({
-                url: query.title ? `${DOMAIN}tim-kiem-truyen.html?key=${query.title}` : `${DOMAIN}${tag[0]}?`,
-                method,
-                param: `&page=${page}`
+            const search = {
+                category: '',
+                country: "0",
+                status: "-1",
+                minchapter: "0",
+                sort: "0"
+            };
+            const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
+            const category = [];
+            tags.map((value) => {
+                if (value.indexOf('.') === -1) {
+                    category.push(value);
+                }
+                else {
+                    switch (value.split(".")[0]) {
+                        case 'minchapter':
+                            search.minchapter = (value.split(".")[1]);
+                            break;
+                        case 'gender':
+                            search.country = (value.split(".")[1]);
+                            break;
+                        case 'sort':
+                            search.sort = (value.split(".")[1]);
+                            break;
+                        case 'status':
+                            search.status = (value.split(".")[1]);
+                            break;
+                    }
+                }
             });
-            const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
-            const manga = TruyenQQParser_1.parseSearch($);
+            search.category = (category !== null && category !== void 0 ? category : []).join(",");
+            const request = createRequestObject({
+                url: query.title ? `http://truyenqqtop.com/tim-kiem.html` : `http://truyenqqtop.com/tim-kiem-nang-cao.html`,
+                method: "GET",
+                param: encodeURI(`?keyword=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&category=${search.category}&country=${search.country}&status=${search.status}&minchapter=${search.minchapter}&sort=${search.sort}&page=${page}`)
+            });
+            const data = yield this.requestManager.schedule(request, 1);
+            let $ = this.cheerio.load(data.data);
+            const tiles = TruyenQQParser_1.parseSearch($);
             metadata = !TruyenQQParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
-                results: manga,
+                results: tiles,
                 metadata
             });
         });
@@ -1199,21 +1229,20 @@ exports.generateSearch = (query) => {
     return encodeURI(keyword);
 };
 exports.parseSearch = ($) => {
-    var _a;
+    var _a, _b, _c;
     const mangas = [];
-    for (let manga of $('.item', '.block-item').toArray()) {
-        const title = $('.box-description > p > a', manga).text();
-        const id = (_a = $('.box-cover > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-        const image = $('.box-cover > a > img', manga).attr('data-src');
-        const subtitle = $(".box-description p:first-child", manga).text().trim();
-        const fixsub = subtitle.split(' - ')[1];
+    for (let manga of $('li', '.list-stories').toArray().splice(0, 20)) {
+        let title = $(`h3.title-book > a`, manga).text().trim();
+        let subtitle = $(`.episode-book > a`, manga).text().trim();
+        let image = (_a = $(`a > img`, manga).attr("src")) !== null && _a !== void 0 ? _a : "";
+        let id = (_c = (_b = $(`a`, manga).attr("href")) === null || _b === void 0 ? void 0 : _b.split("/").pop()) !== null && _c !== void 0 ? _c : title;
         if (!id || !title)
             continue;
         mangas.push(createMangaTile({
             id: encodeURIComponent(id),
             image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
             title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: fixsub }),
+            subtitleText: createIconText({ text: subtitle }),
         }));
     }
     return mangas;
