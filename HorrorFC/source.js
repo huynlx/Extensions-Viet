@@ -387,19 +387,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HorrorFC = exports.HorrorFCInfo = exports.isLastPage = void 0;
+exports.HorrorFC = exports.HorrorFCInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const HorrorFCParser_1 = require("./HorrorFCParser");
-const DOMAIN = 'https://vi.mangatoro.com/';
-exports.isLastPage = ($) => {
-    const current = $('ul.pagination > li.active > a').text();
-    let total = $('ul.pagination > li.PagerSSCCells:last-child').text();
-    if (current) {
-        total = total !== null && total !== void 0 ? total : '';
-        return (+total) === (+current); //+ => convert value to number
-    }
-    return true;
-};
+const DOMAIN = 'https://horrorfc.net/';
 exports.HorrorFCInfo = {
     version: '3.0.0',
     name: 'HorrorFC',
@@ -408,15 +399,15 @@ exports.HorrorFCInfo = {
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from HorrorFC.',
     websiteBaseURL: DOMAIN,
-    contentRating: paperback_extensions_common_1.ContentRating.MATURE,
+    contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
         {
-            text: "Recommended",
-            type: paperback_extensions_common_1.TagType.BLUE
+            text: "18+",
+            type: paperback_extensions_common_1.TagType.YELLOW
         },
         {
-            text: "Notifications",
-            type: paperback_extensions_common_1.TagType.GREEN
+            text: "Horror",
+            type: paperback_extensions_common_1.TagType.RED
         }
     ]
 };
@@ -429,7 +420,7 @@ class HorrorFC extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
     }
-    getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh/${mangaId}`; }
+    getMangaShareUrl(mangaId) { return `${mangaId.split("::")[0]}`; }
     ;
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -473,50 +464,9 @@ class HorrorFC extends paperback_extensions_common_1.Source {
         });
     }
     getSearchResults(query, metadata) {
-        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
-            let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            const search = {
-                genres: '',
-                gender: "-1",
-                status: "-1",
-                minchapter: "1",
-                sort: "0"
-            };
-            const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
-            const genres = [];
-            tags.map((value) => {
-                if (value.indexOf('.') === -1) {
-                    genres.push(value);
-                }
-                else {
-                    switch (value.split(".")[0]) {
-                        case 'minchapter':
-                            search.minchapter = (value.split(".")[1]);
-                            break;
-                        case 'gender':
-                            search.gender = (value.split(".")[1]);
-                            break;
-                        case 'sort':
-                            search.sort = (value.split(".")[1]);
-                            break;
-                        case 'status':
-                            search.status = (value.split(".")[1]);
-                            break;
-                    }
-                }
-            });
-            search.genres = (genres !== null && genres !== void 0 ? genres : []).join(",");
-            const url = `${DOMAIN}`;
-            const request = createRequestObject({
-                url: query.title ? (url + '/tim-truyen') : (url + '/tim-truyen-nang-cao'),
-                method: "GET",
-                param: encodeURI(`?keyword=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&genres=${search.genres}&gender=${search.gender}&status=${search.status}&minchapter=${search.minchapter}&sort=${search.sort}&page=${page}`)
-            });
-            const data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
-            const tiles = this.parser.parseSearchResults($);
-            metadata = !exports.isLastPage($) ? { page: page + 1 } : undefined;
+            const tiles = [];
+            metadata = undefined;
             return createPagedResults({
                 results: tiles,
                 metadata
@@ -534,7 +484,7 @@ class HorrorFC extends paperback_extensions_common_1.Source {
             sectionCallback(viewest);
             ///Get the section data
             //View
-            let url = `https://horrorfc.net/`;
+            let url = `${DOMAIN}`;
             let request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -546,14 +496,12 @@ class HorrorFC extends paperback_extensions_common_1.Source {
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             let param = "";
             let url = "";
             switch (homepageSectionId) {
                 case "viewest":
-                    url = 'https://horrorfc.net/';
+                    url = DOMAIN;
                     break;
                 default:
                     throw new Error("Requested to getViewMoreItems for a section ID which doesn't exist");
@@ -576,7 +524,7 @@ class HorrorFC extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: 'https://horrorfc.net/'
+            referer: DOMAIN
         };
     }
 }
@@ -594,7 +542,6 @@ class Parser {
             label: 'Horror',
             id: 'Horror',
         }));
-        // const image = $('div.col-image > img').attr('src');
         return createManga({
             id: mangaId.split("::")[0],
             desc: $('.page-header > p').text(),
@@ -630,25 +577,6 @@ class Parser {
             pages.push(link);
         }
         return pages;
-    }
-    parseSearchResults($) {
-        var _a;
-        const tiles = [];
-        for (const manga of $('div.item', 'div.row').toArray()) {
-            const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
-            const id = (_a = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-            const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
-            const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
-            if (!id || !title)
-                continue;
-            tiles.push(createMangaTile({
-                id: id,
-                image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
-                title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: subtitle }),
-            }));
-        }
-        return tiles;
     }
     parsePopularSection($) {
         let viewestItems = [];

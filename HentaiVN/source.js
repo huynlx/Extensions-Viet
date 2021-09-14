@@ -886,7 +886,6 @@ exports.parseMangaDetails = ($, mangaId) => {
                 break;
         }
     }
-    // const image = $('.page-ava > img').attr('src');
     return createManga({
         id: mangaId.split("::")[0],
         author: creator,
@@ -895,7 +894,6 @@ exports.parseMangaDetails = ($, mangaId) => {
         titles: [$('.page-info > h1').text().trim()],
         image: mangaId.split("::")[1],
         status,
-        // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
         hentai: true,
         tags: [createTagSection({ label: "genres", tags: tags, id: '0' })],
     });
