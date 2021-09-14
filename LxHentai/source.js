@@ -851,7 +851,7 @@ class LxHentai extends paperback_extensions_common_1.Source {
     }
     getCloudflareBypassRequest() {
         return createRequestObject({
-            url: `https://lxhentai.com` + '/',
+            url: "http://m.lxhentai.com/",
             method: 'GET',
         });
     }
@@ -949,17 +949,17 @@ exports.parseHotSection = ($) => {
 };
 exports.parseNewUpdatedSection = ($) => {
     let newUpdatedItems = [];
-    for (let manga of $('div.col-md-3.col-6.py-2', 'div.row').toArray()) {
-        const title = $('a', manga).last().text();
+    for (let manga of $('div', '.row').toArray()) {
+        const title = $('a > b', manga).last().text();
         const id = $('a', manga).attr('href');
-        const image = $('div', manga).css('background');
+        const image = $('.thumb_mob', manga).css('background');
         const bg = image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
-        const subtitle = $(".newestChapter > a", manga).last().text().trim();
+        const subtitle = $(".small > a", manga).last().text().trim();
         if (!id || !title)
             continue;
         newUpdatedItems.push(createMangaTile({
             id: id,
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : ("https://lxhentai.com" + (bg === null || bg === void 0 ? void 0 : bg.split("'")[1])),
+            image: !image ? "https://i.imgur.com/GYUxEX8.png" : ("http://m.lxhentai.com" + (bg === null || bg === void 0 ? void 0 : bg.split("'")[1])),
             title: createIconText({ text: title }),
             subtitleText: createIconText({ text: subtitle }),
         }));
