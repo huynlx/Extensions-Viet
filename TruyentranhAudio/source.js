@@ -686,7 +686,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TruyentranhAudio = exports.TruyentranhAudioInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const TruyentranhAudioParser_1 = require("./TruyentranhAudioParser");
-const DOMAIN = 'http://truyenqqtop.com/';
+const DOMAIN = 'https://truyentranhaudio.audio/';
 const method = 'GET';
 exports.TruyentranhAudioInfo = {
     version: '3.0.0',
@@ -806,7 +806,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             let hot = createHomeSection({
                 id: 'hot',
                 title: "TRUYỆN HOT TRONG NGÀY",
-                view_more: true,
+                view_more: false,
             });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
@@ -824,9 +824,8 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             sectionCallback(newAdded);
             ///Get the section data
             // Hot
-            let url = `${DOMAIN}truyen-yeu-thich.html`;
             let request = createRequestObject({
-                url: url,
+                url: 'https://truyentranhaudio.com/',
                 method: "GET",
             });
             let popular = [];
@@ -912,19 +911,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             let url = '';
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `${DOMAIN}truyen-moi-cap-nhat/trang-${page}.html`;
-                    break;
-                case "new_added":
-                    url = `${DOMAIN}truyen-tranh-moi/trang-${page}.html`;
-                    break;
-                case "hot":
-                    url = `${DOMAIN}truyen-yeu-thich/trang-${page}.html`;
-                    break;
-                case "boy":
-                    url = `${DOMAIN}truyen-con-trai/trang-${page}.html`;
-                    break;
-                case "girl":
-                    url = `${DOMAIN}truyen-con-gai/trang-${page}.html`;
+                    url = `https://truyentranhaudio.com/danh-sach-truyen.html`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
@@ -1097,22 +1084,26 @@ exports.parseSearch = ($) => {
     return mangas;
 };
 exports.parseViewMore = ($) => {
-    var _a, _b, _c;
+    var _a;
     const manga = [];
     const collectedIds = [];
-    for (let obj of $('li', '.list-stories').toArray()) {
-        let title = $(`h3.title-book > a`, obj).text().trim();
-        let subtitle = $(`.episode-book > a`, obj).text().trim();
-        let image = (_a = $(`a > img`, obj).attr("src")) !== null && _a !== void 0 ? _a : "";
-        let id = (_c = (_b = $(`a`, obj).attr("href")) === null || _b === void 0 ? void 0 : _b.split("/").pop()) !== null && _c !== void 0 ? _c : title;
+    for (let obj of $('.thumb-item-flow:not(:last-child)', '.col-lg-8.col-sm-8 > .card:nth-child(6) .row-last-update').toArray()) {
+        const title = $('.series-title', obj).text().trim();
+        const id = (_a = $('.series-title > a', obj).attr('href')) !== null && _a !== void 0 ? _a : title;
+        const image = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', obj).attr('data-bg');
+        const sub = $('a', obj).last().text().trim();
         if (!id || !title)
             continue;
         if (!collectedIds.includes(id)) {
             manga.push(createMangaTile({
-                id: encodeURIComponent(id),
-                image: image !== null && image !== void 0 ? image : "",
-                title: createIconText({ text: decodeHTMLEntity(title) }),
-                subtitleText: createIconText({ text: subtitle }),
+                id: id,
+                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? (image) : ("https:" + image),
+                title: createIconText({
+                    text: title,
+                }),
+                subtitleText: createIconText({
+                    text: sub,
+                }),
             }));
             collectedIds.push(id);
         }
@@ -1138,14 +1129,14 @@ exports.parseTags = ($) => {
 exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
-    for (const page of $("li", "ul.pagination-list").toArray()) {
+    for (const page of $("li", "ul.pagination").toArray()) {
         const p = Number($('a', page).text().trim());
         if (isNaN(p))
             continue;
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($("li > a.is-current").text().trim());
+    const currentPage = Number($("li > a.active").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
