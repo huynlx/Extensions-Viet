@@ -527,7 +527,7 @@ class HorrorFC extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             let viewest = createHomeSection({
                 id: 'viewest',
-                title: "Truyện Xem Nhiều Nhất",
+                title: "Projects",
                 view_more: true,
             });
             //Load empty sections
@@ -583,6 +583,12 @@ class Parser {
                 name: $(obj).text(),
                 mangaId: mangaId.split("::")[0],
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+                tags: [createTagSection({
+                        label: "genres", tags: [createTag({
+                                label: 'Horror',
+                                id: 'Horror',
+                            })], id: '0'
+                    })],
             }));
         }
         return chapters;
