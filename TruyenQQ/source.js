@@ -724,7 +724,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
     }
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://lxhentai.com${mangaId}`;
+            const url = `http://truyenqqtop.com/truyen-tranh/${mangaId}`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -912,7 +912,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             let boyItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let manga of $('li', '.list-stories').toArray().splice(0, 20)) {
+            for (let manga of $('li', '.list-stories').toArray().splice(0, 12)) {
                 let title = $(`h3.title-book > a`, manga).text().trim();
                 let subtitle = $(`.episode-book > a`, manga).text().trim();
                 let image = (_o = $(`a > img`, manga).attr("src")) !== null && _o !== void 0 ? _o : "";
@@ -940,7 +940,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             let girlItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let manga of $('li', '.list-stories').toArray().splice(0, 20)) {
+            for (let manga of $('li', '.list-stories').toArray().splice(0, 12)) {
                 let title = $(`h3.title-book > a`, manga).text().trim();
                 let subtitle = $(`.episode-book > a`, manga).text().trim();
                 let image = (_r = $(`a > img`, manga).attr("src")) !== null && _r !== void 0 ? _r : "";
@@ -1087,22 +1087,22 @@ exports.parseMangaDetails = ($, mangaId) => {
     let tags = [];
     let creator = '';
     let status = 1; //completed, 1 = Ongoing
-    let desc = $('.detail-content > p').text();
-    for (const t of $('a', '.row.mt-2 > div:nth-child(6)').toArray()) {
+    let desc = $('.story-detail-info > p').text();
+    for (const t of $('a', '.list01').toArray()) {
         const genre = $(t).text().trim();
         const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : t;
         tags.push({ label: genre, id });
     }
-    creator = $('.row.mt-2 > div:nth-child(2)').text();
-    status = $('.row.mt-2 > div:nth-child(4)').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
-    const image = $('.col-md-4.text-center > img').attr('src');
+    creator = $('.txt > p:first-child > a').text();
+    status = $('.txt > p:last-child').text().toLowerCase().includes("đang cập nhật") ? 1 : 0;
+    const image = $('.left > img').attr('src');
     return createManga({
         id: mangaId,
         author: creator,
         artist: creator,
         desc: desc === "" ? 'Không có mô tả' : desc,
-        titles: $('.title-detail').text().trim(),
-        image: image.replace("190", "300"),
+        titles: $('.center > h1').text().trim(),
+        image: image,
         status,
         // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
         hentai: true,
