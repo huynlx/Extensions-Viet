@@ -753,7 +753,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
                 image: image,
                 status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
-                hentai: true,
+                hentai: false,
                 tags: [createTagSection({ label: "genres", tags: tags, id: '0' })],
             });
         });
@@ -767,7 +767,18 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            return TruyenQQParser_1.parseChapters($, mangaId);
+            const chapters = [];
+            for (const obj of $(".works-chapter-list > .works-chapter-item").toArray().reverse()) {
+                // if (!obj.attribs['href'] || !obj.children[0].data) continue;
+                chapters.push(createChapter({
+                    id: $('.col-md-10.col-sm-10.col-xs-8 > a', obj).attr('href'),
+                    chapNum: parseFloat($('.col-md-10.col-sm-10.col-xs-8 > a', obj).text().split(' ')[1]),
+                    name: $('.col-md-10.col-sm-10.col-xs-8 > a', obj).text(),
+                    mangaId: mangaId,
+                    langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+                }));
+            }
+            return chapters;
         });
     }
     getChapterDetails(mangaId, chapterId) {
