@@ -816,7 +816,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
                 // if (!id || !title) continue;
                 cc.push(createMangaTile({
                     id: id,
-                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
+                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : image.replace("290x191", "583x386"),
                     title: createIconText({ text: title }),
                     subtitleText: createIconText({ text: subtitle }),
                 }));
