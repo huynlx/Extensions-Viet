@@ -731,7 +731,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             let tags = [];
             let creator = [];
             let status = 1; //completed, 1 = Ongoing
-            let desc = $('.story-detail-info > p').text();
+            let desc = $('.story-detail-info').text();
             for (const t of $('a', '.list01').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
