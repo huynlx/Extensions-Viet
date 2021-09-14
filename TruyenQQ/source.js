@@ -1069,7 +1069,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
                         case 'minchapter':
                             search.minchapter = (value.split(".")[1]);
                             break;
-                        case 'gender':
+                        case 'country':
                             search.country = (value.split(".")[1]);
                             break;
                         case 'sort':
