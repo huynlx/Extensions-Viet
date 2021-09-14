@@ -1084,14 +1084,13 @@ exports.parseSearch = ($) => {
     return mangas;
 };
 exports.parseViewMore = ($) => {
-    var _a;
     const manga = [];
     const collectedIds = [];
-    for (let obj of $('.thumb-item-flow:not(:last-child)', '.col-lg-8.col-sm-8 > .card:nth-child(6) .row-last-update').toArray()) {
+    for (let obj of $('.thumb-item-flow:not(:last-child)', '.col-md-8 > .card:nth-child(2) .row-last-update').toArray()) {
         const title = $('.series-title', obj).text().trim();
-        const id = (_a = $('.series-title > a', obj).attr('href')) !== null && _a !== void 0 ? _a : title;
+        const id = $('.series-title > a', obj).attr('href');
         const image = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', obj).attr('data-bg');
-        const sub = $('a', obj).last().text().trim();
+        const sub = $('.chapter-title  > a', obj).text().trim();
         if (!id || !title)
             continue;
         if (!collectedIds.includes(id)) {
@@ -1102,7 +1101,7 @@ exports.parseViewMore = ($) => {
                     text: title,
                 }),
                 subtitleText: createIconText({
-                    text: sub,
+                    text: "Chap " + sub,
                 }),
             }));
             collectedIds.push(id);
