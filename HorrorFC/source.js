@@ -535,13 +535,8 @@ exports.HorrorFC = HorrorFC;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Parser = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
-function htmlDecode(input) {
-    var doc = new DOMParser().parseFromString(input, "text/html");
-    return doc.documentElement.textContent;
-}
 class Parser {
     parseMangaDetails($, mangaId) {
-        var _a;
         let tags = [];
         tags.push(createTag({
             label: 'Horror',
@@ -549,7 +544,8 @@ class Parser {
         }));
         return createManga({
             id: mangaId.split("::")[0],
-            desc: (_a = ($('.page-header > p').text())) !== null && _a !== void 0 ? _a : "",
+            // desc: ($('.page-header > p').text()) ?? "",,
+            desc: $('<div/>').html($('.page-header > p').text()).text(),
             titles: [$('.page-title').text()],
             image: mangaId.split("::")[1],
             status: 1,
