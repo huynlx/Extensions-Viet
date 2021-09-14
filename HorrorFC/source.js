@@ -535,8 +535,13 @@ exports.HorrorFC = HorrorFC;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Parser = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
+function htmlDecode(input) {
+    var doc = new DOMParser().parseFromString(input, "text/html");
+    return doc.documentElement.textContent;
+}
 class Parser {
     parseMangaDetails($, mangaId) {
+        var _a;
         let tags = [];
         tags.push(createTag({
             label: 'Horror',
@@ -544,7 +549,7 @@ class Parser {
         }));
         return createManga({
             id: mangaId.split("::")[0],
-            desc: $('.page-header > p').text(),
+            desc: (_a = htmlDecode($('.page-header > p').text())) !== null && _a !== void 0 ? _a : "",
             titles: [$('.page-title').text()],
             image: mangaId.split("::")[1],
             status: 1,
@@ -562,7 +567,7 @@ class Parser {
             chapters.push(createChapter({
                 id: $(obj).attr('href'),
                 chapNum: i,
-                name: unescape($(obj).text()),
+                name: htmlDecode($(obj).text()),
                 mangaId: mangaId.split("::")[0],
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
             }));
