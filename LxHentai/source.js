@@ -611,11 +611,11 @@ class LxHentai extends paperback_extensions_common_1.Source {
             return this.parser.parseTags($);
         });
     }
-    globalRequestHeaders() {
-        return {
-            referer: 'https://lxhentai.com/'
-        };
-    }
+    // globalRequestHeaders(): RequestHeaders {
+    //     return {
+    //         referer: 'https://lxhentai.com/'
+    //     }
+    // }
     getCloudflareBypassRequest() {
         return createRequestObject({
             url: 'https://lxhentai.com/',
