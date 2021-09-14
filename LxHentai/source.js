@@ -750,6 +750,7 @@ class LxHentai extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
@@ -776,14 +777,14 @@ class LxHentai extends paperback_extensions_common_1.Source {
             hot.items = LxHentaiParser_1.parseHotSection($);
             sectionCallback(hot);
             //New Updates
-            url = "http://m.lxhentai.com/";
+            url = 'http://nhattruyenhay.com/tim-truyen?status=-1&sort=12';
             request = createRequestObject({
                 url: url,
                 method: "GET",
             });
             let newUpdatedItems = [];
-            // data = await this.requestManager.schedule(request, 1);
-            // $ = this.cheerio.load(data.data);
+            data = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(data.data);
             // for (let manga of $('div', '.row').toArray()) {
             //     const title = $('a > b', manga).last().text();
             //     const id = $('a', manga).attr('href');
@@ -791,13 +792,25 @@ class LxHentai extends paperback_extensions_common_1.Source {
             //     const bg = image?.replace('url(', '').replace(')', '').replace(/\"/gi, "");
             //     const subtitle = $(".small > a", manga).last().text().trim();
             //     if (!id || !title) continue;
-            newUpdatedItems.push(createMangaTile({
-                id: "/story/view.php?id=4440",
-                image: "http://m.lxhentai.com//lxhentai.com/assets/hentai/1602216736313.jpg?",
-                title: createIconText({ text: "Sống chung với vợ cũ" }),
-                subtitleText: createIconText({ text: "Chap 36" }),
-            }));
             // }
+            for (let index in $('div.row > div.item > figure.clearfix').toArray()) {
+                let title = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > figcaption > h3 > a`).text();
+                let subtitle = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > figcaption > ul > li.chapter > a`)[0];
+                let image = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a > img`).attr("data-original");
+                let id = (_a = $(`div.row > div.item:nth-of-type(${index + 1}) > figure.clearfix > div.image > a`).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop();
+                if (!id || !subtitle)
+                    continue;
+                newUpdatedItems.push(createMangaTile({
+                    id: id,
+                    image: image,
+                    title: createIconText({
+                        text: title,
+                    }),
+                    subtitleText: createIconText({
+                        text: subtitle.attribs['title'],
+                    }),
+                }));
+            }
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
         });
