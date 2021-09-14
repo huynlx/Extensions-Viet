@@ -716,11 +716,6 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             requestsPerSecond: 5,
             requestTimeout: 20000
         });
-        // globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
-        //     return {
-        //         referer: "http://truyenqqtop.com/"
-        //     }
-        // }
     }
     getMangaDetails(mangaId) {
         var _a, _b;
@@ -1120,6 +1115,11 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) })];
             return tagSections;
         });
+    }
+    globalRequestHeaders() {
+        return {
+            referer: "http://truyenqqtop.com/"
+        };
     }
 }
 exports.TruyenQQ = TruyenQQ;
