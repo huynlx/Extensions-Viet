@@ -717,7 +717,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
     getMangaDetails(mangaId) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `${DOMAIN}truyen-tranh/${mangaId}`;
+            const url = `https://truyentranhaudio.com/truyen-hon-dinh-thinh-thien.html`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
