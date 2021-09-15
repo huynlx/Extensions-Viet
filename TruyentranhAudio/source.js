@@ -754,13 +754,13 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${DOMAIN}${mangaId}`,
+                url: `https://truyentranhaudio.online/truyen-vo-si-quyen-anh.html`,
                 method,
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const chapters = [];
-            for (const obj of $(".list-chapters > li").toArray().reverse()) {
+            for (const obj of $(".list-chapters > li").toArray()) {
                 // if (!obj.attribs['href'] || !obj.children[0].data) continue;
                 chapters.push(createChapter({
                     id: $('a', obj).attr('href'),
