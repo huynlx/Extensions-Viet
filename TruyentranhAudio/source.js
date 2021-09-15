@@ -716,7 +716,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
     ;
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://truyentranhaudio.com/danh-sach-truyen-the-loai-manhua.html`; //ko vào đc link đéo hiểu sao
+            const url = `https://truyentranhaudio.com/truyen-hon-dinh-thinh-thien.html`; //ko vào đc link đéo hiểu sao
             const request = createRequestObject({
                 url: url,
                 method: "GET",
