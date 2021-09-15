@@ -712,11 +712,11 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
     }
-    getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh/${mangaId}`; }
+    getMangaShareUrl(mangaId) { return `https://truyentranhaudio.com/${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://truyentranhaudio.com/${mangaId}`;
+            const url = `https://truyentranhaudio.com/truyen-thuong-nhan-thanh-than.html`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
