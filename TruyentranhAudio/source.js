@@ -686,7 +686,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TruyentranhAudio = exports.TruyentranhAudioInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const TruyentranhAudioParser_1 = require("./TruyentranhAudioParser");
-const DOMAIN = 'https://truyentranhaudio.audio/';
+const DOMAIN = 'https://truyentranhaudio.online/';
 const method = 'GET';
 exports.TruyentranhAudioInfo = {
     version: '3.0.0',
@@ -717,7 +717,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
     getMangaDetails(mangaId) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `${DOMAIN}truyen-tranh/${mangaId}`;
+            const url = `https://truyentranhaudio.com/${mangaId}`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -725,26 +725,23 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let tags = [];
-            let creator = [];
+            let creator = '';
             let status = 1; //completed, 1 = Ongoing
-            let desc = $('.story-detail-info').text();
-            for (const t of $('a', '.list01').toArray()) {
+            let desc = $('.summary-content > p').text();
+            for (const t of $('a', '.manga-info > li:nth-of-type(3) > small').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            for (const c of $('a', '.txt > p:nth-of-type(1)').toArray()) {
-                const name = $(c).text().trim();
-                creator.push(name);
-            }
-            status = $('.txt > p:nth-of-type(2)').text().toLowerCase().includes("đang cập nhật") ? 1 : 0;
+            creator = $('.manga-info > li:nth-of-type(1)').text().trim();
+            status = $('.manga-info > li:nth-of-type(4)').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
             const image = (_b = $('.left > img').attr('src')) !== null && _b !== void 0 ? _b : "";
             return createManga({
                 id: mangaId,
-                author: creator.join(', '),
-                artist: creator.join(', '),
+                author: creator,
+                artist: creator,
                 desc: desc === "" ? 'Không có mô tả' : desc,
-                titles: [$('.center > h1').text().trim()],
+                titles: [$('.manga-info > h3').text().trim()],
                 image: image,
                 status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
@@ -754,21 +751,20 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
         });
     }
     getChapters(mangaId) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${DOMAIN}truyen-tranh/${mangaId}`,
+                url: `https://truyentranhaudio.com/${mangaId}`,
                 method,
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const chapters = [];
-            for (const obj of $(".works-chapter-list > .works-chapter-item").toArray().reverse()) {
+            for (const obj of $(".list-chapters > li").toArray().reverse()) {
                 // if (!obj.attribs['href'] || !obj.children[0].data) continue;
                 chapters.push(createChapter({
-                    id: (_a = $('.col-md-10.col-sm-10.col-xs-8 > a', obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop(),
-                    chapNum: parseFloat($('.col-md-10.col-sm-10.col-xs-8 > a', obj).text().split(' ')[1]),
-                    name: $('.col-md-10.col-sm-10.col-xs-8 > a', obj).text(),
+                    id: $('a', obj).attr('href'),
+                    chapNum: parseFloat($('a > .chapter-name', obj).text().split(' ')[1]),
+                    name: $('a > .chapter-name', obj).text(),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
                 }));
@@ -1101,7 +1097,7 @@ exports.parseViewMore = ($) => {
                     text: title,
                 }),
                 subtitleText: createIconText({
-                    text: "Chap " + sub,
+                    text: "Chương " + sub,
                 }),
             }));
             collectedIds.push(id);
