@@ -754,7 +754,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `https://vcomic.net/truyen-vo-luyen-dinh-phong.html`,
+                url: `https://truyen86.com/truyen-vo-luyen-dinh-phong.html`,
                 method,
             });
             const response = yield this.requestManager.schedule(request, 1);
