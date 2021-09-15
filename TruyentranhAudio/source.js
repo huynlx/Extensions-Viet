@@ -715,7 +715,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
     getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh/${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
-        var _a;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             const url = `https://truyentranhaudio.com/${mangaId}`;
             const request = createRequestObject({
@@ -724,18 +724,18 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            // let tags: Tag[] = [];
+            let tags = [];
             let creator = '';
             let status = 1; //completed, 1 = Ongoing
             let desc = $('.summary-content > p').text();
-            // for (const t of $('a', '.manga-info > li:nth-of-type(3) > small').toArray()) {
-            //     const genre = $(t).text().trim()
-            //     const id = $(t).attr('href') ?? genre
-            //     tags.push(createTag({ label: genre, id }));
-            // }
-            creator = $('.manga-info > li:nth-of-type(1)').text().trim();
-            status = $('.manga-info > li:nth-of-type(4)').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
-            const image = (_a = $('.left > img').attr('src')) !== null && _a !== void 0 ? _a : "";
+            for (const t of $('a', '.manga-info > li:nth-of-type(3) > small').toArray()) {
+                const genre = $(t).text().trim();
+                const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
+                tags.push(createTag({ label: genre, id }));
+            }
+            creator = $('.manga-info > li:nth-of-type(2) > small > a').text().trim();
+            status = $('.manga-info > li:nth-of-type(4) > a').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
+            const image = (_b = $('img.thumbnail').attr('src')) !== null && _b !== void 0 ? _b : "";
             return createManga({
                 id: mangaId,
                 author: creator,
