@@ -716,7 +716,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
     ;
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://truyentranhaudio.online/truyen-vo-si-quyen-anh.html`;
+            const url = `https://truyentranhaudio.online/`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
