@@ -387,19 +387,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HorrorFC = exports.HorrorFCInfo = exports.isLastPage = void 0;
+exports.HorrorFC = exports.HorrorFCInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const HorrorFCParser_1 = require("./HorrorFCParser");
 const DOMAIN = 'https://horrorfc.net/';
-exports.isLastPage = ($) => {
-    // const current = $('ul.pagination > li.active > a').text();
-    // let total = $('ul.pagination > li.PagerSSCCells:last-child').text();
-    // if (current) {
-    //     total = total ?? '';
-    //     return (+total) === (+current); //+ => convert value to number
-    // }
-    return true;
-};
 exports.HorrorFCInfo = {
     version: '1.0.0',
     name: 'HorrorFC',
@@ -505,10 +496,7 @@ class HorrorFC extends paperback_extensions_common_1.Source {
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            let param = "";
             let url = "";
             switch (homepageSectionId) {
                 case "viewest":
@@ -519,17 +507,14 @@ class HorrorFC extends paperback_extensions_common_1.Source {
             }
             const request = createRequestObject({
                 url,
-                method: 'GET',
-                param,
+                method: 'GET'
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const manga = this.parser.parseViewMoreItems($);
             ;
-            metadata = exports.isLastPage($) ? undefined : { page: page + 1 };
             return createPagedResults({
-                results: manga,
-                metadata
+                results: manga
             });
         });
     }
