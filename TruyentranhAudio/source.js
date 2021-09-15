@@ -725,23 +725,26 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let tags = [];
-            let creator = '';
+            let creator = [];
             let status = 1; //completed, 1 = Ongoing
-            let desc = $('.summary-content > p').text();
-            for (const t of $('a', '.manga-info > li:nth-of-type(3) > small').toArray()) {
+            let desc = $('.story-detail-info').text();
+            for (const t of $('a', '.list01').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            creator = $('.manga-info > li:nth-of-type(2) > small > a').text().trim();
-            status = $('.manga-info > li:nth-of-type(4) > a').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
-            const image = (_b = $('img.thumbnail').attr('src')) !== null && _b !== void 0 ? _b : "";
+            for (const c of $('a', '.txt > p:nth-of-type(1)').toArray()) {
+                const name = $(c).text().trim();
+                creator.push(name);
+            }
+            status = $('.txt > p:nth-of-type(2)').text().toLowerCase().includes("đang cập nhật") ? 1 : 0;
+            const image = (_b = $('.left > img').attr('src')) !== null && _b !== void 0 ? _b : "";
             return createManga({
                 id: mangaId,
-                author: creator,
-                artist: creator,
+                author: creator.join(', '),
+                artist: creator.join(', '),
                 desc: desc === "" ? 'Không có mô tả' : desc,
-                titles: [$('.manga-info > h3').text().trim()],
+                titles: [$('.center > h1').text().trim()],
                 image: image,
                 status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
