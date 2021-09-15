@@ -826,7 +826,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tag = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: query.title ? `${DOMAIN}tim-kiem-truyen.html?key=${query.title}` : `${DOMAIN}${tag[0]}?`,
+                url: query.title ? `${DOMAIN}tim-kiem-truyen.html?key=${encodeURI(query.title)}` : `${DOMAIN}${tag[0]}?`,
                 method,
                 param: `&page=${page}`
             });
