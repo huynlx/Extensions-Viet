@@ -712,12 +712,12 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
     }
-    getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh/${mangaId}`; }
+    getMangaShareUrl(mangaId) { return `${DOMAIN}/${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `${DOMAIN}truyen-tranh/${mangaId}`;
+            const url = `${DOMAIN}/${mangaId}`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
