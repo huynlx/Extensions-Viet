@@ -801,18 +801,8 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
         return __awaiter(this, void 0, void 0, function* () {
-            let featured = createHomeSection({
-                id: 'featured',
-                title: "Truyện Đề Cử",
-                type: paperback_extensions_common_1.HomeSectionType.featured
-            });
-            let hot = createHomeSection({
-                id: 'hot',
-                title: "Truyện Yêu Thích",
-                view_more: true,
-            });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
                 title: "Truyện mới cập nhật",
@@ -834,84 +824,33 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
                 view_more: true,
             });
             //Load empty sections
-            sectionCallback(featured);
-            sectionCallback(hot);
             sectionCallback(newUpdated);
             sectionCallback(newAdded);
             sectionCallback(boy);
             sectionCallback(girl);
             ///Get the section data
-            //Featured
-            let url = `${DOMAIN}`;
-            let request = createRequestObject({
-                url: url,
-                method: "GET",
-            });
-            let cc = [];
-            let data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
-            for (let manga of $('div.is-child', '.container').toArray()) {
-                let title = $(`.captions > h3`, manga).text().trim();
-                let subtitle = $(`.chapter`, manga).text().trim();
-                let image = (_a = $(`img.cover`, manga).attr("src")) !== null && _a !== void 0 ? _a : "";
-                let id = (_c = (_b = $(`a`, manga).attr("href")) === null || _b === void 0 ? void 0 : _b.split("/").pop()) !== null && _c !== void 0 ? _c : title;
-                // if (!id || !title) continue;
-                cc.push(createMangaTile({
-                    id: id.split("-chap")[0] + '.html',
-                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : image.replace("290x191", "583x386"),
-                    title: createIconText({ text: title }),
-                    subtitleText: createIconText({ text: subtitle }),
-                }));
-            }
-            featured.items = cc;
-            sectionCallback(featured);
-            //Hot
-            url = `${DOMAIN}truyen-yeu-thich.html`;
-            request = createRequestObject({
-                url: url,
-                method: "GET",
-            });
-            let popular = [];
-            data = yield this.requestManager.schedule(request, 1);
-            $ = this.cheerio.load(data.data);
-            for (let manga of $('li', '.list-stories').toArray().splice(0, 20)) {
-                let title = $(`h3.title-book > a`, manga).text().trim();
-                let subtitle = $(`.episode-book > a`, manga).text().trim();
-                let image = (_d = $(`a > img`, manga).attr("src")) !== null && _d !== void 0 ? _d : "";
-                let id = (_f = (_e = $(`.story-item > a`, manga).attr("href")) === null || _e === void 0 ? void 0 : _e.split("/").pop()) !== null && _f !== void 0 ? _f : title;
-                // if (!id || !title) continue;
-                popular.push(createMangaTile({
-                    id: id,
-                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
-                    title: createIconText({ text: title }),
-                    subtitleText: createIconText({ text: subtitle }),
-                }));
-            }
-            hot.items = popular;
-            sectionCallback(hot);
             //New Updates
-            request = createRequestObject({
-                url: "https://truyentranhlh.net/",
+            let request = createRequestObject({
+                url: 'https://truyentranhlh.net/',
                 method: "GET",
             });
             let newUpdatedItems = [];
-            data = yield this.requestManager.schedule(request, 1);
-            $ = this.cheerio.load(data.data);
-            for (let obj of $('.thumb-item-flow', '.row').toArray().splice(0, 20)) {
+            let data = yield this.requestManager.schedule(request, 1);
+            let $ = this.cheerio.load(data.data);
+            for (let obj of $('.thumb-item-flow:not(:last-child)', '.col-md-8 > .card:nth-child(1) > .card-body > .row').toArray()) {
                 let title = $(`.series-title > a`, obj).text().trim();
-                // let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
-                // const image = $(`.a6-ratio > div.img-in-ratio`, obj).css('background');
-                // const bg = image?.replace('url(', '').replace(')', '').replace(/\"/gi, "");
-                let id = title;
+                let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
+                const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
+                let id = (_b = (_a = $(`.series-title > a`, obj).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) !== null && _b !== void 0 ? _b : title;
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
-                    image: '',
+                    image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({
-                        text: 'tet',
+                        text: title,
                     }),
                     subtitleText: createIconText({
-                        text: 'tet',
+                        text: subtitle,
                     }),
                 }));
             }
@@ -929,8 +868,8 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             for (let manga of $('li', '.list-stories').toArray().splice(0, 20)) {
                 let title = $(`h3.title-book > a`, manga).text().trim();
                 let subtitle = $(`.episode-book > a`, manga).text().trim();
-                let image = (_g = $(`a > img`, manga).attr("src")) !== null && _g !== void 0 ? _g : "";
-                let id = (_j = (_h = $(`a`, manga).attr("href")) === null || _h === void 0 ? void 0 : _h.split("/").pop()) !== null && _j !== void 0 ? _j : title;
+                let image = (_c = $(`a > img`, manga).attr("src")) !== null && _c !== void 0 ? _c : "";
+                let id = (_e = (_d = $(`a`, manga).attr("href")) === null || _d === void 0 ? void 0 : _d.split("/").pop()) !== null && _e !== void 0 ? _e : title;
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
                     id: id,
@@ -957,8 +896,8 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             for (let manga of $('li', '.list-stories').toArray().splice(0, 12)) {
                 let title = $(`h3.title-book > a`, manga).text().trim();
                 let subtitle = $(`.episode-book > a`, manga).text().trim();
-                let image = (_k = $(`a > img`, manga).attr("src")) !== null && _k !== void 0 ? _k : "";
-                let id = (_m = (_l = $(`a`, manga).attr("href")) === null || _l === void 0 ? void 0 : _l.split("/").pop()) !== null && _m !== void 0 ? _m : title;
+                let image = (_f = $(`a > img`, manga).attr("src")) !== null && _f !== void 0 ? _f : "";
+                let id = (_h = (_g = $(`a`, manga).attr("href")) === null || _g === void 0 ? void 0 : _g.split("/").pop()) !== null && _h !== void 0 ? _h : title;
                 // if (!id || !subtitle) continue;
                 boyItems.push(createMangaTile({
                     id: id,
@@ -985,8 +924,8 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             for (let manga of $('li', '.list-stories').toArray().splice(0, 12)) {
                 let title = $(`h3.title-book > a`, manga).text().trim();
                 let subtitle = $(`.episode-book > a`, manga).text().trim();
-                let image = (_o = $(`a > img`, manga).attr("src")) !== null && _o !== void 0 ? _o : "";
-                let id = (_q = (_p = $(`a`, manga).attr("href")) === null || _p === void 0 ? void 0 : _p.split("/").pop()) !== null && _q !== void 0 ? _q : title;
+                let image = (_j = $(`a > img`, manga).attr("src")) !== null && _j !== void 0 ? _j : "";
+                let id = (_l = (_k = $(`a`, manga).attr("href")) === null || _k === void 0 ? void 0 : _k.split("/").pop()) !== null && _l !== void 0 ? _l : title;
                 // if (!id || !subtitle) continue;
                 girlItems.push(createMangaTile({
                     id: id,
