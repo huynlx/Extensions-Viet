@@ -812,7 +812,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             let newAdded = createHomeSection({
                 id: 'new_added',
                 title: "TRUYỆN MỚI ĐĂNG",
-                view_more: false,
+                view_more: true,
             });
             //Load empty sections
             // sectionCallback(hot);
