@@ -1048,7 +1048,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: `${DOMAIN} `
+            referer: 'https://lxhentai.com/'
         };
     }
 }
