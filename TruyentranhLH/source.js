@@ -716,7 +716,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
     ;
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const url = "https://truyentranhpro.com/phi-kiem-van-dao";
+            const url = "https://truyentranhlh.net/truyen-tranh/shounin-yuusha-wa-isekai-wo-gyuujiru-saibai-skill-de-nandemo-fuyashi-chaimasu";
             const request = createRequestObject({
                 url: url,
                 method: "GET",
