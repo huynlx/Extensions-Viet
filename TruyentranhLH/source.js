@@ -760,11 +760,14 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const chapters = [];
+            var i = 0;
             for (const obj of $(".list-chapters.at-series > a").toArray()) {
                 // if (!obj.attribs['href'] || !obj.children[0].data) continue;
+                var chapNum = parseFloat($('li > .chapter-name', obj).text().trim().split(' ')[1]);
+                i++;
                 chapters.push(createChapter({
                     id: $(obj).first().attr('href'),
-                    chapNum: parseFloat($('li > .chapter-name', obj).text().trim().split(' ')[1]),
+                    chapNum: isNaN(chapNum) ? i : chapNum,
                     name: $('li > .chapter-name', obj).text(),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
