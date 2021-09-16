@@ -762,11 +762,11 @@ class HentaiVN extends paperback_extensions_common_1.Source {
     }
     getHomePageSections(sectionCallback) {
         return __awaiter(this, void 0, void 0, function* () {
-            const section0 = createHomeSection({ id: 'popular', title: 'Tiêu điểm', view_more: false });
+            const section0 = createHomeSection({ id: 'featured', title: 'Tiêu điểm', view_more: false });
             const section1 = createHomeSection({ id: 'recently-updated', title: 'Mới cập nhật', view_more: true });
-            // const section2 = createHomeSection({ id: 'random', title: 'Truyện ngẫu nhiên', view_more: false });
+            const section2 = createHomeSection({ id: 'popular', title: 'Tiêu điểm', view_more: false });
             const section3 = createHomeSection({ id: 'recently_added', title: 'Truyện mới đăng', view_more: true });
-            const sections = [section0, section1, section3];
+            const sections = [section0, section1, section2, section3];
             let request = createRequestObject({
                 url: `${DOMAIN}`,
                 method,
@@ -782,6 +782,14 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             response = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(response.data);
             HentaiVNParser_1.parseAddedSections($, sections, sectionCallback);
+            //popular
+            request = createRequestObject({
+                url: `${DOMAIN}tieu-diem.html`,
+                method,
+            });
+            response = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(response.data);
+            HentaiVNParser_1.parsePopularSections($, sections, sectionCallback);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
@@ -857,7 +865,7 @@ exports.HentaiVN = HentaiVN;
 },{"./HentaiVNParser":57,"./tags.json":58,"paperback-extensions-common":13}],57:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isLastPage = exports.parseTags = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.parseAddedSections = exports.parseHomeSections = exports.parseChapterDetails = exports.parseChapters = exports.parseMangaDetails = void 0;
+exports.isLastPage = exports.parseTags = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.parsePopularSections = exports.parseAddedSections = exports.parseHomeSections = exports.parseChapterDetails = exports.parseChapters = exports.parseMangaDetails = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const entities = require("entities"); //Import package for decoding HTML entities
 exports.parseMangaDetails = ($, mangaId) => {
@@ -939,8 +947,8 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
     var _a, _b;
     for (const section of sections)
         sectionCallback(section);
-    //Popular
-    let popular = [];
+    //featured
+    let featured = [];
     for (let manga of $('li', '.block-top').toArray()) {
         const title = $('.box-description h2', manga).first().text();
         const id = (_a = $('a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
@@ -949,14 +957,14 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
         const subtitle = $(".info-detail", manga).last().text().trim();
         if (!id || !title)
             continue;
-        popular.push(createMangaTile({
+        featured.push(createMangaTile({
             id: encodeURIComponent(id) + "::" + bg,
             image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
             title: createIconText({ text: title }),
             subtitleText: createIconText({ text: subtitle }),
         }));
     }
-    sections[0].items = popular;
+    sections[0].items = featured;
     sectionCallback(sections[0]);
     //Recently Updated
     let staffPick = [];
@@ -977,12 +985,11 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
     }
     sections[1].items = staffPick;
     sectionCallback(sections[1]);
-    // for (const section of sections) sectionCallback(section);
 };
 exports.parseAddedSections = ($, sections, sectionCallback) => {
     var _a;
     //Recently Added
-    sectionCallback(sections[2]);
+    sectionCallback(sections[3]);
     let added = [];
     for (let manga of $('.item', '.block-item').toArray()) {
         const title = $('.box-description > p > a', manga).text();
@@ -999,7 +1006,30 @@ exports.parseAddedSections = ($, sections, sectionCallback) => {
             subtitleText: createIconText({ text: fixsub }),
         }));
     }
-    sections[2].items = added;
+    sections[3].items = added;
+    sectionCallback(sections[3]);
+};
+exports.parsePopularSections = ($, sections, sectionCallback) => {
+    var _a;
+    //popular
+    sectionCallback(sections[2]);
+    let popular = [];
+    for (let manga of $('.item', '.block-item').toArray()) {
+        const title = $('.box-description > p > a', manga).text();
+        const id = (_a = $('.box-cover > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+        const image = $('.box-cover > a > img', manga).attr('data-src');
+        const subtitle = $(".box-description p:first-child", manga).text().trim();
+        const fixsub = subtitle.split(' - ')[1];
+        if (!id || !title)
+            continue;
+        popular.push(createMangaTile({
+            id: encodeURIComponent(id) + "::" + image,
+            image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
+            title: createIconText({ text: title }),
+            subtitleText: createIconText({ text: fixsub }),
+        }));
+    }
+    sections[2].items = popular;
     sectionCallback(sections[2]);
 };
 exports.generateSearch = (query) => {
