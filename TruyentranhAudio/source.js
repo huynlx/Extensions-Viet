@@ -797,13 +797,13 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            let hot = createHomeSection({
-                id: 'hot',
-                title: "TRUYỆN HOT TRONG NGÀY",
-                view_more: false,
-            });
+            // let hot: HomeSection = createHomeSection({
+            //     id: 'hot',
+            //     title: "TRUYỆN HOT TRONG NGÀY",
+            //     view_more: false,
+            // });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
                 title: "TRUYỆN MỚI CẬP NHẬT",
@@ -815,49 +815,49 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                 view_more: false,
             });
             //Load empty sections
-            sectionCallback(hot);
+            // sectionCallback(hot);
             sectionCallback(newUpdated);
             sectionCallback(newAdded);
             ///Get the section data
             // Hot
+            // let request = createRequestObject({
+            //     url: 'https://lxhentai.com/story/cat.php?id=57',
+            //     method: "GET",
+            // });
+            // let popular: MangaTile[] = [];
+            // let data = await this.requestManager.schedule(request, 1);
+            // let $ = this.cheerio.load(data.data);
+            // for (let manga of $('div.col-md-3', '.main .col-md-8 > .row').toArray()) {
+            //     const title = $('a', manga).last().text().trim();
+            //     const id = $('a', manga).last().attr('href') ?? title;
+            //     const image = $('div', manga).first().css('background');
+            //     const bg = image?.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
+            //     const sub = $('a', manga).first().text().trim();
+            //     // if (!id || !subtitle) continue;
+            //     popular.push(createMangaTile({
+            //         id: 'https://lxhentai.com' + id,
+            //         image: 'https://lxhentai.com' + bg,
+            //         title: createIconText({
+            //             text: title,
+            //         }),
+            //         subtitleText: createIconText({
+            //             text: sub,
+            //         }),
+            //     }))
+            // }
+            // hot.items = popular;
+            // sectionCallback(hot);
+            //New Updates
             let request = createRequestObject({
-                url: 'https://lxhentai.com/story/cat.php?id=57',
+                url: 'https://lxhentai.com/story/cat.php?id=75',
                 method: "GET",
             });
-            let popular = [];
+            let newUpdatedItems = [];
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             for (let manga of $('div.col-md-3', '.main .col-md-8 > .row').toArray()) {
                 const title = $('a', manga).last().text().trim();
                 const id = (_a = $('a', manga).last().attr('href')) !== null && _a !== void 0 ? _a : title;
-                const image = $('div', manga).first().css('background');
-                const bg = image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
-                const sub = $('a', manga).first().text().trim();
-                // if (!id || !subtitle) continue;
-                popular.push(createMangaTile({
-                    id: 'https://lxhentai.com' + id,
-                    image: 'https://lxhentai.com' + bg,
-                    title: createIconText({
-                        text: title,
-                    }),
-                    subtitleText: createIconText({
-                        text: sub,
-                    }),
-                }));
-            }
-            hot.items = popular;
-            sectionCallback(hot);
-            //New Updates
-            request = createRequestObject({
-                url: 'https://lxhentai.com/story/cat.php?id=75',
-                method: "GET",
-            });
-            let newUpdatedItems = [];
-            data = yield this.requestManager.schedule(request, 1);
-            $ = this.cheerio.load(data.data);
-            for (let manga of $('div.col-md-3', '.main .col-md-8 > .row').toArray()) {
-                const title = $('a', manga).last().text().trim();
-                const id = (_b = $('a', manga).last().attr('href')) !== null && _b !== void 0 ? _b : title;
                 const image = $('div', manga).first().css('background');
                 const bg = image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
                 const sub = $('a', manga).first().text().trim();
@@ -885,7 +885,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             $ = this.cheerio.load(data.data);
             for (let manga of $('div.col-md-3', '.main .col-md-8 > .row').toArray()) {
                 const title = $('a', manga).last().text().trim();
-                const id = (_c = $('a', manga).attr('href')) !== null && _c !== void 0 ? _c : title;
+                const id = (_b = $('a', manga).attr('href')) !== null && _b !== void 0 ? _b : title;
                 const image = '';
                 const sub = $('a', manga).first().text().trim();
                 // if (!id || !subtitle) continue;
