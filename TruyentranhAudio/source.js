@@ -754,7 +754,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: 'https://lxhentai.com/story/view.php?id=2502&token=MC4yMTcwNjU3NzE0OTI2OTAyNAvvMC44ODU3NTIyNzQyMjI5MzI3',
+                url: mangaId,
                 method,
             });
             const response = yield this.requestManager.schedule(request, 1);
