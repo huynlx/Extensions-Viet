@@ -754,7 +754,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: 'https://lxhentai.com/story/view.php?id=1208',
+                url: mangaId,
                 method,
             });
             const response = yield this.requestManager.schedule(request, 1);
@@ -777,7 +777,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
     getChapterDetails(mangaId, chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: 'https://lxhentai.com/story/chapter.php?id=4729',
+                url: chapterId,
                 method
             });
             const response = yield this.requestManager.schedule(request, 1);
