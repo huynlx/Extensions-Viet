@@ -734,14 +734,14 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             // }
             // creator = $('a', '.series-information > info-item:nth-child(3) > span.info-value > a').text();
             // status = $('a', '.series-information > info-item:nth-child(4) > span.info-value > a').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
-            const image = $('.series-cover > .a6-ratio > img').css('background-image');
+            // const image = $('.series-cover > .a6-ratio > img').css('background-image');
             return createManga({
                 id: mangaId,
                 author: 'huynh',
                 artist: 'huynh',
                 desc: 'huynh',
                 titles: [$('.series-name > a').text().trim()],
-                image: image,
+                image: '',
                 status: 1,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
