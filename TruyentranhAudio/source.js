@@ -721,7 +721,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
+            // let $ = this.cheerio.load(data.data); //lỗi từ dòng này
             let tags = [];
             // let creator = [];
             // let status = 1; //completed, 1 = Ongoing
