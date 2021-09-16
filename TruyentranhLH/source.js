@@ -1059,7 +1059,7 @@ exports.parseViewMore = ($) => {
     var _a, _b;
     const manga = [];
     const collectedIds = [];
-    for (let obj of $('.thumb-item-flow:not(:last-child)', '.col-md-8 > .card > .card-body > .row').toArray()) {
+    for (let obj of $('.thumb-item-flow', '.col-md-8 > .card > .card-body > .row').toArray()) {
         let title = $(`.series-title > a`, obj).text().trim();
         let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
         const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
@@ -1095,14 +1095,14 @@ exports.parseTags = ($) => {
 exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
-    for (const page of $("li", "ul.pagination-list").toArray()) {
-        const p = Number($('a', page).text().trim());
+    for (const page of $("a", ".pagination_wrap").toArray()) {
+        const p = Number($(page).text().trim());
         if (isNaN(p))
             continue;
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($("li > a.is-current").text().trim());
+    const currentPage = Number($(".pagination_wrap > a.current").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
