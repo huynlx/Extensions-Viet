@@ -750,7 +750,6 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
         });
     }
     getChapters(mangaId) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
                 url: `https://truyentranhlh.net/truyen-tranh/${mangaId}`,
@@ -762,7 +761,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             for (const obj of $(".list-chapters.at-series > a").toArray()) {
                 // if (!obj.attribs['href'] || !obj.children[0].data) continue;
                 chapters.push(createChapter({
-                    id: (_a = $(obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop(),
+                    id: $(obj).first().attr('href'),
                     chapNum: parseFloat($('li > .chapter-name', obj).text().trim().split(' ')[1]),
                     name: $('li > .chapter-name', obj).text(),
                     mangaId: mangaId,
@@ -775,7 +774,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
     getChapterDetails(mangaId, chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `https://truyentranhlh.net/truyen-tranh/${chapterId}`,
+                url: `${chapterId}`,
                 method
             });
             const response = yield this.requestManager.schedule(request, 1);
