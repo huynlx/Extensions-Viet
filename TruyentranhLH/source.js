@@ -798,8 +798,13 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e, _f;
         return __awaiter(this, void 0, void 0, function* () {
+            let hot = createHomeSection({
+                id: 'hot',
+                title: "Truyện hot trong ngày",
+                view_more: false,
+            });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
                 title: "Truyện mới cập nhật",
@@ -811,23 +816,53 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
                 view_more: true,
             });
             //Load empty sections
+            sectionCallback(hot);
             sectionCallback(newUpdated);
             sectionCallback(newAdded);
             ///Get the section data
-            //New Updates
+            //Hot
             let url = '';
             let request = createRequestObject({
                 url: 'https://truyentranhlh.net/',
                 method: "GET",
             });
-            let newUpdatedItems = [];
+            let hotItems = [];
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
+            for (let obj of $('.owl-item', '.owl-stage').toArray()) {
+                let title = $(`.series-title > a`, obj).text().trim();
+                let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
+                const image = $(`.a6-ratio > div.img-in-ratio`, obj).css('background-image');
+                const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
+                let id = (_b = (_a = $(`.series-title > a`, obj).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) !== null && _b !== void 0 ? _b : title;
+                // if (!id || !subtitle) continue;
+                hotItems.push(createMangaTile({
+                    id: id,
+                    image: bg !== null && bg !== void 0 ? bg : "",
+                    title: createIconText({
+                        text: title,
+                    }),
+                    subtitleText: createIconText({
+                        text: subtitle,
+                    }),
+                }));
+            }
+            newUpdated.items = hotItems;
+            sectionCallback(hot);
+            //New Updates
+            url = '';
+            request = createRequestObject({
+                url: 'https://truyentranhlh.net/',
+                method: "GET",
+            });
+            let newUpdatedItems = [];
+            data = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(data.data);
             for (let obj of $('.thumb-item-flow:not(:last-child)', '.col-md-8 > .card:nth-child(1) > .card-body > .row').toArray().splice(0, 20)) {
                 let title = $(`.series-title > a`, obj).text().trim();
                 let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
                 const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
-                let id = (_b = (_a = $(`.series-title > a`, obj).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) !== null && _b !== void 0 ? _b : title;
+                let id = (_d = (_c = $(`.series-title > a`, obj).attr("href")) === null || _c === void 0 ? void 0 : _c.split("/").pop()) !== null && _d !== void 0 ? _d : title;
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
@@ -855,7 +890,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
                 let title = $(`.series-title > a`, obj).text().trim();
                 let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
                 const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
-                let id = (_d = (_c = $(`.series-title > a`, obj).attr("href")) === null || _c === void 0 ? void 0 : _c.split("/").pop()) !== null && _d !== void 0 ? _d : title;
+                let id = (_f = (_e = $(`.series-title > a`, obj).attr("href")) === null || _e === void 0 ? void 0 : _e.split("/").pop()) !== null && _f !== void 0 ? _f : title;
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
                     id: id,
