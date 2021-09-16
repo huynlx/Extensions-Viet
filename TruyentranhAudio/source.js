@@ -717,11 +717,11 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${DOMAIN}${mangaId}`,
+                url: `${mangaId}`,
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 10);
-            // let $ = this.cheerio.load(data.data); //lỗi từ dòng này
+            let $ = this.cheerio.load(data.data); //lỗi từ dòng này
             let tags = [];
             // let creator = [];
             // let status = 1; //completed, 1 = Ongoing
@@ -742,7 +742,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                 author: 'huynh',
                 artist: 'huynh',
                 desc: '',
-                titles: ['hello'],
+                titles: [$('h1.title-detail').text()],
                 image: '',
                 status: 1,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
@@ -783,8 +783,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
-            for (let obj of $('#content_chap img').toArray()) {
-                // if (!obj.attribs['src']) continue;
+            for (let obj of $('#content_chap img:not(:first-child)').toArray()) {
                 let link = 'https:' + obj.attribs['src'];
                 pages.push(link);
             }
