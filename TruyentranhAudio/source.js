@@ -848,7 +848,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             sectionCallback(hot);
             //New Updates
             request = createRequestObject({
-                url: 'https://lxhentai.com/story/cat.php?id=75&token=MC43MTY1NzkzMjcyNDg5MzAzMC41MTcyMTYwNTQwMjYzNjM3',
+                url: 'https://lxhentai.com/story/',
                 method: "GET",
             });
             let newUpdatedItems = [];
