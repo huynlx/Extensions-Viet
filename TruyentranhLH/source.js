@@ -715,7 +715,6 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
     getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh/${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const url = `https://truyentranhlh.net/truyen-tranh/${mangaId}`;
             const request = createRequestObject({
@@ -728,21 +727,21 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             // let creator = '';
             // let status = 1; //completed, 1 = Ongoing
             let desc = $('.summary-content > p').text();
-            for (const t of $('.top-part > .row > .col-12 > .series-information > .info-item:nth-of-type(2) > span:nth-of-type(2) > a').toArray()) {
-                const genre = $('span', t).text().trim();
-                const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
-                tags.push(({ label: genre, id }));
-            }
+            // for (const t of $('.top-part > .row > .col-12 > .series-information > .info-item:nth-of-type(2) > span:nth-of-type(2) > a').toArray()) {
+            //     const genre = $('span', t).text().trim()
+            //     const id = $(t).attr('href') ?? genre
+            //     tags.push(({ label: genre, id }));
+            // }
             // creator = $('a', '.series-information > info-item:nth-child(3) > span.info-value > a').text();
             // status = $('a', '.series-information > info-item:nth-child(4) > span.info-value > a').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
-            // const image = $('.series-cover > .a6-ratio > img').css('background-image');
+            const image = $('.top-part > .row > .col-12 > .series-cover > .a6-ratio > div').css('background-image');
             return createManga({
                 id: mangaId,
                 author: 'huynh',
                 artist: 'huynh',
                 desc: desc,
                 titles: [$('.series-name > a').text().trim()],
-                image: '',
+                image: image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, ""),
                 status: 1,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
