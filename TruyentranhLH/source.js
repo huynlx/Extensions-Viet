@@ -753,18 +753,18 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${DOMAIN}truyen-tranh/${mangaId}`,
+                url: `https://truyentranhlh.net/truyen-tranh/${mangaId}`,
                 method,
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const chapters = [];
-            for (const obj of $(".works-chapter-list > .works-chapter-item").toArray().reverse()) {
+            for (const obj of $(".list-chapters.at-series > a").toArray().reverse()) {
                 // if (!obj.attribs['href'] || !obj.children[0].data) continue;
                 chapters.push(createChapter({
-                    id: (_a = $('.col-md-10.col-sm-10.col-xs-8 > a', obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop(),
-                    chapNum: parseFloat($('.col-md-10.col-sm-10.col-xs-8 > a', obj).text().split(' ')[1]),
-                    name: $('.col-md-10.col-sm-10.col-xs-8 > a', obj).text(),
+                    id: (_a = $(obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop(),
+                    chapNum: parseFloat($('li > .chapter-name', obj).text().split(' ')[1]),
+                    name: $('li > .chapter-name', obj).text(),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
                 }));
