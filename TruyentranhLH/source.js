@@ -740,7 +740,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
                 author: 'huynh',
                 artist: 'huynh',
                 desc: 'huynh',
-                titles: ['huynh'],
+                titles: [$('.series-name > a').text().trim()],
                 image: '',
                 status: 1,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
