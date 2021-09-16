@@ -848,13 +848,13 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             sectionCallback(hot);
             //New Updates
             request = createRequestObject({
-                url: 'https://lxhentai.com/',
+                url: 'https://lxhentai.com/story/cat.php?id=75&token=MC43MTY1NzkzMjcyNDg5MzAzMC41MTcyMTYwNTQwMjYzNjM3',
                 method: "GET",
             });
             let newUpdatedItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let manga of $('.div', '.row').toArray()) {
+            for (let manga of $('div', '.row').toArray()) {
                 const title = $('a', manga).first().text().trim();
                 const id = (_b = $('a', manga).attr('href')) !== null && _b !== void 0 ? _b : title;
                 const image = '';
