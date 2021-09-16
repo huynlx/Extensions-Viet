@@ -715,38 +715,37 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
     getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh/${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://truyentranhlh.net/truyen-tranh/${mangaId}`;
+            const url = "https://truyentranhpro.com/phi-kiem-van-dao";
             const request = createRequestObject({
                 url: url,
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            let tags = [];
-            let creator = '';
-            let status = 1; //completed, 1 = Ongoing
-            let desc = $('.summary-content > p').text();
-            for (const t of $('a', '.series-information > info-item:nth-child(2) > span.info-value').toArray()) {
-                const genre = $('span', t).text().trim();
-                const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
-                tags.push(createTag({ label: genre, id }));
-            }
-            creator = $('a', '.series-information > info-item:nth-child(3) > span.info-value > a').text();
-            status = $('a', '.series-information > info-item:nth-child(4) > span.info-value > a').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
-            const image = $('.series-cover > .a6-ratio > img').css('background-image');
+            // let tags: Tag[] = [];
+            // let creator = '';
+            // let status = 1; //completed, 1 = Ongoing
+            // let desc = $('.summary-content > p').text();
+            // for (const t of $('a', '.series-information > info-item:nth-child(2) > span.info-value').toArray()) {
+            //     const genre = $('span', t).text().trim()
+            //     const id = $(t).attr('href') ?? genre
+            //     tags.push(createTag({ label: genre, id }));
+            // }
+            // creator = $('a', '.series-information > info-item:nth-child(3) > span.info-value > a').text();
+            // status = $('a', '.series-information > info-item:nth-child(4) > span.info-value > a').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
+            // const image = $('.series-cover > .a6-ratio > img').css('background-image');
             return createManga({
                 id: mangaId,
-                author: creator,
-                artist: creator,
-                desc: desc === "" ? 'Không có mô tả' : desc,
-                titles: [$('.series-name > a').text().trim()],
-                image: image.replace('url(', '').replace(')', '').replace(/\"/gi, ""),
-                status,
+                author: 'huynh',
+                artist: 'huynh',
+                desc: 'huynh',
+                titles: ['huynh'],
+                image: '',
+                status: 1,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
-                tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
+                tags: [createTagSection({ label: "genres", tags: [], id: '0' })]
             });
         });
     }
