@@ -496,25 +496,32 @@ class HorrorFC extends paperback_extensions_common_1.Source {
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
+            let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
+            let param = "";
             let url = "";
             switch (homepageSectionId) {
                 case "viewest":
                     url = DOMAIN;
+                    param = `?page=${page}`;
                     break;
                 default:
                     throw new Error("Requested to getViewMoreItems for a section ID which doesn't exist");
             }
             const request = createRequestObject({
                 url,
-                method: 'GET'
+                method: 'GET',
+                param
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const manga = this.parser.parseViewMoreItems($);
             ;
+            metadata = undefined;
             return createPagedResults({
-                results: manga
+                results: manga,
+                metadata
             });
         });
     }
