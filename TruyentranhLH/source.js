@@ -946,11 +946,9 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const search = {
-                category: '',
-                country: "0",
-                status: "-1",
-                minchapter: "0",
-                sort: "0"
+                status: "",
+                sort: "update",
+                genres: "",
             };
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const category = [];
@@ -960,12 +958,6 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
                 }
                 else {
                     switch (value.split(".")[0]) {
-                        case 'minchapter':
-                            search.minchapter = (value.split(".")[1]);
-                            break;
-                        case 'country':
-                            search.country = (value.split(".")[1]);
-                            break;
                         case 'sort':
                             search.sort = (value.split(".")[1]);
                             break;
@@ -975,11 +967,11 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
                     }
                 }
             });
-            search.category = (category !== null && category !== void 0 ? category : []).join(",");
+            search.genres = (category !== null && category !== void 0 ? category : []).join(",");
             const request = createRequestObject({
-                url: query.title ? `${DOMAIN}tim-kiem/trang-${page}.html` : `${DOMAIN}tim-kiem-nang-cao/trang-${page}.html`,
+                url: `https://truyentranhlh.net/tim-kiem`,
                 method: "GET",
-                param: encodeURI(`?q=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&category=${search.category}&country=${search.country}&status=${search.status}&minchapter=${search.minchapter}&sort=${search.sort}`)
+                param: encodeURI(`?q=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&sort=${search.sort}&accept_genres=${search.genres}&page=${page}`)
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
@@ -1055,15 +1047,13 @@ exports.generateSearch = (query) => {
     return encodeURI(keyword);
 };
 exports.parseSearch = ($) => {
-    var _a, _b, _c;
+    var _a, _b;
     const mangas = [];
-    for (let manga of $('li', '.list-stories').toArray()) {
-        let title = $(`h3.title-book > a`, manga).text().trim();
-        let subtitle = $(`.episode-book > a`, manga).text().trim();
-        let image = (_a = $(`a > img`, manga).attr("src")) !== null && _a !== void 0 ? _a : "";
-        let id = (_c = (_b = $(`a`, manga).attr("href")) === null || _b === void 0 ? void 0 : _b.split("/").pop()) !== null && _c !== void 0 ? _c : title;
-        if (!id || !title)
-            continue;
+    for (let obj of $('.thumb-item-flow', '.col-md-8 > .card:nth-child(2) > .card-body > .row').toArray()) {
+        let title = $(`.series-title > a`, obj).text().trim();
+        let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
+        const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
+        let id = (_b = (_a = $(`.series-title > a`, obj).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) !== null && _b !== void 0 ? _b : title;
         mangas.push(createMangaTile({
             id: encodeURIComponent(id),
             image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
