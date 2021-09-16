@@ -759,11 +759,11 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const chapters = [];
-            for (const obj of $(".list-chapters.at-series > a").toArray().reverse()) {
+            for (const obj of $(".list-chapters.at-series > a").toArray()) {
                 // if (!obj.attribs['href'] || !obj.children[0].data) continue;
                 chapters.push(createChapter({
                     id: (_a = $(obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop(),
-                    chapNum: parseFloat($('li > .chapter-name', obj).text().split(' ')[1]),
+                    chapNum: parseFloat($('li > .chapter-name', obj).text().trim().split(' ')[1]),
                     name: $('li > .chapter-name', obj).text(),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
@@ -775,16 +775,16 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
     getChapterDetails(mangaId, chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${DOMAIN}truyen-tranh/${chapterId}`,
+                url: `https://truyentranhlh.net/truyen-tranh/${chapterId}`,
                 method
             });
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
-            for (let obj of $('.story-see-content > img').toArray()) {
-                if (!obj.attribs['src'])
+            for (let obj of $('#chapter-content > img').toArray()) {
+                if (!obj.attribs['data-src'])
                     continue;
-                let link = obj.attribs['src'];
+                let link = obj.attribs['data-src'];
                 pages.push(link);
             }
             const chapterDetails = createChapterDetails({
