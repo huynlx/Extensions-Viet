@@ -392,12 +392,6 @@ const paperback_extensions_common_1 = require("paperback-extensions-common");
 const HorrorFCParser_1 = require("./HorrorFCParser");
 const DOMAIN = 'https://horrorfc.net/';
 exports.isLastPage = ($) => {
-    const current = $('ul.pagination > li.active > a').text();
-    let total = $('ul.pagination > li.PagerSSCCells:last-child').text();
-    if (current) {
-        total = total !== null && total !== void 0 ? total : '';
-        return (+total) === (+current); //+ => convert value to number
-    }
     return true;
 };
 exports.HorrorFCInfo = {
