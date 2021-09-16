@@ -761,12 +761,15 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const chapters = [];
-            for (const obj of $(".list-chapters > li").toArray()) {
+            var i = 0;
+            for (const obj of $(".list-chapters > li").toArray().reverse()) {
+                var chapNum = parseFloat($('a > .chapter-name', obj).text().split(' ')[1]);
+                i++;
                 // if (!obj.attribs['href'] || !obj.children[0].data) continue;
                 chapters.push(createChapter({
                     id: $('a', obj).attr('href'),
-                    chapNum: parseFloat($('a > .chapter-name', obj).text().split(' ')[1]),
-                    name: $('a > .chapter-name', obj).text(),
+                    chapNum: isNaN(chapNum) ? i : chapNum,
+                    name: $('a', obj).attr('title'),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
                 }));
@@ -783,7 +786,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
-            for (let obj of $('.story-see-content > img').toArray()) {
+            for (let obj of $('.chapter-content > img').toArray()) {
                 if (!obj.attribs['src'])
                     continue;
                 let link = obj.attribs['src'];
