@@ -746,7 +746,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
                 status: 1,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
-                tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
+                tags: [createTagSection({ label: "genres", tags: [], id: '0' })]
             });
         });
     }
