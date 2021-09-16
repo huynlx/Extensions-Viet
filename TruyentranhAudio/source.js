@@ -777,15 +777,14 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
     getChapterDetails(mangaId, chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${DOMAIN}${chapterId}`,
+                url: 'https://lxhentai.com/story/chapter.php?id=4729',
                 method
             });
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
-            for (let obj of $('.chapter-content > img').toArray()) {
-                if (!obj.attribs['src'])
-                    continue;
+            for (let obj of $('#content_chap > p > img').toArray()) {
+                // if (!obj.attribs['src']) continue;
                 let link = obj.attribs['src'];
                 pages.push(link);
             }
