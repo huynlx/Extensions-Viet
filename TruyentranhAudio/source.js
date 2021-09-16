@@ -716,14 +716,14 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
     ;
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://truyentranhaudio.com/truyen-hon-dinh-thinh-thien.html`; //ko vào đc link đéo hiểu sao
+            const url = `${DOMAIN}/${mangaId}`; //ko vào đc link đéo hiểu sao
             const request = createRequestObject({
                 url: url,
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            // let tags: Tag[] = [];
+            let tags = [];
             // let creator = [];
             // let status = 1; //completed, 1 = Ongoing
             // let desc = $('.story-detail-info').text();
@@ -748,6 +748,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                 status: 1,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
+                tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
             });
         });
     }
