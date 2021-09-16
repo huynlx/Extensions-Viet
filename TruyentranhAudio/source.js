@@ -759,7 +759,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                 method,
             });
             const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
+            // const $ = this.cheerio.load(response.data);
             const chapters = [];
             // var i = 0;
             // for (const obj of $(".list-chapters > li").toArray().reverse()) {
