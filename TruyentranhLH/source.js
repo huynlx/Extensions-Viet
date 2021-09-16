@@ -695,7 +695,7 @@ exports.TruyentranhLHInfo = {
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from TruyentranhLH',
-    websiteBaseURL: `${DOMAIN}`,
+    websiteBaseURL: `https://truyentranhlh.net/`,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
         {
@@ -830,6 +830,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             sectionCallback(girl);
             ///Get the section data
             //New Updates
+            let url = '';
             let request = createRequestObject({
                 url: 'https://truyentranhlh.net/',
                 method: "GET",
