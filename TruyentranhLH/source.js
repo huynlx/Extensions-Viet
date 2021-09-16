@@ -801,7 +801,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q;
         return __awaiter(this, void 0, void 0, function* () {
             let featured = createHomeSection({
                 id: 'featured',
@@ -899,19 +899,19 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             $ = this.cheerio.load(data.data);
             for (let obj of $('.thumb-item-flow', '.row').toArray().splice(0, 20)) {
                 let title = $(`.series-title > a`, obj).text().trim();
-                let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
-                const image = $(`.a6-ratio > div.img-in-ratio`, obj).css('background');
-                const bg = image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
-                let id = (_h = (_g = $(`.series-title > a`, obj).attr("href")) === null || _g === void 0 ? void 0 : _g.split("/").pop()) !== null && _h !== void 0 ? _h : title;
+                // let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
+                // const image = $(`.a6-ratio > div.img-in-ratio`, obj).css('background');
+                // const bg = image?.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+                let id = title;
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
-                    image: bg,
+                    image: '',
                     title: createIconText({
-                        text: title,
+                        text: 'tet',
                     }),
                     subtitleText: createIconText({
-                        text: subtitle,
+                        text: 'tet',
                     }),
                 }));
             }
@@ -929,8 +929,8 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             for (let manga of $('li', '.list-stories').toArray().splice(0, 20)) {
                 let title = $(`h3.title-book > a`, manga).text().trim();
                 let subtitle = $(`.episode-book > a`, manga).text().trim();
-                let image = (_j = $(`a > img`, manga).attr("src")) !== null && _j !== void 0 ? _j : "";
-                let id = (_l = (_k = $(`a`, manga).attr("href")) === null || _k === void 0 ? void 0 : _k.split("/").pop()) !== null && _l !== void 0 ? _l : title;
+                let image = (_g = $(`a > img`, manga).attr("src")) !== null && _g !== void 0 ? _g : "";
+                let id = (_j = (_h = $(`a`, manga).attr("href")) === null || _h === void 0 ? void 0 : _h.split("/").pop()) !== null && _j !== void 0 ? _j : title;
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
                     id: id,
@@ -957,8 +957,8 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             for (let manga of $('li', '.list-stories').toArray().splice(0, 12)) {
                 let title = $(`h3.title-book > a`, manga).text().trim();
                 let subtitle = $(`.episode-book > a`, manga).text().trim();
-                let image = (_m = $(`a > img`, manga).attr("src")) !== null && _m !== void 0 ? _m : "";
-                let id = (_p = (_o = $(`a`, manga).attr("href")) === null || _o === void 0 ? void 0 : _o.split("/").pop()) !== null && _p !== void 0 ? _p : title;
+                let image = (_k = $(`a > img`, manga).attr("src")) !== null && _k !== void 0 ? _k : "";
+                let id = (_m = (_l = $(`a`, manga).attr("href")) === null || _l === void 0 ? void 0 : _l.split("/").pop()) !== null && _m !== void 0 ? _m : title;
                 // if (!id || !subtitle) continue;
                 boyItems.push(createMangaTile({
                     id: id,
@@ -985,8 +985,8 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             for (let manga of $('li', '.list-stories').toArray().splice(0, 12)) {
                 let title = $(`h3.title-book > a`, manga).text().trim();
                 let subtitle = $(`.episode-book > a`, manga).text().trim();
-                let image = (_q = $(`a > img`, manga).attr("src")) !== null && _q !== void 0 ? _q : "";
-                let id = (_s = (_r = $(`a`, manga).attr("href")) === null || _r === void 0 ? void 0 : _r.split("/").pop()) !== null && _s !== void 0 ? _s : title;
+                let image = (_o = $(`a > img`, manga).attr("src")) !== null && _o !== void 0 ? _o : "";
+                let id = (_q = (_p = $(`a`, manga).attr("href")) === null || _p === void 0 ? void 0 : _p.split("/").pop()) !== null && _q !== void 0 ? _q : title;
                 // if (!id || !subtitle) continue;
                 girlItems.push(createMangaTile({
                     id: id,
