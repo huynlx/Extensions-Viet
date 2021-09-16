@@ -695,7 +695,7 @@ exports.TruyentranhAudioInfo = {
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from TruyentranhAudio',
-    websiteBaseURL: `${DOMAIN}`,
+    websiteBaseURL: `https://lxhentai.com/`,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
         {
@@ -877,7 +877,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             //New Added
             request = createRequestObject({
-                url: 'https://lxhentai.com/story/cat.php?id=87&token=MC43MDY1OTM3MDc1ODgxMjA4MC4xMTQ5MjM1OTA5MjQ2NzU5Nwvv',
+                url: 'https://lxhentai.com/story/cat.php?id=57',
                 method: "GET",
             });
             let newAddItems = [];
@@ -885,13 +885,14 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             $ = this.cheerio.load(data.data);
             for (let manga of $('div.col-md-3', '.main .col-md-8 > .row').toArray()) {
                 const title = $('a', manga).last().text().trim();
-                const id = (_b = $('a', manga).attr('href')) !== null && _b !== void 0 ? _b : title;
-                const image = '';
+                const id = (_b = $('a', manga).last().attr('href')) !== null && _b !== void 0 ? _b : title;
+                const image = $('div', manga).first().css('background');
+                const bg = image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
                 const sub = $('a', manga).first().text().trim();
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
-                    id: id,
-                    image: image,
+                    id: 'https://lxhentai.com' + id,
+                    image: 'https://lxhentai.com' + bg,
                     title: createIconText({
                         text: title,
                     }),
@@ -912,7 +913,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             let url = '';
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `https://truyentranhaudio.com/manga-list.html?page=${page}`;
+                    url = `https://lxhentai.com/story/cat.php?id=75&p=${page}`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
@@ -1085,28 +1086,26 @@ exports.parseSearch = ($) => {
     return mangas;
 };
 exports.parseViewMore = ($) => {
+    var _a;
     const manga = [];
-    const collectedIds = [];
-    for (let obj of $('.thumb-item-flow', '.col-md-8 > .card:nth-child(2) .row-last-update').toArray()) {
-        const title = $('.series-title', obj).text().trim();
-        const id = $('.series-title > a', obj).attr('href');
-        const image = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', obj).attr('data-bg');
-        const sub = $('.chapter-title  > a', obj).text().trim();
-        if (!id || !title)
-            continue;
-        if (!collectedIds.includes(id)) {
-            manga.push(createMangaTile({
-                id: id,
-                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? (image) : ("https:" + image),
-                title: createIconText({
-                    text: title,
-                }),
-                subtitleText: createIconText({
-                    text: "Chương " + sub,
-                }),
-            }));
-            collectedIds.push(id);
-        }
+    // const collectedIds: string[] = [];
+    for (let obj of $('div.col-md-3', '.main .col-md-8 > .row').toArray()) {
+        const title = $('a', obj).last().text().trim();
+        const id = (_a = $('a', obj).last().attr('href')) !== null && _a !== void 0 ? _a : title;
+        const image = $('div', obj).first().css('background');
+        const bg = image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
+        const sub = $('a', obj).first().text().trim();
+        // if (!id || !subtitle) continue;
+        manga.push(createMangaTile({
+            id: 'https://lxhentai.com' + id,
+            image: 'https://lxhentai.com' + bg,
+            title: createIconText({
+                text: title,
+            }),
+            subtitleText: createIconText({
+                text: sub,
+            }),
+        }));
     }
     return manga;
 };
@@ -1136,7 +1135,7 @@ exports.isLastPage = ($) => {
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($("li > a.active").text().trim());
+    const currentPage = Number($("li.active > a").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
