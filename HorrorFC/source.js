@@ -387,10 +387,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HorrorFC = exports.HorrorFCInfo = void 0;
+exports.HorrorFC = exports.HorrorFCInfo = exports.isLastPage = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const HorrorFCParser_1 = require("./HorrorFCParser");
 const DOMAIN = 'https://horrorfc.net/';
+exports.isLastPage = ($) => {
+    const current = $('ul.pagination > li.active > a').text();
+    let total = $('ul.pagination > li.PagerSSCCells:last-child').text();
+    if (current) {
+        total = total !== null && total !== void 0 ? total : '';
+        return (+total) === (+current); //+ => convert value to number
+    }
+    return true;
+};
 exports.HorrorFCInfo = {
     version: '1.0.0',
     name: 'HorrorFC',
@@ -518,7 +527,7 @@ class HorrorFC extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             const manga = this.parser.parseViewMoreItems($);
             ;
-            metadata = undefined;
+            metadata = exports.isLastPage($) ? undefined : { page: page + 1 };
             return createPagedResults({
                 results: manga,
                 metadata
