@@ -858,7 +858,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                 const title = $('a', manga).last().text().trim();
                 const id = (_b = $('a', manga).attr('href')) !== null && _b !== void 0 ? _b : title;
                 const image = $('div', manga).first().css('background');
-                const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+                const bg = image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
                 const sub = $('a', manga).first().text().trim();
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
