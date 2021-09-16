@@ -890,9 +890,8 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             hot.items = popular;
             sectionCallback(hot);
             //New Updates
-            url = `https://truyentranhlh.net/`;
             request = createRequestObject({
-                url: url,
+                url: "https://truyentranhlh.net/",
                 method: "GET",
             });
             let newUpdatedItems = [];
@@ -902,7 +901,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
                 let title = $(`.series-title > a`, obj).text().trim();
                 let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
                 const image = $(`.a6-ratio > div.img-in-ratio`, obj).css('background');
-                const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+                const bg = image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
                 let id = (_h = (_g = $(`.series-title > a`, obj).attr("href")) === null || _g === void 0 ? void 0 : _g.split("/").pop()) !== null && _h !== void 0 ? _h : title;
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
