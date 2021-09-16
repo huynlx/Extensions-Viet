@@ -848,26 +848,23 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             sectionCallback(hot);
             //New Updates
             request = createRequestObject({
-                url: 'https://truyentranhaudio.com/',
+                url: 'https://lxhentai.com/',
                 method: "GET",
             });
             let newUpdatedItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let manga of $('.thumb-item-flow:not(:last-child)', '.col-lg-8.col-sm-8 > .card:nth-child(3) .row-last-update').toArray()) {
-                const title = $('.series-title', manga).text().trim();
-                const id = (_b = $('.series-title > a', manga).attr('href')) !== null && _b !== void 0 ? _b : title;
-                const image = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', manga).attr('data-bg');
-                const sub = $('a', manga).last().text().trim();
+            for (let manga of $('.div', '.row').toArray()) {
+                const title = $('a', manga).first().text().trim();
+                const id = (_b = $('a', manga).attr('href')) !== null && _b !== void 0 ? _b : title;
+                const image = '';
+                // const sub = $('a', manga).last().text().trim();
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
-                    image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? (image) : ("https:" + image),
+                    image: image,
                     title: createIconText({
                         text: title,
-                    }),
-                    subtitleText: createIconText({
-                        text: sub,
                     }),
                 }));
             }
