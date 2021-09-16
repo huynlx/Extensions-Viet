@@ -743,7 +743,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                 artist: 'huynh',
                 desc: '',
                 titles: [$('h1.title-detail').text()],
-                image: '',
+                image: 'https://lxhentai.com' + $('.col-md-8 > .row > .col-md-4 > img').attr('src'),
                 status: 1,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
@@ -783,7 +783,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
-            for (let obj of $('#content_chap img:not(:first-child)').toArray()) {
+            for (let obj of $('#content_chap img').toArray()) {
                 let link = 'https:' + obj.attribs['src'];
                 pages.push(link);
             }
