@@ -726,7 +726,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             let tags = [];
             // let creator = '';
             // let status = 1; //completed, 1 = Ongoing
-            // let desc = $('.summary-content > p').text();
+            let desc = $('.summary-content > p').text();
             // for (const t of $('a', '.series-information > info-item:nth-child(2) > span.info-value').toArray()) {
             //     const genre = $('span', t).text().trim()
             //     const id = $(t).attr('href') ?? genre
@@ -739,7 +739,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
                 id: mangaId,
                 author: 'huynh',
                 artist: 'huynh',
-                desc: 'huynh',
+                desc: desc,
                 titles: [$('.series-name > a').text().trim()],
                 image: '',
                 status: 1,
