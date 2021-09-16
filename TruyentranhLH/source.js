@@ -736,7 +736,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             creator = $('.info-item:nth-child(3) > .info-value').text();
             status = $('.info-item:nth-child(4) > .info-value > a').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
             const image = $('.top-part > .row > .col-12 > .series-cover > .a6-ratio > div').css('background-image');
-            const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+            const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
             return createManga({
                 id: mangaId,
                 author: creator,
