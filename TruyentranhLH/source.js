@@ -971,7 +971,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             const request = createRequestObject({
                 url: `https://truyentranhlh.net/tim-kiem`,
                 method: "GET",
-                param: encodeURI(`?q=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&sort=${search.sort}&accept_genres=${search.genres}&page=${page}`)
+                param: encodeURI(`?q=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&status=${search.status}&sort=${search.sort}&accept_genres=${search.genres}&page=${page}`)
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
