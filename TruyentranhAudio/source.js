@@ -761,10 +761,10 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             const chapters = [];
             var i = 0;
-            for (const obj of $("#listChuong > ul > .row:nth-child(2) > div.col-5").toArray().reverse()) {
+            for (const obj of $("#listChuong > ul > .row:not(:first-child) > div.col-5").toArray().reverse()) {
                 i++;
                 chapters.push(createChapter({
-                    id: $('a', obj).attr('href'),
+                    id: 'https://lxhentai.com' + $('a', obj).attr('href'),
                     chapNum: i,
                     name: $('a', obj).text(),
                     mangaId: mangaId,
