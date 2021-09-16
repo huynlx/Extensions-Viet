@@ -1049,7 +1049,7 @@ exports.generateSearch = (query) => {
 exports.parseSearch = ($) => {
     var _a, _b;
     const mangas = [];
-    for (let obj of $('.thumb-item-flow', '.col-md-8 > .card:nth-child(2) > .card-body > .row').toArray()) {
+    for (let obj of $('.thumb-item-flow', '.col-12 > .card:nth-child(2) > .card-body > .row').toArray()) {
         let title = $(`.series-title > a`, obj).text().trim();
         let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
         const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
