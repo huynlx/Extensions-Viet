@@ -686,10 +686,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TruyentranhLH = exports.TruyentranhLHInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const TruyentranhLHParser_1 = require("./TruyentranhLHParser");
-const DOMAIN = 'http://truyenqqtop.com/';
+const DOMAIN = 'https://truyentranhlh.net/';
 const method = 'GET';
 exports.TruyentranhLHInfo = {
-    version: '3.0.0',
+    version: '2.0.0',
     name: 'TruyentranhLH',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -712,12 +712,12 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
     }
-    getMangaShareUrl(mangaId) { return `https://truyentranhlh.net/truyen-tranh/${mangaId}`; }
+    getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh/${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://truyentranhlh.net/truyen-tranh/${mangaId}`;
+            const url = `${DOMAIN}truyen-tranh/${mangaId}`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -754,7 +754,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `https://truyentranhlh.net/truyen-tranh/${mangaId}`,
+                url: `${DOMAIN}truyen-tranh/${mangaId}`,
                 method,
             });
             const response = yield this.requestManager.schedule(request, 1);
@@ -826,7 +826,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             //Hot
             let url = '';
             let request = createRequestObject({
-                url: 'https://truyentranhlh.net/',
+                url: DOMAIN,
                 method: "GET",
             });
             let hotItems = [];
@@ -855,7 +855,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             //New Updates
             url = '';
             request = createRequestObject({
-                url: 'https://truyentranhlh.net/',
+                url: DOMAIN,
                 method: "GET",
             });
             let newUpdatedItems = [];
@@ -881,7 +881,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
             //New Added
-            url = `https://truyentranhlh.net/`;
+            url = DOMAIN;
             request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -918,10 +918,10 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             let url = '';
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `https://truyentranhlh.net/danh-sach?sort=update&page=${page}`;
+                    url = `${DOMAIN}danh-sach?sort=update&page=${page}`;
                     break;
                 case "new_added":
-                    url = `https://truyentranhlh.net/danh-sach?sort=new&page=${page}`;
+                    url = `${DOMAIN}danh-sach?sort=new&page=${page}`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
@@ -969,7 +969,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             });
             search.genres = (category !== null && category !== void 0 ? category : []).join(",");
             const request = createRequestObject({
-                url: `https://truyentranhlh.net/tim-kiem`,
+                url: `${DOMAIN}tim-kiem`,
                 method: "GET",
                 param: encodeURI(`?q=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&status=${search.status}&sort=${search.sort}&accept_genres=${search.genres}&page=${page}`)
             });
@@ -986,7 +986,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
     getSearchTags() {
         var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://truyentranhlh.net/tim-kiem`;
+            const url = `${DOMAIN}tim-kiem`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -1030,7 +1030,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: "https://truyentranhlh.net/"
+            referer: DOMAIN
         };
     }
 }
@@ -1039,7 +1039,7 @@ exports.TruyentranhLH = TruyentranhLH;
 },{"./TruyentranhLHParser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isLastPage = exports.parseTags = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
+exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
 const entities = require("entities"); //Import package for decoding HTML entities
 exports.generateSearch = (query) => {
     var _a;
@@ -1083,22 +1083,6 @@ exports.parseViewMore = ($) => {
         }
     }
     return manga;
-};
-exports.parseTags = ($) => {
-    var _a;
-    const arrayTags = [];
-    for (const obj of $("li", "ul").toArray()) {
-        const label = ($("a", obj).text().trim());
-        const id = (_a = $('a', obj).attr('href')) !== null && _a !== void 0 ? _a : "";
-        if (id == "")
-            continue;
-        arrayTags.push({
-            id: id,
-            label: label,
-        });
-    }
-    const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) })];
-    return tagSections;
 };
 exports.isLastPage = ($) => {
     let isLast = false;
