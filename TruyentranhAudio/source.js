@@ -720,7 +720,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                 url: `${DOMAIN}${mangaId}`,
                 method: "GET",
             });
-            const data = yield this.requestManager.schedule(request, 1);
+            const data = yield this.requestManager.schedule(request, 10);
             // let $ = this.cheerio.load(data.data); //lỗi từ dòng này
             let tags = [];
             // let creator = [];
