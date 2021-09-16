@@ -716,13 +716,12 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
     ;
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            // const url = `https://truyentranhaudio.com/truyen-yeu-than-ky.html`; //ko vào đc link đéo hiểu sao
-            // const request = createRequestObject({
-            //     url: url,
-            //     method: "GET",
-            // });
-            // const data = await this.requestManager.schedule(request, 1);
-            // let $ = this.cheerio.load(data.data);
+            const request = createRequestObject({
+                url: `${DOMAIN}${mangaId}`,
+                method: "GET",
+            });
+            const data = yield this.requestManager.schedule(request, 1);
+            let $ = this.cheerio.load(data.data);
             let tags = [];
             // let creator = [];
             // let status = 1; //completed, 1 = Ongoing
@@ -755,7 +754,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `https://truyentranhaudio.online/truyen-white-blood.html`,
+                url: `${DOMAIN}${mangaId}`,
                 method,
             });
             const response = yield this.requestManager.schedule(request, 1);
