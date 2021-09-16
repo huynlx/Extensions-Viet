@@ -847,7 +847,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
                     }),
                 }));
             }
-            newUpdated.items = hotItems;
+            hot.items = hotItems;
             sectionCallback(hot);
             //New Updates
             url = '';
