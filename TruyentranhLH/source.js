@@ -712,7 +712,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
     }
-    getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh/${mangaId}`; }
+    getMangaShareUrl(mangaId) { return `https://truyentranhlh.net/truyen-tranh/${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
         var _a;
@@ -880,19 +880,10 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             let url = '';
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `${DOMAIN}truyen-moi-cap-nhat/trang-${page}.html`;
+                    url = `https://truyentranhlh.net/danh-sach?sort=update&page=${page}`;
                     break;
                 case "new_added":
-                    url = `${DOMAIN}truyen-tranh-moi/trang-${page}.html`;
-                    break;
-                case "hot":
-                    url = `${DOMAIN}truyen-yeu-thich/trang-${page}.html`;
-                    break;
-                case "boy":
-                    url = `${DOMAIN}truyen-con-trai/trang-${page}.html`;
-                    break;
-                case "girl":
-                    url = `${DOMAIN}truyen-con-gai/trang-${page}.html`;
+                    url = `https://truyentranhlh.net/danh-sach?sort=new&page=${page}`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
@@ -1065,16 +1056,14 @@ exports.parseSearch = ($) => {
     return mangas;
 };
 exports.parseViewMore = ($) => {
-    var _a, _b, _c;
+    var _a, _b;
     const manga = [];
     const collectedIds = [];
-    for (let obj of $('li', '.list-stories').toArray()) {
-        let title = $(`h3.title-book > a`, obj).text().trim();
-        let subtitle = $(`.episode-book > a`, obj).text().trim();
-        let image = (_a = $(`a > img`, obj).attr("src")) !== null && _a !== void 0 ? _a : "";
-        let id = (_c = (_b = $(`a`, obj).attr("href")) === null || _b === void 0 ? void 0 : _b.split("/").pop()) !== null && _c !== void 0 ? _c : title;
-        if (!id || !title)
-            continue;
+    for (let obj of $('.thumb-item-flow:not(:last-child)', '.col-md-8 > .card > .card-body > .row').toArray()) {
+        let title = $(`.series-title > a`, obj).text().trim();
+        let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
+        const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
+        let id = (_b = (_a = $(`.series-title > a`, obj).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) !== null && _b !== void 0 ? _b : title;
         if (!collectedIds.includes(id)) {
             manga.push(createMangaTile({
                 id: encodeURIComponent(id),
