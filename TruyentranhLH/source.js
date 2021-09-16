@@ -762,7 +762,6 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             const chapters = [];
             var i = 0;
             for (const obj of $(".list-chapters.at-series > a").toArray().reverse()) {
-                // if (!obj.attribs['href'] || !obj.children[0].data) continue;
                 var chapNum = parseFloat($('li > .chapter-name', obj).text().trim().split(' ')[1]);
                 i++;
                 chapters.push(createChapter({

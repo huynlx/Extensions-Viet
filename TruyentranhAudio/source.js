@@ -682,13 +682,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TruyentranhAudio = exports.TruyentranhAudioInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
-const axios_1 = __importDefault(require("axios"));
 const TruyentranhAudioParser_1 = require("./TruyentranhAudioParser");
 const DOMAIN = 'https://truyentranhaudio.online/';
 const method = 'GET';
@@ -758,17 +754,17 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
     }
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const client = axios_1.default.create({
-                baseURL: "http://www.nettruyenpro.com",
+            const request = createRequestObject({
+                url: `${DOMAIN}${mangaId}`,
+                method,
             });
-            const { data } = yield client.get('https://truyentranhaudio.online/truyen-white-blood.html');
-            const $ = this.cheerio.load(data);
+            const response = yield this.requestManager.schedule(request, 1);
+            const $ = this.cheerio.load(response.data);
             const chapters = [];
             var i = 0;
             for (const obj of $(".list-chapters > li").toArray().reverse()) {
                 var chapNum = parseFloat($('a > .chapter-name', obj).text().split(' ')[1]);
                 i++;
-                // if (!obj.attribs['href'] || !obj.children[0].data) continue;
                 chapters.push(createChapter({
                     id: $('a', obj).attr('href'),
                     chapNum: isNaN(chapNum) ? i : chapNum,
@@ -1058,7 +1054,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
 }
 exports.TruyentranhAudio = TruyentranhAudio;
 
-},{"./TruyentranhAudioParser":57,"axios":"axios","paperback-extensions-common":13}],57:[function(require,module,exports){
+},{"./TruyentranhAudioParser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isLastPage = exports.parseTags = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
