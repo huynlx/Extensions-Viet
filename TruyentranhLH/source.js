@@ -798,7 +798,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
             let newUpdated = createHomeSection({
                 id: 'new_updated',
@@ -843,7 +843,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
             //New Added
-            url = `${DOMAIN}truyen-tranh-moi.html`;
+            url = `https://truyentranhlh.net/`;
             request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -851,15 +851,15 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             let newAddItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let manga of $('li', '.list-stories').toArray().splice(0, 20)) {
-                let title = $(`h3.title-book > a`, manga).text().trim();
-                let subtitle = $(`.episode-book > a`, manga).text().trim();
-                let image = (_c = $(`a > img`, manga).attr("src")) !== null && _c !== void 0 ? _c : "";
-                let id = (_e = (_d = $(`a`, manga).attr("href")) === null || _d === void 0 ? void 0 : _d.split("/").pop()) !== null && _e !== void 0 ? _e : title;
+            for (let obj of $('.thumb-item-flow:not(:last-child)', '.col-md-8 > .card:nth-child(2) > .card-body > .row').toArray().splice(0, 20)) {
+                let title = $(`.series-title > a`, obj).text().trim();
+                let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
+                const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
+                let id = (_d = (_c = $(`.series-title > a`, obj).attr("href")) === null || _c === void 0 ? void 0 : _c.split("/").pop()) !== null && _d !== void 0 ? _d : title;
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
                     id: id,
-                    image: image,
+                    image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({
                         text: title,
                     }),
