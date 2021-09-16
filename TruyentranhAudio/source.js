@@ -877,7 +877,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             //New Added
             request = createRequestObject({
-                url: 'https://lxhentai.com/story/cat.php?id=57',
+                url: 'https://lxhentai.com/story/cat.php?id=75',
                 method: "GET",
             });
             let newAddItems = [];
@@ -914,6 +914,9 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             switch (homepageSectionId) {
                 case "new_updated":
                     url = `https://lxhentai.com/story/cat.php?id=75&p=${page}`;
+                    break;
+                case "new_added":
+                    url = `https://lxhentai.com/story/cat.php?id=57&p=${page}`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
@@ -1107,7 +1110,7 @@ exports.parseViewMore = ($) => {
             }),
         }));
     }
-    return manga;
+    return manga; //cái này trả về rỗng thì ko cộng dồn nữa
 };
 exports.parseTags = ($) => {
     var _a;
