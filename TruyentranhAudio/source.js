@@ -754,24 +754,23 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${DOMAIN}${mangaId}`,
+                url: `${mangaId}`,
                 method,
             });
             const response = yield this.requestManager.schedule(request, 1);
-            // const $ = this.cheerio.load(response.data);
+            const $ = this.cheerio.load(response.data);
             const chapters = [];
-            // var i = 0;
-            // for (const obj of $(".list-chapters > li").toArray().reverse()) {
-            //     var chapNum = parseFloat($('a > .chapter-name', obj).text().split(' ')[1]);
-            //     i++;
-            //     chapters.push(createChapter(<Chapter>{
-            //         id: $('a', obj).attr('href'),
-            //         chapNum: isNaN(chapNum) ? i : chapNum,
-            //         name: $('a', obj).attr('title'),
-            //         mangaId: mangaId,
-            //         langCode: LanguageCode.VIETNAMESE,
-            //     }));
-            // }
+            var i = 0;
+            for (const obj of $("#listChuong > .col-5").toArray().reverse()) {
+                i++;
+                chapters.push(createChapter({
+                    id: $('a', obj).attr('href'),
+                    chapNum: i,
+                    name: $('a', obj).attr('title'),
+                    mangaId: mangaId,
+                    langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+                }));
+            }
             return chapters;
         });
     }
