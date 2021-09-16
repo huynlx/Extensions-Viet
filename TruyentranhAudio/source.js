@@ -721,7 +721,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 10);
-            // let $ = this.cheerio.load(data.data); //lỗi từ dòng này
+            let $ = this.cheerio.load(data.data); //lỗi từ dòng này
             let tags = [];
             // let creator = [];
             // let status = 1; //completed, 1 = Ongoing
@@ -742,7 +742,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                 author: 'huynh',
                 artist: 'huynh',
                 desc: '',
-                titles: ['cc'],
+                titles: [$('.manga-info > h3').text()],
                 image: '',
                 status: 1,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
