@@ -716,13 +716,13 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
     ;
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://truyentranhaudio.com/truyen-yeu-than-ky.html`; //ko vào đc link đéo hiểu sao
-            const request = createRequestObject({
-                url: url,
-                method: "GET",
-            });
-            const data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
+            // const url = `https://truyentranhaudio.com/truyen-yeu-than-ky.html`; //ko vào đc link đéo hiểu sao
+            // const request = createRequestObject({
+            //     url: url,
+            //     method: "GET",
+            // });
+            // const data = await this.requestManager.schedule(request, 1);
+            // let $ = this.cheerio.load(data.data);
             let tags = [];
             // let creator = [];
             // let status = 1; //completed, 1 = Ongoing
