@@ -716,7 +716,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
     ;
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `${DOMAIN}/${mangaId}`; //ko vào đc link đéo hiểu sao
+            const url = `${DOMAIN}${mangaId}`; //ko vào đc link đéo hiểu sao
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -742,7 +742,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                 id: mangaId,
                 author: 'huynh',
                 artist: 'huynh',
-                desc: 'Không có mô tả',
+                desc: '',
                 titles: ['cc'],
                 image: '',
                 status: 1,
@@ -755,7 +755,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `https://truyen86.com/`,
+                url: `${DOMAIN}${mangaId}`,
                 method,
             });
             const response = yield this.requestManager.schedule(request, 1);
@@ -777,7 +777,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
     getChapterDetails(mangaId, chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${DOMAIN}truyen-tranh/${chapterId}`,
+                url: `${DOMAIN}${chapterId}`,
                 method
             });
             const response = yield this.requestManager.schedule(request, 1);
