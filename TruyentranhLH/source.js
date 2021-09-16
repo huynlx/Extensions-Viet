@@ -715,9 +715,9 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
     getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh/${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
-        var _a, _b;
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `${DOMAIN}truyen-tranh/${mangaId}`;
+            const url = `https://truyentranhlh.net/truyen-tranh/${mangaId}`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -725,27 +725,24 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let tags = [];
-            let creator = [];
+            let creator = '';
             let status = 1; //completed, 1 = Ongoing
-            let desc = $('.story-detail-info').text();
-            for (const t of $('a', '.list01').toArray()) {
-                const genre = $(t).text().trim();
+            let desc = $('.summary-content > p').text();
+            for (const t of $('a', '.series-information > info-item:nth-child(2) > span.info-value').toArray()) {
+                const genre = $('span', t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            for (const c of $('a', '.txt > p:nth-of-type(1)').toArray()) {
-                const name = $(c).text().trim();
-                creator.push(name);
-            }
-            status = $('.txt > p:nth-of-type(2)').text().toLowerCase().includes("đang cập nhật") ? 1 : 0;
-            const image = (_b = $('.left > img').attr('src')) !== null && _b !== void 0 ? _b : "";
+            creator = $('a', '.series-information > info-item:nth-child(3) > span.info-value > a').text();
+            status = $('a', '.series-information > info-item:nth-child(4) > span.info-value > a').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
+            const image = $('.series-cover > .a6-ratio > img').css('background-image');
             return createManga({
                 id: mangaId,
-                author: creator.join(', '),
-                artist: creator.join(', '),
+                author: creator,
+                artist: creator,
                 desc: desc === "" ? 'Không có mô tả' : desc,
-                titles: [$('.center > h1').text().trim()],
-                image: image,
+                titles: [$('.series-name > a').text().trim()],
+                image: image.replace('url(', '').replace(')', '').replace(/\"/gi, ""),
                 status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
@@ -801,7 +798,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+        var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function* () {
             let newUpdated = createHomeSection({
                 id: 'new_updated',
@@ -813,21 +810,9 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
                 title: "Truyện mới nhất",
                 view_more: true,
             });
-            let boy = createHomeSection({
-                id: 'boy',
-                title: "Truyện Con Trai",
-                view_more: true,
-            });
-            let girl = createHomeSection({
-                id: 'girl',
-                title: "Truyện Con Gái",
-                view_more: true,
-            });
             //Load empty sections
             sectionCallback(newUpdated);
             sectionCallback(newAdded);
-            sectionCallback(boy);
-            sectionCallback(girl);
             ///Get the section data
             //New Updates
             let url = '';
@@ -838,7 +823,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             let newUpdatedItems = [];
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            for (let obj of $('.thumb-item-flow:not(:last-child)', '.col-md-8 > .card:nth-child(1) > .card-body > .row').toArray()) {
+            for (let obj of $('.thumb-item-flow:not(:last-child)', '.col-md-8 > .card:nth-child(1) > .card-body > .row').toArray().splice(0, 20)) {
                 let title = $(`.series-title > a`, obj).text().trim();
                 let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
                 const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
@@ -885,62 +870,6 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             }
             newAdded.items = newAddItems;
             sectionCallback(newAdded);
-            //Boy
-            url = `${DOMAIN}truyen-con-trai.html`;
-            request = createRequestObject({
-                url: url,
-                method: "GET",
-            });
-            let boyItems = [];
-            data = yield this.requestManager.schedule(request, 1);
-            $ = this.cheerio.load(data.data);
-            for (let manga of $('li', '.list-stories').toArray().splice(0, 12)) {
-                let title = $(`h3.title-book > a`, manga).text().trim();
-                let subtitle = $(`.episode-book > a`, manga).text().trim();
-                let image = (_f = $(`a > img`, manga).attr("src")) !== null && _f !== void 0 ? _f : "";
-                let id = (_h = (_g = $(`a`, manga).attr("href")) === null || _g === void 0 ? void 0 : _g.split("/").pop()) !== null && _h !== void 0 ? _h : title;
-                // if (!id || !subtitle) continue;
-                boyItems.push(createMangaTile({
-                    id: id,
-                    image: image,
-                    title: createIconText({
-                        text: title,
-                    }),
-                    subtitleText: createIconText({
-                        text: subtitle,
-                    }),
-                }));
-            }
-            boy.items = boyItems;
-            sectionCallback(boy);
-            //Girl
-            url = `${DOMAIN}truyen-con-gai.html`;
-            request = createRequestObject({
-                url: url,
-                method: "GET",
-            });
-            let girlItems = [];
-            data = yield this.requestManager.schedule(request, 1);
-            $ = this.cheerio.load(data.data);
-            for (let manga of $('li', '.list-stories').toArray().splice(0, 12)) {
-                let title = $(`h3.title-book > a`, manga).text().trim();
-                let subtitle = $(`.episode-book > a`, manga).text().trim();
-                let image = (_j = $(`a > img`, manga).attr("src")) !== null && _j !== void 0 ? _j : "";
-                let id = (_l = (_k = $(`a`, manga).attr("href")) === null || _k === void 0 ? void 0 : _k.split("/").pop()) !== null && _l !== void 0 ? _l : title;
-                // if (!id || !subtitle) continue;
-                girlItems.push(createMangaTile({
-                    id: id,
-                    image: image,
-                    title: createIconText({
-                        text: title,
-                    }),
-                    subtitleText: createIconText({
-                        text: subtitle,
-                    }),
-                }));
-            }
-            girl.items = girlItems;
-            sectionCallback(girl);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
