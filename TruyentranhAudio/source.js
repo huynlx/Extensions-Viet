@@ -752,23 +752,45 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             });
         });
     }
+    // async getChapters(mangaId: string): Promise<Chapter[]> {
+    //     const request = createRequestObject({
+    //         url: `${DOMAIN}${mangaId}`,
+    //         method,
+    //     });
+    //     const response = await this.requestManager.schedule(request, 1);
+    //     const $ = this.cheerio.load(response.data);
+    //     const chapters: Chapter[] = [];
+    //     var i = 0;
+    //     for (const obj of $(".list-chapters > li").toArray().reverse()) {
+    //         var chapNum = parseFloat($('a > .chapter-name', obj).text().split(' ')[1]);
+    //         i++;
+    //         chapters.push(createChapter(<Chapter>{
+    //             id: $('a', obj).attr('href'),
+    //             chapNum: isNaN(chapNum) ? i : chapNum,
+    //             name: $('a', obj).attr('title'),
+    //             mangaId: mangaId,
+    //             langCode: LanguageCode.VIETNAMESE,
+    //         }));
+    //     }
+    //     return chapters;
+    // }
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${DOMAIN}${mangaId}`,
+                url: `https://truyentranhlh.net/truyen-tranh/lua-thieu-nha-mitarai`,
                 method,
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const chapters = [];
             var i = 0;
-            for (const obj of $(".list-chapters > li").toArray().reverse()) {
-                var chapNum = parseFloat($('a > .chapter-name', obj).text().split(' ')[1]);
+            for (const obj of $(".list-chapters.at-series > a").toArray().reverse()) {
+                var chapNum = parseFloat($('li > .chapter-name', obj).text().trim().split(' ')[1]);
                 i++;
                 chapters.push(createChapter({
-                    id: $('a', obj).attr('href'),
+                    id: $(obj).first().attr('href'),
                     chapNum: isNaN(chapNum) ? i : chapNum,
-                    name: $('a', obj).attr('title'),
+                    name: $('li > .chapter-name', obj).text(),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
                 }));
