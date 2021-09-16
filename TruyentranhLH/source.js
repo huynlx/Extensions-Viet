@@ -736,13 +736,14 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             creator = $('.info-item:nth-child(3) > .info-value').text();
             status = $('.info-item:nth-child(4) > .info-value > a').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
             const image = $('.top-part > .row > .col-12 > .series-cover > .a6-ratio > div').css('background-image');
+            const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
             return createManga({
                 id: mangaId,
                 author: creator,
                 artist: creator,
                 desc: desc,
                 titles: [$('.series-name > a').text().trim()],
-                image: image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, ""),
+                image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
                 status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
