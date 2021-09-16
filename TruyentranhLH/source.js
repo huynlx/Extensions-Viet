@@ -994,7 +994,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
     getSearchTags() {
         var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `${DOMAIN}tim-kiem-nang-cao.html`;
+            const url = `https://truyentranhlh.net/tim-kiem`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -1029,9 +1029,9 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
                 arrayTags3.push({ id: id, label: label });
             }
             const tagSections = [
-                createTagSection({ id: '0', label: 'Thể Loại Truyện', tags: arrayTags.map(x => createTag(x)) }),
-                createTagSection({ id: '1', label: 'Quốc Gia (Chỉ chọn 1)', tags: arrayTags2.map(x => createTag(x)) }),
-                createTagSection({ id: '2', label: 'Tình Trạng (Chỉ chọn 1)', tags: arrayTags3.map(x => createTag(x)) }),
+                createTagSection({ id: '0', label: 'Thể loại', tags: arrayTags.map(x => createTag(x)) }),
+                createTagSection({ id: '1', label: 'Tình trạng', tags: arrayTags2.map(x => createTag(x)) }),
+                createTagSection({ id: '2', label: 'Sắp xếp', tags: arrayTags3.map(x => createTag(x)) }),
             ];
             return tagSections;
         });
