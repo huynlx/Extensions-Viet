@@ -620,11 +620,11 @@ exports.SayHentaiInfo = {
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from SayHentai',
     websiteBaseURL: `https://truyentranhlh.net/`,
-    contentRating: paperback_extensions_common_1.ContentRating.MATURE,
+    contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
         {
-            text: "Recommended",
-            type: paperback_extensions_common_1.TagType.BLUE
+            text: "18+",
+            type: paperback_extensions_common_1.TagType.YELLOW
         }
     ]
 };
