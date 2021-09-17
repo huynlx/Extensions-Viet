@@ -658,7 +658,7 @@ class SayHentai extends paperback_extensions_common_1.Source {
                 tags.push(createTag({ label: genre, id }));
             }
             creator = $('.list-info > li:nth-child(1)').text().split(":")[1].trim();
-            status = $('.list-info > li:nth-child(2) > b').text().toLowerCase().includes("đang cập nhật") ? 1 : 0;
+            status = $('.list-info > li:nth-child(2) > b').text().toLowerCase().includes("đang") ? 1 : 0;
             const image = $('.wrap-content-image > img').attr('src');
             return createManga({
                 id: mangaId,
@@ -684,13 +684,13 @@ class SayHentai extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             const chapters = [];
             var i = 0;
-            for (const obj of $("#list-chapter > li.chap-item > a").toArray().reverse()) {
-                var chapNum = parseFloat($(obj).text().trim().split(' ')[1]);
+            for (const obj of $("#list-chapter > li.chap-item").toArray().reverse()) {
+                var chapNum = parseFloat($('a', obj).text().trim().split(' ')[1]);
                 i++;
                 chapters.push(createChapter({
-                    id: $(obj).first().attr('href'),
+                    id: $('a', obj).first().attr('href'),
                     chapNum: isNaN(chapNum) ? i : chapNum,
-                    name: $('li > .chapter-name', obj).text(),
+                    name: $('span', obj).text().trim(),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
                 }));
