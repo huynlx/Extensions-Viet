@@ -639,10 +639,9 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
     getMangaShareUrl(mangaId) { return `${DOMAIN}/${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `https://truyentranhaudio.com/`,
+                url: mangaId,
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 10);
@@ -650,7 +649,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             let tags = [];
             // let creator = '';
             let status = 1; //completed, 1 = Ongoing
-            let desc = $('.summary-content').text();
+            // let desc = $('.summary-content').text();
             // for (const t of $('a', '.manga-info').toArray()) {
             //     const genre = $(t).text().trim()
             //     const id = $(t).attr('href') ?? genre
@@ -661,15 +660,16 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             //     creator.push(name);
             // }
             // status = $('.txt > p:nth-of-type(2)').text().toLowerCase().includes("đang cập nhật") ? 1 : 0;
-            const image = (_a = $('.info-cover > img.thumnail').attr('src')) !== null && _a !== void 0 ? _a : "";
+            // const image = $('.info-cover > img.thumnail').attr('src') ?? "";
+            // const title = $('.manga-info > h3').text();
             return createManga({
                 id: mangaId,
                 author: 'huynh',
                 artist: 'huynh',
-                desc: desc,
-                titles: [$('.manga-info > h3').text()],
-                image: image,
-                status: 1,
+                desc: 'ok',
+                titles: ['cc'],
+                image: 'https://f40-zpg.zdn.vn/5907652352288567255/ffd08cfe8bff79a120ee.jpg',
+                status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
                 tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
@@ -679,24 +679,24 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${DOMAIN}${mangaId}`,
+                url: `${mangaId}`,
                 method,
             });
             const response = yield this.requestManager.schedule(request, 1);
-            // const $ = this.cheerio.load(response.data);
+            const $ = this.cheerio.load(response.data);
             const chapters = [];
-            // var i = 0;
-            // for (const obj of $(".list-chapters > li").toArray().reverse()) {
-            //     var chapNum = parseFloat($('a > .chapter-name', obj).text().split(' ')[1]);
-            //     i++;
-            //     chapters.push(createChapter(<Chapter>{
-            //         id: $('a', obj).attr('href'),
-            //         chapNum: isNaN(chapNum) ? i : chapNum,
-            //         name: $('a', obj).attr('title'),
-            //         mangaId: mangaId,
-            //         langCode: LanguageCode.VIETNAMESE,
-            //     }));
-            // }
+            var i = 0;
+            for (const obj of $(".list-chapters > li").toArray().reverse()) {
+                var chapNum = parseFloat($('a > .chapter-name', obj).text().split(' ')[1]);
+                i++;
+                chapters.push(createChapter({
+                    id: $('a', obj).attr('href'),
+                    chapNum: isNaN(chapNum) ? i : chapNum,
+                    name: $('a', obj).attr('title'),
+                    mangaId: mangaId,
+                    langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+                }));
+            }
             return chapters;
         });
     }
