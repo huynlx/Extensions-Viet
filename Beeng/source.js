@@ -657,14 +657,15 @@ class Beeng extends paperback_extensions_common_1.Source {
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            creator = $('.aboutThisComic > li:nth-child(2)').children().remove().end().text();
-            console.log(creator);
+            creator = $('.aboutThisComic > li:nth-child(2) > a').text();
+            // const test = !creator ? $('.aboutThisComic > li:nth-child(2)').children().remove().end().text() : creator
+            // console.log(test);
             // status = $('.info-item:nth-child(4) > .info-value > a').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
             const image = $('.cover > img').attr('data-src');
             return createManga({
                 id: mangaId,
-                author: creator === '' ? $('.aboutThisComic > li:nth-child(2) > a').text() : creator,
-                artist: creator === '' ? $('.aboutThisComic > li:nth-child(2) > a').text() : creator,
+                author: !creator ? $('.aboutThisComic > li:nth-child(2)').children().remove().end().text() : creator,
+                artist: !creator ? $('.aboutThisComic > li:nth-child(2)').children().remove().end().text() : creator,
                 desc,
                 titles: [$('.detail > h1').text().trim()],
                 image: image !== null && image !== void 0 ? image : "https://i.imgur.com/GYUxEX8.png",
