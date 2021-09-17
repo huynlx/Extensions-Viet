@@ -661,7 +661,6 @@ class Beeng extends paperback_extensions_common_1.Source {
             console.log(creator);
             // status = $('.info-item:nth-child(4) > .info-value > a').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
             const image = $('.cover > img').attr('data-src');
-            // const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
             return createManga({
                 id: mangaId,
                 author: creator,
@@ -841,7 +840,7 @@ class Beeng extends paperback_extensions_common_1.Source {
             let url = '';
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `${DOMAIN}danh-sach?sort=update&page=${page}`;
+                    url = `https://beeng.org/danh-muc/moi-nhat?page=${page}`;
                     break;
                 case "new_added":
                     url = `${DOMAIN}danh-sach?sort=new&page=${page}`;
@@ -990,34 +989,34 @@ exports.parseViewMore = ($) => {
     var _a, _b;
     const manga = [];
     const collectedIds = [];
-    for (let obj of $('.thumb-item-flow', '.col-md-8 > .card > .card-body > .row').toArray()) {
-        let title = $(`.series-title > a`, obj).text().trim();
-        let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
-        const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
-        let id = (_b = (_a = $(`.series-title > a`, obj).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) !== null && _b !== void 0 ? _b : title;
-        if (!collectedIds.includes(id)) {
-            manga.push(createMangaTile({
-                id: encodeURIComponent(id),
-                image: image !== null && image !== void 0 ? image : "",
-                title: createIconText({ text: decodeHTMLEntity(title) }),
-                subtitleText: createIconText({ text: subtitle }),
-            }));
-            collectedIds.push(id);
-        }
+    for (let obj of $('li', '.mainContent > .content > .listComic > ul.list').toArray()) {
+        let title = $(`.detail > h3 > a`, obj).text().trim();
+        let subtitle = $(`.chapters a`, obj).attr('title');
+        const image = $(`.cover img`, obj).attr('data-src');
+        let id = (_b = (_a = $(`.detail > h3 > a`, obj).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) !== null && _b !== void 0 ? _b : title;
+        if (!id || !subtitle)
+            continue;
+        manga.push(createMangaTile({
+            id: encodeURIComponent(id),
+            image: image !== null && image !== void 0 ? image : "",
+            title: createIconText({ text: decodeHTMLEntity(title) }),
+            subtitleText: createIconText({ text: subtitle }),
+        }));
+        collectedIds.push(id);
     }
     return manga;
 };
 exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
-    for (const page of $("a", ".pagination_wrap").toArray()) {
+    for (const page of $("a", ".paging > ul > li").toArray()) {
         const p = Number($(page).text().trim());
         if (isNaN(p))
             continue;
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($(".pagination_wrap > a.current").text().trim());
+    const currentPage = Number($(".paging > ul > li > a.active").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
