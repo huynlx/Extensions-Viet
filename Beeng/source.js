@@ -658,8 +658,6 @@ class Beeng extends paperback_extensions_common_1.Source {
                 tags.push(createTag({ label: genre, id }));
             }
             creator = $('.aboutThisComic > li:nth-child(2) > a').text();
-            // const test = !creator ? $('.aboutThisComic > li:nth-child(2)').children().remove().end().text() : creator
-            // console.log(test);
             // status = $('.info-item:nth-child(4) > .info-value > a').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
             const image = $('.cover > img').attr('data-src');
             return createManga({
@@ -754,7 +752,7 @@ class Beeng extends paperback_extensions_common_1.Source {
             let hotItems = [];
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            for (let obj of $('li', '.mainContent > .content > .listComic > ul.list').toArray().splice(0, 20)) {
+            for (let obj of $('li', '.mainContent > .content > .listComic > ul.list').toArray().splice(0, 40)) {
                 let title = $(`.detail > h3 > a`, obj).text().trim();
                 let subtitle = $(`.chapters a`, obj).attr('title');
                 const image = $(`.cover img`, obj).attr('data-src');
@@ -783,7 +781,7 @@ class Beeng extends paperback_extensions_common_1.Source {
             let newUpdatedItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('li', '.mainContent > .content > .listComic > ul.list').toArray().splice(0, 20)) {
+            for (let obj of $('li', '.mainContent > .content > .listComic > ul.list').toArray().splice(0, 40)) {
                 let title = $(`.detail > h3 > a`, obj).text().trim();
                 let subtitle = $(`.chapters a`, obj).attr('title');
                 const image = $(`.cover img`, obj).attr('data-src');
@@ -812,7 +810,7 @@ class Beeng extends paperback_extensions_common_1.Source {
             let viewItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('li', '.mainContent > .content > .listComic > ul.list').toArray().splice(0, 20)) {
+            for (let obj of $('li', '.mainContent > .content > .listComic > ul.list').toArray().splice(0, 40)) {
                 let title = $(`.detail > h3 > a`, obj).text().trim();
                 let subtitle = $(`.chapters a`, obj).attr('title');
                 const image = $(`.cover img`, obj).attr('data-src');
@@ -896,9 +894,9 @@ class Beeng extends paperback_extensions_common_1.Source {
             });
             search.genres = (category !== null && category !== void 0 ? category : []).join(",");
             const request = createRequestObject({
-                url: `${DOMAIN}tim-kiem`,
+                url: `https://beeng.org/tim-kiem`,
                 method: "GET",
-                param: encodeURI(`?q=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&status=${search.status}&sort=${search.sort}&accept_genres=${search.genres}&page=${page}`)
+                param: encodeURI(`?q=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&page=${page}`)
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
@@ -996,15 +994,17 @@ exports.generateSearch = (query) => {
 exports.parseSearch = ($) => {
     var _a, _b;
     const mangas = [];
-    for (let obj of $('.thumb-item-flow', '.col-12 > .card:nth-child(2) > .card-body > .row').toArray()) {
-        let title = $(`.series-title > a`, obj).text().trim();
-        let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
-        const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
-        let id = (_b = (_a = $(`.series-title > a`, obj).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) !== null && _b !== void 0 ? _b : title;
+    for (let obj of $('li', '.mainContent > .content > .listComic > ul.list').toArray()) {
+        let title = $(`.detail > h3 > a`, obj).text().trim();
+        let subtitle = $(`.chapters a`, obj).attr('title');
+        const image = $(`.cover img`, obj).attr('data-src');
+        let id = (_b = (_a = $(`.detail > h3 > a`, obj).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) !== null && _b !== void 0 ? _b : title;
+        if (!id || !subtitle)
+            continue;
         mangas.push(createMangaTile({
             id: encodeURIComponent(id),
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
-            title: createIconText({ text: title }),
+            image: image !== null && image !== void 0 ? image : "",
+            title: createIconText({ text: decodeHTMLEntity(title) }),
             subtitleText: createIconText({ text: subtitle }),
         }));
     }
