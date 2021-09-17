@@ -641,7 +641,7 @@ class SayHentai extends paperback_extensions_common_1.Source {
     getMangaDetails(mangaId) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `${DOMAIN}truyen-tranh/${mangaId}`;
+            const url = `https://sayhentai.net/${mangaId}`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -651,23 +651,22 @@ class SayHentai extends paperback_extensions_common_1.Source {
             let tags = [];
             let creator = '';
             let status = 1; //completed, 1 = Ongoing
-            let desc = $('.summary-content > p').text();
-            for (const t of $('.info-item:nth-child(2) > .info-value > a').toArray()) {
-                const genre = $('span', t).text().trim();
+            let desc = $('.detail-content > p').text();
+            for (const t of $('.list01.li03 > a.genner-block').toArray()) {
+                const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            creator = $('.info-item:nth-child(3) > .info-value').text();
-            status = $('.info-item:nth-child(4) > .info-value > a').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
-            const image = $('.top-part > .row > .col-12 > .series-cover > .a6-ratio > div').css('background-image');
-            const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
+            creator = $('.list-info > li:nth-child(1)').text().split(":")[1].trim();
+            status = $('.list-info > li:nth-child(2) > b').text().toLowerCase().includes("đang cập nhật") ? 1 : 0;
+            const image = $('.wrap-content-image > img').attr('src');
             return createManga({
                 id: mangaId,
                 author: creator,
                 artist: creator,
                 desc: desc,
-                titles: [$('.series-name > a').text().trim()],
-                image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
+                titles: [$('.wrap-content-info > h1').text().trim()],
+                image: !image ? ("https://i.imgur.com/GYUxEX8.png") : ('https://sayhentai.net' + image),
                 status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
@@ -678,15 +677,15 @@ class SayHentai extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${DOMAIN}truyen-tranh/${mangaId}`,
+                url: `https://sayhentai.net/${mangaId}`,
                 method,
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const chapters = [];
             var i = 0;
-            for (const obj of $(".list-chapters.at-series > a").toArray().reverse()) {
-                var chapNum = parseFloat($('li > .chapter-name', obj).text().trim().split(' ')[1]);
+            for (const obj of $("#list-chapter > li.chap-item > a").toArray().reverse()) {
+                var chapNum = parseFloat($(obj).text().trim().split(' ')[1]);
                 i++;
                 chapters.push(createChapter({
                     id: $(obj).first().attr('href'),
@@ -702,13 +701,13 @@ class SayHentai extends paperback_extensions_common_1.Source {
     getChapterDetails(mangaId, chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${chapterId}`,
+                url: `https://sayhentai.net/${chapterId}`,
                 method
             });
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
-            for (let obj of $('#chapter-content > img').toArray()) {
+            for (let obj of $('#lst_content > img').toArray()) {
                 if (!obj.attribs['data-src'])
                     continue;
                 let link = obj.attribs['data-src'];
@@ -757,7 +756,7 @@ class SayHentai extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             for (let obj of $('li', '#main-content > .wrap-content-part:nth-child(1) > .body-content-part > ul').toArray()) {
                 let title = $(`.info-bottom > a`, obj).text().trim();
-                let subtitle = $(`.info-bottom > span`, obj).text().trim();
+                let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
                 const image = $(`a > img`, obj).attr('src');
                 let id = (_a = $(`.info-bottom > a`, obj).attr("href")) !== null && _a !== void 0 ? _a : title;
                 // if (!id || !subtitle) continue;
@@ -952,7 +951,7 @@ class SayHentai extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: DOMAIN
+            referer: 'https://sayhentai.net/'
         };
     }
 }
