@@ -723,21 +723,21 @@ class SayHentai extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
-                title: "Truyện hot trong ngày",
+                title: "Top Trong Ngày",
                 view_more: false,
             });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
-                title: "Truyện mới cập nhật",
+                title: "Mới Cập Nhật",
                 view_more: true,
             });
             let newAdded = createHomeSection({
                 id: 'new_added',
-                title: "Truyện mới nhất",
+                title: "Truyện Mới",
                 view_more: true,
             });
             //Load empty sections
@@ -776,21 +776,21 @@ class SayHentai extends paperback_extensions_common_1.Source {
             //New Updates
             url = '';
             request = createRequestObject({
-                url: DOMAIN,
+                url: 'https://sayhentai.net/',
                 method: "GET",
             });
             let newUpdatedItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('.thumb-item-flow:not(:last-child)', '.col-md-8 > .card:nth-child(1) > .card-body > .row').toArray().splice(0, 20)) {
-                let title = $(`.series-title > a`, obj).text().trim();
-                let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
-                const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
-                let id = (_c = (_b = $(`.series-title > a`, obj).attr("href")) === null || _b === void 0 ? void 0 : _b.split("/").pop()) !== null && _c !== void 0 ? _c : title;
+            for (let obj of $('li', '#main-content > .wrap-content-part:nth-child(3) > .body-content-part > ul').toArray()) {
+                let title = $(`.info-bottom > a`, obj).text().trim();
+                let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
+                const image = $(`a > img`, obj).attr('src');
+                let id = (_b = $(`.info-bottom > a`, obj).attr("href")) !== null && _b !== void 0 ? _b : title;
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
-                    image: image !== null && image !== void 0 ? image : "",
+                    image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ('https://sayhentai.net/' + image),
                     title: createIconText({
                         text: title,
                     }),
@@ -804,21 +804,21 @@ class SayHentai extends paperback_extensions_common_1.Source {
             //New Added
             url = DOMAIN;
             request = createRequestObject({
-                url: url,
+                url: 'https://sayhentai.net/',
                 method: "GET",
             });
             let newAddItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('.thumb-item-flow:not(:last-child)', '.col-md-8 > .card:nth-child(2) > .card-body > .row').toArray().splice(0, 20)) {
-                let title = $(`.series-title > a`, obj).text().trim();
-                let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
-                const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
-                let id = (_e = (_d = $(`.series-title > a`, obj).attr("href")) === null || _d === void 0 ? void 0 : _d.split("/").pop()) !== null && _e !== void 0 ? _e : title;
+            for (let obj of $('li', '#main-content > .wrap-content-part:nth-child(5) > .body-content-part > ul').toArray()) {
+                let title = $(`.info-bottom > a`, obj).text().trim();
+                let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
+                const image = $(`a > img`, obj).attr('src');
+                let id = (_c = $(`.info-bottom > a`, obj).attr("href")) !== null && _c !== void 0 ? _c : title;
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
                     id: id,
-                    image: image !== null && image !== void 0 ? image : "",
+                    image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ('https://sayhentai.net/' + image),
                     title: createIconText({
                         text: title,
                     }),
