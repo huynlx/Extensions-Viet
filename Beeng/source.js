@@ -707,9 +707,9 @@ class Beeng extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(response.data);
             const pages = [];
             for (let obj of $('#lightgallery2 > img').toArray()) {
-                if (!obj.attribs['src'])
+                if (!obj.attribs['data-src'])
                     continue;
-                let link = obj.attribs['src'];
+                let link = obj.attribs['data-src'];
                 pages.push(link);
             }
             const chapterDetails = createChapterDetails({
@@ -726,43 +726,43 @@ class Beeng extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
-                title: "Truyện hot trong ngày",
+                title: "ĐANG HOT",
                 view_more: false,
             });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
-                title: "Truyện mới cập nhật",
+                title: "MỚI NHẤT",
                 view_more: true,
             });
-            let newAdded = createHomeSection({
-                id: 'new_added',
-                title: "Truyện mới nhất",
+            let view = createHomeSection({
+                id: 'view',
+                title: "XEM NHIỀU",
                 view_more: true,
             });
             //Load empty sections
             sectionCallback(hot);
             sectionCallback(newUpdated);
-            sectionCallback(newAdded);
+            sectionCallback(view);
             ///Get the section data
             //Hot
             let url = '';
             let request = createRequestObject({
-                url: DOMAIN,
+                url: 'https://beeng.org/danh-muc/dang-hot',
                 method: "GET",
             });
             let hotItems = [];
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            for (let obj of $('.owl-item', '.owl-stage').toArray()) {
-                let title = $(`.series-title > a`, obj).text().trim();
-                let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
-                const image = $(`.a6-ratio > div.img-in-ratio`, obj).css('background-image');
-                const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
-                let id = (_b = (_a = $(`.series-title > a`, obj).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) !== null && _b !== void 0 ? _b : title;
-                // if (!id || !subtitle) continue;
+            for (let obj of $('li', '.mainContent > .content > .listComic > ul.list').toArray().splice(0, 20)) {
+                let title = $(`.detail > h3 > a`, obj).text().trim();
+                let subtitle = $(`.chapters a`, obj).attr('title');
+                const image = $(`.cover img`, obj).attr('data-src');
+                let id = (_b = (_a = $(`.detail > h3 > a`, obj).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) !== null && _b !== void 0 ? _b : title;
+                if (!id || !subtitle)
+                    continue;
                 hotItems.push(createMangaTile({
                     id: id,
-                    image: bg !== null && bg !== void 0 ? bg : "",
+                    image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({
                         text: title,
                     }),
@@ -776,13 +776,13 @@ class Beeng extends paperback_extensions_common_1.Source {
             //New Updates
             url = '';
             request = createRequestObject({
-                url: 'https://beeng.org/',
+                url: 'https://beeng.org/danh-muc/moi-nhat',
                 method: "GET",
             });
             let newUpdatedItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('li', '.mainContent > .content > .listComic > ul.list').toArray()) {
+            for (let obj of $('li', '.mainContent > .content > .listComic > ul.list').toArray().splice(0, 20)) {
                 let title = $(`.detail > h3 > a`, obj).text().trim();
                 let subtitle = $(`.chapters a`, obj).attr('title');
                 const image = $(`.cover img`, obj).attr('data-src');
@@ -805,19 +805,20 @@ class Beeng extends paperback_extensions_common_1.Source {
             //New Added
             url = DOMAIN;
             request = createRequestObject({
-                url: url,
+                url: 'https://beeng.org/danh-muc/xem-nhieu',
                 method: "GET",
             });
-            let newAddItems = [];
+            let viewItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('.thumb-item-flow:not(:last-child)', '.col-md-8 > .card:nth-child(2) > .card-body > .row').toArray().splice(0, 20)) {
-                let title = $(`.series-title > a`, obj).text().trim();
-                let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
-                const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
-                let id = (_f = (_e = $(`.series-title > a`, obj).attr("href")) === null || _e === void 0 ? void 0 : _e.split("/").pop()) !== null && _f !== void 0 ? _f : title;
-                // if (!id || !subtitle) continue;
-                newAddItems.push(createMangaTile({
+            for (let obj of $('li', '.mainContent > .content > .listComic > ul.list').toArray().splice(0, 20)) {
+                let title = $(`.detail > h3 > a`, obj).text().trim();
+                let subtitle = $(`.chapters a`, obj).attr('title');
+                const image = $(`.cover img`, obj).attr('data-src');
+                let id = (_f = (_e = $(`.detail > h3 > a`, obj).attr("href")) === null || _e === void 0 ? void 0 : _e.split("/").pop()) !== null && _f !== void 0 ? _f : title;
+                if (!id || !subtitle)
+                    continue;
+                viewItems.push(createMangaTile({
                     id: id,
                     image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({
@@ -828,8 +829,8 @@ class Beeng extends paperback_extensions_common_1.Source {
                     }),
                 }));
             }
-            newAdded.items = newAddItems;
-            sectionCallback(newAdded);
+            view.items = viewItems;
+            sectionCallback(view);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
@@ -839,11 +840,14 @@ class Beeng extends paperback_extensions_common_1.Source {
             let param = '';
             let url = '';
             switch (homepageSectionId) {
+                case "hot":
+                    url = `https://beeng.org/danh-muc/dang-hot?page=${page}`;
+                    break;
                 case "new_updated":
                     url = `https://beeng.org/danh-muc/moi-nhat?page=${page}`;
                     break;
-                case "new_added":
-                    url = `${DOMAIN}danh-sach?sort=new&page=${page}`;
+                case "view":
+                    url = `https://beeng.org/danh-muc/xem-nhieu?page=${page}`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
