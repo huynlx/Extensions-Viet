@@ -657,6 +657,7 @@ class Beeng extends paperback_extensions_common_1.Source {
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
+            const test = $('.aboutThisComic > li:nth-child(2) > a').text();
             for (const obj of $('.aboutThisComic > li:nth-child(2) > a').toArray()) {
                 creator.push($(obj).text().trim());
             }
@@ -665,8 +666,8 @@ class Beeng extends paperback_extensions_common_1.Source {
             const image = $('.cover > img').attr('data-src');
             return createManga({
                 id: mangaId,
-                author: !creator ? $('.aboutThisComic > li:nth-child(2)').children().remove().end().text() : creator.join(', '),
-                artist: !creator ? $('.aboutThisComic > li:nth-child(2)').children().remove().end().text() : creator.join(', '),
+                author: !test ? $('.aboutThisComic > li:nth-child(2)').children().remove().end().text() : creator.join(', '),
+                artist: !test ? $('.aboutThisComic > li:nth-child(2)').children().remove().end().text() : creator.join(', '),
                 desc,
                 titles: [$('.detail > h1').text().trim()],
                 image: image !== null && image !== void 0 ? image : "https://i.imgur.com/GYUxEX8.png",
@@ -689,10 +690,10 @@ class Beeng extends paperback_extensions_common_1.Source {
             var i = 0;
             for (const obj of $("#scrollbar a").toArray().reverse()) {
                 i++;
-                var chapNum = parseFloat($('span.name > span.titleComic', obj).text().trim().split(' ')[1]);
+                // var chapNum = parseFloat($('span.name > span.titleComic', obj).text().trim().split(' ')[1]);
                 chapters.push(createChapter({
                     id: $(obj).attr('href'),
-                    chapNum: isNaN(chapNum) ? i : chapNum,
+                    chapNum: i,
                     name: $('span.name > span.titleComic', obj).text().trim(),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
@@ -918,7 +919,7 @@ class Beeng extends paperback_extensions_common_1.Source {
         });
     }
     getSearchTags() {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
             const url = `https://beeng.org/danh-muc/dang-hot`;
             const request = createRequestObject({
@@ -929,7 +930,7 @@ class Beeng extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             const arrayTags = [];
             const arrayTags2 = [];
-            const arrayTags3 = [];
+            // const arrayTags3: Tag[] = [];
             const arrayTags4 = [];
             const arrayTags5 = [];
             //the loai
@@ -949,17 +950,16 @@ class Beeng extends paperback_extensions_common_1.Source {
                 arrayTags2.push({ id: id, label: label });
             }
             //nhom dich
-            for (const tag of $('option', '#formAdvance > .column-search:nth-child(3) > select').toArray()) {
-                const label = $(tag).text().trim();
-                const id = (_c = 'translater.' + $(tag).attr('value')) !== null && _c !== void 0 ? _c : label;
-                if (!id || !label)
-                    continue;
-                arrayTags3.push({ id: id, label: label });
-            }
+            // for (const tag of $('option', '#formAdvance > .column-search:nth-child(3) > select').toArray()) {
+            //     const label = $(tag).text().trim();
+            //     const id = 'translater.' + $(tag).attr('value') ?? label;
+            //     if (!id || !label) continue;
+            //     arrayTags3.push({ id: id, label: label });
+            // }
             //tinh trang
             for (const tag of $('option', '#formAdvance > .column-search:nth-child(4) > select').toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_d = 'complete.' + $(tag).attr('value')) !== null && _d !== void 0 ? _d : label;
+                const id = (_c = 'complete.' + $(tag).attr('value')) !== null && _c !== void 0 ? _c : label;
                 if (!id || !label)
                     continue;
                 arrayTags4.push({ id: id, label: label });
@@ -967,15 +967,15 @@ class Beeng extends paperback_extensions_common_1.Source {
             //sap xep
             for (const tag of $('option', '#formAdvance > .column-search:nth-child(5) > select').toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_e = 'sort.' + $(tag).attr('value')) !== null && _e !== void 0 ? _e : label;
+                const id = (_d = 'sort.' + $(tag).attr('value')) !== null && _d !== void 0 ? _d : label;
                 if (!id || !label)
                     continue;
                 arrayTags5.push({ id: id, label: label });
             }
             const tagSections = [
                 createTagSection({ id: '0', label: 'Thể loại', tags: arrayTags.map(x => createTag(x)) }),
-                // createTagSection({ id: '1', label: 'Tác giả', tags: arrayTags2.map(x => createTag(x)) }),
-                createTagSection({ id: '2', label: 'Nhóm dịch', tags: arrayTags3.map(x => createTag(x)) }),
+                createTagSection({ id: '1', label: 'Tác giả', tags: arrayTags2.map(x => createTag(x)) }),
+                // createTagSection({ id: '2', label: 'Nhóm dịch', tags: arrayTags3.map(x => createTag(x)) }),
                 createTagSection({ id: '3', label: 'Tình trạng', tags: arrayTags4.map(x => createTag(x)) }),
                 createTagSection({ id: '4', label: 'Sắp xếp', tags: arrayTags5.map(x => createTag(x)) }),
             ];
