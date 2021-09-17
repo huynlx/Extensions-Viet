@@ -666,7 +666,7 @@ class SayHentai extends paperback_extensions_common_1.Source {
                 artist: creator,
                 desc: desc,
                 titles: [$('.wrap-content-info > h1').text().trim()],
-                image: !image ? ("https://i.imgur.com/GYUxEX8.png") : ('https://sayhentai.net' + image),
+                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ('https://sayhentai.net' + image),
                 status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
