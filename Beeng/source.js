@@ -954,7 +954,7 @@ class Beeng extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: DOMAIN
+            referer: 'https://beeng.org/'
         };
     }
 }
