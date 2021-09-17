@@ -649,7 +649,7 @@ class Beeng extends paperback_extensions_common_1.Source {
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let tags = [];
-            let creator = '';
+            let creator = [];
             let status = 1; //completed, 1 = Ongoing
             let desc = $('.shortDetail').text();
             for (const t of $('.list-cate > a').toArray()) {
@@ -657,13 +657,16 @@ class Beeng extends paperback_extensions_common_1.Source {
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            creator = $('.aboutThisComic > li:nth-child(2) > a').text();
+            for (const obj of $('.aboutThisComic > li:nth-child(2) > a').toArray()) {
+                creator.push($(obj).text().trim());
+            }
+            ;
             // status = $('.info-item:nth-child(4) > .info-value > a').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
             const image = $('.cover > img').attr('data-src');
             return createManga({
                 id: mangaId,
-                author: !creator ? $('.aboutThisComic > li:nth-child(2)').children().remove().end().text() : creator,
-                artist: !creator ? $('.aboutThisComic > li:nth-child(2)').children().remove().end().text() : creator,
+                author: !creator ? $('.aboutThisComic > li:nth-child(2)').children().remove().end().text() : creator.join(', '),
+                artist: !creator ? $('.aboutThisComic > li:nth-child(2)').children().remove().end().text() : creator.join(', '),
                 desc,
                 titles: [$('.detail > h1').text().trim()],
                 image: image !== null && image !== void 0 ? image : "https://i.imgur.com/GYUxEX8.png",
@@ -871,32 +874,36 @@ class Beeng extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const search = {
-                status: "",
-                sort: "update",
-                genres: "",
+                cate: "",
+                author: "",
+                translater: "",
+                complete: "",
+                sort: ""
             };
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
-            const category = [];
             tags.map((value) => {
-                if (value.indexOf('.') === -1) {
-                    category.push(value);
-                }
-                else {
-                    switch (value.split(".")[0]) {
-                        case 'sort':
-                            search.sort = (value.split(".")[1]);
-                            break;
-                        case 'status':
-                            search.status = (value.split(".")[1]);
-                            break;
-                    }
+                switch (value.split(".")[0]) {
+                    case 'cate':
+                        search.cate = (value.split(".")[1]);
+                        break;
+                    case 'author':
+                        search.author = (value.split(".")[1]);
+                        break;
+                    case 'translater':
+                        search.translater = (value.split(".")[1]);
+                        break;
+                    case 'complete':
+                        search.complete = (value.split(".")[1]);
+                        break;
+                    case 'sort':
+                        search.sort = (value.split(".")[1]);
+                        break;
                 }
             });
-            search.genres = (category !== null && category !== void 0 ? category : []).join(",");
             const request = createRequestObject({
-                url: `https://beeng.org/tim-kiem`,
+                url: query.title ? encodeURI(`https://beeng.org/tim-kiem?q=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}`) : `https://beeng.org/danh-muc/dang-hot?cate=${search.cate}&author=${search.author}&translater=${search.translater}&complete=${search.complete}&sort=${search.sort}`,
                 method: "GET",
-                param: encodeURI(`?q=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&page=${page}`)
+                param: `&page=${page}`
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
