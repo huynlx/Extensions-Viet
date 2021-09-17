@@ -723,7 +723,7 @@ class SayHentai extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
@@ -762,7 +762,7 @@ class SayHentai extends paperback_extensions_common_1.Source {
                 // if (!id || !subtitle) continue;
                 hotItems.push(createMangaTile({
                     id: id,
-                    image: (_b = 'https://sayhentai.net' + image) !== null && _b !== void 0 ? _b : "",
+                    image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ('https://sayhentai.net/' + image),
                     title: createIconText({
                         text: title,
                     }),
@@ -786,7 +786,7 @@ class SayHentai extends paperback_extensions_common_1.Source {
                 let title = $(`.series-title > a`, obj).text().trim();
                 let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
                 const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
-                let id = (_d = (_c = $(`.series-title > a`, obj).attr("href")) === null || _c === void 0 ? void 0 : _c.split("/").pop()) !== null && _d !== void 0 ? _d : title;
+                let id = (_c = (_b = $(`.series-title > a`, obj).attr("href")) === null || _b === void 0 ? void 0 : _b.split("/").pop()) !== null && _c !== void 0 ? _c : title;
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
@@ -814,7 +814,7 @@ class SayHentai extends paperback_extensions_common_1.Source {
                 let title = $(`.series-title > a`, obj).text().trim();
                 let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
                 const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
-                let id = (_f = (_e = $(`.series-title > a`, obj).attr("href")) === null || _e === void 0 ? void 0 : _e.split("/").pop()) !== null && _f !== void 0 ? _f : title;
+                let id = (_e = (_d = $(`.series-title > a`, obj).attr("href")) === null || _d === void 0 ? void 0 : _d.split("/").pop()) !== null && _e !== void 0 ? _e : title;
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
                     id: id,
