@@ -657,7 +657,7 @@ class Beeng extends paperback_extensions_common_1.Source {
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            creator = $('.aboutThisComic > li:nth-child(2)').text().trim();
+            creator = $('.aboutThisComic > li:nth-child(2)').contents().get(0).nodeValue.trim();
             // status = $('.info-item:nth-child(4) > .info-value > a').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
             const image = $('.cover > img').attr('data-src');
             // const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
