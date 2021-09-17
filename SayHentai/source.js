@@ -710,7 +710,8 @@ class SayHentai extends paperback_extensions_common_1.Source {
             for (let obj of $('#lst_content > img').toArray()) {
                 if (!obj.attribs['data-src'])
                     continue;
-                let link = obj.attribs['data-src'];
+                let link = obj.attribs['data-src'].includes('http') ?
+                    (obj.attribs['data-src']) : ('https://sayhentai.net/' + obj.attribs['data-src']);
                 pages.push(link);
             }
             const chapterDetails = createChapterDetails({
@@ -991,7 +992,7 @@ exports.parseViewMore = ($) => {
     var _a;
     const manga = [];
     const collectedIds = [];
-    for (let obj of $('li', '#main-content > .wrap-content-part:nth-child(5) > .body-content-part > ul').toArray()) {
+    for (let obj of $('li', 'ul#danhsachtruyen').toArray()) {
         let title = $(`.info-bottom > a`, obj).text().trim();
         let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
         const image = $(`a > img`, obj).attr('src');
