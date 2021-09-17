@@ -663,8 +663,8 @@ class Beeng extends paperback_extensions_common_1.Source {
             const image = $('.cover > img').attr('data-src');
             return createManga({
                 id: mangaId,
-                author: creator,
-                artist: creator,
+                author: creator !== null && creator !== void 0 ? creator : $('.aboutThisComic > li:nth-child(2) > a').text(),
+                artist: creator !== null && creator !== void 0 ? creator : $('.aboutThisComic > li:nth-child(2) > a').text(),
                 desc,
                 titles: [$('.detail > h1').text().trim()],
                 image: image !== null && image !== void 0 ? image : "https://i.imgur.com/GYUxEX8.png",
@@ -967,9 +967,6 @@ class Beeng extends paperback_extensions_common_1.Source {
             const tagSections = [
                 createTagSection({ id: '0', label: 'Thể loại', tags: arrayTags.map(x => createTag(x)) }),
                 createTagSection({ id: '1', label: 'Tác giả', tags: arrayTags2.map(x => createTag(x)) }),
-                createTagSection({ id: '2', label: 'Nhóm dịch', tags: arrayTags3.map(x => createTag(x)) }),
-                createTagSection({ id: '3', label: 'Tình trạng', tags: arrayTags4.map(x => createTag(x)) }),
-                createTagSection({ id: '4', label: 'Sắp xếp', tags: arrayTags5.map(x => createTag(x)) }),
             ];
             return tagSections;
         });
