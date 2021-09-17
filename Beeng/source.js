@@ -660,7 +660,7 @@ class Beeng extends paperback_extensions_common_1.Source {
             creator = $('.aboutThisComic > li:nth-child(2)').children().remove().end().text();
             console.log(creator);
             // status = $('.info-item:nth-child(4) > .info-value > a').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
-            const image = $('.cover > img').attr('data-src');
+            const image = $('.cover > img').attr('src');
             return createManga({
                 id: mangaId,
                 author: creator,
