@@ -632,8 +632,8 @@ class Beeng extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
         this.requestManager = createRequestManager({
-            requestsPerSecond: 5,
-            requestTimeout: 20000
+            requestsPerSecond: 20,
+            requestTimeout: 50000
         });
     }
     getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh/${mangaId}`; }
@@ -917,7 +917,7 @@ class Beeng extends paperback_extensions_common_1.Source {
                 url: url,
                 method: "GET",
             });
-            const response = yield this.requestManager.schedule(request, 5);
+            const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const arrayTags = [];
             const arrayTags2 = [];
