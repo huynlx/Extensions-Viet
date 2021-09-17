@@ -618,7 +618,7 @@ exports.ThienhattruyenInfo = {
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from Thienhattruyen',
+    description: 'Extension that pulls manga from Thienhatruyen',
     websiteBaseURL: DOMAIN,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
