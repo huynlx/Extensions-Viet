@@ -610,7 +610,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Beeng = exports.BeengInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const BeengParser_1 = require("./BeengParser");
-const DOMAIN = 'https://truyentranhlh.net/';
+const DOMAIN = 'https://beeng.org/';
 const method = 'GET';
 exports.BeengInfo = {
     version: '2.0.0',
@@ -619,7 +619,7 @@ exports.BeengInfo = {
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from Beeng',
-    websiteBaseURL: `https://beeng.org/`,
+    websiteBaseURL: DOMAIN,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
         {
@@ -636,12 +636,12 @@ class Beeng extends paperback_extensions_common_1.Source {
             requestTimeout: 10000
         });
     }
-    getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh/${mangaId}`; }
+    getMangaShareUrl(mangaId) { return `${DOMAIN}${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://beeng.org/${mangaId}`;
+            const url = `${DOMAIN}${mangaId}`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -681,7 +681,7 @@ class Beeng extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `https://beeng.org/${mangaId}`,
+                url: `${DOMAIN}${mangaId}`,
                 method,
             });
             const response = yield this.requestManager.schedule(request, 1);
@@ -752,7 +752,7 @@ class Beeng extends paperback_extensions_common_1.Source {
             //Hot
             let url = '';
             let request = createRequestObject({
-                url: 'https://beeng.org/danh-muc/dang-hot',
+                url: `${DOMAIN}danh-muc/dang-hot`,
                 method: "GET",
             });
             let hotItems = [];
@@ -781,7 +781,7 @@ class Beeng extends paperback_extensions_common_1.Source {
             //New Updates
             url = '';
             request = createRequestObject({
-                url: 'https://beeng.org/the-loai?cate=&author=&translater=&complete=&sort=lastest',
+                url: `${DOMAIN}the-loai?cate=&author=&translater=&complete=&sort=lastest`,
                 method: "GET",
             });
             let newUpdatedItems = [];
@@ -810,7 +810,7 @@ class Beeng extends paperback_extensions_common_1.Source {
             //view
             url = DOMAIN;
             request = createRequestObject({
-                url: 'https://beeng.org/the-loai?cate=&author=&translater=&complete=&sort=view',
+                url: `${DOMAIN}the-loai?cate=&author=&translater=&complete=&sort=view`,
                 method: "GET",
             });
             let viewItems = [];
@@ -846,13 +846,13 @@ class Beeng extends paperback_extensions_common_1.Source {
             let url = '';
             switch (homepageSectionId) {
                 case "hot":
-                    url = `https://beeng.org/danh-muc/dang-hot?page=${page}`;
+                    url = `${DOMAIN}danh-muc/dang-hot?page=${page}`;
                     break;
                 case "new_updated":
-                    url = `https://beeng.org/danh-muc/moi-nhat?cate=&author=&translater=&complete=&sort=lastest&page=${page}`;
+                    url = `${DOMAIN}the-loai?cate=&author=&translater=&complete=&sort=lastest&page=${page}`;
                     break;
                 case "view":
-                    url = `https://beeng.org/danh-muc/xem-nhieu?cate=&author=&translater=&complete=&sort=view&page=${page}`;
+                    url = `${DOMAIN}the-loai?cate=&author=&translater=&complete=&sort=view&page=${page}`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
@@ -904,7 +904,7 @@ class Beeng extends paperback_extensions_common_1.Source {
                 }
             });
             const request = createRequestObject({
-                url: query.title ? encodeURI(`https://beeng.org/tim-kiem?q=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}`) : `https://beeng.org/the-loai?cate=${search.cate}&author=${search.author}&translater=${search.translater}&complete=${search.complete}&sort=${search.sort}`,
+                url: query.title ? encodeURI(`${DOMAIN}tim-kiem?q=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}`) : `${DOMAIN}the-loai?cate=${search.cate}&author=${search.author}&translater=${search.translater}&complete=${search.complete}&sort=${search.sort}`,
                 method: "GET",
                 param: `&page=${page}`
             });
@@ -921,7 +921,7 @@ class Beeng extends paperback_extensions_common_1.Source {
     getSearchTags() {
         var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://beeng.org/danh-muc/dang-hot`;
+            const url = `${DOMAIN}the-loai`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -975,7 +975,7 @@ class Beeng extends paperback_extensions_common_1.Source {
             const tagSections = [
                 createTagSection({ id: '0', label: 'Thể loại', tags: arrayTags.map(x => createTag(x)) }),
                 createTagSection({ id: '1', label: 'Tác giả', tags: arrayTags2.map(x => createTag(x)) }),
-                // createTagSection({ id: '2', label: 'Nhóm dịch', tags: arrayTags3.map(x => createTag(x)) }),
+                // createTagSection({ id: '2', label: 'Nhóm dịch', tags: arrayTags3.map(x => createTag(x)) }), //lỗi crash
                 createTagSection({ id: '3', label: 'Tình trạng', tags: arrayTags4.map(x => createTag(x)) }),
                 createTagSection({ id: '4', label: 'Sắp xếp', tags: arrayTags5.map(x => createTag(x)) }),
             ];
@@ -984,7 +984,7 @@ class Beeng extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: 'https://beeng.org/'
+            referer: DOMAIN
         };
     }
 }
