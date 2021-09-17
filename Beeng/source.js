@@ -663,8 +663,8 @@ class Beeng extends paperback_extensions_common_1.Source {
             const image = $('.cover > img').attr('data-src');
             return createManga({
                 id: mangaId,
-                author: creator !== null && creator !== void 0 ? creator : $('.aboutThisComic > li:nth-child(2) > a').text(),
-                artist: creator !== null && creator !== void 0 ? creator : $('.aboutThisComic > li:nth-child(2) > a').text(),
+                author: creator === '' ? $('.aboutThisComic > li:nth-child(2) > a').text() : creator,
+                artist: creator === '' ? $('.aboutThisComic > li:nth-child(2) > a').text() : creator,
                 desc,
                 titles: [$('.detail > h1').text().trim()],
                 image: image !== null && image !== void 0 ? image : "https://i.imgur.com/GYUxEX8.png",
@@ -917,7 +917,7 @@ class Beeng extends paperback_extensions_common_1.Source {
                 url: url,
                 method: "GET",
             });
-            const response = yield this.requestManager.schedule(request, 1);
+            const response = yield this.requestManager.schedule(request, 5);
             const $ = this.cheerio.load(response.data);
             const arrayTags = [];
             const arrayTags2 = [];
@@ -967,6 +967,8 @@ class Beeng extends paperback_extensions_common_1.Source {
             const tagSections = [
                 createTagSection({ id: '0', label: 'Thể loại', tags: arrayTags.map(x => createTag(x)) }),
                 createTagSection({ id: '1', label: 'Tác giả', tags: arrayTags2.map(x => createTag(x)) }),
+                createTagSection({ id: '2', label: 'Nhóm dịch', tags: arrayTags3.map(x => createTag(x)) }),
+                createTagSection({ id: '3', label: 'Tình trạng', tags: arrayTags4.map(x => createTag(x)) }),
             ];
             return tagSections;
         });
