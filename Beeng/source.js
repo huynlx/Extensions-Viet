@@ -685,12 +685,12 @@ class Beeng extends paperback_extensions_common_1.Source {
             const chapters = [];
             var i = 0;
             for (const obj of $("#scrollbar > li").toArray().reverse()) {
-                var chapNum = parseFloat($('a > span.name > .titleComic', obj).text().trim().split(' ')[1]);
+                var chapNum = parseFloat($('span.name > span.titleComic', obj).text().trim().split(' ')[1]);
                 i++;
                 chapters.push(createChapter({
                     id: $('a', obj).attr('href'),
                     chapNum: isNaN(chapNum) ? i : chapNum,
-                    name: $('a > span.name > .titleComic', obj).text(),
+                    name: $('span.name > span.titleComic', obj).text(),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
                 }));
