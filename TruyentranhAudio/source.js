@@ -631,17 +631,16 @@ exports.TruyentranhAudioInfo = {
 class TruyentranhAudio extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
+        // getMangaShareUrl(mangaId: string): string { return `${DOMAIN}/${mangaId}` };
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
             requestTimeout: 20000
         });
     }
-    getMangaShareUrl(mangaId) { return `${DOMAIN}/${mangaId}`; }
-    ;
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: mangaId,
+                url: DOMAIN + mangaId,
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 10);
@@ -679,7 +678,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${mangaId}`,
+                url: DOMAIN + mangaId,
                 method,
             });
             const response = yield this.requestManager.schedule(request, 1);
@@ -695,6 +694,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                     name: $('a', obj).attr('title'),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+                    time: new Date('December 17, 1995 03:24:00')
                 }));
             }
             return chapters;
