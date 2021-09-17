@@ -758,7 +758,7 @@ class SayHentai extends paperback_extensions_common_1.Source {
             for (let obj of $('li', '#main-content > .wrap-content-part:nth-child(1) > .body-content-part > ul').toArray()) {
                 let title = $(`.info-bottom > a`, obj).text().trim();
                 let subtitle = $(`.info-bottom > span`, obj).text().trim();
-                const image = $(`a. fed-lazy > img`, obj).attr('src');
+                const image = $(`a > img`, obj).attr('src');
                 let id = (_a = $(`.info-bottom > a`, obj).attr("href")) !== null && _a !== void 0 ? _a : title;
                 // if (!id || !subtitle) continue;
                 hotItems.push(createMangaTile({
