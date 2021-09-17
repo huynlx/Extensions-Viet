@@ -728,7 +728,7 @@ class SayHentai extends paperback_extensions_common_1.Source {
             let hot = createHomeSection({
                 id: 'hot',
                 title: "Top Trong Ngày",
-                view_more: false,
+                view_more: true,
             });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
@@ -782,7 +782,7 @@ class SayHentai extends paperback_extensions_common_1.Source {
             let newUpdatedItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('li', '#main-content > .wrap-content-part:nth-child(3) > .body-content-part > ul').toArray()) {
+            for (let obj of $('li', '#main-content > .wrap-content-part:nth-child(3) > .body-content-part > ul').toArray().splice(0, 15)) {
                 let title = $(`.info-bottom > a`, obj).text().trim();
                 let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
                 const image = $(`a > img`, obj).attr('src');
@@ -838,11 +838,14 @@ class SayHentai extends paperback_extensions_common_1.Source {
             let param = '';
             let url = '';
             switch (homepageSectionId) {
+                case "hot":
+                    url = `https://sayhentai.net/danh-sach-truyen.html?status=0&sort=views&page=${page}`;
+                    break;
                 case "new_updated":
-                    url = `${DOMAIN}danh-sach?sort=update&page=${page}`;
+                    url = `https://sayhentai.net/danh-sach-truyen.html?page=${page}`;
                     break;
                 case "new_added":
-                    url = `${DOMAIN}danh-sach?sort=new&page=${page}`;
+                    url = `https://sayhentai.net/danh-sach-truyen.html?status=0&sort=id&page=${page}`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
@@ -985,18 +988,18 @@ exports.parseSearch = ($) => {
     return mangas;
 };
 exports.parseViewMore = ($) => {
-    var _a, _b;
+    var _a;
     const manga = [];
     const collectedIds = [];
-    for (let obj of $('.thumb-item-flow', '.col-md-8 > .card > .card-body > .row').toArray()) {
-        let title = $(`.series-title > a`, obj).text().trim();
-        let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
-        const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
-        let id = (_b = (_a = $(`.series-title > a`, obj).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) !== null && _b !== void 0 ? _b : title;
+    for (let obj of $('li', '#main-content > .wrap-content-part:nth-child(5) > .body-content-part > ul').toArray()) {
+        let title = $(`.info-bottom > a`, obj).text().trim();
+        let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
+        const image = $(`a > img`, obj).attr('src');
+        let id = (_a = $(`.info-bottom > a`, obj).attr("href")) !== null && _a !== void 0 ? _a : title;
         if (!collectedIds.includes(id)) {
             manga.push(createMangaTile({
                 id: encodeURIComponent(id),
-                image: image !== null && image !== void 0 ? image : "",
+                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ('https://sayhentai.net/' + image),
                 title: createIconText({ text: decodeHTMLEntity(title) }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
@@ -1008,14 +1011,14 @@ exports.parseViewMore = ($) => {
 exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
-    for (const page of $("a", ".pagination_wrap").toArray()) {
+    for (const page of $("a", "ul.pager > li").toArray()) {
         const p = Number($(page).text().trim());
         if (isNaN(p))
             continue;
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($(".pagination_wrap > a.current").text().trim());
+    const currentPage = Number($("ul.pager > li.active > a").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
