@@ -778,7 +778,7 @@ class Beeng extends paperback_extensions_common_1.Source {
             //New Updates
             url = '';
             request = createRequestObject({
-                url: 'https://beeng.org/danh-muc/moi-nhat?cate=&author=&translater=&complete=&sort=lastest',
+                url: 'https://beeng.org/the-loai?cate=&author=&translater=&complete=&sort=lastest',
                 method: "GET",
             });
             let newUpdatedItems = [];
@@ -807,7 +807,7 @@ class Beeng extends paperback_extensions_common_1.Source {
             //view
             url = DOMAIN;
             request = createRequestObject({
-                url: 'https://beeng.org/danh-muc/xem-nhieu?cate=&author=&translater=&complete=&sort=view',
+                url: 'https://beeng.org/the-loai?cate=&author=&translater=&complete=&sort=view',
                 method: "GET",
             });
             let viewItems = [];
@@ -901,7 +901,7 @@ class Beeng extends paperback_extensions_common_1.Source {
                 }
             });
             const request = createRequestObject({
-                url: query.title ? encodeURI(`https://beeng.org/tim-kiem?q=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}`) : `https://beeng.org/danh-muc/dang-hot?cate=${search.cate}&author=${search.author}&translater=${search.translater}&complete=${search.complete}&sort=${search.sort}`,
+                url: query.title ? encodeURI(`https://beeng.org/tim-kiem?q=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}`) : `https://beeng.org/the-loai?cate=${search.cate}&author=${search.author}&translater=${search.translater}&complete=${search.complete}&sort=${search.sort}`,
                 method: "GET",
                 param: `&page=${page}`
             });
