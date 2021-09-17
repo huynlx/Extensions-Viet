@@ -686,11 +686,13 @@ class Beeng extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const chapters = [];
-            for (const obj of $("#scrollbar a").toArray()) {
+            var i = 0;
+            for (const obj of $("#scrollbar a").toArray().reverse()) {
+                i++;
                 var chapNum = parseFloat($('span.name > span.titleComic', obj).text().trim().split(' ')[1]);
                 chapters.push(createChapter({
                     id: $(obj).attr('href'),
-                    chapNum: chapNum,
+                    chapNum: isNaN(chapNum) ? i : chapNum,
                     name: $('span.name > span.titleComic', obj).text().trim(),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
@@ -972,8 +974,8 @@ class Beeng extends paperback_extensions_common_1.Source {
             }
             const tagSections = [
                 createTagSection({ id: '0', label: 'Thể loại', tags: arrayTags.map(x => createTag(x)) }),
-                createTagSection({ id: '1', label: 'Tác giả', tags: arrayTags2.map(x => createTag(x)) }),
-                // createTagSection({ id: '2', label: 'Nhóm dịch', tags: arrayTags3.map(x => createTag(x)) }),
+                // createTagSection({ id: '1', label: 'Tác giả', tags: arrayTags2.map(x => createTag(x)) }),
+                createTagSection({ id: '2', label: 'Nhóm dịch', tags: arrayTags3.map(x => createTag(x)) }),
                 createTagSection({ id: '3', label: 'Tình trạng', tags: arrayTags4.map(x => createTag(x)) }),
                 createTagSection({ id: '4', label: 'Sắp xếp', tags: arrayTags5.map(x => createTag(x)) }),
             ];
