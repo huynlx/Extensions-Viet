@@ -607,18 +607,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Thienhattruyen = exports.ThienhattruyenInfo = void 0;
+exports.LXHentai = exports.LXHentaiInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
-const ThienhatruyenParser_1 = require("./ThienhatruyenParser");
+const LXHentaiParser_1 = require("./LXHentaiParser");
 const DOMAIN = 'https://thienhatruyen.com/';
 const method = 'GET';
-exports.ThienhattruyenInfo = {
+exports.LXHentaiInfo = {
     version: '2.0.0',
-    name: 'Thienhattruyen',
+    name: 'LXHentai',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from Thienhatruyen',
+    description: 'Extension that pulls manga from LXHentai',
     websiteBaseURL: DOMAIN,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
@@ -628,7 +628,7 @@ exports.ThienhattruyenInfo = {
         }
     ]
 };
-class Thienhattruyen extends paperback_extensions_common_1.Source {
+class LXHentai extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
         this.requestManager = createRequestManager({
@@ -864,8 +864,8 @@ class Thienhattruyen extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            const manga = ThienhatruyenParser_1.parseViewMore($);
-            metadata = !ThienhatruyenParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            const manga = LXHentaiParser_1.parseViewMore($);
+            metadata = !LXHentaiParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: manga,
                 metadata,
@@ -910,8 +910,8 @@ class Thienhattruyen extends paperback_extensions_common_1.Source {
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            const tiles = ThienhatruyenParser_1.parseSearch($);
-            metadata = !ThienhatruyenParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            const tiles = LXHentaiParser_1.parseSearch($);
+            metadata = !LXHentaiParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: tiles,
                 metadata
@@ -988,9 +988,9 @@ class Thienhattruyen extends paperback_extensions_common_1.Source {
         };
     }
 }
-exports.Thienhattruyen = Thienhattruyen;
+exports.LXHentai = LXHentai;
 
-},{"./ThienhatruyenParser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
+},{"./LXHentaiParser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
