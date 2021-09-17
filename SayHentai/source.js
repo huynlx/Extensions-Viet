@@ -763,7 +763,7 @@ class SayHentai extends paperback_extensions_common_1.Source {
                 // if (!id || !subtitle) continue;
                 hotItems.push(createMangaTile({
                     id: id,
-                    image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ('https://sayhentai.net/' + image),
+                    image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image) : ('https://sayhentai.net/' + image)),
                     title: createIconText({
                         text: title,
                     }),
@@ -791,7 +791,7 @@ class SayHentai extends paperback_extensions_common_1.Source {
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
-                    image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ('https://sayhentai.net/' + image),
+                    image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image) : ('https://sayhentai.net/' + image)),
                     title: createIconText({
                         text: title,
                     }),
@@ -819,7 +819,7 @@ class SayHentai extends paperback_extensions_common_1.Source {
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
                     id: id,
-                    image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ('https://sayhentai.net/' + image),
+                    image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image) : ('https://sayhentai.net/' + image)),
                     title: createIconText({
                         text: title,
                     }),
