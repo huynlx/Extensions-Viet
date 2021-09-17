@@ -933,7 +933,7 @@ class Beeng extends paperback_extensions_common_1.Source {
             //the loai
             for (const tag of $('option', '#formAdvance > .column-search:nth-child(1) > select').toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_a = $(tag).attr('value')) !== null && _a !== void 0 ? _a : label;
+                const id = (_a = 'cate.' + $(tag).attr('value')) !== null && _a !== void 0 ? _a : label;
                 if (!id || !label)
                     continue;
                 arrayTags.push({ id: id, label: label });
