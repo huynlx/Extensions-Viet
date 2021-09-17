@@ -995,13 +995,12 @@ exports.parseViewMore = ($) => {
     for (let obj of $('li', 'ul#danhsachtruyen').toArray()) {
         let title = $(`.info-bottom > a`, obj).text().trim();
         let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
-        const image = $('a', obj).css('background-image');
-        const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
+        var image = $('a', obj).first().attr('data-src');
         let id = (_a = $(`.info-bottom > a`, obj).attr("href")) !== null && _a !== void 0 ? _a : title;
         if (!collectedIds.includes(id)) {
             manga.push(createMangaTile({
                 id: encodeURIComponent(id),
-                image: (bg === null || bg === void 0 ? void 0 : bg.includes('http')) ? bg : ('https://sayhentai.net/' + bg),
+                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ('https://sayhentai.net/' + image),
                 title: createIconText({ text: decodeHTMLEntity(title) }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
