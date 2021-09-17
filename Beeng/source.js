@@ -786,10 +786,11 @@ class Beeng extends paperback_extensions_common_1.Source {
             $ = this.cheerio.load(data.data);
             for (let obj of $('li', '.mainContent > .content > .listComic > ul.list').toArray().splice(0, 20)) {
                 let title = $(`.detail > h3 > a`, obj).text().trim();
-                let subtitle = $(`.chapters a`, obj).text().trim();
-                const image = $(`.cover img`, obj).attr('src');
+                let subtitle = $(`.chapters a`, obj).attr('title');
+                const image = $(`.cover img`, obj).attr('data-src');
                 let id = (_d = (_c = $(`.detail > h3 > a`, obj).attr("href")) === null || _c === void 0 ? void 0 : _c.split("/").pop()) !== null && _d !== void 0 ? _d : title;
-                // if (!id || !subtitle) continue;
+                if (!id || !subtitle)
+                    continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
                     image: image !== null && image !== void 0 ? image : "",
