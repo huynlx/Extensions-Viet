@@ -683,14 +683,14 @@ class Beeng extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const chapters = [];
-            var i = 0;
-            for (const obj of $("#scrollbar > li").toArray().reverse()) {
+            // var i = 0;
+            for (const obj of $("#scrollbar a").toArray().reverse()) {
                 var chapNum = parseFloat($('span.name > span.titleComic', obj).text().trim().split(' ')[1]);
-                i++;
+                // i++;
                 chapters.push(createChapter({
-                    id: $('a', obj).attr('href'),
-                    chapNum: isNaN(chapNum) ? i : chapNum,
-                    name: $('span.name > span.titleComic', obj).text(),
+                    id: $(obj).attr('href'),
+                    chapNum: chapNum,
+                    name: $('span.name > span.titleComic', obj).text().trim(),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
                 }));
