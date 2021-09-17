@@ -639,6 +639,7 @@ class Beeng extends paperback_extensions_common_1.Source {
     getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh/${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const url = `https://beeng.org/${mangaId}`;
             const request = createRequestObject({
@@ -648,25 +649,25 @@ class Beeng extends paperback_extensions_common_1.Source {
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let tags = [];
-            // let creator = '';
+            let creator = '';
             let status = 1; //completed, 1 = Ongoing
-            // let desc = $('.summary-content > p').text();
-            // for (const t of $('.info-item:nth-child(2) > .info-value > a').toArray()) {
-            //     const genre = $('span', t).text().trim()
-            //     const id = $(t).attr('href') ?? genre
-            //     tags.push(createTag({ label: genre, id }));
-            // }
-            // creator = $('.info-item:nth-child(3) > .info-value').text();
+            let desc = $('.shortDetail > p').text();
+            for (const t of $('.list-cate > a').toArray()) {
+                const genre = $('li', t).text().trim();
+                const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
+                tags.push(createTag({ label: genre, id }));
+            }
+            creator = $('.aboutThisComic > li:nth-child(2)').text().trim();
             // status = $('.info-item:nth-child(4) > .info-value > a').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
-            // const image = $('.top-part > .row > .col-12 > .series-cover > .a6-ratio > div').css('background-image');
+            const image = $('.cover > img').attr('data-src');
             // const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
             return createManga({
                 id: mangaId,
-                author: 'test',
-                artist: 'test',
-                desc: 'test',
+                author: creator,
+                artist: creator,
+                desc,
                 titles: [$('.detail > h1').text().trim()],
-                image: "https://i.imgur.com/GYUxEX8.png",
+                image: image !== null && image !== void 0 ? image : "https://i.imgur.com/GYUxEX8.png",
                 status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
@@ -683,10 +684,8 @@ class Beeng extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const chapters = [];
-            // var i = 0;
-            for (const obj of $("#scrollbar a").toArray().reverse()) {
+            for (const obj of $("#scrollbar a").toArray()) {
                 var chapNum = parseFloat($('span.name > span.titleComic', obj).text().trim().split(' ')[1]);
-                // i++;
                 chapters.push(createChapter({
                     id: $(obj).attr('href'),
                     chapNum: chapNum,
