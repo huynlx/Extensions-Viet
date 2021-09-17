@@ -727,7 +727,7 @@ class Beeng extends paperback_extensions_common_1.Source {
             let hot = createHomeSection({
                 id: 'hot',
                 title: "ĐANG HOT",
-                view_more: false,
+                view_more: true,
             });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
@@ -776,7 +776,7 @@ class Beeng extends paperback_extensions_common_1.Source {
             //New Updates
             url = '';
             request = createRequestObject({
-                url: 'https://beeng.org/danh-muc/moi-nhat',
+                url: 'https://beeng.org/danh-muc/moi-nhat?cate=&author=&translater=&complete=&sort=lastest',
                 method: "GET",
             });
             let newUpdatedItems = [];
@@ -802,10 +802,10 @@ class Beeng extends paperback_extensions_common_1.Source {
             }
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
-            //New Added
+            //view
             url = DOMAIN;
             request = createRequestObject({
-                url: 'https://beeng.org/danh-muc/xem-nhieu',
+                url: 'https://beeng.org/danh-muc/xem-nhieu?cate=&author=&translater=&complete=&sort=view',
                 method: "GET",
             });
             let viewItems = [];
@@ -844,10 +844,10 @@ class Beeng extends paperback_extensions_common_1.Source {
                     url = `https://beeng.org/danh-muc/dang-hot?page=${page}`;
                     break;
                 case "new_updated":
-                    url = `https://beeng.org/danh-muc/moi-nhat?page=${page}`;
+                    url = `https://beeng.org/danh-muc/moi-nhat?cate=&author=&translater=&complete=&sort=lastest&page=${page}`;
                     break;
                 case "view":
-                    url = `https://beeng.org/danh-muc/xem-nhieu?page=${page}`;
+                    url = `https://beeng.org/danh-muc/xem-nhieu?cate=&author=&translater=&complete=&sort=view&page=${page}`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
