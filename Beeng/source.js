@@ -910,9 +910,9 @@ class Beeng extends paperback_extensions_common_1.Source {
         });
     }
     getSearchTags() {
-        var _a, _b, _c;
+        var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `${DOMAIN}tim-kiem`;
+            const url = `https://beeng.org/danh-muc/dang-hot`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -922,34 +922,54 @@ class Beeng extends paperback_extensions_common_1.Source {
             const arrayTags = [];
             const arrayTags2 = [];
             const arrayTags3 = [];
+            const arrayTags4 = [];
+            const arrayTags5 = [];
             //the loai
-            for (const tag of $('div.search-gerne_item', 'div.form-group').toArray()) {
-                const label = $('.gerne-name', tag).text().trim();
-                const id = (_a = $('label', tag).attr('data-genre-id')) !== null && _a !== void 0 ? _a : label;
+            for (const tag of $('option', '#formAdvance > .column-search:nth-child(1) > select').toArray()) {
+                const label = $(tag).text().trim();
+                const id = (_a = $(tag).attr('value')) !== null && _a !== void 0 ? _a : label;
                 if (!id || !label)
                     continue;
                 arrayTags.push({ id: id, label: label });
             }
-            //tinh trang
-            for (const tag of $('option', 'select#list-status').toArray()) {
+            //tac gia
+            for (const tag of $('option', '#formAdvance > .column-search:nth-child(2) > select').toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_b = 'status.' + $(tag).attr('value')) !== null && _b !== void 0 ? _b : label;
+                const id = (_b = 'author.' + $(tag).attr('value')) !== null && _b !== void 0 ? _b : label;
                 if (!id || !label)
                     continue;
                 arrayTags2.push({ id: id, label: label });
             }
-            //sap xep
-            for (const tag of $('option', 'select#list-sort').toArray()) {
+            //nhom dich
+            for (const tag of $('option', '#formAdvance > .column-search:nth-child(3) > select').toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_c = 'sort.' + $(tag).attr('value')) !== null && _c !== void 0 ? _c : label;
+                const id = (_c = 'translater.' + $(tag).attr('value')) !== null && _c !== void 0 ? _c : label;
                 if (!id || !label)
                     continue;
                 arrayTags3.push({ id: id, label: label });
             }
+            //tinh trang
+            for (const tag of $('option', '#formAdvance > .column-search:nth-child(4) > select').toArray()) {
+                const label = $(tag).text().trim();
+                const id = (_d = 'complete.' + $(tag).attr('value')) !== null && _d !== void 0 ? _d : label;
+                if (!id || !label)
+                    continue;
+                arrayTags4.push({ id: id, label: label });
+            }
+            //sap xep
+            for (const tag of $('option', '#formAdvance > .column-search:nth-child(5) > select').toArray()) {
+                const label = $(tag).text().trim();
+                const id = (_e = 'sort.' + $(tag).attr('value')) !== null && _e !== void 0 ? _e : label;
+                if (!id || !label)
+                    continue;
+                arrayTags5.push({ id: id, label: label });
+            }
             const tagSections = [
                 createTagSection({ id: '0', label: 'Thể loại', tags: arrayTags.map(x => createTag(x)) }),
-                createTagSection({ id: '1', label: 'Tình trạng', tags: arrayTags2.map(x => createTag(x)) }),
-                createTagSection({ id: '2', label: 'Sắp xếp', tags: arrayTags3.map(x => createTag(x)) }),
+                createTagSection({ id: '1', label: 'Tác giả', tags: arrayTags2.map(x => createTag(x)) }),
+                createTagSection({ id: '2', label: 'Nhóm dịch', tags: arrayTags3.map(x => createTag(x)) }),
+                createTagSection({ id: '3', label: 'Tình trạng', tags: arrayTags4.map(x => createTag(x)) }),
+                createTagSection({ id: '4', label: 'Sắp xếp', tags: arrayTags5.map(x => createTag(x)) }),
             ];
             return tagSections;
         });
