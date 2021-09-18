@@ -688,15 +688,15 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             const chapters = [];
             for (const obj of $(".works-chapter-list > .works-chapter-item").toArray().reverse()) {
-                // if (!obj.attribs['href'] || !obj.children[0].data) continue;
-                // const timeStr = $('.col-md-2.col-sm-2.col-xs-4').text().trim().split(/\//); //mm/dd/yyyy
-                // const time = new Date('09/10/2021')
+                const timeStr = $('.col-md-2.col-sm-2.col-xs-4', obj).text().trim().split(/\//); //mm/dd/yyyy
+                const time = new Date([timeStr[1], timeStr[0], timeStr[2]].join('/'));
                 chapters.push(createChapter({
                     id: (_a = $('.col-md-10.col-sm-10.col-xs-8 > a', obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop(),
                     chapNum: parseFloat($('.col-md-10.col-sm-10.col-xs-8 > a', obj).text().split(' ')[1]),
                     name: $('.col-md-10.col-sm-10.col-xs-8 > a', obj).text(),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+                    time
                 }));
             }
             return chapters;

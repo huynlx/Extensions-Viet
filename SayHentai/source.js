@@ -687,15 +687,12 @@ class SayHentai extends paperback_extensions_common_1.Source {
             for (const obj of $("#list-chapter > li.chap-item").toArray().reverse()) {
                 var chapNum = parseFloat($('a', obj).text().trim().split(' ')[1]);
                 i++;
-                const timeStr = $('.col-md-2.col-sm-2.col-xs-4', obj).text().trim().split(/\//); //mm/dd/yyyy
-                const time = new Date([timeStr[1], timeStr[0], timeStr[2]].join('/'));
                 chapters.push(createChapter({
                     id: $('a', obj).first().attr('href'),
                     chapNum: isNaN(chapNum) ? i : chapNum,
                     name: $('span', obj).text().trim(),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time
                 }));
             }
             return chapters;
