@@ -1000,7 +1000,7 @@ exports.parseViewMore = ($) => {
         if (!collectedIds.includes(id)) {
             manga.push(createMangaTile({
                 id: encodeURIComponent(id),
-                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image) : ('https://sayhentai.net/' + image)),
+                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://sayhentai.net/' + image)),
                 title: createIconText({ text: decodeHTMLEntity(title) }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
