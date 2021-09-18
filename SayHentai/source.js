@@ -1147,7 +1147,7 @@ exports.parseViewMore = ($) => {
         let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
         var image = $('a', obj).first().attr('data-src');
         let id = (_a = $(`.info-bottom > a`, obj).attr("href")) !== null && _a !== void 0 ? _a : title;
-        if (!collectedIds.includes(id)) {
+        if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
             manga.push(createMangaTile({
                 id: encodeURIComponent(id),
                 image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://sayhentai.net/' + image)),

@@ -901,6 +901,7 @@ class Parser {
     parseViewMoreItems($) {
         var _a;
         const mangas = [];
+        const collectedIds = [];
         for (const manga of $('div.item', 'div.row').toArray()) {
             const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
             const id = (_a = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
@@ -908,12 +909,15 @@ class Parser {
             const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
             if (!id || !title)
                 continue;
-            mangas.push(createMangaTile({
-                id: id,
-                image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
-                title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: subtitle }),
-            }));
+            if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
+                mangas.push(createMangaTile({
+                    id: id,
+                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
+                    title: createIconText({ text: title }),
+                    subtitleText: createIconText({ text: subtitle }),
+                }));
+                collectedIds.push(id);
+            }
         }
         return mangas;
     }

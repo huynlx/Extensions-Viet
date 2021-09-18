@@ -688,12 +688,15 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             for (const obj of $(".list-chapters.at-series > a").toArray().reverse()) {
                 var chapNum = parseFloat($('li > .chapter-name', obj).text().trim().split(' ')[1]);
                 i++;
+                const timeStr = $('li > .chapter-time', obj).text().trim();
+                const time = new Date([timeStr[1], timeStr[0], timeStr[2]].join('/'));
                 chapters.push(createChapter({
                     id: $(obj).first().attr('href'),
                     chapNum: isNaN(chapNum) ? i : chapNum,
                     name: $('li > .chapter-name', obj).text(),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+                    time
                 }));
             }
             return chapters;
