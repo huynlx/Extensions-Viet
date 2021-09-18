@@ -1134,7 +1134,7 @@ module.exports=[
     },
     {
         "id": "/the-loai-23-big_boobs.html",
-        "label": "Big\n            Boobs"
+        "label": "Big Boobs"
     },
     {
         "id": "/the-loai-32-big_penis.html",
@@ -1298,7 +1298,7 @@ module.exports=[
     },
     {
         "id": "/the-loai-245-elder-sister.html",
-        "label": "Elder\n            Sister"
+        "label": "Elder Sister"
     },
     {
         "id": "/the-loai-125-elf.html",
@@ -1618,7 +1618,7 @@ module.exports=[
     },
     {
         "id": "/the-loai-84-small_boobs.html",
-        "label": "Small\n            Boobs"
+        "label": "Small Boobs"
     },
     {
         "id": "/the-loai-83-sports.html",
