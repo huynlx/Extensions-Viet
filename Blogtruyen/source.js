@@ -731,7 +731,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c, _d, _e, _f, _g;
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
@@ -821,8 +821,8 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             for (let obj of $('a', '#top-newest-story').toArray()) {
                 let title = (_d = (_c = $(obj).attr('title')) === null || _c === void 0 ? void 0 : _c.trim()) !== null && _d !== void 0 ? _d : "";
                 // let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
-                const image = (_e = $(`img`, obj).attr('src')) !== null && _e !== void 0 ? _e : "";
-                let id = (_f = $(obj).attr("href")) !== null && _f !== void 0 ? _f : title;
+                const image = (_f = (_e = $(`img`, obj).attr('src')) === null || _e === void 0 ? void 0 : _e.replace('86_86', '200')) !== null && _f !== void 0 ? _f : "";
+                let id = (_g = $(obj).attr("href")) !== null && _g !== void 0 ? _g : title;
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
                     id: id,
