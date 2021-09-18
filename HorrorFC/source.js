@@ -600,20 +600,20 @@ class Parser {
     }
     parseViewMoreItems($) {
         const mangas = [];
-        const collectedIds = [];
+        const collectedIds = new Set();
         for (let manga of $('li', 'ul.row').toArray()) {
             const title = $('a', manga).attr('title');
             const id = $('a', manga).attr('href');
             const image = $('a > img', manga).first().attr('src');
             if (!id || !title)
                 continue;
-            if (!collectedIds.includes(id)) {
+            if (!collectedIds.has(id)) {
                 mangas.push(createMangaTile({
                     id: id + "::" + image,
                     image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
                     title: createIconText({ text: title }),
                 }));
-                collectedIds.push(id);
+                collectedIds.add(id);
             }
         }
         return mangas;
