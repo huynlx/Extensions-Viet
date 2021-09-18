@@ -697,7 +697,7 @@ class Beeng extends paperback_extensions_common_1.Source {
                 // }
                 // const arrDate = time.date.split(/\-/);
                 // const fixDate = [arrDate[1], arrDate[0], arrDate[2]].join('/');
-                const finalTime = new Date('09-15-2021 15:04');
+                const finalTime = new Date('09/15/2021 15:04');
                 chapters.push(createChapter({
                     id: $(obj).attr('href'),
                     chapNum: i,
