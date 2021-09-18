@@ -895,8 +895,8 @@ class SayHentai extends paperback_extensions_common_1.Source {
                     "label": "Tất cả"
                 },
                 {
-                    "id": "18+",
-                    "label": "18"
+                    "id": "18",
+                    "label": "18+"
                 },
                 {
                     "id": "action",
