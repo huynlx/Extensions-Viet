@@ -619,7 +619,7 @@ exports.SayHentaiInfo = {
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from SayHentai',
-    websiteBaseURL: `https://truyentranhlh.net/`,
+    websiteBaseURL: `https://sayhentai.net/`,
     contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
         {
@@ -636,7 +636,7 @@ class SayHentai extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
     }
-    getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh/${mangaId}`; }
+    getMangaShareUrl(mangaId) { return `https://sayhentai.net/${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
         var _a;
@@ -867,7 +867,7 @@ class SayHentai extends paperback_extensions_common_1.Source {
         });
     }
     getSearchResults(query, metadata) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const search = {
@@ -894,9 +894,9 @@ class SayHentai extends paperback_extensions_common_1.Source {
             });
             search.genres = (category !== null && category !== void 0 ? category : []).join(",");
             const request = createRequestObject({
-                url: `${DOMAIN}tim-kiem`,
+                url: `https://sayhentai.net/danh-sach-truyen.html`,
                 method: "GET",
-                param: encodeURI(`?q=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&status=${search.status}&sort=${search.sort}&accept_genres=${search.genres}&page=${page}`)
+                param: encodeURI(`?name=${query.title}`)
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
@@ -972,17 +972,17 @@ exports.generateSearch = (query) => {
     return encodeURI(keyword);
 };
 exports.parseSearch = ($) => {
-    var _a, _b;
+    var _a;
     const mangas = [];
-    for (let obj of $('.thumb-item-flow', '.col-12 > .card:nth-child(2) > .card-body > .row').toArray()) {
-        let title = $(`.series-title > a`, obj).text().trim();
-        let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
-        const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
-        let id = (_b = (_a = $(`.series-title > a`, obj).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) !== null && _b !== void 0 ? _b : title;
+    for (let obj of $('li', 'ul#danhsachtruyen').toArray()) {
+        let title = $(`.info-bottom > a`, obj).text().trim();
+        let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
+        var image = $('a', obj).first().attr('data-src');
+        let id = (_a = $(`.info-bottom > a`, obj).attr("href")) !== null && _a !== void 0 ? _a : title;
         mangas.push(createMangaTile({
             id: encodeURIComponent(id),
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
-            title: createIconText({ text: title }),
+            image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://sayhentai.net/' + image)),
+            title: createIconText({ text: decodeHTMLEntity(title) }),
             subtitleText: createIconText({ text: subtitle }),
         }));
     }
