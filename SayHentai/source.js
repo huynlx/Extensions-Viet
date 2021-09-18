@@ -873,7 +873,7 @@ class SayHentai extends paperback_extensions_common_1.Source {
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
                 url: query.title ? encodeURI(`https://sayhentai.net/danh-sach-truyen.html?name=${query.title}`) :
-                    (tags[0] === 'all' ? 'https://sayhentai.net/danh-sach-truyen.html' : encodeURI(`https://sayhentai.net/danh-sach-truyen.html?status=0&name=&genre=${tags[0]}&sort=last_update`)),
+                    (tags[0] === 'all' ? 'https://sayhentai.net/danh-sach-truyen.html?' : encodeURI(`https://sayhentai.net/danh-sach-truyen.html?status=0&name=&genre=${tags[0]}&sort=last_update`)),
                 method: "GET",
                 param: encodeURI(`&page=${page}`)
             });
@@ -889,13 +889,6 @@ class SayHentai extends paperback_extensions_common_1.Source {
     }
     getSearchTags() {
         return __awaiter(this, void 0, void 0, function* () {
-            // const url = `https://sayhentai.net/`
-            // const request = createRequestObject({
-            //     url: url,
-            //     method: "GET",
-            // });
-            // const response = await this.requestManager.schedule(request, 1)
-            // const $ = this.cheerio.load(response.data);
             const tags = [
                 {
                     "id": "all",
