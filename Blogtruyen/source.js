@@ -731,7 +731,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d, _e, _f;
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
@@ -812,27 +812,27 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             //New Added
             url = DOMAIN;
             request = createRequestObject({
-                url: 'https://sayhentai.net/',
+                url: 'https://blogtruyen.vn/thumb',
                 method: "GET",
             });
             let newAddItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('li', '#main-content > .wrap-content-part:nth-child(5) > .body-content-part > ul').toArray()) {
-                let title = $(`.info-bottom > a`, obj).text().trim();
-                let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
-                const image = $(`a > img`, obj).attr('src');
-                let id = (_c = $(`.info-bottom > a`, obj).attr("href")) !== null && _c !== void 0 ? _c : title;
+            for (let obj of $('a', '#top-newest-story').toArray()) {
+                let title = (_d = (_c = $(obj).attr('title')) === null || _c === void 0 ? void 0 : _c.trim()) !== null && _d !== void 0 ? _d : "";
+                // let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
+                const image = (_e = $(`img`, obj).attr('src')) !== null && _e !== void 0 ? _e : "";
+                let id = (_f = $(obj).attr("href")) !== null && _f !== void 0 ? _f : title;
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
                     id: id,
-                    image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://sayhentai.net/' + image)),
+                    image,
                     title: createIconText({
                         text: title,
-                    }),
-                    subtitleText: createIconText({
-                        text: subtitle,
-                    }),
+                    })
+                    // subtitleText: createIconText({
+                    //     text: subtitle,
+                    // }),
                 }));
             }
             newAdded.items = newAddItems;
