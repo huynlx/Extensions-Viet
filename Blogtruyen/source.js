@@ -677,22 +677,30 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `https://sayhentai.net/${mangaId}`,
+                url: `https://blogtruyen.vn${mangaId}`,
                 method,
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const chapters = [];
             var i = 0;
-            for (const obj of $("#list-chapter > li.chap-item").toArray().reverse()) {
-                var chapNum = parseFloat($('a', obj).text().trim().split(' ')[1]);
+            for (const obj of $("#list-chapters > p").toArray().reverse()) {
                 i++;
+                const getTime = $('.publishedDate', obj).text().trim().split(' ');
+                const time = {
+                    date: getTime[0],
+                    time: getTime[1].split('-')[0].trim()
+                };
+                const arrDate = time.date.split(/\-/);
+                const fixDate = [arrDate[1], arrDate[0], arrDate[2]].join('/');
+                const finalTime = new Date(fixDate + ' ' + time.time);
                 chapters.push(createChapter({
-                    id: $('a', obj).first().attr('href'),
-                    chapNum: isNaN(chapNum) ? i : chapNum,
-                    name: $('span', obj).text().trim(),
+                    id: $('span.title > a', obj).first().attr('href'),
+                    chapNum: i,
+                    name: $('span.title > a', obj).text().trim(),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+                    time: finalTime
                 }));
             }
             return chapters;
@@ -701,17 +709,16 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
     getChapterDetails(mangaId, chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `https://sayhentai.net/${chapterId}`,
+                url: `https://blogtruyen.vn${chapterId}`,
                 method
             });
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
-            for (let obj of $('#lst_content > img').toArray()) {
-                if (!obj.attribs['data-src'])
+            for (let obj of $('.content > img').toArray()) {
+                if (!obj.attribs['src'])
                     continue;
-                let link = obj.attribs['data-src'].includes('http') ?
-                    (obj.attribs['data-src']).trim() : ('https://sayhentai.net/' + obj.attribs['data-src']).trim();
+                let link = obj.attribs['src'];
                 pages.push(link);
             }
             const chapterDetails = createChapterDetails({
