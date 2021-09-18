@@ -639,9 +639,9 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
     getMangaShareUrl(mangaId) { return `https://sayhentai.net/${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
-        var _a;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://sayhentai.net/${mangaId}`;
+            const url = `https://blogtruyen.vn${mangaId}`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -651,22 +651,22 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             let tags = [];
             let creator = '';
             let status = 1; //completed, 1 = Ongoing
-            let desc = $('.detail-content > p').text();
-            for (const t of $('.list01.li03 > a.genner-block').toArray()) {
+            let desc = $('.content > p').text();
+            for (const t of $('.description > p:nth-child(3) > .category > a').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            creator = $('.list-info > li:nth-child(1)').text().split(":")[1].trim();
-            status = $('.list-info > li:nth-child(2) > b').text().toLowerCase().includes("đang") ? 1 : 0;
-            const image = $('.wrap-content-image > img').attr('src');
+            creator = $('.description > p:nth-child(1) > a').text();
+            status = $('.description > p:nth-child(4) > .color-red').text().toLowerCase().includes("đang") ? 1 : 0;
+            const image = (_b = $('.thumbnail > img').attr('src')) !== null && _b !== void 0 ? _b : "";
             return createManga({
                 id: mangaId,
                 author: creator,
                 artist: creator,
                 desc: desc,
-                titles: [$('.wrap-content-info > h1').text().trim()],
-                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://sayhentai.net/' + image)),
+                titles: [$('.entry-title > a').text().trim()],
+                image: encodeURI(image),
                 status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
@@ -783,7 +783,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             let newUpdatedItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('.row', '.list-mainpage .storyitem').toArray()) {
+            for (let obj of $('.row', '.list-mainpage .storyitem').toArray().splice(0, 20)) {
                 let title = $(`h3.title > a`, obj).text().trim();
                 let subtitle = $(`div:nth-child(2) > div:nth-child(4) > span:nth-child(1) > .color-red`, obj).text();
                 const image = $(`div:nth-child(1) > a > img`, obj).attr('src');
