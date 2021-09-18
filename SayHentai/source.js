@@ -910,13 +910,13 @@ class SayHentai extends paperback_extensions_common_1.Source {
     }
     getSearchTags() {
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://sayhentai.net/`;
-            const request = createRequestObject({
-                url: url,
-                method: "GET",
-            });
-            const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
+            // const url = `https://sayhentai.net/`
+            // const request = createRequestObject({
+            //     url: url,
+            //     method: "GET",
+            // });
+            // const response = await this.requestManager.schedule(request, 1)
+            // const $ = this.cheerio.load(response.data);
             const arrayTags = [
                 {
                     "id": "/danh-sach-truyen.html",
