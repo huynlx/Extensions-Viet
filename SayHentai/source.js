@@ -923,7 +923,7 @@ class SayHentai extends paperback_extensions_common_1.Source {
             const arrayTags3 = [];
             //the loai
             for (const tag of $('a', 'div#list_theloai').toArray()) {
-                const label = $('strong', tag).text().trim();
+                const label = $(tag).attr('title');
                 const id = (_a = $(tag).attr('href')) !== null && _a !== void 0 ? _a : label;
                 if (!id || !label)
                     continue;
