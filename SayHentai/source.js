@@ -912,211 +912,211 @@ class SayHentai extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             const tags = [
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen.html",
+                    "id": "huynh1",
                     "label": "Tất cả"
                 },
                 {
-                    "id": "https://sayhentai.net",
+                    "id": "huynh2",
                     "label": "18+"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-action.html",
+                    "id": "huynh3",
                     "label": "Action"
                 },
                 {
-                    "id": "https://sayhentai.net",
+                    "id": "huynh4",
                     "label": "Adult"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-adventure.html",
+                    "id": "huynh5",
                     "label": "Adventure"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-anime.html",
+                    "id": "huynh6",
                     "label": "Anime"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-Chuyển Sinh.html",
+                    "id": "huynh7",
                     "label": "Chuyển Sinh"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-comedy.html",
+                    "id": "huynh8",
                     "label": "Comedy"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-comic.html",
+                    "id": "huynh9",
                     "label": "Comic"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-cooking.html",
+                    "id": "huynh10",
                     "label": "Cooking"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-Cổ Đại.html",
+                    "id": "huynh11",
                     "label": "Cổ Đại"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-doujinshi.html",
+                    "id": "huynh12",
                     "label": "Doujinshi"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-drama.html",
+                    "id": "huynh13",
                     "label": "Drama"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-Đam Mỹ.html",
+                    "id": "huynh14",
                     "label": "Đam Mỹ"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-ecchi.html",
+                    "id": "huynh15",
                     "label": "Ecchi"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-fantasy.html",
+                    "id": "huynh16",
                     "label": "Fantasy"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-gender bender.html",
+                    "id": "huynh17",
                     "label": "Gender Bender"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-harem.html",
+                    "id": "huynh18",
                     "label": "Harem"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-historical.html",
+                    "id": "huynh19",
                     "label": "Historical"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-horror.html",
+                    "id": "huynh20",
                     "label": "Horror"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-Isekai.html",
+                    "id": "huynh21",
                     "label": "Isekai"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-josei.html",
+                    "id": "huynh22",
                     "label": "Josei"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-live action.html",
+                    "id": "huynh23",
                     "label": "Live action"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-manga.html",
+                    "id": "huynh24",
                     "label": "Manga"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-manhua.html",
+                    "id": "huynh25",
                     "label": "Manhua"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-manhwa.html",
+                    "id": "huynh26",
                     "label": "Manhwa"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-martial art.html",
+                    "id": "huynh27",
                     "label": "Martial Arts"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-mature.html",
+                    "id": "huynh28",
                     "label": "Mature"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-mecha.html",
+                    "id": "huynh29",
                     "label": "Mecha"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-mystery.html",
+                    "id": "huynh30",
                     "label": "Mystery"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-Ngôn Tình.html",
+                    "id": "huynh31",
                     "label": "Ngôn Tình"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-one shot.html",
+                    "id": "huynh32",
                     "label": "One shot"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-psychological.html",
+                    "id": "huynh33",
                     "label": "Psychological"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-romance.html",
+                    "id": "huynh34",
                     "label": "Romance"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-school life.html",
+                    "id": "huynh35",
                     "label": "School Life"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-sci-fi.html",
+                    "id": "huynh36",
                     "label": "Sci-fi"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-seinen.html",
+                    "id": "huynh37",
                     "label": "Seinen"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-shoujo.html",
+                    "id": "huynh38",
                     "label": "Shoujo"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-shoujou ai.html",
+                    "id": "huynh39",
                     "label": "Shoujo Ai"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-shounen.html",
+                    "id": "huynh40",
                     "label": "Shounen"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-shounen ai.html",
+                    "id": "huynh41",
                     "label": "Shounen Ai"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-slice of life.html",
+                    "id": "huynh42",
                     "label": "Slice of Life"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-smut.html",
+                    "id": "huynh43",
                     "label": "Smut"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-soft yaoi.html",
+                    "id": "huynh44",
                     "label": "Soft Yaoi"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-soft yuri.html",
+                    "id": "huynh45",
                     "label": "Soft Yuri"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-sports.html",
+                    "id": "huynh46",
                     "label": "Sports"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-supernatural.html",
+                    "id": "huynh47",
                     "label": "Supernatural"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-tragedy.html",
+                    "id": "huynh48",
                     "label": "Tragedy"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-Trinh Thám.html",
+                    "id": "huynh49",
                     "label": "Trinh Thám"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-Truyện Màu.html",
+                    "id": "huynh50",
                     "label": "Truyện Màu"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-webtoon.html",
+                    "id": "huynh51",
                     "label": "Webtoon"
                 },
                 {
-                    "id": "https://sayhentai.net/danh-sach-truyen-the-loai-Xuyên Không.html",
+                    "id": "huynh52",
                     "label": "Xuyên Không"
                 }
             ];
