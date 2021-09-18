@@ -919,11 +919,11 @@ class SayHentai extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const arrayTags = [];
-            const arrayTags2 = [];
-            const arrayTags3 = [];
+            // const arrayTags2: Tag[] = [];
+            // const arrayTags3: Tag[] = [];
             //the loai
             for (const tag of $('a', 'div#list_theloai').toArray()) {
-                const label = $(tag).attr('title');
+                const label = $(tag).text().trim();
                 const id = (_a = $(tag).attr('href')) !== null && _a !== void 0 ? _a : label;
                 if (!id || !label)
                     continue;
