@@ -607,18 +607,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SayHentai = exports.SayHentaiInfo = void 0;
+exports.Blogtruyen = exports.BlogtruyenInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
-const SayHentaiParser_1 = require("./SayHentaiParser");
+const BlogtruyenParser_1 = require("./BlogtruyenParser");
 const DOMAIN = 'https://truyentranhlh.net/';
 const method = 'GET';
-exports.SayHentaiInfo = {
+exports.BlogtruyenInfo = {
     version: '2.0.0',
-    name: 'SayHentai',
+    name: 'Blogtruyen',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from SayHentai',
+    description: 'Extension that pulls manga from Blogtruyen',
     websiteBaseURL: `https://sayhentai.net/`,
     contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
@@ -628,7 +628,7 @@ exports.SayHentaiInfo = {
         }
     ]
 };
-class SayHentai extends paperback_extensions_common_1.Source {
+class Blogtruyen extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
         this.requestManager = createRequestManager({
@@ -669,7 +669,7 @@ class SayHentai extends paperback_extensions_common_1.Source {
                 image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://sayhentai.net/' + image)),
                 status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
-                hentai: true,
+                hentai: false,
                 tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
             });
         });
@@ -777,26 +777,26 @@ class SayHentai extends paperback_extensions_common_1.Source {
             //New Updates
             url = '';
             request = createRequestObject({
-                url: 'https://sayhentai.net/',
+                url: 'https://blogtruyen.vn/thumb',
                 method: "GET",
             });
             let newUpdatedItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('li', '#main-content > .wrap-content-part:nth-child(3) > .body-content-part > ul').toArray().splice(0, 15)) {
-                let title = $(`.info-bottom > a`, obj).text().trim();
-                let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
-                const image = $(`a > img`, obj).attr('src');
-                let id = (_b = $(`.info-bottom > a`, obj).attr("href")) !== null && _b !== void 0 ? _b : title;
+            for (let obj of $('.storyitem > .row', '.list-mainpage.gridview > .row').toArray().splice(0, 20)) {
+                let title = $(`div:nth-child(2) > h3.title > a`, obj).text().trim();
+                let subtitle = $(`div:nth-child(2) > div:nth-child(4) > span:nth-child(1) > .color-red`, obj).text();
+                const image = $(`div:nth-child(1) > a > img`, obj).attr('src');
+                let id = (_b = $(`div:nth-child(1) > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
-                    image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://sayhentai.net/' + image)),
+                    image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({
                         text: title,
                     }),
                     subtitleText: createIconText({
-                        text: subtitle,
+                        text: 'Chương ' + subtitle,
                     }),
                 }));
             }
@@ -858,8 +858,8 @@ class SayHentai extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            const manga = SayHentaiParser_1.parseViewMore($);
-            metadata = !SayHentaiParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            const manga = BlogtruyenParser_1.parseViewMore($);
+            metadata = !BlogtruyenParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: manga,
                 metadata,
@@ -879,8 +879,8 @@ class SayHentai extends paperback_extensions_common_1.Source {
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            const tiles = SayHentaiParser_1.parseSearch($);
-            metadata = !SayHentaiParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            const tiles = BlogtruyenParser_1.parseSearch($);
+            metadata = !BlogtruyenParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: tiles,
                 metadata
@@ -1105,13 +1105,13 @@ class SayHentai extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: 'https://sayhentai.net/'
+            referer: 'https://blogtruyen.vn/'
         };
     }
 }
-exports.SayHentai = SayHentai;
+exports.Blogtruyen = Blogtruyen;
 
-},{"./SayHentaiParser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
+},{"./BlogtruyenParser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
