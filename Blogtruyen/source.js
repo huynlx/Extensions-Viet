@@ -850,7 +850,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
                     url = `https://sayhentai.net/danh-sach-truyen.html?status=0&sort=views&page=${page}`;
                     break;
                 case "new_updated":
-                    url = `https://sayhentai.net/danh-sach-truyen.html?page=${page}`;
+                    url = `https://blogtruyen.vn/thumb-${page}`;
                     break;
                 case "new_added":
                     url = `https://sayhentai.net/danh-sach-truyen.html?status=0&sort=id&page=${page}`;
@@ -1149,17 +1149,17 @@ exports.parseViewMore = ($) => {
     var _a;
     const manga = [];
     const collectedIds = [];
-    for (let obj of $('li', 'ul#danhsachtruyen').toArray()) {
-        let title = $(`.info-bottom > a`, obj).text().trim();
-        let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
-        var image = $('a', obj).first().attr('data-src');
-        let id = (_a = $(`.info-bottom > a`, obj).attr("href")) !== null && _a !== void 0 ? _a : title;
+    for (let obj of $('.row', '.list-mainpage .storyitem').toArray()) {
+        let title = $(`h3.title > a`, obj).text().trim();
+        let subtitle = $(`div:nth-child(2) > div:nth-child(4) > span:nth-child(1) > .color-red`, obj).text();
+        const image = $(`div:nth-child(1) > a > img`, obj).attr('src');
+        let id = (_a = $(`div:nth-child(1) > a`, obj).attr('href')) !== null && _a !== void 0 ? _a : title;
         if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
             manga.push(createMangaTile({
-                id: encodeURIComponent(id),
-                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://sayhentai.net/' + image)),
+                id: id,
+                image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.replace('150_150', '200')),
                 title: createIconText({ text: decodeHTMLEntity(title) }),
-                subtitleText: createIconText({ text: subtitle }),
+                subtitleText: createIconText({ text: 'Chương ' + subtitle }),
             }));
             collectedIds.push(id);
         }
@@ -1169,14 +1169,14 @@ exports.parseViewMore = ($) => {
 exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
-    for (const page of $("a", "ul.pager > li").toArray()) {
+    for (const page of $("a", "ul.pagination > li").toArray()) {
         const p = Number($(page).text().trim());
         if (isNaN(p))
             continue;
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($("ul.pager > li.active > a").text().trim());
+    const currentPage = Number($("ul.pagination > li > select > option").find(":selected").text().split(' ')[1]);
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
