@@ -909,7 +909,6 @@ class SayHentai extends paperback_extensions_common_1.Source {
         });
     }
     getSearchTags() {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const url = `https://sayhentai.net/`;
             const request = createRequestObject({
@@ -918,17 +917,225 @@ class SayHentai extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            const arrayTags = [];
+            const arrayTags = [
+                {
+                    "id": "/danh-sach-truyen.html",
+                    "label": "Tất cả"
+                },
+                {
+                    "id": "https://sayhentai.net",
+                    "label": "18+"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-action.html",
+                    "label": "Action"
+                },
+                {
+                    "id": "https://sayhentai.net",
+                    "label": "Adult"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-adventure.html",
+                    "label": "Adventure"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-anime.html",
+                    "label": "Anime"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-Chuyển Sinh.html",
+                    "label": "Chuyển Sinh"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-comedy.html",
+                    "label": "Comedy"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-comic.html",
+                    "label": "Comic"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-cooking.html",
+                    "label": "Cooking"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-Cổ Đại.html",
+                    "label": "Cổ Đại"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-doujinshi.html",
+                    "label": "Doujinshi"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-drama.html",
+                    "label": "Drama"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-Đam Mỹ.html",
+                    "label": "Đam Mỹ"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-ecchi.html",
+                    "label": "Ecchi"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-fantasy.html",
+                    "label": "Fantasy"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-gender bender.html",
+                    "label": "Gender Bender"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-harem.html",
+                    "label": "Harem"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-historical.html",
+                    "label": "Historical"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-horror.html",
+                    "label": "Horror"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-Isekai.html",
+                    "label": "Isekai"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-josei.html",
+                    "label": "Josei"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-live action.html",
+                    "label": "Live action"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-manga.html",
+                    "label": "Manga"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-manhua.html",
+                    "label": "Manhua"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-manhwa.html",
+                    "label": "Manhwa"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-martial art.html",
+                    "label": "Martial Arts"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-mature.html",
+                    "label": "Mature"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-mecha.html",
+                    "label": "Mecha"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-mystery.html",
+                    "label": "Mystery"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-Ngôn Tình.html",
+                    "label": "Ngôn Tình"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-one shot.html",
+                    "label": "One shot"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-psychological.html",
+                    "label": "Psychological"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-romance.html",
+                    "label": "Romance"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-school life.html",
+                    "label": "School Life"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-sci-fi.html",
+                    "label": "Sci-fi"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-seinen.html",
+                    "label": "Seinen"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-shoujo.html",
+                    "label": "Shoujo"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-shoujou ai.html",
+                    "label": "Shoujo Ai"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-shounen.html",
+                    "label": "Shounen"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-shounen ai.html",
+                    "label": "Shounen Ai"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-slice of life.html",
+                    "label": "Slice of Life"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-smut.html",
+                    "label": "Smut"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-soft yaoi.html",
+                    "label": "Soft Yaoi"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-soft yuri.html",
+                    "label": "Soft Yuri"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-sports.html",
+                    "label": "Sports"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-supernatural.html",
+                    "label": "Supernatural"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-tragedy.html",
+                    "label": "Tragedy"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-Trinh Thám.html",
+                    "label": "Trinh Thám"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-Truyện Màu.html",
+                    "label": "Truyện Màu"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-webtoon.html",
+                    "label": "Webtoon"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-Xuyên Không.html",
+                    "label": "Xuyên Không"
+                }
+            ];
             // const arrayTags2: Tag[] = [];
             // const arrayTags3: Tag[] = [];
-            //the loai
-            for (const tag of $('a', 'div#list_theloai').toArray()) {
-                const label = $(tag).text().trim();
-                const id = (_a = $(tag).attr('href')) !== null && _a !== void 0 ? _a : label;
-                if (!id || !label)
-                    continue;
-                arrayTags.push({ id: id, label: label });
-            }
+            // //the loai
+            // for (const tag of $('a', 'div#list_theloai').toArray()) {
+            //     const label = $(tag).text().trim();
+            //     const id = $(tag).attr('href') ?? label;
+            //     if (!id || !label) continue;
+            //     arrayTags.push({ id: id, label: label });
+            // }
             // //tinh trang
             // for (const tag of $('option', 'select#list-status').toArray()) {
             //     const label = $(tag).text().trim();
