@@ -711,7 +711,7 @@ class SayHentai extends paperback_extensions_common_1.Source {
                 if (!obj.attribs['data-src'])
                     continue;
                 let link = obj.attribs['data-src'].includes('http') ?
-                    (obj.attribs['data-src']) : ('https://sayhentai.net/' + obj.attribs['data-src']);
+                    (obj.attribs['data-src']).trim() : ('https://sayhentai.net/' + obj.attribs['data-src']).trim();
                 pages.push(link);
             }
             const chapterDetails = createChapterDetails({
