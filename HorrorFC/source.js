@@ -519,7 +519,7 @@ class HorrorFC extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            const manga = metadata ? this.parser.parseViewMoreItems($) : [];
+            const manga = this.parser.parseViewMoreItems($);
             metadata = exports.isLastPage($) ? undefined : { page: page + 1 };
             return createPagedResults({
                 results: manga,
