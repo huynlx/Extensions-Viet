@@ -720,7 +720,7 @@ class Parser {
             if (!obj.attribs['data-original'])
                 continue;
             let link = obj.attribs['data-original'];
-            if (link.indexOf('https') === -1) { //nếu link ko có 'https'
+            if (link.indexOf('http') === -1) { //nếu link ko có 'https'
                 pages.push('http:' + obj.attribs['data-original']);
             }
             else {
