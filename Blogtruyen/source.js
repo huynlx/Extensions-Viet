@@ -798,7 +798,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
-                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.replace('150_150', '300')),
+                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.replace('150_150', '200')),
                     title: createIconText({
                         text: title,
                     }),
@@ -1157,7 +1157,7 @@ exports.parseViewMore = ($) => {
         if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
             manga.push(createMangaTile({
                 id: id,
-                image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.replace('150_150', '300')),
+                image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.replace('150_150', '200')),
                 title: createIconText({ text: decodeHTMLEntity(title) }),
                 subtitleText: createIconText({ text: 'Chương ' + subtitle }),
             }));
