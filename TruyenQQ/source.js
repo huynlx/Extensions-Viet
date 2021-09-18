@@ -689,7 +689,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             const chapters = [];
             for (const obj of $(".works-chapter-list > .works-chapter-item").toArray().reverse()) {
                 // if (!obj.attribs['href'] || !obj.children[0].data) continue;
-                const timeStr = $('.col-md-2.col-sm-2.col-xs-4').text(); //mm/dd/yyyy
+                const timeStr = $('.col-md-2.col-sm-2.col-xs-4').text().trim(); //mm/dd/yyyy
                 const time = new Date(timeStr);
                 chapters.push(createChapter({
                     id: (_a = $('.col-md-10.col-sm-10.col-xs-8 > a', obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop(),
