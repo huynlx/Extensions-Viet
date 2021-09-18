@@ -689,9 +689,9 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
                 const getTime = $('.publishedDate', obj).text().trim().split(' ');
                 const time = {
                     date: getTime[0],
-                    time: getTime[1].split('-')[0].trim()
+                    time: getTime[1]
                 };
-                const arrDate = time.date.split(/\-/);
+                const arrDate = time.date.split(/\//);
                 const fixDate = [arrDate[1], arrDate[0], arrDate[2]].join('/');
                 const finalTime = new Date(fixDate + ' ' + time.time);
                 chapters.push(createChapter({
@@ -715,7 +715,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
-            for (let obj of $('.content > img').toArray()) {
+            for (let obj of $('#content > img').toArray()) {
                 if (!obj.attribs['src'])
                     continue;
                 let link = obj.attribs['src'];
