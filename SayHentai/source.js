@@ -909,14 +909,15 @@ class SayHentai extends paperback_extensions_common_1.Source {
         });
     }
     getSearchTags() {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            // const url = `https://sayhentai.net/`
-            // const request = createRequestObject({
-            //     url: url,
-            //     method: "GET",
-            // });
-            // const response = await this.requestManager.schedule(request, 1)
-            // const $ = this.cheerio.load(response.data);
+            const url = `https://sayhentai.net/`;
+            const request = createRequestObject({
+                url: url,
+                method: "GET",
+            });
+            const response = yield this.requestManager.schedule(request, 1);
+            const $ = this.cheerio.load(response.data);
             const arrayTags = [
                 {
                     "id": "/danh-sach-truyen.html",
@@ -1129,13 +1130,14 @@ class SayHentai extends paperback_extensions_common_1.Source {
             ];
             // const arrayTags2: Tag[] = [];
             // const arrayTags3: Tag[] = [];
-            // //the loai
-            // for (const tag of $('a', 'div#list_theloai').toArray()) {
-            //     const label = $(tag).text().trim();
-            //     const id = $(tag).attr('href') ?? label;
-            //     if (!id || !label) continue;
-            //     arrayTags.push({ id: id, label: label });
-            // }
+            //the loai
+            for (const tag of $('a', 'div#list_theloai').toArray()) {
+                const label = $(tag).text().trim();
+                const id = (_a = $(tag).attr('href')) !== null && _a !== void 0 ? _a : label;
+                if (!id || !label)
+                    continue;
+                arrayTags.push({ id: id, label: label });
+            }
             // //tinh trang
             // for (const tag of $('option', 'select#list-status').toArray()) {
             //     const label = $(tag).text().trim();
