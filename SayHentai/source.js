@@ -870,33 +870,12 @@ class SayHentai extends paperback_extensions_common_1.Source {
         var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            const search = {
-                status: "",
-                sort: "update",
-                genres: "",
-            };
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
-            const category = [];
-            tags.map((value) => {
-                if (value.indexOf('.') === -1) {
-                    category.push(value);
-                }
-                else {
-                    switch (value.split(".")[0]) {
-                        case 'sort':
-                            search.sort = (value.split(".")[1]);
-                            break;
-                        case 'status':
-                            search.status = (value.split(".")[1]);
-                            break;
-                    }
-                }
-            });
-            search.genres = (category !== null && category !== void 0 ? category : []).join(",");
             const request = createRequestObject({
-                url: `https://sayhentai.net/danh-sach-truyen.html`,
+                url: query.title ? `https://sayhentai.net/danh-sach-truyen.html?name=${query.title}` :
+                    `https://sayhentai.net/danh-sach-truyen.html?status=0&name=&genre=${tags[0]}&sort=last_update`,
                 method: "GET",
-                param: encodeURI(`?name=${query.title}&page=${page}`)
+                param: encodeURI(`&page=${page}`)
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
@@ -925,7 +904,7 @@ class SayHentai extends paperback_extensions_common_1.Source {
                     continue;
                 tags.push({ id, label: label });
             }
-            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại (Chỉ chọn 1)', tags: tags.map(x => createTag(x)) })];
+            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) })];
             return tagSections;
         });
     }
