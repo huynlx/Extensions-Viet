@@ -843,6 +843,8 @@ exports.parseChapters = ($, mangaId) => {
         i++;
         const name = ($("td:first-child > a > h2", obj).text().trim());
         const id = (_a = $('td:first-child > a', obj).attr('href').split('/').pop()) !== null && _a !== void 0 ? _a : "";
+        const time = $("td:last-child", obj).text().trim().split(/\//);
+        const finalTime = new Date([time[1], time[0], time[2]].join('/'));
         if (id == "")
             continue;
         const chapterNumber = i;
@@ -852,6 +854,7 @@ exports.parseChapters = ($, mangaId) => {
             name,
             mangaId: mangaId.split("::")[0],
             langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+            time: finalTime
         }));
     }
     return chapters;
