@@ -783,15 +783,15 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             let newUpdatedItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('.storyitem > .row', '.list-mainpage.gridview > .row').toArray().splice(0, 20)) {
-                let title = $(`div:nth-child(2) > h3.title > a`, obj).text().trim();
+            for (let obj of $('.row', '.list-mainpage .storyitem').toArray()) {
+                let title = $(`h3.title > a`, obj).text().trim();
                 let subtitle = $(`div:nth-child(2) > div:nth-child(4) > span:nth-child(1) > .color-red`, obj).text();
                 const image = $(`div:nth-child(1) > a > img`, obj).attr('src');
                 let id = (_b = $(`div:nth-child(1) > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
-                    image: image !== null && image !== void 0 ? image : "",
+                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.replace('150_150', '200')),
                     title: createIconText({
                         text: title,
                     }),
