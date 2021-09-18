@@ -619,7 +619,7 @@ exports.BlogtruyenInfo = {
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from Blogtruyen',
-    websiteBaseURL: `https://sayhentai.net/`,
+    websiteBaseURL: `https://blogtruyen.vn`,
     contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
         {
@@ -636,7 +636,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
     }
-    getMangaShareUrl(mangaId) { return `https://sayhentai.net/${mangaId}`; }
+    getMangaShareUrl(mangaId) { return `https://blogtruyen.vn${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
         var _a, _b;
