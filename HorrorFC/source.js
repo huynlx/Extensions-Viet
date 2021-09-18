@@ -600,17 +600,21 @@ class Parser {
     }
     parseViewMoreItems($) {
         const mangas = [];
+        const collectedIds = [];
         for (let manga of $('li', 'ul.row').toArray()) {
             const title = $('a', manga).attr('title');
             const id = $('a', manga).attr('href');
             const image = $('a > img', manga).first().attr('src');
             if (!id || !title)
                 continue;
-            mangas.push(createMangaTile({
-                id: id + "::" + image,
-                image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
-                title: createIconText({ text: title }),
-            }));
+            if (!collectedIds.includes(id)) {
+                mangas.push(createMangaTile({
+                    id: id + "::" + image,
+                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
+                    title: createIconText({ text: title }),
+                }));
+                collectedIds.push(id);
+            }
         }
         return mangas;
     }
