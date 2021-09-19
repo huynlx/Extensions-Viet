@@ -620,11 +620,11 @@ exports.BlogtruyenInfo = {
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from Blogtruyen',
     websiteBaseURL: `https://blogtruyen.vn`,
-    contentRating: paperback_extensions_common_1.ContentRating.ADULT,
+    contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
         {
-            text: "18+",
-            type: paperback_extensions_common_1.TagType.YELLOW
+            text: "Recommended",
+            type: paperback_extensions_common_1.TagType.BLUE
         }
     ]
 };
@@ -768,16 +768,17 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             let featuredItems = [];
             for (let manga of $('a', 'div#storyPinked').toArray()) {
-                const title = $('p:first-child', $(manga).next()).text();
+                const title = $('p:first-child', $(manga).next()).text().trim();
                 const id = $(manga).attr('href');
-                const image = (_b = (_a = $('img', manga).attr('src')) === null || _a === void 0 ? void 0 : _a.replace('182_182', '400')) !== null && _b !== void 0 ? _b : "";
-                // const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
+                const image = (_b = (_a = $('img', manga).attr('src')) === null || _a === void 0 ? void 0 : _a.replace('182_182', '350')) !== null && _b !== void 0 ? _b : "";
+                const subtitle = $('p:last-child', $(manga).next()).text().trim();
                 if (!id || !title)
                     continue;
                 featuredItems.push(createMangaTile({
                     id: id,
                     image: encodeURI(image),
-                    title: createIconText({ text: title })
+                    title: createIconText({ text: title }),
+                    subtitleText: createIconText({ text: subtitle }),
                 }));
             }
             featured.items = featuredItems;
