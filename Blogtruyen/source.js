@@ -731,8 +731,13 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c, _d, _e, _f, _g, _h;
         return __awaiter(this, void 0, void 0, function* () {
+            let featured = createHomeSection({
+                id: 'featured',
+                title: "Truyện Đề Cử",
+                type: paperback_extensions_common_1.HomeSectionType.featured
+            });
             let hot = createHomeSection({
                 id: 'hot',
                 title: "Top All",
@@ -753,20 +758,44 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             sectionCallback(newAdded);
             ///Get the section data
-            //Hot
-            let url = '';
+            //Featured
+            let url = `${DOMAIN}`;
             let request = createRequestObject({
+                url: 'https://blogtruyen.vn/thumb',
+                method: "GET",
+            });
+            let data = yield this.requestManager.schedule(request, 1);
+            let $ = this.cheerio.load(data.data);
+            let featuredItems = [];
+            for (let manga of $('a', 'div#storyPinked').toArray()) {
+                const title = $('p:first-child', $(manga).next()).text();
+                const id = $(manga).attr('href');
+                const image = (_b = (_a = $('img', manga).attr('src')) === null || _a === void 0 ? void 0 : _a.replace('182_182', '300')) !== null && _b !== void 0 ? _b : "";
+                // const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
+                if (!id || !title)
+                    continue;
+                featuredItems.push(createMangaTile({
+                    id: id,
+                    image: encodeURI(image),
+                    title: createIconText({ text: title })
+                }));
+            }
+            featured.items = featuredItems;
+            sectionCallback(featured);
+            //Hot
+            url = '';
+            request = createRequestObject({
                 url: 'https://blogtruyen.vn/ajax/Search/AjaxLoadListManga?key=tatca&orderBy=3&p=1',
                 method: "GET",
             });
             let hotItems = [];
-            let data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
+            data = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(data.data);
             for (let obj of $('p:not(:first-child)', '.list').toArray()) {
                 let title = $(`a`, obj).text().trim();
                 let subtitle = 'Chương ' + $(`span:nth-child(2)`, obj).text().trim();
-                const image = (_a = $('img', $(obj).next()).attr('src')) !== null && _a !== void 0 ? _a : "";
-                let id = (_b = $(`a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
+                const image = (_c = $('img', $(obj).next()).attr('src')) !== null && _c !== void 0 ? _c : "";
+                let id = (_d = $(`a`, obj).attr('href')) !== null && _d !== void 0 ? _d : title;
                 hotItems.push(createMangaTile({
                     id: id,
                     image: encodeURI(image.replace('150', '200')),
@@ -793,7 +822,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
                 let title = $(`h3.title > a`, obj).text().trim();
                 let subtitle = $(`div:nth-child(2) > div:nth-child(4) > span:nth-child(1) > .color-red`, obj).text();
                 const image = $(`div:nth-child(1) > a > img`, obj).attr('src');
-                let id = (_c = $(`div:nth-child(1) > a`, obj).attr('href')) !== null && _c !== void 0 ? _c : title;
+                let id = (_e = $(`div:nth-child(1) > a`, obj).attr('href')) !== null && _e !== void 0 ? _e : title;
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
@@ -818,10 +847,10 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
             for (let obj of $('a', '#top-newest-story').toArray()) {
-                let title = (_e = (_d = $(obj).attr('title')) === null || _d === void 0 ? void 0 : _d.trim()) !== null && _e !== void 0 ? _e : "";
+                let title = (_g = (_f = $(obj).attr('title')) === null || _f === void 0 ? void 0 : _f.trim()) !== null && _g !== void 0 ? _g : "";
                 // let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
                 const image = $(`img`, obj).attr('src');
-                let id = (_f = $(obj).attr("href")) !== null && _f !== void 0 ? _f : title;
+                let id = (_h = $(obj).attr("href")) !== null && _h !== void 0 ? _h : title;
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
                     id: id,
