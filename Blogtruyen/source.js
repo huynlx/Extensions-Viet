@@ -882,10 +882,10 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: query.title ? encodeURI(`https://sayhentai.net/danh-sach-truyen.html?name=${query.title}`) :
-                    (tags[0] === 'all' ? 'https://sayhentai.net/danh-sach-truyen.html?' : encodeURI(`https://sayhentai.net/danh-sach-truyen.html?status=0&name=&genre=${tags[0]}&sort=last_update`)),
+                url: query.title ? encodeURI(`https://blogtruyen.vn/timkiem/nangcao/1/0/-1/-1?txt=${query.title}`) :
+                    encodeURI(`https://blogtruyen.vn/ajax/Category/AjaxLoadMangaByCategory?id=${tags[0]}&orderBy=1`),
                 method: "GET",
-                param: encodeURI(`&page=${page}`)
+                param: encodeURI(`&p=${page}`)
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
@@ -901,7 +901,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const tags = [];
-            const url = `https://blogtruyen.vn/thumb`;
+            const url = `https://blogtruyen.vn/timkiem/nangcao`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -909,9 +909,9 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             //the loai
-            for (const tag of $('li > a', '.submenu.category.list-unstyled').toArray()) {
-                const label = $('h2', tag).text().trim();
-                const id = (_a = $(tag).attr('href')) !== null && _a !== void 0 ? _a : label;
+            for (const tag of $('li', '.list-unstyled.row').toArray()) {
+                const label = $(tag).text().trim();
+                const id = (_a = $(tag).attr('data-id')) !== null && _a !== void 0 ? _a : label;
                 if (!id || !label)
                     continue;
                 tags.push({ id: id, label: label });
