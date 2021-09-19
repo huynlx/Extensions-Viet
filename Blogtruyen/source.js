@@ -949,7 +949,7 @@ exports.parseSearch = ($) => {
         let id = (_b = $(`a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
         if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
             mangas.push(createMangaTile({
-                id: encodeURIComponent(id),
+                id: encodeURI(id),
                 image: encodeURI(image.replace('150', '200')),
                 title: createIconText({ text: decodeHTMLEntity(title) }),
                 subtitleText: createIconText({ text: subtitle }),
