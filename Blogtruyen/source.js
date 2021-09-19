@@ -735,7 +735,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
-                title: "TOP ALL",
+                title: "Top all",
                 view_more: true,
             });
             let newUpdated = createHomeSection({
@@ -846,7 +846,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             let url = '';
             switch (homepageSectionId) {
                 case "hot":
-                    url = `https://sayhentai.net/danh-sach-truyen.html?status=0&sort=views&page=${page}`;
+                    url = `https://blogtruyen.vn/ajax/Category/AjaxLoadMangaByCategory?id=31&orderBy=3&p=${page}`;
                     break;
                 case "new_updated":
                     url = `https://blogtruyen.vn/thumb-${page}`;
