@@ -811,13 +811,16 @@ class Parser {
             const title = $('.slide-caption > h3 > a', manga).text();
             const id = (_a = $('a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
             const image = $('a > img.lazyOwl', manga).attr('data-src');
-            // const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
+            const subtitle = $('.slide-caption > a', manga).text().trim() + ' - ' + $('.slide-caption > .time', manga).text().trim();
             if (!id || !title)
                 continue;
             featuredItems.push(createMangaTile({
                 id: id,
                 image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
-                title: createIconText({ text: title })
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({
+                    text: subtitle,
+                }),
             }));
         }
         return featuredItems;
