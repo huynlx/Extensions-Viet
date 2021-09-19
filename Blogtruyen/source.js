@@ -641,7 +641,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
     getMangaDetails(mangaId) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://blogtruyen.vn${mangaId}`;
+            const url = `https://truyentranhaudio.com/truyen-chu-gioi-tan-the-online.html`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
