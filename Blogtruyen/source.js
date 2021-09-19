@@ -641,7 +641,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
     getMangaDetails(mangaId) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://truyentranhaudio.com/truyen-chu-gioi-tan-the-online.html`;
+            const url = `https://blogtruyen.vn${mangaId}`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -898,217 +898,24 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
         });
     }
     getSearchTags() {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            const tags = [
-                {
-                    "id": "all",
-                    "label": "Tất cả"
-                },
-                {
-                    "id": "18",
-                    "label": "18+"
-                },
-                {
-                    "id": "action",
-                    "label": "Action"
-                },
-                {
-                    "id": "adult",
-                    "label": "Adult"
-                },
-                {
-                    "id": "adventure",
-                    "label": "Adventure"
-                },
-                {
-                    "id": "anime",
-                    "label": "Anime"
-                },
-                {
-                    "id": "chuyển sinh",
-                    "label": "Chuyển Sinh"
-                },
-                {
-                    "id": "comedy",
-                    "label": "Comedy"
-                },
-                {
-                    "id": "comic",
-                    "label": "Comic"
-                },
-                {
-                    "id": "cooking",
-                    "label": "Cooking"
-                },
-                {
-                    "id": "cổ đại",
-                    "label": "Cổ Đại"
-                },
-                {
-                    "id": "doujinshi",
-                    "label": "Doujinshi"
-                },
-                {
-                    "id": "drama",
-                    "label": "Drama"
-                },
-                {
-                    "id": "đam mỹ",
-                    "label": "Đam Mỹ"
-                },
-                {
-                    "id": "ecchi",
-                    "label": "Ecchi"
-                },
-                {
-                    "id": "fantasy",
-                    "label": "Fantasy"
-                },
-                {
-                    "id": "gender bender",
-                    "label": "Gender Bender"
-                },
-                {
-                    "id": "harem",
-                    "label": "Harem"
-                },
-                {
-                    "id": "historical",
-                    "label": "Historical"
-                },
-                {
-                    "id": "horror",
-                    "label": "Horror"
-                },
-                {
-                    "id": "isekai",
-                    "label": "Isekai"
-                },
-                {
-                    "id": "josei",
-                    "label": "Josei"
-                },
-                {
-                    "id": "live action",
-                    "label": "Live action"
-                },
-                {
-                    "id": "manga",
-                    "label": "Manga"
-                },
-                {
-                    "id": "manhua",
-                    "label": "Manhua"
-                },
-                {
-                    "id": "manhwa",
-                    "label": "Manhwa"
-                },
-                {
-                    "id": "martial arts",
-                    "label": "Martial Arts"
-                },
-                {
-                    "id": "mature",
-                    "label": "Mature"
-                },
-                {
-                    "id": "mecha",
-                    "label": "Mecha"
-                },
-                {
-                    "id": "mystery",
-                    "label": "Mystery"
-                },
-                {
-                    "id": "ngôn tình",
-                    "label": "Ngôn Tình"
-                },
-                {
-                    "id": "one shot",
-                    "label": "One shot"
-                },
-                {
-                    "id": "psychological",
-                    "label": "Psychological"
-                },
-                {
-                    "id": "romance",
-                    "label": "Romance"
-                },
-                {
-                    "id": "school life",
-                    "label": "School Life"
-                },
-                {
-                    "id": "sci-fi",
-                    "label": "Sci-fi"
-                },
-                {
-                    "id": "seinen",
-                    "label": "Seinen"
-                },
-                {
-                    "id": "shoujo",
-                    "label": "Shoujo"
-                },
-                {
-                    "id": "shoujo ai",
-                    "label": "Shoujo Ai"
-                },
-                {
-                    "id": "shounen",
-                    "label": "Shounen"
-                },
-                {
-                    "id": "shounen ai",
-                    "label": "Shounen Ai"
-                },
-                {
-                    "id": "slice of life",
-                    "label": "Slice of Life"
-                },
-                {
-                    "id": "smut",
-                    "label": "Smut"
-                },
-                {
-                    "id": "soft yaoi",
-                    "label": "Soft Yaoi"
-                },
-                {
-                    "id": "soft yuri",
-                    "label": "Soft Yuri"
-                },
-                {
-                    "id": "sports",
-                    "label": "Sports"
-                },
-                {
-                    "id": "supernatural",
-                    "label": "Supernatural"
-                },
-                {
-                    "id": "tragedy",
-                    "label": "Tragedy"
-                },
-                {
-                    "id": "trinh thám",
-                    "label": "Trinh Thám"
-                },
-                {
-                    "id": "truyện màu",
-                    "label": "Truyện Màu"
-                },
-                {
-                    "id": "webtoon",
-                    "label": "Webtoon"
-                },
-                {
-                    "id": "xuyên không",
-                    "label": "Xuyên Không"
-                }
-            ];
+            const tags = [];
+            const url = `https://blogtruyen.vn/thumb`;
+            const request = createRequestObject({
+                url: url,
+                method: "GET",
+            });
+            const response = yield this.requestManager.schedule(request, 1);
+            const $ = this.cheerio.load(response.data);
+            //the loai
+            for (const tag of $('li > a', '.submenu').toArray()) {
+                const label = $('h2', tag).text().trim();
+                const id = (_a = $(tag).attr('href')) !== null && _a !== void 0 ? _a : label;
+                if (!id || !label)
+                    continue;
+                tags.push({ id: id, label: label });
+            }
             const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) })];
             return tagSections;
         });
