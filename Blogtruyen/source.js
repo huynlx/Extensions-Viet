@@ -731,21 +731,21 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d, _e, _f;
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
-                title: "Top Trong Ngày",
+                title: "TOP ALL",
                 view_more: true,
             });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
-                title: "Mới Cập Nhật",
+                title: "Truyện mới cập nhật",
                 view_more: true,
             });
             let newAdded = createHomeSection({
                 id: 'new_added',
-                title: "Truyện Mới",
+                title: "Truyện mới đăng",
                 view_more: false,
             });
             //Load empty sections
@@ -756,21 +756,20 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             //Hot
             let url = '';
             let request = createRequestObject({
-                url: 'https://sayhentai.net/',
+                url: 'https://blogtruyen.vn/ajax/Category/AjaxLoadMangaByCategory?id=31&orderBy=3&p=1',
                 method: "GET",
             });
             let hotItems = [];
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            for (let obj of $('li', '#main-content > .wrap-content-part:nth-child(1) > .body-content-part > ul').toArray()) {
-                let title = $(`.info-bottom > a`, obj).text().trim();
-                let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
-                const image = $(`a > img`, obj).attr('src');
-                let id = (_a = $(`.info-bottom > a`, obj).attr("href")) !== null && _a !== void 0 ? _a : title;
-                // if (!id || !subtitle) continue;
+            for (let obj of $('p:not(:first-child)', '.list').toArray()) {
+                let title = $(`a`, obj).text().trim();
+                let subtitle = 'Chương ' + $(`span:nth-child(2)`, obj).text().trim();
+                const image = (_a = $('img', $(obj).next()).attr('src')) !== null && _a !== void 0 ? _a : "";
+                let id = (_b = $(`a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
                 hotItems.push(createMangaTile({
                     id: id,
-                    image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://sayhentai.net/' + image)),
+                    image: encodeURI(image.replace('150', '200')),
                     title: createIconText({
                         text: title,
                     }),
@@ -794,7 +793,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
                 let title = $(`h3.title > a`, obj).text().trim();
                 let subtitle = $(`div:nth-child(2) > div:nth-child(4) > span:nth-child(1) > .color-red`, obj).text();
                 const image = $(`div:nth-child(1) > a > img`, obj).attr('src');
-                let id = (_b = $(`div:nth-child(1) > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
+                let id = (_c = $(`div:nth-child(1) > a`, obj).attr('href')) !== null && _c !== void 0 ? _c : title;
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
@@ -819,10 +818,10 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
             for (let obj of $('a', '#top-newest-story').toArray()) {
-                let title = (_d = (_c = $(obj).attr('title')) === null || _c === void 0 ? void 0 : _c.trim()) !== null && _d !== void 0 ? _d : "";
+                let title = (_e = (_d = $(obj).attr('title')) === null || _d === void 0 ? void 0 : _d.trim()) !== null && _e !== void 0 ? _e : "";
                 // let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
                 const image = $(`img`, obj).attr('src');
-                let id = (_e = $(obj).attr("href")) !== null && _e !== void 0 ? _e : title;
+                let id = (_f = $(obj).attr("href")) !== null && _f !== void 0 ? _f : title;
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
                     id: id,
