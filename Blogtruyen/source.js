@@ -909,7 +909,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             //the loai
-            for (const tag of $('li > a', '.submenu').toArray()) {
+            for (const tag of $('li > a', '.submenu.category.list-unstyled').toArray()) {
                 const label = $('h2', tag).text().trim();
                 const id = (_a = $(tag).attr('href')) !== null && _a !== void 0 ? _a : label;
                 if (!id || !label)
