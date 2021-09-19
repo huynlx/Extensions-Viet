@@ -844,15 +844,19 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             let param = '';
             let url = '';
+            let select = 1;
             switch (homepageSectionId) {
                 case "hot":
                     url = `https://blogtruyen.vn/ajax/Category/AjaxLoadMangaByCategory?id=31&orderBy=3&p=${page}`;
+                    select = 0;
                     break;
                 case "new_updated":
                     url = `https://blogtruyen.vn/thumb-${page}`;
+                    select = 1;
                     break;
                 case "new_added":
                     url = `https://sayhentai.net/danh-sach-truyen.html?status=0&sort=id&page=${page}`;
+                    select = 1;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
@@ -864,7 +868,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            const manga = BlogtruyenParser_1.parseViewMore($);
+            const manga = BlogtruyenParser_1.parseViewMore($, select);
             metadata = !BlogtruyenParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: manga,
@@ -1144,23 +1148,46 @@ exports.parseSearch = ($) => {
     }
     return mangas;
 };
-exports.parseViewMore = ($) => {
-    var _a;
+exports.parseViewMore = ($, select) => {
+    var _a, _b, _c;
     const manga = [];
     const collectedIds = [];
-    for (let obj of $('.row', '.list-mainpage .storyitem').toArray()) {
-        let title = $(`h3.title > a`, obj).text().trim();
-        let subtitle = $(`div:nth-child(2) > div:nth-child(4) > span:nth-child(1) > .color-red`, obj).text();
-        const image = $(`div:nth-child(1) > a > img`, obj).attr('src');
-        let id = (_a = $(`div:nth-child(1) > a`, obj).attr('href')) !== null && _a !== void 0 ? _a : title;
-        if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
-            manga.push(createMangaTile({
-                id: id,
-                image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.replace('150_150', '200')),
-                title: createIconText({ text: decodeHTMLEntity(title) }),
-                subtitleText: createIconText({ text: 'Chương ' + subtitle }),
-            }));
-            collectedIds.push(id);
+    if (select === 1) {
+        for (let obj of $('.row', '.list-mainpage .storyitem').toArray()) {
+            let title = $(`h3.title > a`, obj).text().trim();
+            let subtitle = $(`div:nth-child(2) > div:nth-child(4) > span:nth-child(1) > .color-red`, obj).text();
+            const image = $(`div:nth-child(1) > a > img`, obj).attr('src');
+            let id = (_a = $(`div:nth-child(1) > a`, obj).attr('href')) !== null && _a !== void 0 ? _a : title;
+            if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
+                manga.push(createMangaTile({
+                    id: id,
+                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.replace('150_150', '200')),
+                    title: createIconText({ text: decodeHTMLEntity(title) }),
+                    subtitleText: createIconText({ text: 'Chương ' + subtitle }),
+                }));
+                collectedIds.push(id);
+            }
+        }
+    }
+    else {
+        for (let obj of $('p:not(:first-child)', '.list').toArray()) {
+            let title = $(`a`, obj).text().trim();
+            let subtitle = 'Chương ' + $(`span:nth-child(2)`, obj).text().trim();
+            const image = (_b = $('img', $(obj).next()).attr('src')) !== null && _b !== void 0 ? _b : "";
+            let id = (_c = $(`a`, obj).attr('href')) !== null && _c !== void 0 ? _c : title;
+            if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
+                manga.push(createMangaTile({
+                    id: id,
+                    image: encodeURI(image.replace('150', '200')),
+                    title: createIconText({
+                        text: title,
+                    }),
+                    subtitleText: createIconText({
+                        text: subtitle,
+                    }),
+                }));
+                collectedIds.push(id);
+            }
         }
     }
     return manga;
