@@ -939,19 +939,23 @@ exports.generateSearch = (query) => {
     return encodeURI(keyword);
 };
 exports.parseSearch = ($) => {
-    var _a;
+    var _a, _b;
+    const collectedIds = [];
     const mangas = [];
-    for (let obj of $('li', 'ul#danhsachtruyen').toArray()) {
-        let title = $(`.info-bottom > a`, obj).text().trim();
-        let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
-        var image = $('a', obj).first().attr('data-src');
-        let id = (_a = $(`.info-bottom > a`, obj).attr("href")) !== null && _a !== void 0 ? _a : title;
-        mangas.push(createMangaTile({
-            id: encodeURIComponent(id),
-            image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://sayhentai.net/' + image)),
-            title: createIconText({ text: decodeHTMLEntity(title) }),
-            subtitleText: createIconText({ text: subtitle }),
-        }));
+    for (let obj of $('p:not(:first-child)', '.list').toArray()) {
+        let title = $(`a`, obj).text().trim();
+        let subtitle = 'Chương ' + $(`span:nth-child(2)`, obj).text().trim();
+        const image = (_a = $('img', $(obj).next()).attr('src')) !== null && _a !== void 0 ? _a : "";
+        let id = (_b = $(`a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
+        if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
+            mangas.push(createMangaTile({
+                id: encodeURIComponent(id),
+                image: encodeURI(image.replace('150', '200')),
+                title: createIconText({ text: decodeHTMLEntity(title) }),
+                subtitleText: createIconText({ text: subtitle }),
+            }));
+            collectedIds.push(id);
+        }
     }
     return mangas;
 };
