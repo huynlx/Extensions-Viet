@@ -735,7 +735,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
-                title: "Top all",
+                title: "Top All",
                 view_more: true,
             });
             let newUpdated = createHomeSection({
@@ -756,7 +756,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             //Hot
             let url = '';
             let request = createRequestObject({
-                url: 'https://blogtruyen.vn/ajax/Category/AjaxLoadMangaByCategory?id=31&orderBy=3&p=1',
+                url: 'https://blogtruyen.vn/ajax/Search/AjaxLoadListManga?key=tatca&orderBy=3&p=1',
                 method: "GET",
             });
             let hotItems = [];
@@ -847,17 +847,17 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             let select = 1;
             switch (homepageSectionId) {
                 case "hot":
-                    url = `https://blogtruyen.vn/ajax/Category/AjaxLoadMangaByCategory?id=31&orderBy=3&p=${page}`;
+                    url = `https://blogtruyen.vn/ajax/Search/AjaxLoadListManga?key=tatca&orderBy=3&p=${page}`;
                     select = 0;
                     break;
                 case "new_updated":
                     url = `https://blogtruyen.vn/thumb-${page}`;
                     select = 1;
                     break;
-                case "new_added":
-                    url = `https://sayhentai.net/danh-sach-truyen.html?status=0&sort=id&page=${page}`;
-                    select = 1;
-                    break;
+                // case "new_added":
+                //     url = `https://sayhentai.net/danh-sach-truyen.html?status=0&sort=id&page=${page}`;
+                //     select = 1;
+                //     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
             }
