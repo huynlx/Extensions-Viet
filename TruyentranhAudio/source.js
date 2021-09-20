@@ -635,6 +635,68 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             requestsPerSecond: 5,
             requestTimeout: 20000
         });
+        // async getSearchTags(): Promise<TagSection[]> {
+        //     const url = `${DOMAIN}tim-kiem-nang-cao.html`
+        //     const request = createRequestObject({
+        //         url: url,
+        //         method: "GET",
+        //     });
+        //     const response = await this.requestManager.schedule(request, 1)
+        //     const $ = this.cheerio.load(response.data);
+        //     const arrayTags: Tag[] = [];
+        //     const arrayTags2: Tag[] = [];
+        //     const arrayTags3: Tag[] = [];
+        //     const arrayTags4: Tag[] = [];
+        //     const arrayTags5: Tag[] = [];
+        //     //the loai
+        //     for (const tag of $('div.genre-item', 'div.col-sm-10').toArray()) {
+        //         const label = $(tag).text().trim();
+        //         const id = $('span', tag).attr('data-id') ?? label;
+        //         if (!id || !label) continue;
+        //         arrayTags.push({ id: id, label: label });
+        //     }
+        //     //quoc gia
+        //     for (const tag of $('option', 'select#country').toArray()) {
+        //         const label = $(tag).text().trim();
+        //         const id = 'country.' + $(tag).attr('value') ?? label;
+        //         if (!id || !label) continue;
+        //         arrayTags2.push({ id: id, label: label });
+        //     }
+        //     //tinh trang
+        //     for (const tag of $('option', 'select#status').toArray()) {
+        //         const label = $(tag).text().trim();
+        //         const id = 'status.' + $(tag).attr('value') ?? label;
+        //         if (!id || !label) continue;
+        //         arrayTags3.push({ id: id, label: label });
+        //     }
+        //     //so luong chuong
+        //     for (const tag of $('option', 'select#minchapter').toArray()) {
+        //         const label = $(tag).text().trim();
+        //         const id = 'minchapter.' + $(tag).attr('value') ?? label;
+        //         if (!id || !label) continue;
+        //         arrayTags4.push({ id: id, label: label });
+        //     }
+        //     //sap xep
+        //     for (const tag of $('option', 'select#sort').toArray()) {
+        //         const label = $(tag).text().trim();
+        //         const id = 'sort.' + $(tag).attr('value') ?? label;
+        //         if (!id || !label) continue;
+        //         arrayTags5.push({ id: id, label: label });
+        //     }
+        //     const tagSections: TagSection[] = [
+        //         createTagSection({ id: '0', label: 'Thể Loại Truyện', tags: arrayTags.map(x => createTag(x)) }),
+        //         createTagSection({ id: '1', label: 'Quốc Gia (Chỉ chọn 1)', tags: arrayTags2.map(x => createTag(x)) }),
+        //         createTagSection({ id: '2', label: 'Tình Trạng (Chỉ chọn 1)', tags: arrayTags3.map(x => createTag(x)) }),
+        //         createTagSection({ id: '3', label: 'Số Lượng Chương (Chỉ chọn 1)', tags: arrayTags4.map(x => createTag(x)) }),
+        //         createTagSection({ id: '4', label: 'Sắp xếp (Chỉ chọn 1)', tags: arrayTags5.map(x => createTag(x)) }),
+        //     ]
+        //     return tagSections;
+        // }
+        // globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
+        //     return {
+        //         referer: `${DOMAIN} `
+        //     }
+        // }
     }
     getMangaShareUrl(mangaId) { return `${DOMAIN}${mangaId}`; }
     ;
@@ -911,68 +973,6 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                 metadata
             });
         });
-    }
-    // async getSearchTags(): Promise<TagSection[]> {
-    //     const url = `${DOMAIN}tim-kiem-nang-cao.html`
-    //     const request = createRequestObject({
-    //         url: url,
-    //         method: "GET",
-    //     });
-    //     const response = await this.requestManager.schedule(request, 1)
-    //     const $ = this.cheerio.load(response.data);
-    //     const arrayTags: Tag[] = [];
-    //     const arrayTags2: Tag[] = [];
-    //     const arrayTags3: Tag[] = [];
-    //     const arrayTags4: Tag[] = [];
-    //     const arrayTags5: Tag[] = [];
-    //     //the loai
-    //     for (const tag of $('div.genre-item', 'div.col-sm-10').toArray()) {
-    //         const label = $(tag).text().trim();
-    //         const id = $('span', tag).attr('data-id') ?? label;
-    //         if (!id || !label) continue;
-    //         arrayTags.push({ id: id, label: label });
-    //     }
-    //     //quoc gia
-    //     for (const tag of $('option', 'select#country').toArray()) {
-    //         const label = $(tag).text().trim();
-    //         const id = 'country.' + $(tag).attr('value') ?? label;
-    //         if (!id || !label) continue;
-    //         arrayTags2.push({ id: id, label: label });
-    //     }
-    //     //tinh trang
-    //     for (const tag of $('option', 'select#status').toArray()) {
-    //         const label = $(tag).text().trim();
-    //         const id = 'status.' + $(tag).attr('value') ?? label;
-    //         if (!id || !label) continue;
-    //         arrayTags3.push({ id: id, label: label });
-    //     }
-    //     //so luong chuong
-    //     for (const tag of $('option', 'select#minchapter').toArray()) {
-    //         const label = $(tag).text().trim();
-    //         const id = 'minchapter.' + $(tag).attr('value') ?? label;
-    //         if (!id || !label) continue;
-    //         arrayTags4.push({ id: id, label: label });
-    //     }
-    //     //sap xep
-    //     for (const tag of $('option', 'select#sort').toArray()) {
-    //         const label = $(tag).text().trim();
-    //         const id = 'sort.' + $(tag).attr('value') ?? label;
-    //         if (!id || !label) continue;
-    //         arrayTags5.push({ id: id, label: label });
-    //     }
-    //     const tagSections: TagSection[] = [
-    //         createTagSection({ id: '0', label: 'Thể Loại Truyện', tags: arrayTags.map(x => createTag(x)) }),
-    //         createTagSection({ id: '1', label: 'Quốc Gia (Chỉ chọn 1)', tags: arrayTags2.map(x => createTag(x)) }),
-    //         createTagSection({ id: '2', label: 'Tình Trạng (Chỉ chọn 1)', tags: arrayTags3.map(x => createTag(x)) }),
-    //         createTagSection({ id: '3', label: 'Số Lượng Chương (Chỉ chọn 1)', tags: arrayTags4.map(x => createTag(x)) }),
-    //         createTagSection({ id: '4', label: 'Sắp xếp (Chỉ chọn 1)', tags: arrayTags5.map(x => createTag(x)) }),
-    //     ]
-    //     return tagSections;
-    // }
-    globalRequestHeaders() {
-        return {
-            referer: `${DOMAIN} `
-        };
     }
 }
 exports.TruyentranhAudio = TruyentranhAudio;
