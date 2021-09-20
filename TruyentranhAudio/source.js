@@ -641,7 +641,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: DOMAIN + mangaId,
+                url: 'https://truyentranhaudio.online/truyen-guard-pass.html',
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
