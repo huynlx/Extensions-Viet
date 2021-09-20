@@ -638,6 +638,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
         });
     }
     getMangaDetails(mangaId) {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
                 url: DOMAIN + mangaId,
@@ -660,7 +661,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             //     creator.push(name);
             // }
             // status = $('.txt > p:nth-of-type(2)').text().toLowerCase().includes("đang cập nhật") ? 1 : 0;
-            // const image = $('.info-cover > img.thumnail').attr('src') ?? "";
+            const image = (_a = $('.info-cover > img.thumnail').attr('src')) !== null && _a !== void 0 ? _a : "";
             // const title = $('.manga-info > h3').text();
             return createManga({
                 id: mangaId,
@@ -668,7 +669,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                 artist: 'test',
                 desc: desc,
                 titles: ['test'],
-                image: 'https://f40-zpg.zdn.vn/5907652352288567255/ffd08cfe8bff79a120ee.jpg',
+                image: image,
                 status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
