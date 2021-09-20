@@ -639,7 +639,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
     getMangaShareUrl(mangaId) { return `https://hentaivl.com${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
-        var _a, _b;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             const url = `${mangaId}`;
             const request = createRequestObject({
@@ -659,7 +659,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             }
             creator = $('.info > p:nth-child(1) > span').text();
             status = $('.post-status > div:nth-child(2) > .summary-content').text().trim().toLowerCase().includes("đang") ? 1 : 0;
-            const image = (_b = $('.tab-summary img').attr('data-src')) !== null && _b !== void 0 ? _b : "";
+            const image = (_c = (_b = $('.tab-summary img').attr('data-src')) === null || _b === void 0 ? void 0 : _b.replace('-193x278', '')) !== null && _c !== void 0 ? _c : "";
             return createManga({
                 id: mangaId,
                 author: creator,
