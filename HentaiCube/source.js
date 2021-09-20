@@ -641,7 +641,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
     getMangaDetails(mangaId) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://hentaivl.com${mangaId}`;
+            const url = `${mangaId}`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -651,21 +651,21 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             let tags = [];
             let creator = '';
             let status = 1; //completed, 1 = Ongoing
-            let desc = $('.ep-content-story').text();
-            for (const t of $('.type_box > .type > a.cate-itm').toArray()) {
+            let desc = $('.description-summary > .summary__content').text();
+            for (const t of $('.post-content > div:nth-child(8) > .summary-content a').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
             creator = $('.info > p:nth-child(1) > span').text();
-            status = $('.info > p:nth-child(4) > span').text().toLowerCase().includes("đang") ? 1 : 0;
-            const image = (_b = $('.novel-thumb > img').attr('src')) !== null && _b !== void 0 ? _b : "";
+            status = $('.post-status > div:nth-child(2) > .summary-content').text().trim().toLowerCase().includes("đang") ? 1 : 0;
+            const image = (_b = $('.tab-summary img').attr('data-src')) !== null && _b !== void 0 ? _b : "";
             return createManga({
                 id: mangaId,
                 author: creator,
                 artist: creator,
                 desc: desc,
-                titles: [$('.title_content > h1').text().trim()],
+                titles: [$('.post-title > h1').text().trim()],
                 image: image,
                 status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
