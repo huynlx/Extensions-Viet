@@ -858,7 +858,7 @@ class HentaiVL extends paperback_extensions_common_1.Source {
             const request = createRequestObject({
                 url,
                 method,
-                param: encodeURI(`&page=${page}`)
+                param: encodeURI(`?page=${page}`)
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
@@ -878,7 +878,7 @@ class HentaiVL extends paperback_extensions_common_1.Source {
             const request = createRequestObject({
                 url: encodeURI(`https://hentaivl.com${tags[0] ? tags[0] : ''}`),
                 method: "GET",
-                param: encodeURI(`&page=${page}`)
+                param: encodeURI(`?page=${page}`)
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
