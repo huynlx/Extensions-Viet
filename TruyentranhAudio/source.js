@@ -638,37 +638,43 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
         });
     }
     getMangaDetails(mangaId) {
-        var _a;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: 'https://truyentranhaudio.com/truyen-ban-trai-ve-si.html',
+                url: DOMAIN + mangaId,
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
+            // console.log(data);
             let tags = [];
             // let creator = '';
+            console.log(DOMAIN + mangaId);
             let status = 1; //completed, 1 = Ongoing
-            // let desc = $('.summary-content > p').text();
-            // console.log(desc);
-            // for (const t of $('a', '.manga-info').toArray()) {
-            //     const genre = $(t).text().trim()
-            //     const id = $(t).attr('href') ?? genre
-            //     tags.push(createTag({ label: genre, id }));
-            // }
+            let desc = $('.summary-content > p').text();
+            for (const t of $('a', '.manga-info > li:nth-of-type(3)').toArray()) {
+                const genre = $(t).text().trim();
+                const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
+                console.log(genre + ': ' + id);
+                tags.push(createTag({ label: genre, id }));
+            }
             // for (const c of $('a', '.txt > p:nth-of-type(1)').toArray()) {
             //     const name = $(c).text().trim()
             //     creator.push(name);
             // }
             // status = $('.txt > p:nth-of-type(2)').text().toLowerCase().includes("đang cập nhật") ? 1 : 0;
-            const image = (_a = $('.info-cover > img.thumnail').attr('src')) !== null && _a !== void 0 ? _a : "";
+            const image = (_b = $('.well.info-cover > img.thumnail').attr('src')) !== null && _b !== void 0 ? _b : "https://f34-zpg.zdn.vn/2025529972274996605/1e856471b47f46211f6e.jpg";
+            console.log('image: ' + image);
+            console.log('title: ' + $('.manga-info > h3').text());
+            console.log('desc: ' + desc + '/n');
+            // console.log('tags: ' + tags);
             // const title = $('.manga-info > h3').text();
             return createManga({
                 id: mangaId,
                 author: 'test',
                 artist: 'test',
-                desc: 'test',
-                titles: ['test'],
+                desc,
+                titles: [$('.manga-info > h3').text()],
                 image: image,
                 status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
