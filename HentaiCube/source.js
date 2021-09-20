@@ -726,7 +726,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d, _e, _f;
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
@@ -788,8 +788,8 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                 for (let obj2 of $('.page-item-detail', obj).toArray()) {
                     let title = (_c = $(`a`, obj2).first().attr('title')) === null || _c === void 0 ? void 0 : _c.trim();
                     let subtitle = $(`.chapter-item  > span > a`, obj2).text().trim();
-                    let image = $(`a > img`, obj2).attr('data-src');
-                    let id = (_d = $(`a`, obj2).first().attr('href')) === null || _d === void 0 ? void 0 : _d.trim();
+                    let image = (_d = $(`a > img`, obj2).attr('data-src')) === null || _d === void 0 ? void 0 : _d.replace('-110x150', '');
+                    let id = (_e = $(`a`, obj2).first().attr('href')) === null || _e === void 0 ? void 0 : _e.trim();
                     newUpdatedItems.push(createMangaTile({
                         id: id !== null && id !== void 0 ? id : "",
                         image: image !== null && image !== void 0 ? image : "",
@@ -817,7 +817,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                 let title = $(`h3.title > a`, obj).text().trim();
                 let subtitle = $(`.chapter > a`, obj).text();
                 const image = $(`.manga-thumb > a > img`, obj).attr('data-original');
-                let id = (_e = $(`h3.title > a`, obj).attr('href')) !== null && _e !== void 0 ? _e : title;
+                let id = (_f = $(`h3.title > a`, obj).attr('href')) !== null && _f !== void 0 ? _f : title;
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
                     id: id,
