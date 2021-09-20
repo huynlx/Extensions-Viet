@@ -717,9 +717,9 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(response.data);
             const pages = [];
             for (let obj of $('.chapter-content > img').toArray()) {
-                if (!obj.attribs['src'])
+                if (!obj.attribs['data-src'])
                     continue;
-                let link = obj.attribs['src'];
+                let link = obj.attribs['data-src'];
                 pages.push(link);
             }
             const chapterDetails = createChapterDetails({
