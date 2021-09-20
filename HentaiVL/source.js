@@ -833,10 +833,43 @@ class HentaiVL extends paperback_extensions_common_1.Source {
             sectionCallback(newAdded);
         });
     }
-    getViewMoreItems(homepageSectionId, metadata) {
+    // async getViewMoreItems(homepageSectionId: string, metadata: any): Promise<PagedResults> {
+    //     let page: number = metadata?.page ?? 1;
+    //     let param = '';
+    //     let url = '';
+    //     let select = 1;
+    //     switch (homepageSectionId) {
+    //         case "hot":
+    //             url = `https://hentaivl.com/`;
+    //             select = 0;
+    //             break;
+    //         case "new_updated":
+    //             url = `https://hentaivl.com/`;
+    //             select = 1;
+    //             break;
+    //         case "new_added":
+    //             url = `https://hentaivl.com/`;
+    //             select = 2;
+    //             break;
+    //         default:
+    //             return Promise.resolve(createPagedResults({ results: [] }))
+    //     }
+    //     const request = createRequestObject({
+    //         url,
+    //         method,
+    //         param
+    //     });
+    //     const response = await this.requestManager.schedule(request, 1);
+    //     const $ = this.cheerio.load(response.data);
+    //     const manga = parseViewMore($, select);
+    //     metadata = !isLastPage($) ? { page: page + 1 } : undefined;
+    //     return createPagedResults({
+    //         results: manga,
+    //         metadata,
+    //     });
+    // }
+    getViewMoreItems(homepageSectionId, _metadata) {
         return __awaiter(this, void 0, void 0, function* () {
-            // let page: number = metadata?.page ?? 1;
-            let param = '';
             let url = '';
             let select = 1;
             switch (homepageSectionId) {
@@ -857,16 +890,15 @@ class HentaiVL extends paperback_extensions_common_1.Source {
             }
             const request = createRequestObject({
                 url,
-                method,
-                param
+                method
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            const manga = HentaiVLParser_1.parseViewMore($, select);
-            metadata = undefined;
+            // This source parses JSON and never requires additional pages
             return createPagedResults({
-                results: manga,
+                results: HentaiVLParser_1.parseViewMore($, select)
             });
+            // return parseViewMore(response.data, select);
         });
     }
     getSearchResults(query, metadata) {
