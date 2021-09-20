@@ -641,16 +641,16 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: DOMAIN + mangaId,
+                url: 'https://truyentranhaudio.com/truyen-ban-trai-ve-si.html',
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data); //lỗi từ dòng này
+            let $ = this.cheerio.load(data.data);
             let tags = [];
             // let creator = '';
             let status = 1; //completed, 1 = Ongoing
-            let desc = $('.summary-content > p').text();
-            console.log(desc);
+            // let desc = $('.summary-content > p').text();
+            // console.log(desc);
             // for (const t of $('a', '.manga-info').toArray()) {
             //     const genre = $(t).text().trim()
             //     const id = $(t).attr('href') ?? genre
@@ -667,7 +667,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                 id: mangaId,
                 author: 'test',
                 artist: 'test',
-                desc: desc,
+                desc: 'test',
                 titles: ['test'],
                 image: image,
                 status,
