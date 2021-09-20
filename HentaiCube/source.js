@@ -841,11 +841,11 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             let select = 1;
             switch (homepageSectionId) {
                 case "hot":
-                    url = `https://hentaivl.com/`;
+                    url = `https://hentaicube.net/page/${page}/`;
                     select = 0;
                     break;
                 case "new_updated":
-                    url = `https://hentaivl.com/`;
+                    url = `https://hentaicube.net/page/${page}/`;
                     select = 1;
                     break;
                 case "new_added":
@@ -863,7 +863,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             let manga = HentaiCubeParser_1.parseViewMore($, select);
-            metadata = undefined;
+            metadata = !HentaiCubeParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: manga,
                 metadata,
@@ -961,36 +961,38 @@ exports.parseSearch = ($) => {
     return mangas;
 };
 exports.parseViewMore = ($, select) => {
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
     const manga = [];
     const collectedIds = [];
-    if (select === 0) {
-        for (let obj of $('li', '.list-hot').toArray()) {
-            let title = $(`.title`, obj).text().trim();
-            let subtitle = $(`.chapter > a`, obj).text().trim();
-            const image = (_a = $('.manga-thumb > a > img', obj).attr('data-original')) !== null && _a !== void 0 ? _a : "";
-            let id = (_b = $(`.manga-thumb > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
-            if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
-                manga.push(createMangaTile({
-                    id: id,
-                    image: image,
-                    title: createIconText({
-                        text: title,
-                    }),
-                    subtitleText: createIconText({
-                        text: capitalizeFirstLetter(subtitle),
-                    }),
-                }));
-                collectedIds.push(id);
+    if (select === 1) {
+        for (let obj of $('.row-eq-height', '#loop-content').toArray()) {
+            for (let obj2 of $('.page-item-detail', obj).toArray()) {
+                let title = (_a = $(`a`, obj2).first().attr('title')) === null || _a === void 0 ? void 0 : _a.trim();
+                let subtitle = $(`.chapter-item  > span > a`, obj2).text().trim();
+                let image = (_b = $(`a > img`, obj2).attr('data-src')) === null || _b === void 0 ? void 0 : _b.replace('-110x150', '');
+                let id = (_d = (_c = $(`a`, obj2).first().attr('href')) === null || _c === void 0 ? void 0 : _c.trim()) !== null && _d !== void 0 ? _d : "";
+                if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
+                    manga.push(createMangaTile({
+                        id: id,
+                        image: image !== null && image !== void 0 ? image : "",
+                        title: createIconText({
+                            text: title !== null && title !== void 0 ? title : "",
+                        }),
+                        subtitleText: createIconText({
+                            text: capitalizeFirstLetter(subtitle),
+                        }),
+                    }));
+                    collectedIds.push(id);
+                }
             }
         }
     }
-    else if (select === 1) {
+    else if (select === 0) {
         for (let obj of $('li', '#glo_wrapper > .section_todayup:nth-child(3) > .list_wrap > .slick_item').toArray()) {
             let title = $(`h3.title > a`, obj).text().trim();
             let subtitle = $(`.chapter > a`, obj).text();
-            const image = (_c = $(`.manga-thumb > a > img`, obj).attr('data-original')) !== null && _c !== void 0 ? _c : "";
-            let id = (_d = $(`h3.title > a`, obj).attr('href')) !== null && _d !== void 0 ? _d : title;
+            const image = (_e = $(`.manga-thumb > a > img`, obj).attr('data-original')) !== null && _e !== void 0 ? _e : "";
+            let id = (_f = $(`h3.title > a`, obj).attr('href')) !== null && _f !== void 0 ? _f : title;
             if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
                 manga.push(createMangaTile({
                     id: id,
@@ -1010,8 +1012,8 @@ exports.parseViewMore = ($, select) => {
         for (let obj of $('li', '#glo_wrapper > .section_todayup:nth-child(4) > .list_wrap > .slick_item').toArray()) {
             let title = $(`h3.title > a`, obj).text().trim();
             let subtitle = $(`.chapter > a`, obj).text();
-            const image = (_e = $(`.manga-thumb > a > img`, obj).attr('data-original')) !== null && _e !== void 0 ? _e : "";
-            let id = (_f = $(`h3.title > a`, obj).attr('href')) !== null && _f !== void 0 ? _f : title;
+            const image = (_g = $(`.manga-thumb > a > img`, obj).attr('data-original')) !== null && _g !== void 0 ? _g : "";
+            let id = (_h = $(`h3.title > a`, obj).attr('href')) !== null && _h !== void 0 ? _h : title;
             if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
                 manga.push(createMangaTile({
                     id: id,
@@ -1032,14 +1034,14 @@ exports.parseViewMore = ($, select) => {
 exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
-    for (const page of $("a", "ul.pagination > li").toArray()) {
+    for (const page of $("a", ".wp-pagenavi").toArray()) {
         const p = Number($(page).text().trim());
         if (isNaN(p))
             continue;
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($("ul.pagination > li.active > a").text().trim());
+    const currentPage = Number($(".wp-pagenavi > span.current").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
