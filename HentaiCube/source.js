@@ -725,42 +725,72 @@ class HentaiCube extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
         return __awaiter(this, void 0, void 0, function* () {
+            let featured = createHomeSection({
+                id: 'featured',
+                title: "Truyện Đề Cử",
+                type: paperback_extensions_common_1.HomeSectionType.featured
+            });
             let hot = createHomeSection({
                 id: 'hot',
-                title: "TRUYỆN HOT",
-                view_more: true,
+                title: "Gợi ý hôm nay",
+                view_more: false,
             });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
                 title: "TRUYỆN MỚI CẬP NHẬT",
                 view_more: true,
             });
-            let newAdded = createHomeSection({
-                id: 'new_added',
-                title: "TRUYỆN MỚI ĐĂNG",
-                view_more: true,
+            let view = createHomeSection({
+                id: 'view',
+                title: "Top view ngày",
+                view_more: false,
             });
             //Load empty sections
             sectionCallback(hot);
             sectionCallback(newUpdated);
-            sectionCallback(newAdded);
+            sectionCallback(view);
             ///Get the section data
-            //Hot
-            let url = '';
+            //Featured
+            let url = ``;
             let request = createRequestObject({
-                url: 'https://hentaivl.com/',
+                url: 'https://hentaicube.net/',
+                method: "GET",
+            });
+            let featuredItems = [];
+            let data = yield this.requestManager.schedule(request, 1);
+            let $ = this.cheerio.load(data.data);
+            for (let obj of $('.popular-item-wrap', '#manga-recent-3 .widget-content').toArray()) {
+                let title = $(`.popular-content a`, obj).text().trim();
+                // let subtitle = $(`.chapter > a`, obj).text();
+                const image = (_a = $(`.popular-img > a > img`, obj).attr('data-src')) === null || _a === void 0 ? void 0 : _a.replace('-75x106', '');
+                let id = (_b = $(`.popular-img > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
+                // if (!id || !subtitle) continue;
+                featuredItems.push(createMangaTile({
+                    id: id,
+                    image: image !== null && image !== void 0 ? image : "",
+                    title: createIconText({
+                        text: title,
+                    }),
+                }));
+            }
+            featured.items = featuredItems;
+            sectionCallback(featured);
+            //Hot
+            url = '';
+            request = createRequestObject({
+                url: 'https://hentaicube.net/',
                 method: "GET",
             });
             let hotItems = [];
-            let data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
-            for (let obj of $('li', '.list-hot').toArray()) {
-                let title = $(`.title`, obj).text().trim();
-                let subtitle = $(`.chapter > a`, obj).text().trim();
-                const image = (_a = $('.manga-thumb > a > img', obj).attr('data-original')) !== null && _a !== void 0 ? _a : "";
-                let id = (_b = $(`.manga-thumb > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
+            data = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(data.data);
+            for (let obj of $('.slick-slide', '.slick-track').toArray()) {
+                let title = $(`.slider__content .post-title`, obj).text().trim();
+                let subtitle = $(`.chapter-item a`, obj).text().trim();
+                const image = (_c = $('.slider__thumb a > img', obj).attr('data-src')) !== null && _c !== void 0 ? _c : "";
+                let id = (_d = $(`.slider__thumb a`, obj).attr('href')) !== null && _d !== void 0 ? _d : title;
                 hotItems.push(createMangaTile({
                     id: id,
                     image: image,
@@ -785,10 +815,10 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             $ = this.cheerio.load(data.data);
             for (let obj of $('.row-eq-height', '#loop-content').toArray()) {
                 for (let obj2 of $('.page-item-detail', obj).toArray()) {
-                    let title = (_c = $(`a`, obj2).first().attr('title')) === null || _c === void 0 ? void 0 : _c.trim();
+                    let title = (_e = $(`a`, obj2).first().attr('title')) === null || _e === void 0 ? void 0 : _e.trim();
                     let subtitle = $(`.chapter-item  > span > a`, obj2).text().trim();
-                    let image = (_d = $(`a > img`, obj2).attr('data-src')) === null || _d === void 0 ? void 0 : _d.replace('-110x150', '');
-                    let id = (_e = $(`a`, obj2).first().attr('href')) === null || _e === void 0 ? void 0 : _e.trim();
+                    let image = (_f = $(`a > img`, obj2).attr('data-src')) === null || _f === void 0 ? void 0 : _f.replace('-110x150', '');
+                    let id = (_g = $(`a`, obj2).first().attr('href')) === null || _g === void 0 ? void 0 : _g.trim();
                     newUpdatedItems.push(createMangaTile({
                         id: id !== null && id !== void 0 ? id : "",
                         image: image !== null && image !== void 0 ? image : "",
@@ -803,34 +833,31 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             }
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
-            //New Added
+            //view
             url = DOMAIN;
             request = createRequestObject({
-                url: 'https://hentaivl.com/',
+                url: 'https://hentaicube.net/',
                 method: "GET",
             });
             let newAddItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('li', '#glo_wrapper > .section_todayup:nth-child(4) > .list_wrap > .slick_item').toArray().splice(0, 20)) {
-                let title = $(`h3.title > a`, obj).text().trim();
-                let subtitle = $(`.chapter > a`, obj).text();
-                const image = $(`.manga-thumb > a > img`, obj).attr('data-original');
-                let id = (_f = $(`h3.title > a`, obj).attr('href')) !== null && _f !== void 0 ? _f : title;
+            for (let obj of $('div.popular-item-wrap', '#manga-recent-2 .widget-content').toArray()) {
+                let title = $(`.popular-content a`, obj).text().trim();
+                // let subtitle = $(`.chapter > a`, obj).text();
+                const image = (_h = $(`.popular-img > a > img`, obj).attr('data-src')) === null || _h === void 0 ? void 0 : _h.replace('-75x106', '');
+                let id = (_j = $(`.popular-img > a`, obj).attr('href')) !== null && _j !== void 0 ? _j : title;
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
                     id: id,
-                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.replace('150_150', '200')),
+                    image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({
                         text: title,
                     }),
-                    subtitleText: createIconText({
-                        text: HentaiCubeParser_1.capitalizeFirstLetter(subtitle),
-                    }),
                 }));
             }
-            newAdded.items = newAddItems;
-            sectionCallback(newAdded);
+            view.items = newAddItems;
+            sectionCallback(view);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
