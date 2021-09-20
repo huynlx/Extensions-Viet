@@ -641,7 +641,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: 'https://truyentranhaudio.online/truyen-guard-pass.html',
+                url: DOMAIN + mangaId,
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
@@ -712,9 +712,10 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             for (let obj of $('.chapter-content > img').toArray()) {
                 if (!obj.attribs['data-src'])
                     continue;
-                let link = obj.attribs['data-src'];
+                let link = obj.attribs['data-src'].trim();
                 pages.push(link);
             }
+            console.log(pages);
             const chapterDetails = createChapterDetails({
                 id: chapterId,
                 mangaId: mangaId,
