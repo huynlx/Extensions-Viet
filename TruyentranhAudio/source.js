@@ -646,11 +646,9 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            // console.log(data);
             let tags = [];
-            // let creator = '';
             console.log(DOMAIN + mangaId);
-            let status = 1; //completed, 1 = Ongoing
+            let status = 1;
             let desc = $('.summary-content > p').text();
             for (const t of $('a', '.manga-info > li:nth-of-type(3)').toArray()) {
                 const genre = $(t).text().trim();
@@ -658,21 +656,16 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                 console.log(genre + ': ' + id);
                 tags.push(createTag({ label: genre, id }));
             }
-            // for (const c of $('a', '.txt > p:nth-of-type(1)').toArray()) {
-            //     const name = $(c).text().trim()
-            //     creator.push(name);
-            // }
-            // status = $('.txt > p:nth-of-type(2)').text().toLowerCase().includes("đang cập nhật") ? 1 : 0;
-            const image = (_b = $('.well.info-cover > img.thumnail').attr('src')) !== null && _b !== void 0 ? _b : "https://f34-zpg.zdn.vn/2025529972274996605/1e856471b47f46211f6e.jpg";
+            const image = (_b = $('info-cover > .thumbnail').attr('src')) !== null && _b !== void 0 ? _b : "fuck";
             console.log('image: ' + image);
             console.log('title: ' + $('.manga-info > h3').text());
             console.log('desc: ' + desc + '/n');
-            // console.log('tags: ' + tags);
-            // const title = $('.manga-info > h3').text();
+            const creator = $('a', '.manga-info > li:nth-of-type(2)').text();
+            console.log('creator: ' + creator);
             return createManga({
                 id: mangaId,
-                author: 'test',
-                artist: 'test',
+                author: creator,
+                artist: creator,
                 desc,
                 titles: [$('.manga-info > h3').text()],
                 image: image,
