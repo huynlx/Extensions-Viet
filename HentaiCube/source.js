@@ -613,13 +613,13 @@ const HentaiCubeParser_1 = require("./HentaiCubeParser");
 const DOMAIN = 'https://hentaivl.com/';
 const method = 'GET';
 exports.HentaiCubeInfo = {
-    version: '1.0.0',
+    version: '1.5.0',
     name: 'HentaiCube',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from HentaiCube',
-    websiteBaseURL: `https://hentaivl.com/`,
+    websiteBaseURL: `https://hentaicube.net/`,
     contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
         {
@@ -920,7 +920,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const tags = [];
-            const url = `https://hentaivl.com/`;
+            const url = `https://hentaicube.net/the-loai-genres/`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -928,7 +928,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             //the loai
-            for (const tag of $('a', '#glo_gnb > ul > li:first-child > .sub-menu').toArray()) {
+            for (const tag of $('a', '.ctcleft').toArray()) {
                 const label = $(tag).text().trim();
                 const id = (_a = $(tag).attr('href')) !== null && _a !== void 0 ? _a : label;
                 if (!id || !label)
