@@ -837,10 +837,8 @@ class HentaiVL extends paperback_extensions_common_1.Source {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            let param = '';
             let url = '';
             let select = 1;
-            let count = 1;
             switch (homepageSectionId) {
                 case "hot":
                     url = `https://hentaivl.com/`;
@@ -859,19 +857,11 @@ class HentaiVL extends paperback_extensions_common_1.Source {
             }
             const request = createRequestObject({
                 url,
-                method,
-                param
+                method
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            let manga = [];
-            if (count === 1) {
-                manga = HentaiVLParser_1.parseViewMore($, select);
-                count = 2;
-            }
-            else {
-                manga = [];
-            }
+            let manga = HentaiVLParser_1.parseViewMore($, select);
             metadata = !HentaiVLParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: manga,
@@ -903,7 +893,7 @@ class HentaiVL extends paperback_extensions_common_1.Source {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const tags = [];
-            const url = `https://blogtruyen.vn/timkiem/nangcao`;
+            const url = `https://hentaivl.com/`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -911,9 +901,9 @@ class HentaiVL extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             //the loai
-            for (const tag of $('li', '.list-unstyled.row').toArray()) {
+            for (const tag of $('a', '.sub-menu').toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_a = $(tag).attr('data-id')) !== null && _a !== void 0 ? _a : label;
+                const id = (_a = $(tag).attr('href')) !== null && _a !== void 0 ? _a : label;
                 if (!id || !label)
                     continue;
                 tags.push({ id: id, label: label });
