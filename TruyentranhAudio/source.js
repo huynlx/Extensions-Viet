@@ -631,14 +631,15 @@ exports.TruyentranhAudioInfo = {
 class TruyentranhAudio extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
-        // getMangaShareUrl(mangaId: string): string { return `${DOMAIN}/${mangaId}` };
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
             requestTimeout: 20000
         });
     }
+    getMangaShareUrl(mangaId) { return `${DOMAIN}${mangaId}`; }
+    ;
     getMangaDetails(mangaId) {
-        var _a, _b;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
                 url: DOMAIN + mangaId,
@@ -647,21 +648,27 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let tags = [];
+            const genres = [];
             let status = 1;
             let desc = $('.summary-content > p').text();
             for (const t of $('a', '.manga-info > li:nth-of-type(3)').toArray()) {
                 const genre = $(t).text().trim();
-                const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
-                console.log(genre + ': ' + id);
+                const id = (_b = (_a = $(t).attr('href')) === null || _a === void 0 ? void 0 : _a.trim()) !== null && _b !== void 0 ? _b : genre;
                 tags.push(createTag({ label: genre, id }));
+                genres.push({
+                    label: genre,
+                    id
+                });
             }
-            const image = (_b = $('info-cover > .thumbnail').attr('src')) !== null && _b !== void 0 ? _b : "fuck";
+            const image = (_c = $('info-cover > .thumbnail').attr('src')) !== null && _c !== void 0 ? _c : "fuck";
+            const creator = $('a', '.manga-info > li:nth-of-type(2)').text();
+            //log
             console.log(DOMAIN + mangaId);
             console.log('image: ' + image);
             console.log('title: ' + $('.manga-info > h3').text());
-            console.log('desc: ' + desc + '/n');
-            const creator = $('a', '.manga-info > li:nth-of-type(2)').text();
             console.log('creator: ' + creator);
+            console.log(genres);
+            console.log('desc: ' + desc + '/n');
             return createManga({
                 id: mangaId,
                 author: creator,
@@ -670,7 +677,6 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                 titles: [$('.manga-info > h3').text()],
                 image: image,
                 status,
-                // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
                 tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
             });
