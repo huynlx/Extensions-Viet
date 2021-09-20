@@ -1019,7 +1019,7 @@ exports.parseViewMore = ($) => {
         if (!collectedIds.includes(id)) {
             manga.push(createMangaTile({
                 id: id,
-                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? (image) : ("https://truyentranhaudio.online/" + image),
+                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? (image) : ("https:" + image),
                 title: createIconText({
                     text: title,
                 }),
