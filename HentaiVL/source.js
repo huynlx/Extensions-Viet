@@ -833,45 +833,14 @@ class HentaiVL extends paperback_extensions_common_1.Source {
             sectionCallback(newAdded);
         });
     }
-    // async getViewMoreItems(homepageSectionId: string, metadata: any): Promise<PagedResults> {
-    //     let page: number = metadata?.page ?? 1;
-    //     let param = '';
-    //     let url = '';
-    //     let select = 1;
-    //     switch (homepageSectionId) {
-    //         case "hot":
-    //             url = `https://hentaivl.com/`;
-    //             select = 0;
-    //             break;
-    //         case "new_updated":
-    //             url = `https://hentaivl.com/`;
-    //             select = 1;
-    //             break;
-    //         case "new_added":
-    //             url = `https://hentaivl.com/`;
-    //             select = 2;
-    //             break;
-    //         default:
-    //             return Promise.resolve(createPagedResults({ results: [] }))
-    //     }
-    //     const request = createRequestObject({
-    //         url,
-    //         method,
-    //         param
-    //     });
-    //     const response = await this.requestManager.schedule(request, 1);
-    //     const $ = this.cheerio.load(response.data);
-    //     const manga = parseViewMore($, select);
-    //     metadata = !isLastPage($) ? { page: page + 1 } : undefined;
-    //     return createPagedResults({
-    //         results: manga,
-    //         metadata,
-    //     });
-    // }
-    getViewMoreItems(homepageSectionId, _metadata) {
+    getViewMoreItems(homepageSectionId, metadata) {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
+            let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
+            let param = '';
             let url = '';
             let select = 1;
+            let count = 1;
             switch (homepageSectionId) {
                 case "hot":
                     url = `https://hentaivl.com/`;
@@ -890,15 +859,24 @@ class HentaiVL extends paperback_extensions_common_1.Source {
             }
             const request = createRequestObject({
                 url,
-                method
+                method,
+                param
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            // This source parses JSON and never requires additional pages
+            let manga = [];
+            if (count === 1) {
+                manga = HentaiVLParser_1.parseViewMore($, select);
+                count = 2;
+            }
+            else {
+                manga = [];
+            }
+            metadata = !HentaiVLParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
-                results: HentaiVLParser_1.parseViewMore($, select)
+                results: manga,
+                metadata,
             });
-            // return parseViewMore(response.data, select);
         });
     }
     getSearchResults(query, metadata) {
