@@ -628,6 +628,9 @@ exports.HentaiVLInfo = {
         }
     ]
 };
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 class HentaiVL extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
@@ -731,7 +734,7 @@ class HentaiVL extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
@@ -774,7 +777,7 @@ class HentaiVL extends paperback_extensions_common_1.Source {
                         text: title,
                     }),
                     subtitleText: createIconText({
-                        text: subtitle,
+                        text: capitalizeFirstLetter(subtitle),
                     }),
                 }));
             }
@@ -783,17 +786,17 @@ class HentaiVL extends paperback_extensions_common_1.Source {
             //New Updates
             url = '';
             request = createRequestObject({
-                url: 'https://blogtruyen.vn/thumb',
+                url: 'https://hentaivl.com/',
                 method: "GET",
             });
             let newUpdatedItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('.row', '.list-mainpage .storyitem').toArray().splice(0, 20)) {
+            for (let obj of $('li', '#glo_wrapper > .section_todayup:nth-of-type(1) > .list_wrap > .slick_item').toArray().splice(0, 20)) {
                 let title = $(`h3.title > a`, obj).text().trim();
-                let subtitle = $(`div:nth-child(2) > div:nth-child(4) > span:nth-child(1) > .color-red`, obj).text();
-                const image = $(`div:nth-child(1) > a > img`, obj).attr('src');
-                let id = (_c = $(`div:nth-child(1) > a`, obj).attr('href')) !== null && _c !== void 0 ? _c : title;
+                let subtitle = $(`.chapter > a`, obj).text();
+                const image = $(`.manga-thumb > a > img`, obj).attr('data-original');
+                let id = (_c = $(`h3.title > a`, obj).attr('href')) !== null && _c !== void 0 ? _c : title;
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
@@ -802,7 +805,7 @@ class HentaiVL extends paperback_extensions_common_1.Source {
                         text: title,
                     }),
                     subtitleText: createIconText({
-                        text: 'Chương ' + subtitle,
+                        text: capitalizeFirstLetter(subtitle),
                     }),
                 }));
             }
@@ -811,27 +814,27 @@ class HentaiVL extends paperback_extensions_common_1.Source {
             //New Added
             url = DOMAIN;
             request = createRequestObject({
-                url: 'https://blogtruyen.vn/thumb',
+                url: 'https://hentaivl.com/',
                 method: "GET",
             });
             let newAddItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('a', '#top-newest-story').toArray()) {
-                let title = (_e = (_d = $(obj).attr('title')) === null || _d === void 0 ? void 0 : _d.trim()) !== null && _e !== void 0 ? _e : "";
-                // let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
-                const image = $(`img`, obj).attr('src');
-                let id = (_f = $(obj).attr("href")) !== null && _f !== void 0 ? _f : title;
+            for (let obj of $('li', '#glo_wrapper > .section_todayup:nth-of-type(2) > .list_wrap > .slick_item').toArray().splice(0, 20)) {
+                let title = $(`h3.title > a`, obj).text().trim();
+                let subtitle = $(`.chapter > a`, obj).text();
+                const image = $(`.manga-thumb > a > img`, obj).attr('data-original');
+                let id = (_d = $(`h3.title > a`, obj).attr('href')) !== null && _d !== void 0 ? _d : title;
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
                     id: id,
-                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.replace('86_86', '200')),
+                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.replace('150_150', '200')),
                     title: createIconText({
                         text: title,
-                    })
-                    // subtitleText: createIconText({
-                    //     text: subtitle,
-                    // }),
+                    }),
+                    subtitleText: createIconText({
+                        text: capitalizeFirstLetter(subtitle),
+                    }),
                 }));
             }
             newAdded.items = newAddItems;
