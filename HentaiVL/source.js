@@ -628,9 +628,6 @@ exports.HentaiVLInfo = {
         }
     ]
 };
-function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
 class HentaiVL extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
@@ -639,7 +636,7 @@ class HentaiVL extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
     }
-    getMangaShareUrl(mangaId) { return `https://blogtruyen.vn${mangaId}`; }
+    getMangaShareUrl(mangaId) { return `https://hentaivl.com${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
         var _a, _b;
@@ -695,7 +692,7 @@ class HentaiVL extends paperback_extensions_common_1.Source {
                 chapters.push(createChapter({
                     id: $('a', obj).first().attr('href'),
                     chapNum: i,
-                    name: capitalizeFirstLetter($('a', obj).first().text().trim()),
+                    name: HentaiVLParser_1.capitalizeFirstLetter($('a', obj).first().text().trim()),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
                     time: finalTime
@@ -772,7 +769,7 @@ class HentaiVL extends paperback_extensions_common_1.Source {
                         text: title,
                     }),
                     subtitleText: createIconText({
-                        text: capitalizeFirstLetter(subtitle),
+                        text: HentaiVLParser_1.capitalizeFirstLetter(subtitle),
                     }),
                 }));
             }
@@ -800,7 +797,7 @@ class HentaiVL extends paperback_extensions_common_1.Source {
                         text: title,
                     }),
                     subtitleText: createIconText({
-                        text: capitalizeFirstLetter(subtitle),
+                        text: HentaiVLParser_1.capitalizeFirstLetter(subtitle),
                     }),
                 }));
             }
@@ -828,7 +825,7 @@ class HentaiVL extends paperback_extensions_common_1.Source {
                         text: title,
                     }),
                     subtitleText: createIconText({
-                        text: capitalizeFirstLetter(subtitle),
+                        text: HentaiVLParser_1.capitalizeFirstLetter(subtitle),
                     }),
                 }));
             }
@@ -845,17 +842,17 @@ class HentaiVL extends paperback_extensions_common_1.Source {
             let select = 1;
             switch (homepageSectionId) {
                 case "hot":
-                    url = `https://blogtruyen.vn/ajax/Search/AjaxLoadListManga?key=tatca&orderBy=3&p=${page}`;
+                    url = `https://hentaivl.com/`;
                     select = 0;
                     break;
                 case "new_updated":
-                    url = `https://blogtruyen.vn/thumb-${page}`;
+                    url = `https://hentaivl.com/`;
                     select = 1;
                     break;
-                // case "new_added":
-                //     url = `https://sayhentai.net/danh-sach-truyen.html?status=0&sort=id&page=${page}`;
-                //     select = 1;
-                //     break;
+                case "new_added":
+                    url = `https://hentaivl.com/`;
+                    select = 2;
+                    break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
             }
@@ -928,8 +925,12 @@ exports.HentaiVL = HentaiVL;
 },{"./HentaiVLParser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
+exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.capitalizeFirstLetter = void 0;
 const entities = require("entities"); //Import package for decoding HTML entities
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+exports.capitalizeFirstLetter = capitalizeFirstLetter;
 exports.generateSearch = (query) => {
     var _a;
     let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
@@ -957,41 +958,66 @@ exports.parseSearch = ($) => {
     return mangas;
 };
 exports.parseViewMore = ($, select) => {
-    var _a, _b, _c;
+    var _a, _b, _c, _d, _e, _f;
     const manga = [];
     const collectedIds = [];
-    if (select === 1) {
-        for (let obj of $('.row', '.list-mainpage .storyitem').toArray()) {
-            let title = $(`h3.title > a`, obj).text().trim();
-            let subtitle = $(`div:nth-child(2) > div:nth-child(4) > span:nth-child(1) > .color-red`, obj).text();
-            const image = $(`div:nth-child(1) > a > img`, obj).attr('src');
-            let id = (_a = $(`div:nth-child(1) > a`, obj).attr('href')) !== null && _a !== void 0 ? _a : title;
+    if (select === 0) {
+        for (let obj of $('li', '.list-hot').toArray()) {
+            let title = $(`.title`, obj).text().trim();
+            let subtitle = $(`.chapter > a`, obj).text().trim();
+            const image = (_a = $('.manga-thumb > a > img', obj).attr('data-original')) !== null && _a !== void 0 ? _a : "";
+            let id = (_b = $(`.manga-thumb > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
             if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
                 manga.push(createMangaTile({
                     id: id,
-                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.replace('150_150', '200')),
-                    title: createIconText({ text: decodeHTMLEntity(title) }),
-                    subtitleText: createIconText({ text: 'Chương ' + subtitle }),
+                    image: image,
+                    title: createIconText({
+                        text: title,
+                    }),
+                    subtitleText: createIconText({
+                        text: capitalizeFirstLetter(subtitle),
+                    }),
+                }));
+                collectedIds.push(id);
+            }
+        }
+    }
+    else if (select === 1) {
+        for (let obj of $('li', '#glo_wrapper > .section_todayup:nth-child(3) > .list_wrap > .slick_item').toArray().splice(0, 20)) {
+            let title = $(`h3.title > a`, obj).text().trim();
+            let subtitle = $(`.chapter > a`, obj).text();
+            const image = (_c = $(`.manga-thumb > a > img`, obj).attr('data-original')) !== null && _c !== void 0 ? _c : "";
+            let id = (_d = $(`h3.title > a`, obj).attr('href')) !== null && _d !== void 0 ? _d : title;
+            if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
+                manga.push(createMangaTile({
+                    id: id,
+                    image: image,
+                    title: createIconText({
+                        text: title,
+                    }),
+                    subtitleText: createIconText({
+                        text: capitalizeFirstLetter(subtitle),
+                    }),
                 }));
                 collectedIds.push(id);
             }
         }
     }
     else {
-        for (let obj of $('p:not(:first-child)', '.list').toArray()) {
-            let title = $(`a`, obj).text().trim();
-            let subtitle = 'Chương ' + $(`span:nth-child(2)`, obj).text().trim();
-            const image = (_b = $('img', $(obj).next()).attr('src')) !== null && _b !== void 0 ? _b : "";
-            let id = (_c = $(`a`, obj).attr('href')) !== null && _c !== void 0 ? _c : title;
+        for (let obj of $('li', '#glo_wrapper > .section_todayup:nth-child(4) > .list_wrap > .slick_item').toArray().splice(0, 20)) {
+            let title = $(`h3.title > a`, obj).text().trim();
+            let subtitle = $(`.chapter > a`, obj).text();
+            const image = (_e = $(`.manga-thumb > a > img`, obj).attr('data-original')) !== null && _e !== void 0 ? _e : "";
+            let id = (_f = $(`h3.title > a`, obj).attr('href')) !== null && _f !== void 0 ? _f : title;
             if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
                 manga.push(createMangaTile({
                     id: id,
-                    image: encodeURI(image.replace('150', '200')),
+                    image: image,
                     title: createIconText({
                         text: title,
                     }),
                     subtitleText: createIconText({
-                        text: subtitle,
+                        text: capitalizeFirstLetter(subtitle),
                     }),
                 }));
                 collectedIds.push(id);
@@ -1010,7 +1036,7 @@ exports.isLastPage = ($) => {
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($("ul.pagination > li > select > option").find(":selected").text().split(' ')[1]);
+    const currentPage = Number($("ul.pagination > li.active > a").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
