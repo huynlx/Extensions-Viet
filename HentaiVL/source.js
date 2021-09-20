@@ -644,7 +644,7 @@ class HentaiVL extends paperback_extensions_common_1.Source {
     getMangaDetails(mangaId) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://blogtruyen.vn${mangaId}`;
+            const url = `https://hentaivl.com${mangaId}`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -654,25 +654,25 @@ class HentaiVL extends paperback_extensions_common_1.Source {
             let tags = [];
             let creator = '';
             let status = 1; //completed, 1 = Ongoing
-            let desc = $('.content > p').text();
-            for (const t of $('.description > p:nth-child(3) > .category > a').toArray()) {
+            let desc = $('.ep-content-story').text();
+            for (const t of $('.type_box > .type > a.cate-itm').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            creator = $('.description > p:nth-child(1) > a').text();
-            status = $('.description > p:nth-child(4) > .color-red').text().toLowerCase().includes("đang") ? 1 : 0;
-            const image = (_b = $('.thumbnail > img').attr('src')) !== null && _b !== void 0 ? _b : "";
+            creator = $('.info > p:nth-child(1) > span').text();
+            status = $('.info > p:nth-child(4) > span').text().toLowerCase().includes("đang") ? 1 : 0;
+            const image = (_b = $('.novel-thumb > img').attr('src')) !== null && _b !== void 0 ? _b : "";
             return createManga({
                 id: mangaId,
                 author: creator,
                 artist: creator,
                 desc: desc,
-                titles: [$('.entry-title > a').text().trim()],
-                image: encodeURI(image),
+                titles: [$('.title_content > h1').text().trim()],
+                image: image,
                 status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
-                hentai: false,
+                hentai: true,
                 tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
             });
         });
@@ -680,27 +680,22 @@ class HentaiVL extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `https://blogtruyen.vn${mangaId}`,
+                url: `https://hentaivl.com${mangaId}`,
                 method,
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const chapters = [];
             var i = 0;
-            for (const obj of $("#list-chapters > p").toArray().reverse()) {
+            for (const obj of $(".chapter-list > li").toArray().reverse()) {
                 i++;
-                const getTime = $('.publishedDate', obj).text().trim().split(' ');
-                const time = {
-                    date: getTime[0],
-                    time: getTime[1]
-                };
-                const arrDate = time.date.split(/\//);
-                const fixDate = [arrDate[1], arrDate[0], arrDate[2]].join('/');
-                const finalTime = new Date(fixDate + ' ' + time.time);
+                const getTime = $('span', obj).text().trim().split(/\//);
+                const fixDate = [getTime[1], getTime[0], getTime[2]].join('/');
+                const finalTime = new Date(fixDate);
                 chapters.push(createChapter({
-                    id: $('span.title > a', obj).first().attr('href'),
+                    id: $('a', obj).first().attr('href'),
                     chapNum: i,
-                    name: $('span.title > a', obj).text().trim(),
+                    name: capitalizeFirstLetter($('a', obj).first().text().trim()),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
                     time: finalTime
@@ -712,16 +707,16 @@ class HentaiVL extends paperback_extensions_common_1.Source {
     getChapterDetails(mangaId, chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `https://blogtruyen.vn${chapterId}`,
+                url: `https://hentaivl.com${chapterId}`,
                 method
             });
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
-            for (let obj of $('#content > img').toArray()) {
-                if (!obj.attribs['src'])
+            for (let obj of $('#chapter-content > img').toArray()) {
+                if (!obj.attribs['data-original'])
                     continue;
-                let link = obj.attribs['src'];
+                let link = obj.attribs['data-original'];
                 pages.push(link);
             }
             const chapterDetails = createChapterDetails({
@@ -738,17 +733,17 @@ class HentaiVL extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
-                title: "Top All",
+                title: "TRUYỆN HOT",
                 view_more: true,
             });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
-                title: "Truyện mới cập nhật",
+                title: "TRUYỆN MỚI CẬP NHẬT",
                 view_more: true,
             });
             let newAdded = createHomeSection({
                 id: 'new_added',
-                title: "Truyện mới đăng",
+                title: "TRUYỆN MỚI ĐĂNG",
                 view_more: true,
             });
             //Load empty sections
