@@ -786,9 +786,9 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             let hotItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('.slick-slide', '.slick-track').toArray()) {
+            for (let obj of $('.item__wrap ', '.slider__container .slider__item').toArray()) {
                 let title = $(`.slider__content .post-title`, obj).text().trim();
-                let subtitle = $(`.chapter-item a`, obj).text().trim();
+                let subtitle = $(`.slider__content .chapter-item a`, obj).text().trim();
                 const image = (_c = $('.slider__thumb a > img', obj).attr('data-src')) !== null && _c !== void 0 ? _c : "";
                 let id = (_d = $(`.slider__thumb a`, obj).attr('href')) !== null && _d !== void 0 ? _d : title;
                 hotItems.push(createMangaTile({
