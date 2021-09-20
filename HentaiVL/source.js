@@ -866,7 +866,6 @@ class HentaiVL extends paperback_extensions_common_1.Source {
             metadata = undefined;
             return createPagedResults({
                 results: manga,
-                metadata,
             });
         });
     }
