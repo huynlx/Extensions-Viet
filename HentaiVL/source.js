@@ -857,12 +857,13 @@ class HentaiVL extends paperback_extensions_common_1.Source {
             }
             const request = createRequestObject({
                 url,
-                method
+                method,
+                param: encodeURI(`&page=${page}`)
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             let manga = HentaiVLParser_1.parseViewMore($, select);
-            metadata = !HentaiVLParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            metadata = undefined;
             return createPagedResults({
                 results: manga,
                 metadata,
