@@ -647,7 +647,6 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let tags = [];
-            console.log(DOMAIN + mangaId);
             let status = 1;
             let desc = $('.summary-content > p').text();
             for (const t of $('a', '.manga-info > li:nth-of-type(3)').toArray()) {
@@ -657,6 +656,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                 tags.push(createTag({ label: genre, id }));
             }
             const image = (_b = $('info-cover > .thumbnail').attr('src')) !== null && _b !== void 0 ? _b : "fuck";
+            console.log(DOMAIN + mangaId);
             console.log('image: ' + image);
             console.log('title: ' + $('.manga-info > h3').text());
             console.log('desc: ' + desc + '/n');
