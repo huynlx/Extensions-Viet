@@ -749,7 +749,7 @@ class HentaiVL extends paperback_extensions_common_1.Source {
             let newAdded = createHomeSection({
                 id: 'new_added',
                 title: "Truyện mới đăng",
-                view_more: false,
+                view_more: true,
             });
             //Load empty sections
             sectionCallback(hot);
@@ -792,7 +792,7 @@ class HentaiVL extends paperback_extensions_common_1.Source {
             let newUpdatedItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('li', '#glo_wrapper > .section_todayup:nth-of-type(1) > .list_wrap > .slick_item').toArray().splice(0, 20)) {
+            for (let obj of $('li', '#glo_wrapper > .section_todayup:nth-of-type(3) > .list_wrap > .slick_item').toArray().splice(0, 20)) {
                 let title = $(`h3.title > a`, obj).text().trim();
                 let subtitle = $(`.chapter > a`, obj).text();
                 const image = $(`.manga-thumb > a > img`, obj).attr('data-original');
@@ -820,7 +820,7 @@ class HentaiVL extends paperback_extensions_common_1.Source {
             let newAddItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('li', '#glo_wrapper > .section_todayup:nth-of-type(2) > .list_wrap > .slick_item').toArray().splice(0, 20)) {
+            for (let obj of $('li', '#glo_wrapper > .section_todayup:nth-of-type(4) > .list_wrap > .slick_item').toArray().splice(0, 20)) {
                 let title = $(`h3.title > a`, obj).text().trim();
                 let subtitle = $(`.chapter > a`, obj).text();
                 const image = $(`.manga-thumb > a > img`, obj).attr('data-original');
