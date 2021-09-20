@@ -1019,7 +1019,7 @@ exports.parseViewMore = ($) => {
         if (!collectedIds.includes(id)) {
             manga.push(createMangaTile({
                 id: id,
-                image: ("https:" + 'app/manga/uploads/covers/ta-la-thuong-thien.jpg'),
+                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? (image) : ((image === null || image === void 0 ? void 0 : image.includes('app')) ? ('https://truyentranhaudio.online/' + image) : ('https:' + image)),
                 title: createIconText({
                     text: title,
                 }),
