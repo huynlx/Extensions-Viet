@@ -875,9 +875,9 @@ class HentaiVL extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: encodeURI(`https://blogtruyen.vn/timkiem/nangcao/1/0/${tags[0] ? tags[0] : '-1'}/-1?txt=${query.title ? query.title : ''}`),
+                url: encodeURI(`https://hentaivl.com${tags[0] ? tags[0] : ''}`),
                 method: "GET",
-                param: encodeURI(`&p=${page}`)
+                param: encodeURI(`&page=${page}`)
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
@@ -938,17 +938,21 @@ exports.parseSearch = ($) => {
     var _a, _b;
     const collectedIds = [];
     const mangas = [];
-    for (let obj of $('p:not(:first-child)', '.list').toArray()) {
-        let title = $(`a`, obj).text().trim();
-        let subtitle = 'Chương ' + $(`span:nth-child(2)`, obj).text().trim();
-        const image = (_a = $('img', $(obj).next()).attr('src')) !== null && _a !== void 0 ? _a : "";
-        let id = (_b = $(`a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
+    for (let obj of $('li', '.list_wrap').toArray()) {
+        let title = $(`.title`, obj).text().trim();
+        let subtitle = $(`.chapter > a`, obj).text().trim();
+        const image = (_a = $('.manga-thumb > a > img', obj).attr('data-original')) !== null && _a !== void 0 ? _a : "";
+        let id = (_b = $(`.manga-thumb > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
         if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
             mangas.push(createMangaTile({
-                id: encodeURI(id),
-                image: encodeURI(image.replace('150', '200')),
-                title: createIconText({ text: decodeHTMLEntity(title) }),
-                subtitleText: createIconText({ text: subtitle }),
+                id: id,
+                image: image,
+                title: createIconText({
+                    text: title,
+                }),
+                subtitleText: createIconText({
+                    text: capitalizeFirstLetter(subtitle),
+                }),
             }));
             collectedIds.push(id);
         }
@@ -981,7 +985,7 @@ exports.parseViewMore = ($, select) => {
         }
     }
     else if (select === 1) {
-        for (let obj of $('li', '#glo_wrapper > .section_todayup:nth-child(3) > .list_wrap > .slick_item').toArray().splice(0, 20)) {
+        for (let obj of $('li', '#glo_wrapper > .section_todayup:nth-child(3) > .list_wrap > .slick_item').toArray()) {
             let title = $(`h3.title > a`, obj).text().trim();
             let subtitle = $(`.chapter > a`, obj).text();
             const image = (_c = $(`.manga-thumb > a > img`, obj).attr('data-original')) !== null && _c !== void 0 ? _c : "";
@@ -1002,7 +1006,7 @@ exports.parseViewMore = ($, select) => {
         }
     }
     else {
-        for (let obj of $('li', '#glo_wrapper > .section_todayup:nth-child(4) > .list_wrap > .slick_item').toArray().splice(0, 20)) {
+        for (let obj of $('li', '#glo_wrapper > .section_todayup:nth-child(4) > .list_wrap > .slick_item').toArray()) {
             let title = $(`h3.title > a`, obj).text().trim();
             let subtitle = $(`.chapter > a`, obj).text();
             const image = (_e = $(`.manga-thumb > a > img`, obj).attr('data-original')) !== null && _e !== void 0 ? _e : "";
