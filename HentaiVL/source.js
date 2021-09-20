@@ -610,10 +610,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.HentaiVL = exports.HentaiVLInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const HentaiVLParser_1 = require("./HentaiVLParser");
-const DOMAIN = 'https://truyentranhlh.net/';
+const DOMAIN = 'https://hentaivl.com/';
 const method = 'GET';
 exports.HentaiVLInfo = {
-    version: '2.0.0',
+    version: '1.0.0',
     name: 'HentaiVL',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -713,7 +713,7 @@ class HentaiVL extends paperback_extensions_common_1.Source {
             for (let obj of $('.chapter-content img').toArray()) {
                 if (!obj.attribs['data-original'])
                     continue;
-                let link = obj.attribs['data-original'];
+                let link = obj.attribs['data-original'].trim();
                 pages.push(link);
             }
             const chapterDetails = createChapterDetails({
