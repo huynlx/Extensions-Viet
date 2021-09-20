@@ -834,9 +834,8 @@ class HentaiVL extends paperback_extensions_common_1.Source {
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
+            // let page: number = metadata?.page ?? 1;
             let param = '';
             let url = '';
             let select = 1;
@@ -864,7 +863,7 @@ class HentaiVL extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const manga = HentaiVLParser_1.parseViewMore($, select);
-            metadata = !HentaiVLParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            metadata = undefined;
             return createPagedResults({
                 results: manga,
                 metadata,
