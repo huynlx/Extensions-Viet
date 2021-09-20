@@ -623,8 +623,8 @@ exports.TruyentranhAudioInfo = {
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
         {
-            text: "Recommended",
-            type: paperback_extensions_common_1.TagType.BLUE
+            text: "Error",
+            type: paperback_extensions_common_1.TagType.RED
         }
     ]
 };
