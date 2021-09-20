@@ -729,12 +729,12 @@ class HentaiCube extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             let featured = createHomeSection({
                 id: 'featured',
-                title: "Truyện Đề Cử",
+                title: "Gợi ý hôm nay",
                 type: paperback_extensions_common_1.HomeSectionType.featured
             });
             let hot = createHomeSection({
                 id: 'hot',
-                title: "Gợi ý hôm nay",
+                title: "Hot tháng",
                 view_more: false,
             });
             let newUpdated = createHomeSection({
@@ -761,17 +761,19 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             let featuredItems = [];
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            for (let obj of $('.popular-item-wrap', '#manga-recent-3 .widget-content').toArray()) {
-                let title = $(`.popular-content a`, obj).text().trim();
-                // let subtitle = $(`.chapter > a`, obj).text();
-                const image = (_a = $(`.popular-img > a > img`, obj).attr('data-src')) === null || _a === void 0 ? void 0 : _a.replace('-75x106', '');
-                let id = (_b = $(`.popular-img > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
-                // if (!id || !subtitle) continue;
+            for (let obj of $('.item__wrap ', '.slider__container .slider__item').toArray()) {
+                let title = $(`.slider__content .post-title`, obj).text().trim();
+                let subtitle = $(`.slider__content .chapter-item a`, obj).text().trim();
+                const image = (_b = (_a = $('.slider__thumb a > img', obj).attr('data-src')) === null || _a === void 0 ? void 0 : _a.replace('-110x150', '')) !== null && _b !== void 0 ? _b : "";
+                let id = (_c = $(`.slider__thumb a`, obj).attr('href')) !== null && _c !== void 0 ? _c : title;
                 featuredItems.push(createMangaTile({
                     id: id,
-                    image: image !== null && image !== void 0 ? image : "",
+                    image: image,
                     title: createIconText({
                         text: title,
+                    }),
+                    subtitleText: createIconText({
+                        text: (subtitle),
                     }),
                 }));
             }
@@ -786,19 +788,17 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             let hotItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('.item__wrap ', '.slider__container .slider__item').toArray()) {
-                let title = $(`.slider__content .post-title`, obj).text().trim();
-                let subtitle = $(`.slider__content .chapter-item a`, obj).text().trim();
-                const image = (_d = (_c = $('.slider__thumb a > img', obj).attr('data-src')) === null || _c === void 0 ? void 0 : _c.replace('-110x150', '')) !== null && _d !== void 0 ? _d : "";
-                let id = (_e = $(`.slider__thumb a`, obj).attr('href')) !== null && _e !== void 0 ? _e : title;
+            for (let obj of $('.popular-item-wrap', '#manga-recent-3 .widget-content').toArray()) {
+                let title = $(`.popular-content a`, obj).text().trim();
+                // let subtitle = $(`.chapter > a`, obj).text();
+                const image = (_d = $(`.popular-img > a > img`, obj).attr('data-src')) === null || _d === void 0 ? void 0 : _d.replace('-75x106', '');
+                let id = (_e = $(`.popular-img > a`, obj).attr('href')) !== null && _e !== void 0 ? _e : title;
+                // if (!id || !subtitle) continue;
                 hotItems.push(createMangaTile({
                     id: id,
-                    image: image,
+                    image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({
                         text: title,
-                    }),
-                    subtitleText: createIconText({
-                        text: HentaiCubeParser_1.capitalizeFirstLetter(subtitle),
                     }),
                 }));
             }
