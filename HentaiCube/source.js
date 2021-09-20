@@ -677,25 +677,24 @@ class HentaiCube extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `https://hentaivl.com${mangaId}`,
+                url: `${mangaId}`,
                 method,
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const chapters = [];
             var i = 0;
-            for (const obj of $(".chapter-list > li").toArray().reverse()) {
+            for (const obj of $(".listing-chapters_wrap li").toArray().reverse()) {
                 i++;
-                const getTime = $('span', obj).text().trim().split(/\//);
-                const fixDate = [getTime[1], getTime[0], getTime[2]].join('/');
-                const finalTime = new Date(fixDate);
+                // const getTime = $('span', obj).text().trim().split(/\//);
+                // const fixDate = [getTime[1], getTime[0], getTime[2]].join('/');
+                // const finalTime = new Date(fixDate);
                 chapters.push(createChapter({
                     id: $('a', obj).first().attr('href'),
                     chapNum: i,
-                    name: HentaiCubeParser_1.capitalizeFirstLetter($('a', obj).first().text().trim()),
+                    name: ($('a', obj).first().text().trim()),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: finalTime
                 }));
             }
             return chapters;
@@ -704,16 +703,16 @@ class HentaiCube extends paperback_extensions_common_1.Source {
     getChapterDetails(mangaId, chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `https://hentaivl.com${chapterId}`,
+                url: `${chapterId}`,
                 method
             });
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
-            for (let obj of $('.chapter-content img').toArray()) {
-                if (!obj.attribs['data-original'])
+            for (let obj of $('.text-left img').toArray()) {
+                if (!obj.attribs['data-src'])
                     continue;
-                let link = obj.attribs['data-original'].trim();
+                let link = obj.attribs['data-src'].trim();
                 pages.push(link);
             }
             const chapterDetails = createChapterDetails({
