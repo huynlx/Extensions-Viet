@@ -690,6 +690,7 @@ class HentaiVV extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             const chapters = [];
             var i = 0;
+            // const page=$('#id_pagination')
             const id = $("#views").attr('data-id');
             const request2 = createRequestObject({
                 url: 'https://hentaivv.com/wp-admin/admin-ajax.php',
@@ -777,7 +778,7 @@ class HentaiVV extends paperback_extensions_common_1.Source {
             });
             let hot = createHomeSection({
                 id: 'hot',
-                title: "Hot tháng",
+                title: "Truyện Hot",
                 view_more: false,
             });
             let newUpdated = createHomeSection({
@@ -827,16 +828,16 @@ class HentaiVV extends paperback_extensions_common_1.Source {
             //Hot
             url = '';
             request = createRequestObject({
-                url: 'https://hentaivv.com/',
+                url: 'https://hentaivv.com/truyen/',
                 method: "GET",
             });
             let hotItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('a', '#hotest .hotest-col').toArray()) {
-                let title = $(obj).attr('title');
-                const image = $(`img`, obj).attr('src');
-                let id = (_c = $(obj).attr('href')) !== null && _c !== void 0 ? _c : title;
+            for (let obj of $('li', '.theloai-thumlist').toArray()) {
+                let title = $('a', obj).attr('title');
+                const image = $(`a > img`, obj).attr('data-src');
+                let id = (_c = $('a', obj).attr('href')) !== null && _c !== void 0 ? _c : title;
                 hotItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
                     image: image !== null && image !== void 0 ? image : "",
