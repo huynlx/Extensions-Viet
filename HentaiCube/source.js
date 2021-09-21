@@ -739,13 +739,13 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
-                title: "TRUYỆN MỚI CẬP NHẬT",
+                title: "Mới cập nhật",
                 view_more: true,
             });
             let view = createHomeSection({
                 id: 'view',
-                title: "Top view ngày",
-                view_more: false,
+                title: "Xem nhiều nhất",
+                view_more: true,
             });
             //Load empty sections
             sectionCallback(hot);
@@ -875,8 +875,8 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                     url = `https://hentaicube.net/page/${page}/?s&post_type=wp-manga&m_orderby=latest`;
                     select = 1;
                     break;
-                case "new_added":
-                    url = `https://hentaivl.com/`;
+                case "view":
+                    url = `https://hentaicube.net/page/${page}/?s&post_type=wp-manga&m_orderby=views`;
                     select = 2;
                     break;
                 default:
@@ -1033,7 +1033,7 @@ exports.parseViewMore = ($, select) => {
     var _a, _b, _c, _d, _e, _f;
     const manga = [];
     const collectedIds = [];
-    if (select === 1) {
+    if (select === 1 || select === 2) {
         for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
             let title = $(`.post-title > h3 > a`, obj).text().trim();
             let subtitle = $(`.chapter > a`, obj).text().trim();
