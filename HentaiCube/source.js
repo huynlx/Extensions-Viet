@@ -897,24 +897,46 @@ class HentaiCube extends paperback_extensions_common_1.Source {
         });
     }
     getSearchResults(query, metadata) {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
-            var status = '';
+            var status = [];
+            var genre = [];
             tags.map((value) => {
                 if (value.indexOf('.') === -1) {
+                    genre.push(value);
                 }
                 else {
                     switch (value.split(".")[0]) {
                         case 'status':
-                            status = (value.split(".")[1]);
+                            status.push(value.split(".")[1]);
                             break;
                     }
                 }
             });
+            var statusFinal = '';
+            var genresFinal = '';
+            const convertStatus = (status) => {
+                let y = [];
+                for (const e of status) {
+                    let x = 'status=' + e;
+                    y.push(x);
+                }
+                statusFinal = (y !== null && y !== void 0 ? y : []).join("&");
+                return statusFinal;
+            };
+            const convertGenres = (genre) => {
+                let y = [];
+                for (const e of genre) {
+                    let x = 'genre=' + e;
+                    y.push(x);
+                }
+                genresFinal = (y !== null && y !== void 0 ? y : []).join("&");
+                return genresFinal;
+            };
             const request = createRequestObject({
-                url: encodeURI(`https://hentaicube.net/page/${page}/?s=${(_d = query.title) !== null && _d !== void 0 ? _d : ""}&post_type=wp-manga&genre=${(_e = tags[0]) !== null && _e !== void 0 ? _e : ""}&op=&author=&artist=&release=&adult=&status=${status !== null && status !== void 0 ? status : ""}`),
+                url: encodeURI(`https://hentaicube.net/page/${page}/?s=${(_d = query.title) !== null && _d !== void 0 ? _d : ""}&post_type=wp-manga&${convertGenres(genre)}&op=&author=&artist=&release=&adult=&${convertStatus(status)}`),
                 method: "GET"
             });
             const data = yield this.requestManager.schedule(request, 1);
