@@ -42,7 +42,7 @@ export const parseViewMore = ($: CheerioStatic): MangaTile[] => {
         if (!collectedIds.includes(id)) {
             manga.push(createMangaTile({
                 id: id,
-                image: image?.includes('http') ? (image) : ("https:" + image),
+                image: image?.includes('http') ? (image) : (image?.includes('app') ? ('https://truyentranhaudio.online/' + image) : ('https:' + image)),
                 title: createIconText({
                     text: title,
                 }),

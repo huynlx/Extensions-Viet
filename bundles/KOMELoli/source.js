@@ -607,41 +607,41 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Thienhatruyen = exports.ThienhatruyenInfo = void 0;
+exports.KOMELoli = exports.KOMELoliInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
-const ThienhatruyenParser_1 = require("./ThienhatruyenParser");
-const DOMAIN = 'https://thienhatruyen.com/';
+const KOMELoliParser_1 = require("./KOMELoliParser");
+const DOMAIN = 'https://hentaicube.net/';
 const method = 'GET';
-exports.ThienhatruyenInfo = {
-    version: '1.0.0',
-    name: 'Thienhatruyen',
+exports.KOMELoliInfo = {
+    version: '2.5.0',
+    name: 'KOMELoli',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from Thienhatruyen',
-    websiteBaseURL: DOMAIN,
-    contentRating: paperback_extensions_common_1.ContentRating.MATURE,
+    description: 'Extension that pulls manga from KOMELoli',
+    websiteBaseURL: `https://komeloli.net/`,
+    contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
         {
-            text: "Error",
-            type: paperback_extensions_common_1.TagType.RED
+            text: "18+",
+            type: paperback_extensions_common_1.TagType.YELLOW
         }
     ]
 };
-class Thienhatruyen extends paperback_extensions_common_1.Source {
+class KOMELoli extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
         this.requestManager = createRequestManager({
-            requestsPerSecond: 2,
-            requestTimeout: 10000
+            requestsPerSecond: 5,
+            requestTimeout: 20000
         });
     }
-    getMangaShareUrl(mangaId) { return `${DOMAIN}${mangaId}`; }
+    getMangaShareUrl(mangaId) { return `${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
-        var _a;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `${DOMAIN}${mangaId}`;
+            const url = `${mangaId}`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -649,31 +649,27 @@ class Thienhatruyen extends paperback_extensions_common_1.Source {
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let tags = [];
-            let creator = [];
+            let creator = '';
             let status = 1; //completed, 1 = Ongoing
-            let desc = $('.shortDetail').text();
-            for (const t of $('.list-cate > a').toArray()) {
-                const genre = $('li', t).text().trim();
+            let desc = $('.description-summary > .summary__content').text();
+            for (const t of $('.post-content > div:nth-child(8) > .summary-content a').toArray()) {
+                const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            const test = $('.aboutThisComic > li:nth-child(2) > a').text();
-            for (const obj of $('.aboutThisComic > li:nth-child(2) > a').toArray()) {
-                creator.push($(obj).text().trim());
-            }
-            ;
-            // status = $('.info-item:nth-child(4) > .info-value > a').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
-            const image = $('.cover > img').attr('data-src');
+            creator = $('.info > p:nth-child(1) > span').text();
+            status = $('.post-status > div:nth-child(2) > .summary-content').text().trim().toLowerCase().includes("đang") ? 1 : 0;
+            const image = (_c = (_b = $('.tab-summary img').attr('data-src')) === null || _b === void 0 ? void 0 : _b.replace('-193x278', '')) !== null && _c !== void 0 ? _c : "";
             return createManga({
                 id: mangaId,
-                author: !test ? $('.aboutThisComic > li:nth-child(2)').children().remove().end().text() : creator.join(', '),
-                artist: !test ? $('.aboutThisComic > li:nth-child(2)').children().remove().end().text() : creator.join(', '),
-                desc,
-                titles: [$('.detail > h1').text().trim()],
-                image: image !== null && image !== void 0 ? image : "https://i.imgur.com/GYUxEX8.png",
+                author: creator,
+                artist: creator,
+                desc: desc,
+                titles: [$('.post-title > h1').text().trim()],
+                image: image,
                 status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
-                hentai: false,
+                hentai: true,
                 tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
             });
         });
@@ -681,30 +677,24 @@ class Thienhatruyen extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${DOMAIN}${mangaId}`,
+                url: `${mangaId}`,
                 method,
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const chapters = [];
             var i = 0;
-            for (const obj of $("#scrollbar a").toArray().reverse()) {
+            for (const obj of $(".listing-chapters_wrap li").toArray().reverse()) {
                 i++;
-                const getTime = $('span.name > span.views', obj).text().trim().split(' ');
-                const time = {
-                    date: getTime[0],
-                    time: getTime[1].split('-')[0].trim()
-                };
-                const arrDate = time.date.split(/\-/);
-                const fixDate = [arrDate[1], arrDate[0], arrDate[2]].join('/');
-                const finalTime = new Date(fixDate + ' ' + time.time);
+                // const getTime = $('span', obj).text().trim().split(/\//);
+                // const fixDate = [getTime[1], getTime[0], getTime[2]].join('/');
+                // const finalTime = new Date(fixDate);
                 chapters.push(createChapter({
-                    id: $(obj).attr('href'),
+                    id: $('a', obj).first().attr('href'),
                     chapNum: i,
-                    name: $('span.name > span.titleComic', obj).text().trim(),
+                    name: ($('a', obj).first().text().trim()),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: finalTime
                 }));
             }
             return chapters;
@@ -719,10 +709,10 @@ class Thienhatruyen extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
-            for (let obj of $('#lightgallery2 > img').toArray()) {
-                if (!obj.attribs['src'])
+            for (let obj of $('.text-left img').toArray()) {
+                if (!obj.attribs['data-src'])
                     continue;
-                let link = obj.attribs['src'];
+                let link = obj.attribs['data-src'].trim();
                 pages.push(link);
             }
             const chapterDetails = createChapterDetails({
@@ -735,52 +725,86 @@ class Thienhatruyen extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
         return __awaiter(this, void 0, void 0, function* () {
+            let featured = createHomeSection({
+                id: 'featured',
+                title: "Gợi ý hôm nay",
+                type: paperback_extensions_common_1.HomeSectionType.featured
+            });
             let hot = createHomeSection({
                 id: 'hot',
-                title: "ĐANG HOT",
-                view_more: true,
+                title: "Hot tháng",
+                view_more: false,
             });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
-                title: "MỚI NHẤT",
+                title: "Mới cập nhật",
                 view_more: true,
             });
             let view = createHomeSection({
                 id: 'view',
-                title: "XEM NHIỀU",
+                title: "Xem nhiều nhất",
+                view_more: true,
+            });
+            let newest = createHomeSection({
+                id: 'new',
+                title: "New",
                 view_more: true,
             });
             //Load empty sections
             sectionCallback(hot);
             sectionCallback(newUpdated);
             sectionCallback(view);
+            sectionCallback(newest);
             ///Get the section data
-            //Hot
-            let url = '';
+            //Featured
+            let url = ``;
             let request = createRequestObject({
-                url: `${DOMAIN}danh-muc/dang-hot`,
+                url: 'https://komeloli.net/',
+                method: "GET",
+            });
+            let featuredItems = [];
+            let data = yield this.requestManager.schedule(request, 1);
+            let $ = this.cheerio.load(data.data);
+            for (let obj of $('.thumb-item-flow ', '#main-content > .wrap-content-part:nth-child(1) .row.cuutruyen').toArray()) {
+                let title = $(`.series-title a`, obj).text().trim();
+                let subtitle = $(`.chapter-title`, obj).text().trim();
+                const image = (_a = $('.a6-ratio img', obj).attr('data-src')) !== null && _a !== void 0 ? _a : "";
+                let id = (_b = $(`.series-title a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
+                featuredItems.push(createMangaTile({
+                    id: id,
+                    image: image,
+                    title: createIconText({
+                        text: title,
+                    }),
+                    subtitleText: createIconText({
+                        text: (subtitle),
+                    }),
+                }));
+            }
+            featured.items = featuredItems;
+            sectionCallback(featured);
+            //Hot
+            url = '';
+            request = createRequestObject({
+                url: 'https://hentaicube.net/',
                 method: "GET",
             });
             let hotItems = [];
-            let data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
-            for (let obj of $('li', '.mainContent > .content > .listComic > ul.list').toArray().splice(0, 40)) {
-                let title = $(`.detail > h3 > a`, obj).text().trim();
-                let subtitle = $(`.chapters a`, obj).attr('title');
-                const image = $(`.cover img`, obj).attr('data-src');
-                let id = (_b = (_a = $(`.detail > h3 > a`, obj).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) !== null && _b !== void 0 ? _b : title;
-                if (!id || !subtitle)
-                    continue;
+            data = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(data.data);
+            for (let obj of $('.popular-item-wrap', '#manga-recent-3 .widget-content').toArray()) {
+                let title = $(`.popular-content a`, obj).text().trim();
+                // let subtitle = $(`.chapter > a`, obj).text();
+                const image = (_c = $(`.popular-img > a > img`, obj).attr('data-src')) === null || _c === void 0 ? void 0 : _c.replace('-75x106', '');
+                let id = (_d = $(`.popular-img > a`, obj).attr('href')) !== null && _d !== void 0 ? _d : title;
+                // if (!id || !subtitle) continue;
                 hotItems.push(createMangaTile({
                     id: id,
                     image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({
                         text: title,
-                    }),
-                    subtitleText: createIconText({
-                        text: subtitle,
                     }),
                 }));
             }
@@ -789,27 +813,25 @@ class Thienhatruyen extends paperback_extensions_common_1.Source {
             //New Updates
             url = '';
             request = createRequestObject({
-                url: `${DOMAIN}the-loai?cate=&author=&translater=&complete=&sort=lastest`,
+                url: 'https://hentaicube.net/?s&post_type=wp-manga&m_orderby=latest',
                 method: "GET",
             });
             let newUpdatedItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('li', '.mainContent > .content > .listComic > ul.list').toArray().splice(0, 40)) {
-                let title = $(`.detail > h3 > a`, obj).text().trim();
-                let subtitle = $(`.chapters a`, obj).attr('title');
-                const image = $(`.cover img`, obj).attr('data-src');
-                let id = (_d = (_c = $(`.detail > h3 > a`, obj).attr("href")) === null || _c === void 0 ? void 0 : _c.split("/").pop()) !== null && _d !== void 0 ? _d : title;
-                if (!id || !subtitle)
-                    continue;
+            for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
+                let title = $(`.post-title > h3 > a`, obj).text().trim();
+                let subtitle = $(`.chapter > a`, obj).text().trim();
+                const image = (_e = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _e !== void 0 ? _e : "";
+                let id = (_f = $(`.c-image-hover > a`, obj).attr('href')) !== null && _f !== void 0 ? _f : title;
                 newUpdatedItems.push(createMangaTile({
-                    id: id,
+                    id: id !== null && id !== void 0 ? id : "",
                     image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({
-                        text: title,
+                        text: title !== null && title !== void 0 ? title : "",
                     }),
                     subtitleText: createIconText({
-                        text: subtitle,
+                        text: subtitle
                     }),
                 }));
             }
@@ -818,62 +840,89 @@ class Thienhatruyen extends paperback_extensions_common_1.Source {
             //view
             url = DOMAIN;
             request = createRequestObject({
-                url: `${DOMAIN}the-loai?cate=&author=&translater=&complete=&sort=view`,
+                url: 'https://hentaicube.net/?s&post_type=wp-manga&m_orderby=views',
                 method: "GET",
             });
-            let viewItems = [];
+            let newAddItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('li', '.mainContent > .content > .listComic > ul.list').toArray().splice(0, 40)) {
-                let title = $(`.detail > h3 > a`, obj).text().trim();
-                let subtitle = $(`.chapters a`, obj).attr('title');
-                const image = $(`.cover img`, obj).attr('data-src');
-                let id = (_f = (_e = $(`.detail > h3 > a`, obj).attr("href")) === null || _e === void 0 ? void 0 : _e.split("/").pop()) !== null && _f !== void 0 ? _f : title;
-                if (!id || !subtitle)
-                    continue;
-                viewItems.push(createMangaTile({
+            for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
+                let title = $(`.post-title > h3 > a`, obj).text().trim();
+                let subtitle = $(`.chapter > a`, obj).text().trim();
+                const image = (_g = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _g !== void 0 ? _g : "";
+                let id = (_h = $(`.c-image-hover > a`, obj).attr('href')) !== null && _h !== void 0 ? _h : title;
+                newAddItems.push(createMangaTile({
                     id: id,
                     image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({
                         text: title,
                     }),
                     subtitleText: createIconText({
-                        text: subtitle,
+                        text: (subtitle),
                     }),
                 }));
             }
-            view.items = viewItems;
+            view.items = newAddItems;
             sectionCallback(view);
+            //Newest
+            url = '';
+            request = createRequestObject({
+                url: 'https://hentaicube.net/?s&post_type=wp-manga&m_orderby=new-manga',
+                method: "GET",
+            });
+            let newItems = [];
+            data = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(data.data);
+            for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
+                let title = $(`.post-title > h3 > a`, obj).text().trim();
+                let subtitle = $(`.chapter > a`, obj).text().trim();
+                const image = (_j = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _j !== void 0 ? _j : "";
+                let id = (_k = $(`.c-image-hover > a`, obj).attr('href')) !== null && _k !== void 0 ? _k : title;
+                newItems.push(createMangaTile({
+                    id: id !== null && id !== void 0 ? id : "",
+                    image: image !== null && image !== void 0 ? image : "",
+                    title: createIconText({
+                        text: title !== null && title !== void 0 ? title : "",
+                    }),
+                    subtitleText: createIconText({
+                        text: subtitle
+                    }),
+                }));
+            }
+            newest.items = newItems;
+            sectionCallback(newest);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            let param = '';
             let url = '';
+            let select = 1;
             switch (homepageSectionId) {
-                case "hot":
-                    url = `${DOMAIN}danh-muc/dang-hot?page=${page}`;
+                case "new":
+                    url = `https://hentaicube.net/page/${page}/?s&post_type=wp-manga&m_orderby=new-manga`;
+                    select = 0;
                     break;
                 case "new_updated":
-                    url = `${DOMAIN}the-loai?cate=&author=&translater=&complete=&sort=lastest&page=${page}`;
+                    url = `https://hentaicube.net/page/${page}/?s&post_type=wp-manga&m_orderby=latest`;
+                    select = 1;
                     break;
                 case "view":
-                    url = `${DOMAIN}the-loai?cate=&author=&translater=&complete=&sort=view&page=${page}`;
+                    url = `https://hentaicube.net/page/${page}/?s&post_type=wp-manga&m_orderby=views`;
+                    select = 2;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
             }
             const request = createRequestObject({
                 url,
-                method,
-                param
+                method
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            const manga = ThienhatruyenParser_1.parseViewMore($);
-            metadata = !ThienhatruyenParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            let manga = KOMELoliParser_1.parseViewMore($, select);
+            metadata = !KOMELoliParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: manga,
                 metadata,
@@ -884,42 +933,49 @@ class Thienhatruyen extends paperback_extensions_common_1.Source {
         var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            const search = {
-                cate: "",
-                author: "",
-                translater: "",
-                complete: "",
-                sort: ""
-            };
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
+            var status = [];
+            var genre = [];
             tags.map((value) => {
-                switch (value.split(".")[0]) {
-                    case 'cate':
-                        search.cate = (value.split(".")[1]);
-                        break;
-                    case 'author':
-                        search.author = (value.split(".")[1]);
-                        break;
-                    case 'translater':
-                        search.translater = (value.split(".")[1]);
-                        break;
-                    case 'complete':
-                        search.complete = (value.split(".")[1]);
-                        break;
-                    case 'sort':
-                        search.sort = (value.split(".")[1]);
-                        break;
+                if (value.indexOf('.') === -1) {
+                    genre.push(value);
+                }
+                else {
+                    switch (value.split(".")[0]) {
+                        case 'status':
+                            status.push(value.split(".")[1]);
+                            break;
+                    }
                 }
             });
+            var statusFinal = '';
+            var genresFinal = '';
+            const convertStatus = (status) => {
+                let y = [];
+                for (const e of status) {
+                    let x = 'status=' + e;
+                    y.push(x);
+                }
+                statusFinal = (y !== null && y !== void 0 ? y : []).join("&");
+                return statusFinal;
+            };
+            const convertGenres = (genre) => {
+                let y = [];
+                for (const e of genre) {
+                    let x = 'genre=' + e;
+                    y.push(x);
+                }
+                genresFinal = (y !== null && y !== void 0 ? y : []).join("&");
+                return genresFinal;
+            };
             const request = createRequestObject({
-                url: query.title ? encodeURI(`${DOMAIN}tim-kiem?q=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}`) : `${DOMAIN}the-loai?cate=${search.cate}&author=${search.author}&translater=${search.translater}&complete=${search.complete}&sort=${search.sort}`,
-                method: "GET",
-                param: `&page=${page}`
+                url: encodeURI(`https://hentaicube.net/page/${page}/?s=${(_d = query.title) !== null && _d !== void 0 ? _d : ""}&post_type=wp-manga&${convertGenres(genre)}&op=&author=&artist=&release=&adult=&${convertStatus(status)}`),
+                method: "GET"
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            const tiles = ThienhatruyenParser_1.parseSearch($);
-            metadata = !ThienhatruyenParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            const tiles = KOMELoliParser_1.parseSearch($);
+            metadata = !KOMELoliParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: tiles,
                 metadata
@@ -927,82 +983,55 @@ class Thienhatruyen extends paperback_extensions_common_1.Source {
         });
     }
     getSearchTags() {
-        var _a, _b, _c, _d;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `${DOMAIN}the-loai`;
+            const tags = [];
+            const tags2 = [];
+            const url = `https://hentaicube.net/?s=&post_type=wp-manga`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            const arrayTags = [];
-            const arrayTags2 = [];
-            // const arrayTags3: Tag[] = [];
-            const arrayTags4 = [];
-            const arrayTags5 = [];
             //the loai
-            for (const tag of $('option', '#formAdvance > .column-search:nth-child(1) > select').toArray()) {
-                const label = $(tag).text().trim();
-                const id = (_a = 'cate.' + $(tag).attr('value')) !== null && _a !== void 0 ? _a : label;
+            for (const tag of $('.checkbox', '.checkbox-group').toArray()) {
+                const label = $('label', tag).text().trim();
+                const id = (_a = $('input', tag).attr('id')) !== null && _a !== void 0 ? _a : label;
                 if (!id || !label)
                     continue;
-                arrayTags.push({ id: id, label: label });
+                tags.push({ id: id, label: label });
             }
-            //tac gia
-            for (const tag of $('option', '#formAdvance > .column-search:nth-child(2) > select').toArray()) {
-                const label = $(tag).text().trim();
-                const id = (_b = 'author.' + $(tag).attr('value')) !== null && _b !== void 0 ? _b : label;
-                if (!id || !label)
-                    continue;
-                arrayTags2.push({ id: id, label: label });
-            }
-            //nhom dich
-            // for (const tag of $('option', '#formAdvance > .column-search:nth-child(3) > select').toArray()) {
-            //     const label = $(tag).text().trim();
-            //     const id = 'translater.' + $(tag).attr('value') ?? label;
-            //     if (!id || !label) continue;
-            //     arrayTags3.push({ id: id, label: label });
-            // }
             //tinh trang
-            for (const tag of $('option', '#formAdvance > .column-search:nth-child(4) > select').toArray()) {
-                const label = $(tag).text().trim();
-                const id = (_c = 'complete.' + $(tag).attr('value')) !== null && _c !== void 0 ? _c : label;
+            for (const tag of $('.checkbox-inline', '.search-advanced-form > .form-group:nth-child(9) ').toArray()) {
+                const label = $('label', tag).text().trim();
+                const id = (_b = 'status.' + $('input', tag).attr('value')) !== null && _b !== void 0 ? _b : label;
                 if (!id || !label)
                     continue;
-                arrayTags4.push({ id: id, label: label });
+                tags2.push({ id: id, label: label });
             }
-            //sap xep
-            for (const tag of $('option', '#formAdvance > .column-search:nth-child(5) > select').toArray()) {
-                const label = $(tag).text().trim();
-                const id = (_d = 'sort.' + $(tag).attr('value')) !== null && _d !== void 0 ? _d : label;
-                if (!id || !label)
-                    continue;
-                arrayTags5.push({ id: id, label: label });
-            }
-            const tagSections = [
-                createTagSection({ id: '0', label: 'Thể loại', tags: arrayTags.map(x => createTag(x)) }),
-                createTagSection({ id: '1', label: 'Tác giả', tags: arrayTags2.map(x => createTag(x)) }),
-                // createTagSection({ id: '2', label: 'Nhóm dịch', tags: arrayTags3.map(x => createTag(x)) }), //lỗi crash
-                createTagSection({ id: '3', label: 'Tình trạng', tags: arrayTags4.map(x => createTag(x)) }),
-                createTagSection({ id: '4', label: 'Sắp xếp', tags: arrayTags5.map(x => createTag(x)) }),
-            ];
+            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
+                createTagSection({ id: '1', label: 'Tình Trạng', tags: tags2.map(x => createTag(x)) })];
             return tagSections;
         });
     }
     globalRequestHeaders() {
         return {
-            referer: DOMAIN
+            referer: 'https://komeloli.net/'
         };
     }
 }
-exports.Thienhatruyen = Thienhatruyen;
+exports.KOMELoli = KOMELoli;
 
-},{"./ThienhatruyenParser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
+},{"./KOMELoliParser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
+exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.capitalizeFirstLetter = void 0;
 const entities = require("entities"); //Import package for decoding HTML entities
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+exports.capitalizeFirstLetter = capitalizeFirstLetter;
 exports.generateSearch = (query) => {
     var _a;
     let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
@@ -1010,55 +1039,67 @@ exports.generateSearch = (query) => {
 };
 exports.parseSearch = ($) => {
     var _a, _b;
+    const collectedIds = [];
     const mangas = [];
-    for (let obj of $('li', '.mainContent > .content > .listComic > ul.list').toArray()) {
-        let title = $(`.detail > h3 > a`, obj).text().trim();
-        let subtitle = $(`.chapters a`, obj).attr('title');
-        const image = $(`.cover img`, obj).attr('data-src');
-        let id = (_b = (_a = $(`.detail > h3 > a`, obj).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) !== null && _b !== void 0 ? _b : title;
-        if (!id || !subtitle)
-            continue;
-        mangas.push(createMangaTile({
-            id: encodeURIComponent(id),
-            image: image !== null && image !== void 0 ? image : "",
-            title: createIconText({ text: decodeHTMLEntity(title) }),
-            subtitleText: createIconText({ text: subtitle }),
-        }));
+    for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
+        let title = $(`.post-title > h3 > a`, obj).text().trim();
+        let subtitle = $(`.chapter > a`, obj).text().trim();
+        const image = (_a = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _a !== void 0 ? _a : "";
+        let id = (_b = $(`.c-image-hover > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
+        if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
+            mangas.push(createMangaTile({
+                id: id,
+                image: image,
+                title: createIconText({
+                    text: title,
+                }),
+                subtitleText: createIconText({
+                    text: (subtitle),
+                }),
+            }));
+            collectedIds.push(id);
+        }
     }
     return mangas;
 };
-exports.parseViewMore = ($) => {
+exports.parseViewMore = ($, select) => {
     var _a, _b;
     const manga = [];
     const collectedIds = [];
-    for (let obj of $('li', '.mainContent > .content > .listComic > ul.list').toArray()) {
-        let title = $(`.detail > h3 > a`, obj).text().trim();
-        let subtitle = $(`.chapters a`, obj).attr('title');
-        const image = $(`.cover img`, obj).attr('data-src');
-        let id = (_b = (_a = $(`.detail > h3 > a`, obj).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) !== null && _b !== void 0 ? _b : title;
-        if (!id || !subtitle)
-            continue;
-        manga.push(createMangaTile({
-            id: encodeURIComponent(id),
-            image: image !== null && image !== void 0 ? image : "",
-            title: createIconText({ text: decodeHTMLEntity(title) }),
-            subtitleText: createIconText({ text: subtitle }),
-        }));
-        collectedIds.push(id);
+    if (select === 1 || select === 2 || select === 0) {
+        for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
+            let title = $(`.post-title > h3 > a`, obj).text().trim();
+            let subtitle = $(`.chapter > a`, obj).text().trim();
+            const image = (_a = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _a !== void 0 ? _a : "";
+            let id = (_b = $(`.c-image-hover > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
+            if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
+                manga.push(createMangaTile({
+                    id: id,
+                    image: image !== null && image !== void 0 ? image : "",
+                    title: createIconText({
+                        text: title !== null && title !== void 0 ? title : "",
+                    }),
+                    subtitleText: createIconText({
+                        text: (subtitle),
+                    }),
+                }));
+                collectedIds.push(id);
+            }
+        }
     }
     return manga;
 };
 exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
-    for (const page of $("a", ".paging > ul > li").toArray()) {
+    for (const page of $("a", ".wp-pagenavi").toArray()) {
         const p = Number($(page).text().trim());
         if (isNaN(p))
             continue;
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($(".paging > ul > li > a.active").text().trim());
+    const currentPage = Number($(".wp-pagenavi > span.current").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;

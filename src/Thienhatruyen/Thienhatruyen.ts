@@ -21,7 +21,7 @@ const DOMAIN = 'https://thienhatruyen.com/'
 const method = 'GET'
 
 export const ThienhatruyenInfo: SourceInfo = {
-    version: '2.0.0',
+    version: '1.0.0',
     name: 'Thienhatruyen',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -31,8 +31,8 @@ export const ThienhatruyenInfo: SourceInfo = {
     contentRating: ContentRating.MATURE,
     sourceTags: [
         {
-            text: "Recommended",
-            type: TagType.BLUE
+            text: "Error",
+            type: TagType.RED
         }
     ]
 }

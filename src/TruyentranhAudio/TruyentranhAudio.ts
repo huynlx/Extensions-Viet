@@ -23,7 +23,7 @@ const DOMAIN = 'https://truyentranhaudio.online/'
 const method = 'GET'
 
 export const TruyentranhAudioInfo: SourceInfo = {
-    version: '3.0.0',
+    version: '1.0.0',
     name: 'TruyentranhAudio',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -33,8 +33,8 @@ export const TruyentranhAudioInfo: SourceInfo = {
     contentRating: ContentRating.MATURE,
     sourceTags: [
         {
-            text: "Recommended",
-            type: TagType.BLUE
+            text: "Error",
+            type: TagType.RED
         }
     ]
 }
