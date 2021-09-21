@@ -900,7 +900,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             let url = '';
             let select = 1;
             switch (homepageSectionId) {
-                case "newest":
+                case "new":
                     url = `https://hentaicube.net/page/${page}/?s&post_type=wp-manga&m_orderby=new-manga`;
                     select = 0;
                     break;
