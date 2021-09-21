@@ -606,19 +606,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HentaiCube = exports.HentaiCubeInfo = void 0;
+exports.Gaito = exports.GaitoInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
-const HentaiCubeParser_1 = require("./HentaiCubeParser");
+const axios_1 = __importDefault(require("axios"));
+const GaitoParser_1 = require("./GaitoParser");
 const DOMAIN = 'https://hentaivl.com/';
 const method = 'GET';
-exports.HentaiCubeInfo = {
-    version: '1.5.0',
-    name: 'HentaiCube',
+exports.GaitoInfo = {
+    version: '1.0.0',
+    name: 'Gaito',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from HentaiCube',
+    description: 'Extension that pulls manga from Gaito',
     websiteBaseURL: `https://hentaicube.net/`,
     contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
@@ -628,7 +632,7 @@ exports.HentaiCubeInfo = {
         }
     ]
 };
-class HentaiCube extends paperback_extensions_common_1.Source {
+class Gaito extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
         this.requestManager = createRequestManager({
@@ -725,7 +729,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+        var _a, _b, _c, _d, _e, _f, _g;
         return __awaiter(this, void 0, void 0, function* () {
             let featured = createHomeSection({
                 id: 'featured',
@@ -807,29 +811,29 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             //New Updates
             url = '';
             request = createRequestObject({
-                url: 'https://hentaicube.net/',
+                url: 'https://www.gaito.me/truyen-hentai/?page=1&sort=latest',
                 method: "GET",
             });
             let newUpdatedItems = [];
-            data = yield this.requestManager.schedule(request, 1);
-            $ = this.cheerio.load(data.data);
-            for (let obj of $('.row-eq-height', '#loop-content').toArray()) {
-                for (let obj2 of $('.page-item-detail', obj).toArray()) {
-                    let title = (_f = $(`a`, obj2).first().attr('title')) === null || _f === void 0 ? void 0 : _f.trim();
-                    let subtitle = $(`.chapter-item  > span > a`, obj2).text().trim();
-                    let image = (_g = $(`a > img`, obj2).attr('data-src')) === null || _g === void 0 ? void 0 : _g.replace('-110x150', '');
-                    let id = (_h = $(`a`, obj2).first().attr('href')) === null || _h === void 0 ? void 0 : _h.trim();
-                    newUpdatedItems.push(createMangaTile({
-                        id: id !== null && id !== void 0 ? id : "",
-                        image: image !== null && image !== void 0 ? image : "",
-                        title: createIconText({
-                            text: title !== null && title !== void 0 ? title : "",
-                        }),
-                        subtitleText: createIconText({
-                            text: subtitle
-                        }),
-                    }));
-                }
+            data = yield axios_1.default.get('https://api.gaito.me/manga/comics?limit=20&offset=0&sort=latest');
+            // $ = this.cheerio.load(data.data);
+            let array = data.data;
+            // const parsedJson = JSON.parse(data.data);
+            // const entity = parsedJson.mainEntity;
+            var element = '';
+            for (element of array) {
+                let title = element.title;
+                // let subtitle = $(`.chapter-item  > span > a`, obj2).text();
+                let image = element.cover ? element.cover.dimensions.thumbnail.url : null;
+                let id = element.id;
+                console.log(image);
+                newUpdatedItems.push(createMangaTile({
+                    id: id !== null && id !== void 0 ? id : "",
+                    image: image !== null && image !== void 0 ? image : "",
+                    title: createIconText({
+                        text: title !== null && title !== void 0 ? title : "",
+                    }),
+                }));
             }
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
@@ -845,8 +849,8 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             for (let obj of $('div.popular-item-wrap', '#manga-recent-2 .widget-content').toArray()) {
                 let title = $(`.popular-content a`, obj).text().trim();
                 // let subtitle = $(`.chapter > a`, obj).text();
-                const image = (_j = $(`.popular-img > a > img`, obj).attr('data-src')) === null || _j === void 0 ? void 0 : _j.replace('-75x106', '');
-                let id = (_k = $(`.popular-img > a`, obj).attr('href')) !== null && _k !== void 0 ? _k : title;
+                const image = (_f = $(`.popular-img > a > img`, obj).attr('data-src')) === null || _f === void 0 ? void 0 : _f.replace('-75x106', '');
+                let id = (_g = $(`.popular-img > a`, obj).attr('href')) !== null && _g !== void 0 ? _g : title;
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
                     id: id,
@@ -888,8 +892,8 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            let manga = HentaiCubeParser_1.parseViewMore($, select);
-            metadata = !HentaiCubeParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            let manga = GaitoParser_1.parseViewMore($, select);
+            metadata = !GaitoParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: manga,
                 metadata,
@@ -908,8 +912,8 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            const tiles = HentaiCubeParser_1.parseSearch($);
-            metadata = !HentaiCubeParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            const tiles = GaitoParser_1.parseSearch($);
+            metadata = !GaitoParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: tiles,
                 metadata
@@ -945,9 +949,9 @@ class HentaiCube extends paperback_extensions_common_1.Source {
         };
     }
 }
-exports.HentaiCube = HentaiCube;
+exports.Gaito = Gaito;
 
-},{"./HentaiCubeParser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
+},{"./GaitoParser":57,"axios":"axios","paperback-extensions-common":13}],57:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.capitalizeFirstLetter = void 0;
