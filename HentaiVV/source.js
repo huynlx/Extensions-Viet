@@ -745,17 +745,17 @@ class HentaiVV extends paperback_extensions_common_1.Source {
             });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
-                title: "Mới cập nhật",
+                title: "Truyện Mới Cập Nhật",
                 view_more: true,
             });
             let view = createHomeSection({
                 id: 'view',
-                title: "Xem nhiều nhất",
+                title: "Truyện Ngẫu Nhiên",
                 view_more: true,
             });
             let newest = createHomeSection({
                 id: 'new',
-                title: "New",
+                title: "Truyện Mới Nhất",
                 view_more: true,
             });
             //Load empty sections
