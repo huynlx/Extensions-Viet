@@ -769,7 +769,7 @@ class KOMELoli extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             for (let obj of $('.thumb-item-flow ', '#main-content > .wrap-content-part:nth-child(1) .row.cuutruyen').toArray()) {
                 let title = $(`.series-title a`, obj).text().trim();
-                let subtitle = $(`.thumb_attr`, obj).text().trim();
+                let subtitle = $(`.chapter-title`, obj).text().trim();
                 const image = (_a = $('.a6-ratio img', obj).attr('data-src')) !== null && _a !== void 0 ? _a : "";
                 let id = (_b = $(`.series-title a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
                 featuredItems.push(createMangaTile({
