@@ -658,11 +658,11 @@ class HentaiVV extends paperback_extensions_common_1.Source {
                 tags.push(createTag({ label: genre, id }));
             }
             if ($('#thong_tin tbody > tr:nth-child(1) > th:nth-child(1)').text().trim() === 'Tên Khác:') {
-                creator = $('#thong_tin tbody > tr:nth-child(2) > th:nth-child(2)').text().trim();
+                creator = '1';
                 status = $('#thong_tin tbody > tr:nth-child(3) > th:nth-child(2) > span').text().trim().toLowerCase().includes("đang") ? 1 : 0;
             }
             else {
-                creator = $('#thong_tin tbody > tr:nth-child(1) > th:nth-child(2)').text().trim();
+                creator = '2';
                 status = $('#thong_tin tbody > tr:nth-child(2) > th:nth-child(2) > span').text().trim().toLowerCase().includes("đang") ? 1 : 0;
             }
             const image = (_b = $('.book3d img').attr('data-src')) !== null && _b !== void 0 ? _b : "";
