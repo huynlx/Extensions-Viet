@@ -763,7 +763,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             for (let obj of $('.item__wrap ', '.slider__container .slider__item').toArray()) {
                 let title = $(`.slider__content .post-title`, obj).text().trim();
-                let subtitle = $(`.slider__content .chapter-item a`, obj).text().trim();
+                let subtitle = $(`.slider__content .chapter-item a`, obj).first().text().trim();
                 const image = (_b = (_a = $('.slider__thumb a > img', obj).attr('data-src')) === null || _a === void 0 ? void 0 : _a.replace('-110x150', '')) !== null && _b !== void 0 ? _b : "";
                 let id = (_c = $(`.slider__thumb a`, obj).attr('href')) !== null && _c !== void 0 ? _c : title;
                 featuredItems.push(createMangaTile({
@@ -902,7 +902,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: encodeURI(`https://hentaicube.net/page/${page}/?s=&post_type=wp-manga&genre%5B%5D=${tags[0]}&op=&author=&artist=&release=&adult=`),
+                url: encodeURI(`https://hentaicube.net/page/${page}/?s=&post_type=wp-manga&genre%5B%5D=bondage&op=&author=&artist=&release=&adult=`),
                 method: "GET"
             });
             const data = yield this.requestManager.schedule(request, 1);
