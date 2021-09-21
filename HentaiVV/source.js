@@ -1016,7 +1016,7 @@ class HentaiVV extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             const tags = [];
             const tags2 = [];
-            const url = `https://hentaicube.net/?s=&post_type=wp-manga`;
+            const url = `https://hentaivv.com/tim-kiem/?title=`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -1024,9 +1024,9 @@ class HentaiVV extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             //the loai
-            for (const tag of $('.checkbox', '.checkbox-group').toArray()) {
-                const label = $('label', tag).text().trim();
-                const id = (_a = $('input', tag).attr('id')) !== null && _a !== void 0 ? _a : label;
+            for (const tag of $('label', '#category > div:nth-child(2)').toArray()) {
+                const label = $(tag).text().trim();
+                const id = (_a = $(tag).attr('for')) !== null && _a !== void 0 ? _a : label;
                 if (!id || !label)
                     continue;
                 tags.push({ id: id, label: label });
