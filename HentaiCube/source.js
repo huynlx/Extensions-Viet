@@ -897,12 +897,12 @@ class HentaiCube extends paperback_extensions_common_1.Source {
         });
     }
     getSearchResults(query, metadata) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: encodeURI(`https://hentaicube.net/page/${page}/?s=&post_type=wp-manga&genre=${tags[0]}&op=&author=&artist=&release=&adult=`),
+                url: encodeURI(`https://hentaicube.net/page/${page}/?s=${(_d = query.title) !== null && _d !== void 0 ? _d : ""}&post_type=wp-manga&genre=${tags[0]}&op=&author=&artist=&release=&adult=`),
                 method: "GET"
             });
             const data = yield this.requestManager.schedule(request, 1);
@@ -916,9 +916,10 @@ class HentaiCube extends paperback_extensions_common_1.Source {
         });
     }
     getSearchTags() {
-        var _a;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             const tags = [];
+            const tags2 = [];
             const url = `https://hentaicube.net/?s=&post_type=wp-manga`;
             const request = createRequestObject({
                 url: url,
@@ -927,14 +928,23 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             //the loai
-            for (const tag of $('.checkbox', '.checkbox-group ').toArray()) {
+            for (const tag of $('.checkbox', '.checkbox-group').toArray()) {
                 const label = $('label', tag).text().trim();
                 const id = (_a = $('input', tag).attr('id')) !== null && _a !== void 0 ? _a : label;
                 if (!id || !label)
                     continue;
                 tags.push({ id: id, label: label });
             }
-            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) })];
+            //tinh trang
+            for (const tag of $('.checkbox-inline', '.search-advanced-form > .form-group:nth-child(9) ').toArray()) {
+                const label = $('label', tag).text().trim();
+                const id = (_b = $('input', tag).attr('value')) !== null && _b !== void 0 ? _b : label;
+                if (!id || !label)
+                    continue;
+                tags2.push({ id: id, label: label });
+            }
+            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
+                createTagSection({ id: '1', label: 'Tình Trạng', tags: tags2.map(x => createTag(x)) })];
             return tagSections;
         });
     }
