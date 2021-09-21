@@ -902,7 +902,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: encodeURI(`https://hentaicube.net/page/${page}/?s=&post_type=wp-manga&genre%5B%5D=bondage&op=&author=&artist=&release=&adult=`),
+                url: encodeURI(`https://hentaicube.net/the-loai/anal/page/${page}/`),
                 method: "GET"
             });
             const data = yield this.requestManager.schedule(request, 1);
