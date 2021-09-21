@@ -826,10 +826,12 @@ class Gaito extends paperback_extensions_common_1.Source {
                 // let subtitle = $(`.chapter-item  > span > a`, obj2).text();
                 let image = element.cover ? element.cover.dimensions.thumbnail.url : null;
                 let id = element.id;
+                console.log(title);
                 console.log(image);
+                console.log(id);
                 newUpdatedItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
-                    image: image !== null && image !== void 0 ? image : "",
+                    image: image !== null && image !== void 0 ? image : "https://cdn.gaito.me/kn-static/userfiles/plugins/manga/em-gai-de-thuong-656606-thumbnail.jpg",
                     title: createIconText({
                         text: title !== null && title !== void 0 ? title : "",
                     }),
@@ -945,7 +947,7 @@ class Gaito extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: 'https://hentaicube.net/'
+            referer: 'https://www.gaito.me/'
         };
     }
 }
