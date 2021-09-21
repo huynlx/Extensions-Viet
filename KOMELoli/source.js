@@ -639,7 +639,7 @@ class KOMELoli extends paperback_extensions_common_1.Source {
     getMangaShareUrl(mangaId) { return `${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
-        var _a, _b, _c;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             const url = `${mangaId}`;
             const request = createRequestObject({
@@ -651,21 +651,21 @@ class KOMELoli extends paperback_extensions_common_1.Source {
             let tags = [];
             let creator = '';
             let status = 1; //completed, 1 = Ongoing
-            let desc = $('.description-summary > .summary__content').text();
-            for (const t of $('.post-content > div:nth-child(8) > .summary-content a').toArray()) {
+            let desc = $('.detail-content > p').text();
+            for (const t of $('.list-info > .info-row.list01.li03 > a').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            creator = $('.info > p:nth-child(1) > span').text();
-            status = $('.post-status > div:nth-child(2) > .summary-content').text().trim().toLowerCase().includes("đang") ? 1 : 0;
-            const image = (_c = (_b = $('.tab-summary img').attr('data-src')) === null || _b === void 0 ? void 0 : _b.replace('-193x278', '')) !== null && _c !== void 0 ? _c : "";
+            creator = $('.list-info > info-row:nth-child(1) > span').text();
+            status = $('.list-info > info-row:nth-child(2) > span').text().trim().toLowerCase().includes("đang") ? 1 : 0;
+            const image = (_b = $('.wrap-content-image img').attr('data-src')) !== null && _b !== void 0 ? _b : "";
             return createManga({
                 id: mangaId,
                 author: creator,
                 artist: creator,
                 desc: desc,
-                titles: [$('.post-title > h1').text().trim()],
+                titles: [$('.wrap-content-info > h1').text().trim()],
                 image: image,
                 status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
@@ -684,9 +684,9 @@ class KOMELoli extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             const chapters = [];
             var i = 0;
-            for (const obj of $(".listing-chapters_wrap li").toArray().reverse()) {
+            for (const obj of $("#list-chapter > li").toArray().reverse()) {
                 i++;
-                // const getTime = $('span', obj).text().trim().split(/\//);
+                const getTime = $('span', obj).text().trim();
                 // const fixDate = [getTime[1], getTime[0], getTime[2]].join('/');
                 // const finalTime = new Date(fixDate);
                 chapters.push(createChapter({
@@ -695,6 +695,7 @@ class KOMELoli extends paperback_extensions_common_1.Source {
                     name: ($('a', obj).first().text().trim()),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+                    time: new Date(getTime)
                 }));
             }
             return chapters;
@@ -709,10 +710,10 @@ class KOMELoli extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
-            for (let obj of $('.text-left img').toArray()) {
-                if (!obj.attribs['data-src'])
+            for (let obj of $('#lst_content img').toArray()) {
+                if (!obj.attribs['src'])
                     continue;
-                let link = obj.attribs['data-src'].trim();
+                let link = obj.attribs['src'].trim();
                 pages.push(link);
             }
             const chapterDetails = createChapterDetails({
