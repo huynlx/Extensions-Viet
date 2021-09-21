@@ -690,9 +690,23 @@ class HentaiVV extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             const chapters = [];
             var i = 0;
+            const id = $("#views").attr('data-id');
+            const request2 = createRequestObject({
+                url: 'https://hentaivv.com/wp-admin/admin-ajax.php',
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/x-www-form-urlencoded'
+                },
+                data: {
+                    'action': 'all_chap',
+                    'id': id
+                }
+            });
+            const response2 = yield this.requestManager.schedule(request2, 1);
+            const $2 = this.cheerio.load(response2.data);
             const test = $("#dsc > .listchap > li:nth-child(1) a").first().text().trim();
             if (!test) {
-                for (const obj of $(".modal-content > .modal-body > .row > div").toArray()) {
+                for (const obj of $2("div").toArray()) {
                     i++;
                     // const getTime = $('span', obj).text().trim().split(/\//);
                     // const fixDate = [getTime[1], getTime[0], getTime[2]].join('/');
