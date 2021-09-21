@@ -657,8 +657,9 @@ class HentaiVV extends paperback_extensions_common_1.Source {
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            if ($('#thong_tin tbody > tr:nth-child(1) > th:nth-child(1)').text().trim() === 'Tên Khác:') {
-                creator = '1';
+            const test = $('#thong_tin tbody > tr:nth-child(1) > th:nth-child(1)').text().trim();
+            if (test === 'Tên Khác:') {
+                creator = test;
                 status = $('#thong_tin tbody > tr:nth-child(3) > th:nth-child(2) > span').text().trim().toLowerCase().includes("đang") ? 1 : 0;
             }
             else {
