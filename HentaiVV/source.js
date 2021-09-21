@@ -706,26 +706,31 @@ class HentaiVV extends paperback_extensions_common_1.Source {
             const $2 = this.cheerio.load(response2.data);
             const test = $("#dsc > .listchap > li:nth-child(1) a").first().text().trim();
             if (!test) {
-                for (const obj of $2("div").toArray()) {
-                    i++;
-                    // const getTime = $('span', obj).text().trim().split(/\//);
-                    // const fixDate = [getTime[1], getTime[0], getTime[2]].join('/');
-                    // const finalTime = new Date(fixDate);
+                if ($('.pagination-child').text().trim() === '1/1') {
                     chapters.push(createChapter({
-                        id: $('a', obj).first().attr('href'),
-                        chapNum: i,
-                        name: ($('a', obj).first().text().trim()),
+                        id: mangaId,
+                        chapNum: 1,
+                        name: 'Oneshot',
                         mangaId: mangaId,
                         langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
                     }));
+                }
+                else {
+                    for (const obj of $2("div").toArray()) {
+                        i++;
+                        chapters.push(createChapter({
+                            id: $('a', obj).first().attr('href'),
+                            chapNum: i,
+                            name: ($('a', obj).first().text().trim()),
+                            mangaId: mangaId,
+                            langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+                        }));
+                    }
                 }
             }
             else {
                 for (const obj of $("#dsc > .listchap > li").toArray()) {
                     i++;
-                    // const getTime = $('span', obj).text().trim().split(/\//);
-                    // const fixDate = [getTime[1], getTime[0], getTime[2]].join('/');
-                    // const finalTime = new Date(fixDate);
                     chapters.push(createChapter({
                         id: $('a', obj).first().attr('href'),
                         chapNum: i,
