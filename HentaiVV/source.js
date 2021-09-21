@@ -840,28 +840,25 @@ class HentaiVV extends paperback_extensions_common_1.Source {
             }
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
-            //view
+            //ngau nhien
             url = DOMAIN;
             request = createRequestObject({
-                url: 'https://hentaicube.net/?s&post_type=wp-manga&m_orderby=views',
+                url: 'https://hentaivv.com/tim-kiem/?title=&status=all&time=rand',
                 method: "GET",
             });
             let newAddItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
-                let title = $(`.post-title > h3 > a`, obj).text().trim();
-                let subtitle = $(`.chapter > a`, obj).text().trim();
-                const image = (_h = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _h !== void 0 ? _h : "";
-                let id = (_j = $(`.c-image-hover > a`, obj).attr('href')) !== null && _j !== void 0 ? _j : title;
+            for (let obj of $('li', '.theloai-thumlist').toArray()) {
+                let title = $(`.crop-text-2 > a`, obj).text().trim();
+                // let subtitle = $(`.chapter > a`, obj).text().trim();
+                const image = (_h = $('a > img', obj).attr('data-src')) !== null && _h !== void 0 ? _h : "";
+                let id = (_j = $(`.crop-text-2 > a`, obj).attr('href')) !== null && _j !== void 0 ? _j : title;
                 newAddItems.push(createMangaTile({
                     id: id,
                     image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({
                         text: title,
-                    }),
-                    subtitleText: createIconText({
-                        text: (subtitle),
                     }),
                 }));
             }
@@ -870,25 +867,22 @@ class HentaiVV extends paperback_extensions_common_1.Source {
             //Newest
             url = '';
             request = createRequestObject({
-                url: 'https://hentaicube.net/?s&post_type=wp-manga&m_orderby=new-manga',
+                url: 'https://hentaivv.com/tim-kiem/?title=&status=all&time=new',
                 method: "GET",
             });
             let newItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
-                let title = $(`.post-title > h3 > a`, obj).text().trim();
-                let subtitle = $(`.chapter > a`, obj).text().trim();
-                const image = (_k = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _k !== void 0 ? _k : "";
-                let id = (_l = $(`.c-image-hover > a`, obj).attr('href')) !== null && _l !== void 0 ? _l : title;
+            for (let obj of $('li', '.theloai-thumlist').toArray()) {
+                let title = $(`.crop-text-2 > a`, obj).text().trim();
+                // let subtitle = $(`.chapter > a`, obj).text().trim();
+                const image = (_k = $('a > img', obj).attr('data-src')) !== null && _k !== void 0 ? _k : "";
+                let id = (_l = $(`.crop-text-2 > a`, obj).attr('href')) !== null && _l !== void 0 ? _l : title;
                 newItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
                     image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({
                         text: title !== null && title !== void 0 ? title : "",
-                    }),
-                    subtitleText: createIconText({
-                        text: subtitle
                     }),
                 }));
             }
