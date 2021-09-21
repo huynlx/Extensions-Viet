@@ -768,7 +768,7 @@ class HentaiVV extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
         return __awaiter(this, void 0, void 0, function* () {
             let featured = createHomeSection({
                 id: 'featured',
@@ -804,26 +804,22 @@ class HentaiVV extends paperback_extensions_common_1.Source {
             //Featured
             let url = ``;
             let request = createRequestObject({
-                url: 'https://hentaicube.net/',
+                url: 'https://hentaivv.com/',
                 method: "GET",
             });
             let featuredItems = [];
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            for (let obj of $('.item__wrap ', '.slider__container .slider__item').toArray()) {
-                let title = $(`.slider__content .post-title`, obj).text().trim();
-                let subtitle = $(`.slider__content .chapter-item a`, obj).first().text().trim();
-                const image = (_b = (_a = $('.slider__thumb a > img', obj).attr('data-src')) === null || _a === void 0 ? void 0 : _a.replace('-110x150', '')) !== null && _b !== void 0 ? _b : "";
-                let id = (_c = $(`.slider__thumb a`, obj).attr('href')) !== null && _c !== void 0 ? _c : title;
+            for (let obj of $('.premiumItem > .img > a', '#duoc-quan-tam .slider-item').toArray()) {
+                let title = $(`.crop-text-2`, obj).text().trim();
+                const image = (_a = $('img', obj).attr('data-src')) !== null && _a !== void 0 ? _a : "";
+                let id = (_b = $(obj).attr('href')) !== null && _b !== void 0 ? _b : title;
                 featuredItems.push(createMangaTile({
                     id: id,
                     image: image,
                     title: createIconText({
                         text: title,
-                    }),
-                    subtitleText: createIconText({
-                        text: (subtitle),
-                    }),
+                    })
                 }));
             }
             featured.items = featuredItems;
@@ -831,24 +827,22 @@ class HentaiVV extends paperback_extensions_common_1.Source {
             //Hot
             url = '';
             request = createRequestObject({
-                url: 'https://hentaicube.net/',
+                url: 'https://hentaivv.com/',
                 method: "GET",
             });
             let hotItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('.popular-item-wrap', '#manga-recent-3 .widget-content').toArray()) {
-                let title = $(`.popular-content a`, obj).text().trim();
-                // let subtitle = $(`.chapter > a`, obj).text();
-                const image = (_d = $(`.popular-img > a > img`, obj).attr('data-src')) === null || _d === void 0 ? void 0 : _d.replace('-75x106', '');
-                let id = (_e = $(`.popular-img > a`, obj).attr('href')) !== null && _e !== void 0 ? _e : title;
-                // if (!id || !subtitle) continue;
+            for (let obj of $('a', '#hotest .hotest-col').toArray()) {
+                let title = $(obj).attr('title');
+                const image = $(`img`, obj).attr('src');
+                let id = (_c = $(obj).attr('href')) !== null && _c !== void 0 ? _c : title;
                 hotItems.push(createMangaTile({
-                    id: id,
+                    id: id !== null && id !== void 0 ? id : "",
                     image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({
-                        text: title,
-                    }),
+                        text: title !== null && title !== void 0 ? title : ""
+                    })
                 }));
             }
             hot.items = hotItems;
@@ -865,8 +859,8 @@ class HentaiVV extends paperback_extensions_common_1.Source {
             for (let obj of $('li', '.theloai-thumlist').toArray()) {
                 let title = $(`.crop-text-2 > a`, obj).text().trim();
                 // let subtitle = $(`.chapter > a`, obj).text().trim();
-                const image = (_f = $('a > img', obj).attr('data-src')) !== null && _f !== void 0 ? _f : "";
-                let id = (_g = $(`.crop-text-2 > a`, obj).attr('href')) !== null && _g !== void 0 ? _g : title;
+                const image = (_d = $('a > img', obj).attr('data-src')) !== null && _d !== void 0 ? _d : "";
+                let id = (_e = $(`.crop-text-2 > a`, obj).attr('href')) !== null && _e !== void 0 ? _e : title;
                 newUpdatedItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
                     image: image !== null && image !== void 0 ? image : "",
@@ -889,8 +883,8 @@ class HentaiVV extends paperback_extensions_common_1.Source {
             for (let obj of $('li', '.theloai-thumlist').toArray()) {
                 let title = $(`.crop-text-2 > a`, obj).text().trim();
                 // let subtitle = $(`.chapter > a`, obj).text().trim();
-                const image = (_h = $('a > img', obj).attr('data-src')) !== null && _h !== void 0 ? _h : "";
-                let id = (_j = $(`.crop-text-2 > a`, obj).attr('href')) !== null && _j !== void 0 ? _j : title;
+                const image = (_f = $('a > img', obj).attr('data-src')) !== null && _f !== void 0 ? _f : "";
+                let id = (_g = $(`.crop-text-2 > a`, obj).attr('href')) !== null && _g !== void 0 ? _g : title;
                 newAddItems.push(createMangaTile({
                     id: id,
                     image: image !== null && image !== void 0 ? image : "",
@@ -913,8 +907,8 @@ class HentaiVV extends paperback_extensions_common_1.Source {
             for (let obj of $('li', '.theloai-thumlist').toArray()) {
                 let title = $(`.crop-text-2 > a`, obj).text().trim();
                 // let subtitle = $(`.chapter > a`, obj).text().trim();
-                const image = (_k = $('a > img', obj).attr('data-src')) !== null && _k !== void 0 ? _k : "";
-                let id = (_l = $(`.crop-text-2 > a`, obj).attr('href')) !== null && _l !== void 0 ? _l : title;
+                const image = (_h = $('a > img', obj).attr('data-src')) !== null && _h !== void 0 ? _h : "";
+                let id = (_j = $(`.crop-text-2 > a`, obj).attr('href')) !== null && _j !== void 0 ? _j : title;
                 newItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
                     image: image !== null && image !== void 0 ? image : "",
