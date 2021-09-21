@@ -902,7 +902,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: encodeURI(`https://hentaicube.net/page/2/?s&post_type=wp-manga&genre%5B0%5D=anal&op&author&artist&release&adult`),
+                url: encodeURI(`https://hentaicube.net/?s&post_type=wp-manga&genre=anal&op&author&artist&release&adult`),
                 method: "GET"
             });
             const data = yield this.requestManager.schedule(request, 1);
