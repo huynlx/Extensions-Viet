@@ -725,7 +725,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
         return __awaiter(this, void 0, void 0, function* () {
             let featured = createHomeSection({
                 id: 'featured',
@@ -747,10 +747,16 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                 title: "Xem nhiều nhất",
                 view_more: true,
             });
+            let newest = createHomeSection({
+                id: 'new',
+                title: "Xem nhiều nhất",
+                view_more: true,
+            });
             //Load empty sections
             sectionCallback(hot);
             sectionCallback(newUpdated);
             sectionCallback(view);
+            sectionCallback(newest);
             ///Get the section data
             //Featured
             let url = ``;
@@ -858,6 +864,33 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             }
             view.items = newAddItems;
             sectionCallback(view);
+            //Newest
+            url = '';
+            request = createRequestObject({
+                url: 'https://hentaicube.net/?s&post_type=wp-manga&m_orderby=new-manga',
+                method: "GET",
+            });
+            let newItems = [];
+            data = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(data.data);
+            for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
+                let title = $(`.post-title > h3 > a`, obj).text().trim();
+                let subtitle = $(`.chapter > a`, obj).text().trim();
+                const image = (_l = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _l !== void 0 ? _l : "";
+                let id = (_m = $(`.c-image-hover > a`, obj).attr('href')) !== null && _m !== void 0 ? _m : title;
+                newItems.push(createMangaTile({
+                    id: id !== null && id !== void 0 ? id : "",
+                    image: image !== null && image !== void 0 ? image : "",
+                    title: createIconText({
+                        text: title !== null && title !== void 0 ? title : "",
+                    }),
+                    subtitleText: createIconText({
+                        text: subtitle
+                    }),
+                }));
+            }
+            newest.items = newItems;
+            sectionCallback(newest);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
@@ -867,8 +900,8 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             let url = '';
             let select = 1;
             switch (homepageSectionId) {
-                case "hot":
-                    url = `https://hentaicube.net/page/${page}/`;
+                case "newest":
+                    url = `https://hentaicube.net/page/${page}/?s&post_type=wp-manga&m_orderby=new-manga`;
                     select = 0;
                     break;
                 case "new_updated":
@@ -1030,10 +1063,10 @@ exports.parseSearch = ($) => {
     return mangas;
 };
 exports.parseViewMore = ($, select) => {
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b;
     const manga = [];
     const collectedIds = [];
-    if (select === 1 || select === 2) {
+    if (select === 1 || select === 2 || select === 0) {
         for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
             let title = $(`.post-title > h3 > a`, obj).text().trim();
             let subtitle = $(`.chapter > a`, obj).text().trim();
@@ -1045,48 +1078,6 @@ exports.parseViewMore = ($, select) => {
                     image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({
                         text: title !== null && title !== void 0 ? title : "",
-                    }),
-                    subtitleText: createIconText({
-                        text: (subtitle),
-                    }),
-                }));
-                collectedIds.push(id);
-            }
-        }
-    }
-    else if (select === 0) {
-        for (let obj of $('li', '#glo_wrapper > .section_todayup:nth-child(3) > .list_wrap > .slick_item').toArray()) {
-            let title = $(`h3.title > a`, obj).text().trim();
-            let subtitle = $(`.chapter > a`, obj).text();
-            const image = (_c = $(`.manga-thumb > a > img`, obj).attr('data-original')) !== null && _c !== void 0 ? _c : "";
-            let id = (_d = $(`h3.title > a`, obj).attr('href')) !== null && _d !== void 0 ? _d : title;
-            if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
-                manga.push(createMangaTile({
-                    id: id,
-                    image: image,
-                    title: createIconText({
-                        text: title,
-                    }),
-                    subtitleText: createIconText({
-                        text: (subtitle),
-                    }),
-                }));
-                collectedIds.push(id);
-            }
-        }
-    }
-    else {
-        for (let obj of $('li', '#glo_wrapper > .section_todayup:nth-child(4) > .list_wrap > .slick_item').toArray()) {
-            let title = $(`h3.title > a`, obj).text().trim();
-            let subtitle = $(`.chapter > a`, obj).text();
-            const image = (_e = $(`.manga-thumb > a > img`, obj).attr('data-original')) !== null && _e !== void 0 ? _e : "";
-            let id = (_f = $(`h3.title > a`, obj).attr('href')) !== null && _f !== void 0 ? _f : title;
-            if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
-                manga.push(createMangaTile({
-                    id: id,
-                    image: image,
-                    title: createIconText({
-                        text: title,
                     }),
                     subtitleText: createIconText({
                         text: (subtitle),
