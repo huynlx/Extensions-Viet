@@ -619,7 +619,7 @@ exports.HentaiVVInfo = {
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from HentaiVV',
-    websiteBaseURL: `https://hentaicube.net/`,
+    websiteBaseURL: `https://hentaivv.com/`,
     contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
         {
@@ -665,7 +665,7 @@ class HentaiVV extends paperback_extensions_common_1.Source {
                 author: creator,
                 artist: creator,
                 desc: desc,
-                titles: [$('.crop-text-1').text().trim()],
+                titles: [$('.row > .crop-text-1').first().text().trim()],
                 image: image,
                 status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
@@ -684,7 +684,7 @@ class HentaiVV extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             const chapters = [];
             var i = 0;
-            for (const obj of $(".listchap > li").toArray().reverse()) {
+            for (const obj of $("#dsc > .listchap > li").toArray().reverse()) {
                 i++;
                 // const getTime = $('span', obj).text().trim().split(/\//);
                 // const fixDate = [getTime[1], getTime[0], getTime[2]].join('/');
