@@ -606,13 +606,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Gaito = exports.GaitoInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
-const axios_1 = __importDefault(require("axios"));
 const GaitoParser_1 = require("./GaitoParser");
 const DOMAIN = 'https://hentaivl.com/';
 const method = 'GET';
@@ -809,32 +805,24 @@ class Gaito extends paperback_extensions_common_1.Source {
             hot.items = hotItems;
             sectionCallback(hot);
             //New Updates
-            url = '';
             request = createRequestObject({
-                url: 'https://www.gaito.me/truyen-hentai/?page=1&sort=latest',
+                url: 'https://api.gaito.me/manga/comics?limit=20&offset=0&sort=latest',
                 method: "GET",
             });
             let newUpdatedItems = [];
-            data = yield axios_1.default.get('https://api.gaito.me/manga/comics?limit=20&offset=0&sort=latest');
-            // $ = this.cheerio.load(data.data);
+            data = yield this.requestManager.schedule(request, 1);
             let array = data.data;
-            // const parsedJson = JSON.parse(data.data);
-            // const entity = parsedJson.mainEntity;
             var element = '';
             for (element of array) {
                 let title = element.title;
-                // let subtitle = $(`.chapter-item  > span > a`, obj2).text();
                 let image = element.cover ? element.cover.dimensions.thumbnail.url : null;
                 let id = element.id;
-                console.log(title);
-                console.log(image);
-                console.log(id);
                 newUpdatedItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
-                    image: image !== null && image !== void 0 ? image : "https://cdn.gaito.me/kn-static/userfiles/plugins/manga/em-gai-de-thuong-656606-thumbnail.jpg",
+                    image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({
-                        text: title !== null && title !== void 0 ? title : "",
-                    }),
+                        text: title !== null && title !== void 0 ? title : ""
+                    })
                 }));
             }
             newUpdated.items = newUpdatedItems;
@@ -953,7 +941,7 @@ class Gaito extends paperback_extensions_common_1.Source {
 }
 exports.Gaito = Gaito;
 
-},{"./GaitoParser":57,"axios":"axios","paperback-extensions-common":13}],57:[function(require,module,exports){
+},{"./GaitoParser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.capitalizeFirstLetter = void 0;

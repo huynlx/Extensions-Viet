@@ -920,7 +920,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const tags = [];
-            const url = `https://hentaicube.net/the-loai-genres/`;
+            const url = `https://hentaicube.net/?s=&post_type=wp-manga`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -928,9 +928,9 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             //the loai
-            for (const tag of $('a', '.ctcleft').toArray()) {
-                const label = $(tag).text().trim();
-                const id = (_a = $(tag).attr('href')) !== null && _a !== void 0 ? _a : label;
+            for (const tag of $('.checkbox', '.checkbox-group ').toArray()) {
+                const label = $('label', tag).text().trim();
+                const id = (_a = $('input', tag).attr('id')) !== null && _a !== void 0 ? _a : label;
                 if (!id || !label)
                     continue;
                 tags.push({ id: id, label: label });
