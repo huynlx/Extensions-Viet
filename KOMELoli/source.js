@@ -607,19 +607,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HentaiCube = exports.HentaiCubeInfo = void 0;
+exports.KOMELoli = exports.KOMELoliInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
-const HentaiCubeParser_1 = require("./HentaiCubeParser");
+const KOMELoliParser_1 = require("./KOMELoliParser");
 const DOMAIN = 'https://hentaicube.net/';
 const method = 'GET';
-exports.HentaiCubeInfo = {
+exports.KOMELoliInfo = {
     version: '2.5.0',
-    name: 'HentaiCube',
+    name: 'KOMELoli',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from HentaiCube',
-    websiteBaseURL: `https://hentaicube.net/`,
+    description: 'Extension that pulls manga from KOMELoli',
+    websiteBaseURL: `https://komeloli.net/`,
     contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
         {
@@ -628,7 +628,7 @@ exports.HentaiCubeInfo = {
         }
     ]
 };
-class HentaiCube extends paperback_extensions_common_1.Source {
+class KOMELoli extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
         this.requestManager = createRequestManager({
@@ -725,7 +725,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
         return __awaiter(this, void 0, void 0, function* () {
             let featured = createHomeSection({
                 id: 'featured',
@@ -761,17 +761,17 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             //Featured
             let url = ``;
             let request = createRequestObject({
-                url: 'https://hentaicube.net/',
+                url: 'https://komeloli.net/',
                 method: "GET",
             });
             let featuredItems = [];
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            for (let obj of $('.item__wrap ', '.slider__container .slider__item').toArray()) {
-                let title = $(`.slider__content .post-title`, obj).text().trim();
-                let subtitle = $(`.slider__content .chapter-item a`, obj).first().text().trim();
-                const image = (_b = (_a = $('.slider__thumb a > img', obj).attr('data-src')) === null || _a === void 0 ? void 0 : _a.replace('-110x150', '')) !== null && _b !== void 0 ? _b : "";
-                let id = (_c = $(`.slider__thumb a`, obj).attr('href')) !== null && _c !== void 0 ? _c : title;
+            for (let obj of $('.thumb-item-flow ', '.row.cuutruyen').toArray()) {
+                let title = $(`.series-title a`, obj).text().trim();
+                let subtitle = $(`.thumb_attr`, obj).text().trim();
+                const image = (_a = $('.a6-ratio img', obj).attr('src')) !== null && _a !== void 0 ? _a : "";
+                let id = (_b = $(`.series-title a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
                 featuredItems.push(createMangaTile({
                     id: id,
                     image: image,
@@ -797,8 +797,8 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             for (let obj of $('.popular-item-wrap', '#manga-recent-3 .widget-content').toArray()) {
                 let title = $(`.popular-content a`, obj).text().trim();
                 // let subtitle = $(`.chapter > a`, obj).text();
-                const image = (_d = $(`.popular-img > a > img`, obj).attr('data-src')) === null || _d === void 0 ? void 0 : _d.replace('-75x106', '');
-                let id = (_e = $(`.popular-img > a`, obj).attr('href')) !== null && _e !== void 0 ? _e : title;
+                const image = (_c = $(`.popular-img > a > img`, obj).attr('data-src')) === null || _c === void 0 ? void 0 : _c.replace('-75x106', '');
+                let id = (_d = $(`.popular-img > a`, obj).attr('href')) !== null && _d !== void 0 ? _d : title;
                 // if (!id || !subtitle) continue;
                 hotItems.push(createMangaTile({
                     id: id,
@@ -822,8 +822,8 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
                 let title = $(`.post-title > h3 > a`, obj).text().trim();
                 let subtitle = $(`.chapter > a`, obj).text().trim();
-                const image = (_f = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _f !== void 0 ? _f : "";
-                let id = (_g = $(`.c-image-hover > a`, obj).attr('href')) !== null && _g !== void 0 ? _g : title;
+                const image = (_e = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _e !== void 0 ? _e : "";
+                let id = (_f = $(`.c-image-hover > a`, obj).attr('href')) !== null && _f !== void 0 ? _f : title;
                 newUpdatedItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
                     image: image !== null && image !== void 0 ? image : "",
@@ -849,8 +849,8 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
                 let title = $(`.post-title > h3 > a`, obj).text().trim();
                 let subtitle = $(`.chapter > a`, obj).text().trim();
-                const image = (_h = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _h !== void 0 ? _h : "";
-                let id = (_j = $(`.c-image-hover > a`, obj).attr('href')) !== null && _j !== void 0 ? _j : title;
+                const image = (_g = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _g !== void 0 ? _g : "";
+                let id = (_h = $(`.c-image-hover > a`, obj).attr('href')) !== null && _h !== void 0 ? _h : title;
                 newAddItems.push(createMangaTile({
                     id: id,
                     image: image !== null && image !== void 0 ? image : "",
@@ -876,8 +876,8 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
                 let title = $(`.post-title > h3 > a`, obj).text().trim();
                 let subtitle = $(`.chapter > a`, obj).text().trim();
-                const image = (_k = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _k !== void 0 ? _k : "";
-                let id = (_l = $(`.c-image-hover > a`, obj).attr('href')) !== null && _l !== void 0 ? _l : title;
+                const image = (_j = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _j !== void 0 ? _j : "";
+                let id = (_k = $(`.c-image-hover > a`, obj).attr('href')) !== null && _k !== void 0 ? _k : title;
                 newItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
                     image: image !== null && image !== void 0 ? image : "",
@@ -921,8 +921,8 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            let manga = HentaiCubeParser_1.parseViewMore($, select);
-            metadata = !HentaiCubeParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            let manga = KOMELoliParser_1.parseViewMore($, select);
+            metadata = !KOMELoliParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: manga,
                 metadata,
@@ -974,8 +974,8 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            const tiles = HentaiCubeParser_1.parseSearch($);
-            metadata = !HentaiCubeParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            const tiles = KOMELoliParser_1.parseSearch($);
+            metadata = !KOMELoliParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: tiles,
                 metadata
@@ -1017,13 +1017,13 @@ class HentaiCube extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: 'https://hentaicube.net/'
+            referer: 'https://komeloli.net/'
         };
     }
 }
-exports.HentaiCube = HentaiCube;
+exports.KOMELoli = KOMELoli;
 
-},{"./HentaiCubeParser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
+},{"./KOMELoliParser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.capitalizeFirstLetter = void 0;

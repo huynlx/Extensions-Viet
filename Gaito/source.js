@@ -610,7 +610,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Gaito = exports.GaitoInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const GaitoParser_1 = require("./GaitoParser");
-const DOMAIN = 'https://hentaivl.com/';
+const DOMAIN = 'https://www.gaito.me/truyen-hentai/';
 const method = 'GET';
 exports.GaitoInfo = {
     version: '1.0.0',
@@ -619,12 +619,16 @@ exports.GaitoInfo = {
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from Gaito',
-    websiteBaseURL: `https://hentaicube.net/`,
+    websiteBaseURL: `https://www.gaito.me/truyen-hentai/`,
     contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
         {
             text: "18+",
             type: paperback_extensions_common_1.TagType.YELLOW
+        },
+        {
+            text: "Error",
+            type: paperback_extensions_common_1.TagType.RED
         }
     ]
 };
