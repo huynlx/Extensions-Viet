@@ -767,7 +767,7 @@ class KOMELoli extends paperback_extensions_common_1.Source {
             let featuredItems = [];
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            for (let obj of $('.thumb-item-flow ', '.row.cuutruyen').toArray()) {
+            for (let obj of $('.thumb-item-flow ', '#main-content > .wrap-content-part:nth-child(1) .row.cuutruyen').toArray()) {
                 let title = $(`.series-title a`, obj).text().trim();
                 let subtitle = $(`.thumb_attr`, obj).text().trim();
                 const image = (_a = $('.a6-ratio img', obj).attr('src')) !== null && _a !== void 0 ? _a : "";
