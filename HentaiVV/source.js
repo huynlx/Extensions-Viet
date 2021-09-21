@@ -1032,9 +1032,9 @@ class HentaiVV extends paperback_extensions_common_1.Source {
                 tags.push({ id: id, label: label });
             }
             //tinh trang
-            for (const tag of $('.checkbox-inline', '.search-advanced-form > .form-group:nth-child(9) ').toArray()) {
-                const label = $('label', tag).text().trim();
-                const id = (_b = 'status.' + $('input', tag).attr('value')) !== null && _b !== void 0 ? _b : label;
+            for (const tag of $('#status > option', '#category > div:nth-child(3)').toArray()) {
+                const label = $(tag).text().trim();
+                const id = (_b = $(tag).attr('value')) !== null && _b !== void 0 ? _b : label;
                 if (!id || !label)
                     continue;
                 tags2.push({ id: id, label: label });
