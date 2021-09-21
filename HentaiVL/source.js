@@ -902,7 +902,7 @@ class HentaiVL extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             //the loai
-            for (const tag of $('a', '#glo_gnb > ul > li:first-child > .sub-menu').toArray()) {
+            for (const tag of $('a:not(:first-child)', '#glo_gnb > ul > li:first-child > .sub-menu').toArray()) {
                 const label = $(tag).text().trim();
                 const id = (_a = $(tag).attr('href')) !== null && _a !== void 0 ? _a : label;
                 if (!id || !label)
