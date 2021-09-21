@@ -725,7 +725,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
         return __awaiter(this, void 0, void 0, function* () {
             let featured = createHomeSection({
                 id: 'featured',
@@ -749,7 +749,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             });
             let newest = createHomeSection({
                 id: 'new',
-                title: "Xem nhiều nhất",
+                title: "New",
                 view_more: true,
             });
             //Load empty sections
@@ -813,52 +813,52 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             //New Updates
             url = '';
             request = createRequestObject({
-                url: 'https://hentaicube.net/',
+                url: 'https://hentaicube.net/?s&post_type=wp-manga&m_orderby=latest',
                 method: "GET",
             });
             let newUpdatedItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('.row-eq-height', '#loop-content').toArray()) {
-                for (let obj2 of $('.page-item-detail', obj).toArray()) {
-                    let title = (_f = $(`a`, obj2).first().attr('title')) === null || _f === void 0 ? void 0 : _f.trim();
-                    let subtitle = $(`.chapter-item  > span > a`, obj2).text().trim();
-                    let image = (_g = $(`a > img`, obj2).attr('data-src')) === null || _g === void 0 ? void 0 : _g.replace('-110x150', '');
-                    let id = (_h = $(`a`, obj2).first().attr('href')) === null || _h === void 0 ? void 0 : _h.trim();
-                    newUpdatedItems.push(createMangaTile({
-                        id: id !== null && id !== void 0 ? id : "",
-                        image: image !== null && image !== void 0 ? image : "",
-                        title: createIconText({
-                            text: title !== null && title !== void 0 ? title : "",
-                        }),
-                        subtitleText: createIconText({
-                            text: subtitle
-                        }),
-                    }));
-                }
+            for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
+                let title = $(`.post-title > h3 > a`, obj).text().trim();
+                let subtitle = $(`.chapter > a`, obj).text().trim();
+                const image = (_f = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _f !== void 0 ? _f : "";
+                let id = (_g = $(`.c-image-hover > a`, obj).attr('href')) !== null && _g !== void 0 ? _g : title;
+                newUpdatedItems.push(createMangaTile({
+                    id: id !== null && id !== void 0 ? id : "",
+                    image: image !== null && image !== void 0 ? image : "",
+                    title: createIconText({
+                        text: title !== null && title !== void 0 ? title : "",
+                    }),
+                    subtitleText: createIconText({
+                        text: subtitle
+                    }),
+                }));
             }
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
             //view
             url = DOMAIN;
             request = createRequestObject({
-                url: 'https://hentaicube.net/',
+                url: 'https://hentaicube.net/?s&post_type=wp-manga&m_orderby=views',
                 method: "GET",
             });
             let newAddItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('div.popular-item-wrap', '#manga-recent-2 .widget-content').toArray()) {
-                let title = $(`.popular-content a`, obj).text().trim();
-                // let subtitle = $(`.chapter > a`, obj).text();
-                const image = (_j = $(`.popular-img > a > img`, obj).attr('data-src')) === null || _j === void 0 ? void 0 : _j.replace('-75x106', '');
-                let id = (_k = $(`.popular-img > a`, obj).attr('href')) !== null && _k !== void 0 ? _k : title;
-                // if (!id || !subtitle) continue;
+            for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
+                let title = $(`.post-title > h3 > a`, obj).text().trim();
+                let subtitle = $(`.chapter > a`, obj).text().trim();
+                const image = (_h = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _h !== void 0 ? _h : "";
+                let id = (_j = $(`.c-image-hover > a`, obj).attr('href')) !== null && _j !== void 0 ? _j : title;
                 newAddItems.push(createMangaTile({
                     id: id,
                     image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({
                         text: title,
+                    }),
+                    subtitleText: createIconText({
+                        text: (subtitle),
                     }),
                 }));
             }
@@ -876,8 +876,8 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
                 let title = $(`.post-title > h3 > a`, obj).text().trim();
                 let subtitle = $(`.chapter > a`, obj).text().trim();
-                const image = (_l = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _l !== void 0 ? _l : "";
-                let id = (_m = $(`.c-image-hover > a`, obj).attr('href')) !== null && _m !== void 0 ? _m : title;
+                const image = (_k = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _k !== void 0 ? _k : "";
+                let id = (_l = $(`.c-image-hover > a`, obj).attr('href')) !== null && _l !== void 0 ? _l : title;
                 newItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
                     image: image !== null && image !== void 0 ? image : "",
