@@ -930,15 +930,15 @@ class HentaiVV extends paperback_extensions_common_1.Source {
             let select = 1;
             switch (homepageSectionId) {
                 case "new":
-                    url = `https://hentaicube.net/page/${page}/?s&post_type=wp-manga&m_orderby=new-manga`;
+                    url = `https://hentaivv.com/tim-kiem/page/${page}/?title=&status=all&time=new`;
                     select = 0;
                     break;
                 case "new_updated":
-                    url = `https://hentaicube.net/page/${page}/?s&post_type=wp-manga&m_orderby=latest`;
+                    url = `https://hentaivv.com/tim-kiem/page/${page}/?title&status=all&time=update`;
                     select = 1;
                     break;
                 case "view":
-                    url = `https://hentaicube.net/page/${page}/?s&post_type=wp-manga&m_orderby=views`;
+                    url = `https://hentaivv.com/tim-kiem/page/${page}/?title=&status=all&time=rand`;
                     select = 2;
                     break;
                 default:
@@ -1095,25 +1095,19 @@ exports.parseViewMore = ($, select) => {
     var _a, _b;
     const manga = [];
     const collectedIds = [];
-    if (select === 1 || select === 2 || select === 0) {
-        for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
-            let title = $(`.post-title > h3 > a`, obj).text().trim();
-            let subtitle = $(`.chapter > a`, obj).text().trim();
-            const image = (_a = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _a !== void 0 ? _a : "";
-            let id = (_b = $(`.c-image-hover > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
-            if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
-                manga.push(createMangaTile({
-                    id: id,
-                    image: image !== null && image !== void 0 ? image : "",
-                    title: createIconText({
-                        text: title !== null && title !== void 0 ? title : "",
-                    }),
-                    subtitleText: createIconText({
-                        text: (subtitle),
-                    }),
-                }));
-                collectedIds.push(id);
-            }
+    for (let obj of $('li', '.theloai-thumlist').toArray()) {
+        let title = $(`.crop-text-2 > a`, obj).text().trim();
+        const image = (_a = $('a > img', obj).attr('data-src')) !== null && _a !== void 0 ? _a : "";
+        let id = (_b = $(`.crop-text-2 > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
+        if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
+            manga.push(createMangaTile({
+                id: id,
+                image: image !== null && image !== void 0 ? image : "",
+                title: createIconText({
+                    text: title !== null && title !== void 0 ? title : "",
+                })
+            }));
+            collectedIds.push(id);
         }
     }
     return manga;
@@ -1121,14 +1115,14 @@ exports.parseViewMore = ($, select) => {
 exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
-    for (const page of $("a", ".wp-pagenavi").toArray()) {
+    for (const page of $("a", "ul.pagination").toArray()) {
         const p = Number($(page).text().trim());
         if (isNaN(p))
             continue;
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($(".wp-pagenavi > span.current").text().trim());
+    const currentPage = Number($("ul.pagination > li.active > a").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
