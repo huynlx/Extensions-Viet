@@ -684,7 +684,7 @@ class HentaiVV extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             const chapters = [];
             var i = 0;
-            for (const obj of $("#dsc > .listchap > li").toArray().reverse()) {
+            for (const obj of $("#dsc > .listchap > li").toArray()) {
                 i++;
                 // const getTime = $('span', obj).text().trim().split(/\//);
                 // const fixDate = [getTime[1], getTime[0], getTime[2]].join('/');
