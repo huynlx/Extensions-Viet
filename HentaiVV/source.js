@@ -652,13 +652,19 @@ class HentaiVV extends paperback_extensions_common_1.Source {
             let creator = '';
             let status = 1; //completed, 1 = Ongoing
             let desc = $('.gioi_thieu').text().trim();
-            for (const t of $('.text-center a').toArray()) {
+            for (const t of $('.text-center > .btn-primary-border > a').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            creator = $('#thong_tin tbody > tr:nth-child(1) > th:nth-child(2)').text().trim();
-            status = $('#thong_tin tbody > tr:nth-child(2) > th:nth-child(2) > span').text().trim().toLowerCase().includes("đang") ? 1 : 0;
+            if ($('#thong_tin tbody > tr:nth-child(1) > th:nth-child(1)').text().trim() === 'Tên Khác:') {
+                creator = $('#thong_tin tbody > tr:nth-child(2) > th:nth-child(2)').text().trim();
+                status = $('#thong_tin tbody > tr:nth-child(3) > th:nth-child(2) > span').text().trim().toLowerCase().includes("đang") ? 1 : 0;
+            }
+            else {
+                creator = $('#thong_tin tbody > tr:nth-child(1) > th:nth-child(2)').text().trim();
+                status = $('#thong_tin tbody > tr:nth-child(2) > th:nth-child(2) > span').text().trim().toLowerCase().includes("đang") ? 1 : 0;
+            }
             const image = (_b = $('.book3d img').attr('data-src')) !== null && _b !== void 0 ? _b : "";
             return createManga({
                 id: mangaId,
