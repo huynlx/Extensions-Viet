@@ -706,7 +706,7 @@ class HentaiVV extends paperback_extensions_common_1.Source {
             const $2 = this.cheerio.load(response2.data);
             const test = $("#dsc > .listchap > li:nth-child(1) a").first().text().trim();
             if (!test) {
-                if ($('#pagination .pagination-child').first().text().trim() === '1/1') {
+                if (($('#pagination .pagination-child').first().text().trim()) === '1/1') {
                     chapters.push(createChapter({
                         id: mangaId,
                         chapNum: 1,
