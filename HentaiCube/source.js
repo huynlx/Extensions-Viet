@@ -902,9 +902,8 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: encodeURI(`https://hentaivl.com${tags[0] ? tags[0] : ''}`),
-                method: "GET",
-                param: encodeURI(`?page=${page}`)
+                url: encodeURI(`https://hentaicube.net/page/${page}/?s=&post_type=wp-manga&genre%5B%5D=${tags[0]}&op=&author=&artist=&release=&adult=`),
+                method: "GET"
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
@@ -965,11 +964,11 @@ exports.parseSearch = ($) => {
     var _a, _b;
     const collectedIds = [];
     const mangas = [];
-    for (let obj of $('li', '.list_wrap').toArray()) {
-        let title = $(`.title`, obj).text().trim();
+    for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
+        let title = $(`.post-title > h3 > a`, obj).text().trim();
         let subtitle = $(`.chapter > a`, obj).text().trim();
-        const image = (_a = $('.manga-thumb > a > img', obj).attr('data-original')) !== null && _a !== void 0 ? _a : "";
-        let id = (_b = $(`.manga-thumb > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
+        const image = (_a = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _a !== void 0 ? _a : "";
+        let id = (_b = $(`.c-image-hover > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
         if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
             mangas.push(createMangaTile({
                 id: id,
