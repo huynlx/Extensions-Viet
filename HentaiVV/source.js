@@ -1077,7 +1077,7 @@ class HentaiVV extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: 'https://hentaivv.com/'
+            referer: 'https://img.hentaivv.com/'
         };
     }
 }
