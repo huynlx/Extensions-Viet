@@ -607,19 +607,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.KOMELoli = exports.KOMELoliInfo = void 0;
+exports.HentaiVV = exports.HentaiVVInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
-const KOMELoliParser_1 = require("./KOMELoliParser");
+const HentaiVVParser_1 = require("./HentaiVVParser");
 const DOMAIN = 'https://hentaicube.net/';
 const method = 'GET';
-exports.KOMELoliInfo = {
+exports.HentaiVVInfo = {
     version: '2.5.0',
-    name: 'KOMELoli',
+    name: 'HentaiVV',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from KOMELoli',
-    websiteBaseURL: `https://komeloli.net/`,
+    description: 'Extension that pulls manga from HentaiVV',
+    websiteBaseURL: `https://hentaivv.com/`,
     contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
         {
@@ -628,7 +628,7 @@ exports.KOMELoliInfo = {
         }
     ]
 };
-class KOMELoli extends paperback_extensions_common_1.Source {
+class HentaiVV extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
         this.requestManager = createRequestManager({
@@ -651,21 +651,27 @@ class KOMELoli extends paperback_extensions_common_1.Source {
             let tags = [];
             let creator = '';
             let status = 1; //completed, 1 = Ongoing
-            let desc = $('.detail-content > p').text();
-            for (const t of $('.list-info > .info-row.list01.li03 > a').toArray()) {
+            let desc = $('.gioi_thieu').text().trim();
+            for (const t of $('.text-center > .btn-primary-border > a').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            creator = $('.list-info > info-row:nth-child(1) > span').text();
-            status = $('.list-info > info-row:nth-child(2) > span').text().trim().toLowerCase().includes("đang") ? 1 : 0;
-            const image = (_b = $('.wrap-content-image img').attr('data-src')) !== null && _b !== void 0 ? _b : "";
+            if ($('#thong_tin tbody > tr:nth-child(1) > td:nth-child(1)').text().trim() === 'Tên Khác:') {
+                creator = $('#thong_tin tbody > tr:nth-child(2) > th:nth-child(2)').text().trim();
+                status = $('#thong_tin tbody > tr:nth-child(3) > th:nth-child(2) > span').text().trim().toLowerCase().includes("đang") ? 1 : 0;
+            }
+            else {
+                creator = $('#thong_tin tbody > tr:nth-child(1) > th:nth-child(2)').text().trim();
+                status = $('#thong_tin tbody > tr:nth-child(2) > th:nth-child(2) > span').text().trim().toLowerCase().includes("đang") ? 1 : 0;
+            }
+            const image = (_b = $('.book3d img').attr('data-src')) !== null && _b !== void 0 ? _b : "";
             return createManga({
                 id: mangaId,
                 author: creator,
                 artist: creator,
                 desc: desc,
-                titles: [$('.wrap-content-info > h1').text().trim()],
+                titles: [$('.row > .crop-text-1').first().text().trim()],
                 image: image,
                 status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
@@ -684,19 +690,83 @@ class KOMELoli extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             const chapters = [];
             var i = 0;
-            for (const obj of $("#list-chapter > li").toArray().reverse()) {
-                i++;
-                const getTime = $('span', obj).text().trim();
-                // const fixDate = [getTime[1], getTime[0], getTime[2]].join('/');
-                // const finalTime = new Date(fixDate);
-                chapters.push(createChapter({
-                    id: $('a', obj).first().attr('href'),
-                    chapNum: i,
-                    name: ($('a', obj).first().text().trim()),
-                    mangaId: mangaId,
-                    langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: new Date(getTime)
-                }));
+            const page = $('#id_pagination > li.active > a').text().trim();
+            const id = $("#views").attr('data-id');
+            const request2 = createRequestObject({
+                url: 'https://hentaivv.com/wp-admin/admin-ajax.php',
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/x-www-form-urlencoded'
+                },
+                data: {
+                    'action': 'all_chap',
+                    'id': id
+                }
+            });
+            const response2 = yield this.requestManager.schedule(request2, 1);
+            const $2 = this.cheerio.load(response2.data);
+            const test = $("#dsc > .listchap > li:nth-child(1) a").first().text().trim();
+            if (!test) {
+                if (($('#pagination .pagination-child').first().text().trim()) === '1/1') {
+                    chapters.push(createChapter({
+                        id: mangaId,
+                        chapNum: 1,
+                        name: 'Oneshot',
+                        mangaId: mangaId,
+                        langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+                    }));
+                }
+                else {
+                    for (const obj of $2("div").toArray()) {
+                        i++;
+                        chapters.push(createChapter({
+                            id: $('a', obj).first().attr('href'),
+                            chapNum: i,
+                            name: ($('a', obj).first().text().trim()),
+                            mangaId: mangaId,
+                            langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+                        }));
+                    }
+                }
+            }
+            else {
+                if (page) { //check xem có pagination không
+                    for (const p of $('a', '#id_pagination').toArray()) {
+                        if (isNaN(Number($(p).text().trim()))) { //a ko phải số
+                            continue;
+                        }
+                        else {
+                            const requestChap = createRequestObject({
+                                url: `${mangaId + Number($(p).text().trim())}/#dsc`,
+                                method,
+                            });
+                            const responseChap = yield this.requestManager.schedule(requestChap, 1);
+                            const $Chap = this.cheerio.load(responseChap.data);
+                            for (const obj of $Chap("#dsc > .listchap > li").toArray()) {
+                                i++;
+                                chapters.push(createChapter({
+                                    id: $('a', obj).first().attr('href'),
+                                    chapNum: i,
+                                    name: ($('a', obj).first().text().trim()),
+                                    mangaId: mangaId,
+                                    langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+                                }));
+                            }
+                        }
+                    }
+                }
+                else {
+                    for (const obj of $("#dsc > .listchap > li").toArray()) {
+                        i++;
+                        chapters.push(createChapter({
+                            id: $('a', obj).first().attr('href'),
+                            chapNum: i,
+                            name: ($('a', obj).first().text().trim()),
+                            mangaId: mangaId,
+                            langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+                        }));
+                    }
+                }
             }
             return chapters;
         });
@@ -710,10 +780,10 @@ class KOMELoli extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
-            for (let obj of $('#lst_content img').toArray()) {
-                if (!obj.attribs['src'])
+            for (let obj of $('.reading img').toArray()) {
+                if (!obj.attribs['data-echo'])
                     continue;
-                let link = obj.attribs['src'].trim();
+                let link = obj.attribs['data-echo'].trim();
                 pages.push(link);
             }
             const chapterDetails = createChapterDetails({
@@ -726,7 +796,7 @@ class KOMELoli extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
         return __awaiter(this, void 0, void 0, function* () {
             let featured = createHomeSection({
                 id: 'featured',
@@ -735,22 +805,22 @@ class KOMELoli extends paperback_extensions_common_1.Source {
             });
             let hot = createHomeSection({
                 id: 'hot',
-                title: "Hot tháng",
+                title: "Truyện Hot",
                 view_more: false,
             });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
-                title: "Mới cập nhật",
+                title: "Truyện Mới Cập Nhật",
                 view_more: true,
             });
             let view = createHomeSection({
                 id: 'view',
-                title: "Xem nhiều nhất",
+                title: "Truyện Ngẫu Nhiên",
                 view_more: true,
             });
             let newest = createHomeSection({
                 id: 'new',
-                title: "New",
+                title: "Truyện Mới Nhất",
                 view_more: true,
             });
             //Load empty sections
@@ -762,26 +832,22 @@ class KOMELoli extends paperback_extensions_common_1.Source {
             //Featured
             let url = ``;
             let request = createRequestObject({
-                url: 'https://komeloli.net/',
+                url: 'https://hentaivv.com/',
                 method: "GET",
             });
             let featuredItems = [];
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            for (let obj of $('.thumb-item-flow ', '#main-content > .wrap-content-part:nth-child(1) .row.cuutruyen').toArray()) {
-                let title = $(`.series-title a`, obj).text().trim();
-                let subtitle = $(`.chapter-title`, obj).text().trim();
-                const image = (_a = $('.a6-ratio img', obj).attr('data-src')) !== null && _a !== void 0 ? _a : "";
-                let id = (_b = $(`.series-title a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
+            for (let obj of $('.premiumItem > .img > a', '#duoc-quan-tam .slider-item').toArray()) {
+                let title = $(`.crop-text-2`, obj).text().trim();
+                const image = (_a = $('img', obj).attr('data-src')) !== null && _a !== void 0 ? _a : "";
+                let id = (_b = $(obj).attr('href')) !== null && _b !== void 0 ? _b : title;
                 featuredItems.push(createMangaTile({
                     id: id,
                     image: image,
                     title: createIconText({
                         text: title,
-                    }),
-                    subtitleText: createIconText({
-                        text: (subtitle),
-                    }),
+                    })
                 }));
             }
             featured.items = featuredItems;
@@ -789,24 +855,22 @@ class KOMELoli extends paperback_extensions_common_1.Source {
             //Hot
             url = '';
             request = createRequestObject({
-                url: 'https://hentaicube.net/',
+                url: 'https://hentaivv.com/truyen/',
                 method: "GET",
             });
             let hotItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('.popular-item-wrap', '#manga-recent-3 .widget-content').toArray()) {
-                let title = $(`.popular-content a`, obj).text().trim();
-                // let subtitle = $(`.chapter > a`, obj).text();
-                const image = (_c = $(`.popular-img > a > img`, obj).attr('data-src')) === null || _c === void 0 ? void 0 : _c.replace('-75x106', '');
-                let id = (_d = $(`.popular-img > a`, obj).attr('href')) !== null && _d !== void 0 ? _d : title;
-                // if (!id || !subtitle) continue;
+            for (let obj of $('li', '.theloai-thumlist').toArray()) {
+                let title = $('a', obj).attr('title');
+                const image = $(`a > img`, obj).attr('data-src');
+                let id = (_c = $('a', obj).attr('href')) !== null && _c !== void 0 ? _c : title;
                 hotItems.push(createMangaTile({
-                    id: id,
+                    id: id !== null && id !== void 0 ? id : "",
                     image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({
-                        text: title,
-                    }),
+                        text: title !== null && title !== void 0 ? title : ""
+                    })
                 }));
             }
             hot.items = hotItems;
@@ -814,52 +878,46 @@ class KOMELoli extends paperback_extensions_common_1.Source {
             //New Updates
             url = '';
             request = createRequestObject({
-                url: 'https://hentaicube.net/?s&post_type=wp-manga&m_orderby=latest',
+                url: 'https://hentaivv.com/tim-kiem/?title=&status=all&time=update',
                 method: "GET",
             });
             let newUpdatedItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
-                let title = $(`.post-title > h3 > a`, obj).text().trim();
-                let subtitle = $(`.chapter > a`, obj).text().trim();
-                const image = (_e = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _e !== void 0 ? _e : "";
-                let id = (_f = $(`.c-image-hover > a`, obj).attr('href')) !== null && _f !== void 0 ? _f : title;
+            for (let obj of $('li', '.theloai-thumlist').toArray()) {
+                let title = $(`.crop-text-2 > a`, obj).text().trim();
+                // let subtitle = $(`.chapter > a`, obj).text().trim();
+                const image = (_d = $('a > img', obj).attr('data-src')) !== null && _d !== void 0 ? _d : "";
+                let id = (_e = $(`.crop-text-2 > a`, obj).attr('href')) !== null && _e !== void 0 ? _e : title;
                 newUpdatedItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
                     image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({
                         text: title !== null && title !== void 0 ? title : "",
                     }),
-                    subtitleText: createIconText({
-                        text: subtitle
-                    }),
                 }));
             }
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
-            //view
+            //ngau nhien
             url = DOMAIN;
             request = createRequestObject({
-                url: 'https://hentaicube.net/?s&post_type=wp-manga&m_orderby=views',
+                url: 'https://hentaivv.com/tim-kiem/?title=&status=all&time=rand',
                 method: "GET",
             });
             let newAddItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
-                let title = $(`.post-title > h3 > a`, obj).text().trim();
-                let subtitle = $(`.chapter > a`, obj).text().trim();
-                const image = (_g = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _g !== void 0 ? _g : "";
-                let id = (_h = $(`.c-image-hover > a`, obj).attr('href')) !== null && _h !== void 0 ? _h : title;
+            for (let obj of $('li', '.theloai-thumlist').toArray()) {
+                let title = $(`.crop-text-2 > a`, obj).text().trim();
+                // let subtitle = $(`.chapter > a`, obj).text().trim();
+                const image = (_f = $('a > img', obj).attr('data-src')) !== null && _f !== void 0 ? _f : "";
+                let id = (_g = $(`.crop-text-2 > a`, obj).attr('href')) !== null && _g !== void 0 ? _g : title;
                 newAddItems.push(createMangaTile({
                     id: id,
                     image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({
                         text: title,
-                    }),
-                    subtitleText: createIconText({
-                        text: (subtitle),
                     }),
                 }));
             }
@@ -868,25 +926,22 @@ class KOMELoli extends paperback_extensions_common_1.Source {
             //Newest
             url = '';
             request = createRequestObject({
-                url: 'https://hentaicube.net/?s&post_type=wp-manga&m_orderby=new-manga',
+                url: 'https://hentaivv.com/tim-kiem/?title=&status=all&time=new',
                 method: "GET",
             });
             let newItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
-                let title = $(`.post-title > h3 > a`, obj).text().trim();
-                let subtitle = $(`.chapter > a`, obj).text().trim();
-                const image = (_j = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _j !== void 0 ? _j : "";
-                let id = (_k = $(`.c-image-hover > a`, obj).attr('href')) !== null && _k !== void 0 ? _k : title;
+            for (let obj of $('li', '.theloai-thumlist').toArray()) {
+                let title = $(`.crop-text-2 > a`, obj).text().trim();
+                // let subtitle = $(`.chapter > a`, obj).text().trim();
+                const image = (_h = $('a > img', obj).attr('data-src')) !== null && _h !== void 0 ? _h : "";
+                let id = (_j = $(`.crop-text-2 > a`, obj).attr('href')) !== null && _j !== void 0 ? _j : title;
                 newItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
                     image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({
                         text: title !== null && title !== void 0 ? title : "",
-                    }),
-                    subtitleText: createIconText({
-                        text: subtitle
                     }),
                 }));
             }
@@ -902,15 +957,15 @@ class KOMELoli extends paperback_extensions_common_1.Source {
             let select = 1;
             switch (homepageSectionId) {
                 case "new":
-                    url = `https://hentaicube.net/page/${page}/?s&post_type=wp-manga&m_orderby=new-manga`;
+                    url = `https://hentaivv.com/tim-kiem/page/${page}/?title=&status=all&time=new`;
                     select = 0;
                     break;
                 case "new_updated":
-                    url = `https://hentaicube.net/page/${page}/?s&post_type=wp-manga&m_orderby=latest`;
+                    url = `https://hentaivv.com/tim-kiem/page/${page}/?title&status=all&time=update`;
                     select = 1;
                     break;
                 case "view":
-                    url = `https://hentaicube.net/page/${page}/?s&post_type=wp-manga&m_orderby=views`;
+                    url = `https://hentaivv.com/tim-kiem/page/${page}/?title=&status=all&time=rand`;
                     select = 2;
                     break;
                 default:
@@ -922,8 +977,8 @@ class KOMELoli extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            let manga = KOMELoliParser_1.parseViewMore($, select);
-            metadata = !KOMELoliParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            let manga = HentaiVVParser_1.parseViewMore($, select);
+            metadata = !HentaiVVParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: manga,
                 metadata,
@@ -931,11 +986,12 @@ class KOMELoli extends paperback_extensions_common_1.Source {
         });
     }
     getSearchResults(query, metadata) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             var status = [];
+            var time = [];
             var genre = [];
             tags.map((value) => {
                 if (value.indexOf('.') === -1) {
@@ -946,37 +1002,30 @@ class KOMELoli extends paperback_extensions_common_1.Source {
                         case 'status':
                             status.push(value.split(".")[1]);
                             break;
+                        case 'time':
+                            time.push(value.split(".")[1]);
+                            break;
                     }
                 }
             });
-            var statusFinal = '';
             var genresFinal = '';
-            const convertStatus = (status) => {
-                let y = [];
-                for (const e of status) {
-                    let x = 'status=' + e;
-                    y.push(x);
-                }
-                statusFinal = (y !== null && y !== void 0 ? y : []).join("&");
-                return statusFinal;
-            };
             const convertGenres = (genre) => {
                 let y = [];
                 for (const e of genre) {
-                    let x = 'genre=' + e;
+                    let x = 'cate%5B%5D=' + e;
                     y.push(x);
                 }
                 genresFinal = (y !== null && y !== void 0 ? y : []).join("&");
                 return genresFinal;
             };
             const request = createRequestObject({
-                url: encodeURI(`https://hentaicube.net/page/${page}/?s=${(_d = query.title) !== null && _d !== void 0 ? _d : ""}&post_type=wp-manga&${convertGenres(genre)}&op=&author=&artist=&release=&adult=&${convertStatus(status)}`),
+                url: (`https://hentaivv.com/tim-kiem/page/${page}/?title=${query.title ? encodeURI(query.title) : ""}&${convertGenres(genre)}&status=${(_d = status[0]) !== null && _d !== void 0 ? _d : 'all'}&time=${(_e = time[0]) !== null && _e !== void 0 ? _e : 'update'}`),
                 method: "GET"
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            const tiles = KOMELoliParser_1.parseSearch($);
-            metadata = !KOMELoliParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            const tiles = HentaiVVParser_1.parseSearch($);
+            metadata = !HentaiVVParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: tiles,
                 metadata
@@ -984,11 +1033,12 @@ class KOMELoli extends paperback_extensions_common_1.Source {
         });
     }
     getSearchTags() {
-        var _a, _b;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             const tags = [];
             const tags2 = [];
-            const url = `https://hentaicube.net/?s=&post_type=wp-manga`;
+            const tags3 = [];
+            const url = `https://hentaivv.com/tim-kiem/?title=`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -996,35 +1046,44 @@ class KOMELoli extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             //the loai
-            for (const tag of $('.checkbox', '.checkbox-group').toArray()) {
-                const label = $('label', tag).text().trim();
-                const id = (_a = $('input', tag).attr('id')) !== null && _a !== void 0 ? _a : label;
+            for (const tag of $('label', '#category > div:nth-child(2)').toArray()) {
+                const label = $(tag).text().trim();
+                const id = (_a = $(tag).attr('for')) !== null && _a !== void 0 ? _a : label;
                 if (!id || !label)
                     continue;
                 tags.push({ id: id, label: label });
             }
             //tinh trang
-            for (const tag of $('.checkbox-inline', '.search-advanced-form > .form-group:nth-child(9) ').toArray()) {
-                const label = $('label', tag).text().trim();
-                const id = (_b = 'status.' + $('input', tag).attr('value')) !== null && _b !== void 0 ? _b : label;
+            for (const tag of $('#status > option', '#category > div:nth-child(3)').toArray()) {
+                const label = $(tag).text().trim();
+                const id = (_b = 'status.' + $(tag).attr('value')) !== null && _b !== void 0 ? _b : label;
                 if (!id || !label)
                     continue;
                 tags2.push({ id: id, label: label });
             }
+            //thoi gian
+            for (const tag of $('#status > option', '#category > div:nth-child(4)').toArray()) {
+                const label = $(tag).text().trim();
+                const id = (_c = 'time.' + $(tag).attr('value')) !== null && _c !== void 0 ? _c : label;
+                if (!id || !label)
+                    continue;
+                tags3.push({ id: id, label: label });
+            }
             const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
-                createTagSection({ id: '1', label: 'Tình Trạng', tags: tags2.map(x => createTag(x)) })];
+                createTagSection({ id: '1', label: 'Tình Trạng Truyện', tags: tags2.map(x => createTag(x)) }),
+                createTagSection({ id: '2', label: 'Thời Gian', tags: tags3.map(x => createTag(x)) })];
             return tagSections;
         });
     }
     globalRequestHeaders() {
         return {
-            referer: 'https://komeloli.net/'
+            referer: 'https://img.hentaivv.com/'
         };
     }
 }
-exports.KOMELoli = KOMELoli;
+exports.HentaiVV = HentaiVV;
 
-},{"./KOMELoliParser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
+},{"./HentaiVVParser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.capitalizeFirstLetter = void 0;
@@ -1042,21 +1101,17 @@ exports.parseSearch = ($) => {
     var _a, _b;
     const collectedIds = [];
     const mangas = [];
-    for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
-        let title = $(`.post-title > h3 > a`, obj).text().trim();
-        let subtitle = $(`.chapter > a`, obj).text().trim();
-        const image = (_a = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _a !== void 0 ? _a : "";
-        let id = (_b = $(`.c-image-hover > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
+    for (let obj of $('li', '.theloai-thumlist').toArray()) {
+        let title = $(`.crop-text-2 > a`, obj).text().trim();
+        const image = (_a = $('a > img', obj).attr('data-src')) !== null && _a !== void 0 ? _a : "";
+        let id = (_b = $(`.crop-text-2 > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
         if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
             mangas.push(createMangaTile({
                 id: id,
                 image: image,
                 title: createIconText({
                     text: title,
-                }),
-                subtitleText: createIconText({
-                    text: (subtitle),
-                }),
+                })
             }));
             collectedIds.push(id);
         }
@@ -1067,25 +1122,19 @@ exports.parseViewMore = ($, select) => {
     var _a, _b;
     const manga = [];
     const collectedIds = [];
-    if (select === 1 || select === 2 || select === 0) {
-        for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
-            let title = $(`.post-title > h3 > a`, obj).text().trim();
-            let subtitle = $(`.chapter > a`, obj).text().trim();
-            const image = (_a = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _a !== void 0 ? _a : "";
-            let id = (_b = $(`.c-image-hover > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
-            if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
-                manga.push(createMangaTile({
-                    id: id,
-                    image: image !== null && image !== void 0 ? image : "",
-                    title: createIconText({
-                        text: title !== null && title !== void 0 ? title : "",
-                    }),
-                    subtitleText: createIconText({
-                        text: (subtitle),
-                    }),
-                }));
-                collectedIds.push(id);
-            }
+    for (let obj of $('li', '.theloai-thumlist').toArray()) {
+        let title = $(`.crop-text-2 > a`, obj).text().trim();
+        const image = (_a = $('a > img', obj).attr('data-src')) !== null && _a !== void 0 ? _a : "";
+        let id = (_b = $(`.crop-text-2 > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
+        if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
+            manga.push(createMangaTile({
+                id: id,
+                image: image !== null && image !== void 0 ? image : "",
+                title: createIconText({
+                    text: title !== null && title !== void 0 ? title : "",
+                })
+            }));
+            collectedIds.push(id);
         }
     }
     return manga;
@@ -1093,14 +1142,14 @@ exports.parseViewMore = ($, select) => {
 exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
-    for (const page of $("a", ".wp-pagenavi").toArray()) {
+    for (const page of $("a", "ul.pagination").toArray()) {
         const p = Number($(page).text().trim());
         if (isNaN(p))
             continue;
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($(".wp-pagenavi > span.current").text().trim());
+    const currentPage = Number($("ul.pagination > li.active > a").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
