@@ -1046,7 +1046,7 @@ class HentaiVV extends paperback_extensions_common_1.Source {
                 const id = (_c = 'time.' + $(tag).attr('value')) !== null && _c !== void 0 ? _c : label;
                 if (!id || !label)
                     continue;
-                tags2.push({ id: id, label: label });
+                tags3.push({ id: id, label: label });
             }
             const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
                 createTagSection({ id: '1', label: 'Tình Trạng Truyện', tags: tags2.map(x => createTag(x)) }),
