@@ -998,7 +998,7 @@ class HentaiVV extends paperback_extensions_common_1.Source {
                 return genresFinal;
             };
             const request = createRequestObject({
-                url: encodeURI(`https://hentaivv.com/tim-kiem/page/${page}/?title=&${convertGenres(genre)}&status=all&time=update`),
+                url: encodeURI(`https://hentaivv.com/tim-kiem/page/${page}/?title=&cate%5B%5D=comic&cate%5B%5D=doujinshi&status=all&time=update`),
                 method: "GET"
             });
             const data = yield this.requestManager.schedule(request, 1);
