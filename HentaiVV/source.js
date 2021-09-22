@@ -1012,10 +1012,11 @@ class HentaiVV extends paperback_extensions_common_1.Source {
         });
     }
     getSearchTags() {
-        var _a, _b;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             const tags = [];
             const tags2 = [];
+            const tags3 = [];
             const url = `https://hentaivv.com/tim-kiem/?title=`;
             const request = createRequestObject({
                 url: url,
@@ -1035,6 +1036,14 @@ class HentaiVV extends paperback_extensions_common_1.Source {
             for (const tag of $('#status > option', '#category > div:nth-child(3)').toArray()) {
                 const label = $(tag).text().trim();
                 const id = (_b = 'status.' + $(tag).attr('value')) !== null && _b !== void 0 ? _b : label;
+                if (!id || !label)
+                    continue;
+                tags2.push({ id: id, label: label });
+            }
+            //thoi gian
+            for (const tag of $('#status > option', '#category > div:nth-child(4)').toArray()) {
+                const label = $(tag).text().trim();
+                const id = (_c = 'time.' + $(tag).attr('value')) !== null && _c !== void 0 ? _c : label;
                 if (!id || !label)
                     continue;
                 tags2.push({ id: id, label: label });
