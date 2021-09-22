@@ -1034,7 +1034,7 @@ class HentaiVV extends paperback_extensions_common_1.Source {
             //tinh trang
             for (const tag of $('#status > option', '#category > div:nth-child(3)').toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_b = $(tag).attr('value')) !== null && _b !== void 0 ? _b : label;
+                const id = (_b = 'status.' + $(tag).attr('value')) !== null && _b !== void 0 ? _b : label;
                 if (!id || !label)
                     continue;
                 tags2.push({ id: id, label: label });
