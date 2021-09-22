@@ -964,6 +964,7 @@ class HentaiVV extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             var status = [];
+            var time = [];
             var genre = [];
             tags.map((value) => {
                 if (value.indexOf('.') === -1) {
@@ -973,6 +974,9 @@ class HentaiVV extends paperback_extensions_common_1.Source {
                     switch (value.split(".")[0]) {
                         case 'status':
                             status.push(value.split(".")[1]);
+                            break;
+                        case 'time':
+                            time.push(value.split(".")[1]);
                             break;
                     }
                 }
@@ -998,7 +1002,7 @@ class HentaiVV extends paperback_extensions_common_1.Source {
                 return genresFinal;
             };
             const request = createRequestObject({
-                url: (`https://hentaivv.com/tim-kiem/page/${page}/?title=&${convertGenres(genre)}&status=all&time=update`),
+                url: (`https://hentaivv.com/tim-kiem/page/${page}/?title=${query.title ? encodeURI(query.title) : ""}&${convertGenres(genre)}&status=${status[0]}&time=${time[0]}`),
                 method: "GET"
             });
             const data = yield this.requestManager.schedule(request, 1);
