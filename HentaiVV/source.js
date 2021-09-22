@@ -991,7 +991,7 @@ class HentaiVV extends paperback_extensions_common_1.Source {
             const convertGenres = (genre) => {
                 let y = [];
                 for (const e of genre) {
-                    let x = 'cate=' + e;
+                    let x = 'cate%5B%5D=' + e;
                     y.push(x);
                 }
                 genresFinal = (y !== null && y !== void 0 ? y : []).join("&");
