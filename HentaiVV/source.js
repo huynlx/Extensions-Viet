@@ -959,7 +959,7 @@ class HentaiVV extends paperback_extensions_common_1.Source {
         });
     }
     getSearchResults(query, metadata) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
@@ -998,7 +998,7 @@ class HentaiVV extends paperback_extensions_common_1.Source {
                 return genresFinal;
             };
             const request = createRequestObject({
-                url: encodeURI(`https://hentaivv.com/tim-kiem/?title=${(_d = query.title) !== null && _d !== void 0 ? _d : ""}&${convertGenres(genre)}&status=all&time=update`),
+                url: encodeURI(`https://hentaivv.com/tim-kiem/page/${page}/?title&cate%5B0%5D=bdsm&status=all&time=update`),
                 method: "GET"
             });
             const data = yield this.requestManager.schedule(request, 1);
