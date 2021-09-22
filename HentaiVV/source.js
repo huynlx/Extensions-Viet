@@ -690,7 +690,7 @@ class HentaiVV extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             const chapters = [];
             var i = 0;
-            // const page=$('#id_pagination')
+            const page = $('#id_pagination > li.active > a').text().trim();
             const id = $("#views").attr('data-id');
             const request2 = createRequestObject({
                 url: 'https://hentaivv.com/wp-admin/admin-ajax.php',
@@ -730,15 +730,42 @@ class HentaiVV extends paperback_extensions_common_1.Source {
                 }
             }
             else {
-                for (const obj of $("#dsc > .listchap > li").toArray()) {
-                    i++;
-                    chapters.push(createChapter({
-                        id: $('a', obj).first().attr('href'),
-                        chapNum: i,
-                        name: ($('a', obj).first().text().trim()),
-                        mangaId: mangaId,
-                        langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    }));
+                if (page) { //check xem có pagination không
+                    for (const p of $('a', '#id_pagination').toArray()) {
+                        if (isNaN(Number($(p).text().trim()))) { //a ko phải số
+                            continue;
+                        }
+                        else {
+                            const requestChap = createRequestObject({
+                                url: `${mangaId + Number($(p).text().trim())}/#dsc`,
+                                method,
+                            });
+                            const responseChap = yield this.requestManager.schedule(requestChap, 1);
+                            const $Chap = this.cheerio.load(responseChap.data);
+                            for (const obj of $Chap("#dsc > .listchap > li").toArray()) {
+                                i++;
+                                chapters.push(createChapter({
+                                    id: $('a', obj).first().attr('href'),
+                                    chapNum: i,
+                                    name: ($('a', obj).first().text().trim()),
+                                    mangaId: mangaId,
+                                    langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+                                }));
+                            }
+                        }
+                    }
+                }
+                else {
+                    for (const obj of $("#dsc > .listchap > li").toArray()) {
+                        i++;
+                        chapters.push(createChapter({
+                            id: $('a', obj).first().attr('href'),
+                            chapNum: i,
+                            name: ($('a', obj).first().text().trim()),
+                            mangaId: mangaId,
+                            langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+                        }));
+                    }
                 }
             }
             return chapters;
@@ -981,17 +1008,7 @@ class HentaiVV extends paperback_extensions_common_1.Source {
                     }
                 }
             });
-            var statusFinal = '';
             var genresFinal = '';
-            const convertStatus = (status) => {
-                let y = [];
-                for (const e of status) {
-                    let x = 'status=' + e;
-                    y.push(x);
-                }
-                statusFinal = (y !== null && y !== void 0 ? y : []).join("&");
-                return statusFinal;
-            };
             const convertGenres = (genre) => {
                 let y = [];
                 for (const e of genre) {
