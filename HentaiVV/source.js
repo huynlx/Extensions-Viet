@@ -991,14 +991,14 @@ class HentaiVV extends paperback_extensions_common_1.Source {
             const convertGenres = (genre) => {
                 let y = [];
                 for (const e of genre) {
-                    let x = 'genre=' + e;
+                    let x = 'cate=' + e;
                     y.push(x);
                 }
                 genresFinal = (y !== null && y !== void 0 ? y : []).join("&");
                 return genresFinal;
             };
             const request = createRequestObject({
-                url: encodeURI(`https://hentaicube.net/page/${page}/?s=${(_d = query.title) !== null && _d !== void 0 ? _d : ""}&post_type=wp-manga&${convertGenres(genre)}&op=&author=&artist=&release=&adult=&${convertStatus(status)}`),
+                url: encodeURI(`https://hentaivv.com/tim-kiem/?title=${(_d = query.title) !== null && _d !== void 0 ? _d : ""}&${convertGenres(genre)}&${convertStatus(status)}&time=update`),
                 method: "GET"
             });
             const data = yield this.requestManager.schedule(request, 1);
@@ -1070,21 +1070,17 @@ exports.parseSearch = ($) => {
     var _a, _b;
     const collectedIds = [];
     const mangas = [];
-    for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
-        let title = $(`.post-title > h3 > a`, obj).text().trim();
-        let subtitle = $(`.chapter > a`, obj).text().trim();
-        const image = (_a = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _a !== void 0 ? _a : "";
-        let id = (_b = $(`.c-image-hover > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
+    for (let obj of $('li', '.theloai-thumlist').toArray()) {
+        let title = $(`.crop-text-2 > a`, obj).text().trim();
+        const image = (_a = $('a > img', obj).attr('data-src')) !== null && _a !== void 0 ? _a : "";
+        let id = (_b = $(`.crop-text-2 > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
         if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
             mangas.push(createMangaTile({
                 id: id,
                 image: image,
                 title: createIconText({
                     text: title,
-                }),
-                subtitleText: createIconText({
-                    text: (subtitle),
-                }),
+                })
             }));
             collectedIds.push(id);
         }
