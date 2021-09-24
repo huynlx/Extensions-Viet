@@ -610,7 +610,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Gaito = exports.GaitoInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const GaitoParser_1 = require("./GaitoParser");
-const DOMAIN = 'https://www.gaito.me/truyen-hentai/';
 const method = 'GET';
 exports.GaitoInfo = {
     version: '1.0.0',
@@ -625,10 +624,6 @@ exports.GaitoInfo = {
         {
             text: "18+",
             type: paperback_extensions_common_1.TagType.YELLOW
-        },
-        {
-            text: "Error",
-            type: paperback_extensions_common_1.TagType.RED
         }
     ]
 };
@@ -688,14 +683,24 @@ class Gaito extends paperback_extensions_common_1.Source {
                 let id = obj.id;
                 let chapNum = Number(obj.sortOrder);
                 let name = obj.serial;
+                //set time
                 let timestamp = obj.timestamp;
+                var a = new Date(timestamp * 1000);
+                var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                var year = a.getFullYear();
+                var month = months[a.getMonth()];
+                var date = a.getDate();
+                var hour = a.getHours();
+                var min = a.getMinutes();
+                var sec = a.getSeconds();
+                var time = month + '/' + date + '/' + year + ' ' + hour + ':' + min + ':' + sec;
                 chapters.push(createChapter({
                     id,
                     chapNum,
                     name,
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: new Date(timestamp * 1000)
+                    time: new Date(time)
                 }));
             }
             return chapters;
