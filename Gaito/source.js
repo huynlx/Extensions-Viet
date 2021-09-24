@@ -678,22 +678,24 @@ class Gaito extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `https://api.gaito.me/manga/chapters?comicId=777&mode=by-comic&orderBy=bySortOrderDown`,
+                url: `https://api.gaito.me/manga/chapters?comicId=${mangaId}&mode=by-comic&orderBy=bySortOrderDown`,
                 method,
             });
             const data = yield this.requestManager.schedule(request, 1);
             const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
             const chapters = [];
             for (const obj of json) {
-                let id = '941';
-                let chapNum = 1;
-                let name = 'Nửa đêm thành nữ';
+                let id = obj.id;
+                let chapNum = Number(obj.sortOrder);
+                let name = obj.title;
+                let time = obj.timestamp;
                 chapters.push(createChapter({
                     id,
                     chapNum,
                     name,
                     mangaId: mangaId,
-                    langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE
+                    langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+                    time: new Date(time)
                 }));
             }
             return chapters;
