@@ -768,7 +768,7 @@ class Gaito extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             //view
             request = createRequestObject({
-                url: 'https://api.gaito.me/manga/comics?limit=20&offset=0&sort=latest',
+                url: 'https://api.gaito.me/manga/comics?limit=20&offset=0&sort=top-rated',
                 method: "GET",
             });
             let newAddItems = [];
