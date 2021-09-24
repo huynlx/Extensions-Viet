@@ -685,10 +685,13 @@ class Gaito extends paperback_extensions_common_1.Source {
             const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
             const chapters = [];
             for (const obj of json) {
+                let id = obj.id;
+                let chapNum = obj.sortOrder;
+                let name = obj.title;
                 chapters.push(createChapter({
-                    id: obj.id,
-                    chapNum: obj.sortOrder,
-                    name: obj.title,
+                    id,
+                    chapNum,
+                    name,
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE
                 }));
