@@ -683,24 +683,12 @@ class Gaito extends paperback_extensions_common_1.Source {
                 let id = obj.id;
                 let chapNum = Number(obj.sortOrder);
                 let name = obj.serial;
-                //set time
-                let timestamp = obj.timestamp;
-                var a = new Date(timestamp * 1000);
-                var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                var year = a.getFullYear();
-                var month = months[a.getMonth()];
-                var date = a.getDate();
-                var hour = a.getHours();
-                var min = a.getMinutes();
-                var sec = a.getSeconds();
-                var time = month + '/' + date + '/' + year + ' ' + hour + ':' + min + ':' + sec;
                 chapters.push(createChapter({
                     id,
                     chapNum,
                     name,
                     mangaId: mangaId,
-                    langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: new Date(time)
+                    langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE
                 }));
             }
             return chapters;
