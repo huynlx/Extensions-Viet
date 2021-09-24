@@ -746,7 +746,7 @@ class Gaito extends paperback_extensions_common_1.Source {
             });
             let newUpdatedItems = [];
             let data = yield this.requestManager.schedule(request, 1);
-            const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
+            let json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
             var element = '';
             const check = [];
             for (element of json) {
@@ -768,20 +768,20 @@ class Gaito extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             //view
             request = createRequestObject({
-                url: 'https://api.gaito.me/manga/comics?limit=20&offset=0&sort=top-rated',
+                url: 'https://api.gaito.me/manga/comics?limit=20&offset=0&sort=latest',
                 method: "GET",
             });
             let newAddItems = [];
-            let data2 = yield this.requestManager.schedule(request, 1);
-            const json2 = (typeof data2.data) === 'string' ? JSON.parse(data2.data) : data2.data;
-            var element2 = '';
+            data = yield this.requestManager.schedule(request, 1);
+            json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
+            var element = '';
             const check2 = [];
-            for (element2 of json2) {
-                let title = element2.title;
-                let image = element2.cover ? element2.cover.dimensions.thumbnail.url : null;
-                let id = element2.id;
+            for (element of json) {
+                let title = element.title;
+                let image = element.cover ? element.cover.dimensions.thumbnail.url : null;
+                let id = element.id;
                 if (!check2.includes(title)) {
-                    newUpdatedItems.push(createMangaTile({
+                    newAddItems.push(createMangaTile({
                         id: id !== null && id !== void 0 ? id : "",
                         image: image !== null && image !== void 0 ? image : "",
                         title: createIconText({
