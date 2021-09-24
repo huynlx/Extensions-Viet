@@ -687,7 +687,7 @@ class Gaito extends paperback_extensions_common_1.Source {
             for (const obj of json) {
                 let id = obj.id;
                 let chapNum = Number(obj.sortOrder);
-                let name = obj.description + ' - ' + obj.title;
+                let name = obj.description;
                 let timestamp = obj.timestamp;
                 chapters.push(createChapter({
                     id,
