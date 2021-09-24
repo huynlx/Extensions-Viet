@@ -643,33 +643,30 @@ class Gaito extends paperback_extensions_common_1.Source {
     getMangaShareUrl(mangaId) { return `${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
-        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `${mangaId}`;
+            const url = `https://api.gaito.me/manga/comics/${mangaId}`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
+            const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
             let tags = [];
-            let creator = '';
-            let status = 1; //completed, 1 = Ongoing
-            let desc = $('.description-summary > .summary__content').text();
-            for (const t of $('.post-content > div:nth-child(8) > .summary-content a').toArray()) {
-                const genre = $(t).text().trim();
-                const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
+            let creator = json.author;
+            let status = json.status; //completed, 1 = Ongoing
+            let desc = json.description;
+            for (const t of json.genres) {
+                const genre = t.name;
+                const id = t.id;
                 tags.push(createTag({ label: genre, id }));
             }
-            creator = $('.info > p:nth-child(1) > span').text();
-            status = $('.post-status > div:nth-child(2) > .summary-content').text().trim().toLowerCase().includes("đang") ? 1 : 0;
-            const image = (_c = (_b = $('.tab-summary img').attr('data-src')) === null || _b === void 0 ? void 0 : _b.replace('-193x278', '')) !== null && _c !== void 0 ? _c : "";
+            const image = json.cover.data.dimensions.original.url;
             return createManga({
                 id: mangaId,
                 author: creator,
                 artist: creator,
                 desc: desc,
-                titles: [$('.post-title > h1').text().trim()],
+                titles: [json.title],
                 image: image,
                 status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
