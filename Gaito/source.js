@@ -687,14 +687,13 @@ class Gaito extends paperback_extensions_common_1.Source {
             for (const obj of json) {
                 // const getTime = $('span', obj).text().trim().split(/\//);
                 // const fixDate = [getTime[1], getTime[0], getTime[2]].join('/');
-                const finalTime = json.timestamp;
+                // const finalTime = json.timestamp;
                 chapters.push(createChapter({
                     id: obj.id,
                     chapNum: obj.sortOrder,
                     name: obj.title,
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: new Date(finalTime)
                 }));
             }
             return chapters;
