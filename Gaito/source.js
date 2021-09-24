@@ -833,14 +833,13 @@ class Gaito extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: encodeURI(`https://hentaivl.com${tags[0] ? tags[0] : ''}`),
+                url: encodeURI(`https://api.gaito.me/manga/comics?genreId=${tags[0]}&limit=20&offset=${page}&sort=latest`),
                 method: "GET",
-                param: encodeURI(`?page=${page}`)
             });
-            const data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
-            const tiles = GaitoParser_1.parseSearch($);
-            metadata = !GaitoParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            let data = yield this.requestManager.schedule(request, 1);
+            let json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
+            const tiles = GaitoParser_1.parseSearch(json);
+            metadata = { page: page + 20 };
             return createPagedResults({
                 results: tiles,
                 metadata
@@ -859,8 +858,8 @@ class Gaito extends paperback_extensions_common_1.Source {
             let json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
             //the loai
             for (const tag of json) {
-                const label = json.name;
-                const id = json.id;
+                const label = tag.name;
+                const id = tag.id;
                 if (!id || !label)
                     continue;
                 tags.push({ id: id, label: label });
@@ -891,30 +890,26 @@ exports.generateSearch = (query) => {
     let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
     return encodeURI(keyword);
 };
-exports.parseSearch = ($) => {
-    var _a, _b;
+exports.parseSearch = (json) => {
+    const manga = [];
     const collectedIds = [];
-    const mangas = [];
-    for (let obj of $('li', '.list_wrap').toArray()) {
-        let title = $(`.title`, obj).text().trim();
-        let subtitle = $(`.chapter > a`, obj).text().trim();
-        const image = (_a = $('.manga-thumb > a > img', obj).attr('data-original')) !== null && _a !== void 0 ? _a : "";
-        let id = (_b = $(`.manga-thumb > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
-        if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
-            mangas.push(createMangaTile({
-                id: id,
-                image: image,
+    var element = '';
+    for (element of json) {
+        let title = element.title;
+        let image = element.cover ? element.cover.dimensions.thumbnail.url : null;
+        let id = element.id;
+        if (!collectedIds.includes(title)) {
+            manga.push(createMangaTile({
+                id: id !== null && id !== void 0 ? id : "",
+                image: image !== null && image !== void 0 ? image : "",
                 title: createIconText({
-                    text: title,
-                }),
-                subtitleText: createIconText({
-                    text: capitalizeFirstLetter(subtitle),
-                }),
+                    text: title !== null && title !== void 0 ? title : ""
+                })
             }));
-            collectedIds.push(id);
+            collectedIds.push(title);
         }
     }
-    return mangas;
+    return manga;
 };
 exports.parseViewMore = (json, select) => {
     const manga = [];
