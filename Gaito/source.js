@@ -817,17 +817,21 @@ class Gaito extends paperback_extensions_common_1.Source {
             data = yield this.requestManager.schedule(request, 1);
             const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
             var element = '';
+            const check = [];
             for (element of json) {
                 let title = element.title;
                 let image = element.cover ? element.cover.dimensions.thumbnail.url : null;
                 let id = element.id;
-                newUpdatedItems.push(createMangaTile({
-                    id: id !== null && id !== void 0 ? id : "",
-                    image: image !== null && image !== void 0 ? image : "",
-                    title: createIconText({
-                        text: title !== null && title !== void 0 ? title : ""
-                    })
-                }));
+                if (!check.includes(title)) {
+                    newUpdatedItems.push(createMangaTile({
+                        id: id !== null && id !== void 0 ? id : "",
+                        image: image !== null && image !== void 0 ? image : "",
+                        title: createIconText({
+                            text: title !== null && title !== void 0 ? title : ""
+                        })
+                    }));
+                    check.push(title);
+                }
             }
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
