@@ -640,7 +640,7 @@ class Gaito extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
     }
-    getMangaShareUrl(mangaId) { return `${mangaId}`; }
+    getMangaShareUrl(mangaId) { return `https://api.gaito.me/manga/comics/${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -687,7 +687,7 @@ class Gaito extends paperback_extensions_common_1.Source {
             for (const obj of json) {
                 let id = obj.id;
                 let chapNum = Number(obj.sortOrder);
-                let name = obj.description;
+                let name = obj.serial;
                 let timestamp = obj.timestamp;
                 chapters.push(createChapter({
                     id,
@@ -733,7 +733,7 @@ class Gaito extends paperback_extensions_common_1.Source {
             let view = createHomeSection({
                 id: 'view',
                 title: "Thích nhất",
-                view_more: false,
+                view_more: true,
             });
             //Load empty sections
             sectionCallback(newUpdated);
@@ -798,20 +798,16 @@ class Gaito extends paperback_extensions_common_1.Source {
     getViewMoreItems(homepageSectionId, metadata) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
+            let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 0;
             let url = '';
             let select = 1;
             switch (homepageSectionId) {
-                case "hot":
-                    url = `https://hentaicube.net/page/${page}/`;
-                    select = 0;
-                    break;
                 case "new_updated":
-                    url = `https://hentaicube.net/page/${page}/`;
+                    url = `https://api.gaito.me/manga/comics?limit=20&offset=${page}&sort=latest`;
                     select = 1;
                     break;
-                case "new_added":
-                    url = `https://hentaivl.com/`;
+                case "view":
+                    url = `https://api.gaito.me/manga/comics?limit=20&offset=${page}&sort=top-rated`;
                     select = 2;
                     break;
                 default:
@@ -821,10 +817,10 @@ class Gaito extends paperback_extensions_common_1.Source {
                 url,
                 method
             });
-            const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
-            let manga = GaitoParser_1.parseViewMore($, select);
-            metadata = !GaitoParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            let data = yield this.requestManager.schedule(request, 1);
+            let json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
+            let manga = GaitoParser_1.parseViewMore(json, select);
+            metadata = { page: page + 20 };
             return createPagedResults({
                 results: manga,
                 metadata,
@@ -921,73 +917,23 @@ exports.parseSearch = ($) => {
     }
     return mangas;
 };
-exports.parseViewMore = ($, select) => {
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+exports.parseViewMore = (json, select) => {
     const manga = [];
     const collectedIds = [];
-    if (select === 1) {
-        for (let obj of $('.row-eq-height', '#loop-content').toArray()) {
-            for (let obj2 of $('.page-item-detail', obj).toArray()) {
-                let title = (_a = $(`a`, obj2).first().attr('title')) === null || _a === void 0 ? void 0 : _a.trim();
-                let subtitle = $(`.chapter-item  > span > a`, obj2).text().trim();
-                let image = (_b = $(`a > img`, obj2).attr('data-src')) === null || _b === void 0 ? void 0 : _b.replace('-110x150', '');
-                let id = (_d = (_c = $(`a`, obj2).first().attr('href')) === null || _c === void 0 ? void 0 : _c.trim()) !== null && _d !== void 0 ? _d : "";
-                if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
-                    manga.push(createMangaTile({
-                        id: id,
-                        image: image !== null && image !== void 0 ? image : "",
-                        title: createIconText({
-                            text: title !== null && title !== void 0 ? title : "",
-                        }),
-                        subtitleText: createIconText({
-                            text: capitalizeFirstLetter(subtitle),
-                        }),
-                    }));
-                    collectedIds.push(id);
-                }
-            }
-        }
-    }
-    else if (select === 0) {
-        for (let obj of $('li', '#glo_wrapper > .section_todayup:nth-child(3) > .list_wrap > .slick_item').toArray()) {
-            let title = $(`h3.title > a`, obj).text().trim();
-            let subtitle = $(`.chapter > a`, obj).text();
-            const image = (_e = $(`.manga-thumb > a > img`, obj).attr('data-original')) !== null && _e !== void 0 ? _e : "";
-            let id = (_f = $(`h3.title > a`, obj).attr('href')) !== null && _f !== void 0 ? _f : title;
-            if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
-                manga.push(createMangaTile({
-                    id: id,
-                    image: image,
-                    title: createIconText({
-                        text: title,
-                    }),
-                    subtitleText: createIconText({
-                        text: capitalizeFirstLetter(subtitle),
-                    }),
-                }));
-                collectedIds.push(id);
-            }
-        }
-    }
-    else {
-        for (let obj of $('li', '#glo_wrapper > .section_todayup:nth-child(4) > .list_wrap > .slick_item').toArray()) {
-            let title = $(`h3.title > a`, obj).text().trim();
-            let subtitle = $(`.chapter > a`, obj).text();
-            const image = (_g = $(`.manga-thumb > a > img`, obj).attr('data-original')) !== null && _g !== void 0 ? _g : "";
-            let id = (_h = $(`h3.title > a`, obj).attr('href')) !== null && _h !== void 0 ? _h : title;
-            if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
-                manga.push(createMangaTile({
-                    id: id,
-                    image: image,
-                    title: createIconText({
-                        text: title,
-                    }),
-                    subtitleText: createIconText({
-                        text: capitalizeFirstLetter(subtitle),
-                    }),
-                }));
-                collectedIds.push(id);
-            }
+    var element = '';
+    for (element of json) {
+        let title = element.title;
+        let image = element.cover ? element.cover.dimensions.thumbnail.url : null;
+        let id = element.id;
+        if (!collectedIds.includes(title)) {
+            manga.push(createMangaTile({
+                id: id !== null && id !== void 0 ? id : "",
+                image: image !== null && image !== void 0 ? image : "",
+                title: createIconText({
+                    text: title !== null && title !== void 0 ? title : ""
+                })
+            }));
+            collectedIds.push(title);
         }
     }
     return manga;
