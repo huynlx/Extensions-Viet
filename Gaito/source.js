@@ -687,7 +687,7 @@ class Gaito extends paperback_extensions_common_1.Source {
             for (const obj of json) {
                 let id = obj.id;
                 let chapNum = Number(obj.sortOrder);
-                let name = obj.title;
+                let name = obj.description + ' - ' + obj.title;
                 let time = obj.timestamp;
                 chapters.push(createChapter({
                     id,
@@ -704,16 +704,14 @@ class Gaito extends paperback_extensions_common_1.Source {
     getChapterDetails(mangaId, chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${chapterId}`,
+                url: `https://api.gaito.me/manga/pages?chapterId=${chapterId}&mode=by-chapter`,
                 method
             });
-            const response = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(response.data);
+            const data = yield this.requestManager.schedule(request, 1);
+            const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
             const pages = [];
-            for (let obj of $('.text-left img').toArray()) {
-                if (!obj.attribs['data-src'])
-                    continue;
-                let link = obj.attribs['data-src'].trim();
+            for (let obj of json) {
+                let link = obj.image.dimensions.original.url;
                 pages.push(link);
             }
             const chapterDetails = createChapterDetails({
