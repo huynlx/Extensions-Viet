@@ -678,24 +678,23 @@ class Gaito extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${mangaId}`,
+                url: `https://api.gaito.me/manga/chapters?comicId=${mangaId}&mode=by-comic&orderBy=bySortOrderDown`,
                 method,
             });
-            const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
+            const data = yield this.requestManager.schedule(request, 1);
+            const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
             const chapters = [];
-            var i = 0;
-            for (const obj of $(".listing-chapters_wrap li").toArray().reverse()) {
-                i++;
+            for (const obj of json) {
                 // const getTime = $('span', obj).text().trim().split(/\//);
                 // const fixDate = [getTime[1], getTime[0], getTime[2]].join('/');
-                // const finalTime = new Date(fixDate);
+                const finalTime = json.timestamp;
                 chapters.push(createChapter({
-                    id: $('a', obj).first().attr('href'),
-                    chapNum: i,
-                    name: ($('a', obj).first().text().trim()),
+                    id: obj.id,
+                    chapNum: obj.sortOrder,
+                    name: obj.title,
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+                    time: new Date(finalTime)
                 }));
             }
             return chapters;
