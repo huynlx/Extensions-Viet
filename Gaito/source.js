@@ -640,7 +640,7 @@ class Gaito extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
     }
-    getMangaShareUrl(mangaId) { return `https://api.gaito.me/manga/comics/${mangaId}`; }
+    getMangaShareUrl(mangaId) { return `https://www.gaito.me/truyen-hentai/comic/${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -848,25 +848,24 @@ class Gaito extends paperback_extensions_common_1.Source {
         });
     }
     getSearchTags() {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const tags = [];
-            const url = `https://hentaicube.net/the-loai-genres/`;
+            const url = `https://api.gaito.me/ext/genres?plugin=manga`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
             });
-            const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
+            let data = yield this.requestManager.schedule(request, 1);
+            let json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
             //the loai
-            for (const tag of $('a', '.ctcleft').toArray()) {
-                const label = $(tag).text().trim();
-                const id = (_a = $(tag).attr('href')) !== null && _a !== void 0 ? _a : label;
+            for (const tag of json) {
+                const label = json.name;
+                const id = json.id;
                 if (!id || !label)
                     continue;
                 tags.push({ id: id, label: label });
             }
-            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) })];
+            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại Hentai', tags: tags.map(x => createTag(x)) })];
             return tagSections;
         });
     }
