@@ -830,7 +830,7 @@ class Gaito extends paperback_extensions_common_1.Source {
     getSearchResults(query, metadata) {
         var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
-            let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
+            let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 0;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
                 url: encodeURI(`https://api.gaito.me/manga/comics?genreId=${tags[0]}&limit=20&offset=${page}&sort=latest`),
