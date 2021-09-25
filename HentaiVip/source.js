@@ -855,42 +855,15 @@ class HentaiVip extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
-            const search = {
-                cate: '',
-                translator: "",
-                writer: "",
-                status: "Trạng+thái",
-                sort: "moi-nhat"
-            };
-            tags.map((value) => {
-                switch (value.split(".")[0]) {
-                    case 'cate':
-                        search.cate = (value.split(".")[1]);
-                        break;
-                    case 'translator':
-                        search.translator = (value.split(".")[1]);
-                        break;
-                    case 'writer':
-                        search.writer = (value.split(".")[1]);
-                        break;
-                    case 'status':
-                        search.status = (value.split(".")[1]);
-                        break;
-                    case 'sort':
-                        search.sort = (value.split(".")[1]);
-                        break;
-                }
-            });
             const request = createRequestObject({
-                url: query.title ? encodeURI(`https://vlogtruyen.net/tim-kiem?q=${query.title}&page=${page}`) :
-                    (tags[0].includes('http') ? (tags[0] + `?page=${page}`) :
-                        encodeURI(`https://vlogtruyen.net/the-loai/huynh?cate=${search.cate}&translator=${search.translator}&writer=${search.writer}&status=${search.status}&sort=${search.sort}&page=${page}`)),
+                url: query.title ? encodeURI(`https://hentaivn.vip/truyen-hentai-moi/page/${page}/?q=${query.title}`) :
+                    tags[0] + `page/${page}/`,
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            const tiles = HentaiVipParser_1.parseSearch($, query, tags);
-            metadata = !HentaiVipParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            const tiles = HentaiVipParser_1.parseSearch($);
+            metadata = { page: page + 1 };
             return createPagedResults({
                 results: tiles,
                 metadata
@@ -900,25 +873,7 @@ class HentaiVip extends paperback_extensions_common_1.Source {
     getSearchTags() {
         return __awaiter(this, void 0, void 0, function* () {
             const tags = [];
-            const tags2 = [
-                {
-                    id: 'https://vlogtruyen.net/bang-xep-hang/top-tuan',
-                    label: 'Top tuần'
-                },
-                {
-                    id: 'https://vlogtruyen.net/bang-xep-hang/top-thang',
-                    label: 'Top tháng'
-                },
-                {
-                    id: 'https://vlogtruyen.net/bang-xep-hang/top-nam',
-                    label: 'Top năm'
-                }
-            ];
-            const tags3 = [];
-            const tags4 = [];
-            const tags5 = [];
-            const tags6 = [];
-            const url = `https://vlogtruyen.net/the-loai/dang-hot`;
+            const url = `https://hentaivn.vip/`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -926,51 +881,15 @@ class HentaiVip extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             //the loai
-            for (const tag of $('select[name="cate"] > option:not(:first-child)').toArray()) {
-                const label = $(tag).text().trim();
-                const id = 'cate.' + $(tag).attr('value');
+            for (const tag of $('.genre a').toArray()) {
+                const label = $('strong', tag).text().trim();
+                const id = $(tag).attr('value');
                 if (!id || !label)
                     continue;
                 tags.push({ id: id, label: label });
             }
-            //nhom dich
-            for (const tag of $('select[name="translator"] > option:not(:first-child)').toArray()) {
-                const label = $(tag).text().trim();
-                const id = 'translator.' + $(tag).attr('value');
-                if (!id || !label)
-                    continue;
-                tags3.push({ id: id, label: label });
-            }
-            //tac gia
-            for (const tag of $('select[name="writer"] > option:not(:first-child)').toArray()) {
-                const label = $(tag).text().trim();
-                const id = 'writer.' + $(tag).attr('value');
-                if (!id || !label)
-                    continue;
-                tags4.push({ id: id, label: label });
-            }
-            //trang thai
-            for (const tag of $('select[name="status"] > option:not(:first-child)').toArray()) {
-                const label = $(tag).text().trim();
-                const id = 'status.' + $(tag).attr('value');
-                if (!id || !label)
-                    continue;
-                tags5.push({ id: id, label: label });
-            }
-            //sap xep
-            for (const tag of $('select[name="sort"] > option').toArray()) {
-                const label = $(tag).text().trim();
-                const id = 'sort.' + $(tag).attr('value');
-                if (!id || !label)
-                    continue;
-                tags6.push({ id: id, label: label });
-            }
-            const tagSections = [createTagSection({ id: '0', label: 'Bảng xếp hạng', tags: tags2.map(x => createTag(x)) }),
+            const tagSections = [
                 createTagSection({ id: '1', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
-                createTagSection({ id: '2', label: 'Nhóm dịch', tags: tags3.map(x => createTag(x)) }),
-                createTagSection({ id: '3', label: 'Tác giả', tags: tags4.map(x => createTag(x)) }),
-                createTagSection({ id: '4', label: 'Trạng thái', tags: tags5.map(x => createTag(x)) }),
-                createTagSection({ id: '5', label: 'Sắp xếp', tags: tags6.map(x => createTag(x)) }),
             ];
             return tagSections;
         });
@@ -997,52 +916,20 @@ exports.generateSearch = (query) => {
     let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
     return encodeURI(keyword);
 };
-exports.parseSearch = ($, query, tags) => {
-    var _a, _b, _c, _d, _e, _f;
+exports.parseSearch = ($) => {
+    var _a, _b;
     const manga = [];
-    if (!query.title) {
-        if (tags[0].includes('http')) {
-            for (const element of $('.commic-hover', '#content-column').toArray()) {
-                let title = $('.title-commic-tab', element).text().trim();
-                let image = (_a = $('.image-commic-tab > img', element).attr('data-src')) !== null && _a !== void 0 ? _a : "";
-                let id = (_b = $('a', element).first().attr('href')) !== null && _b !== void 0 ? _b : title;
-                let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
-                manga.push(createMangaTile({
-                    id: id,
-                    image: image !== null && image !== void 0 ? image : "",
-                    title: createIconText({ text: title }),
-                    subtitleText: createIconText({ text: subtitle }),
-                }));
-            }
-        }
-        else {
-            for (const element of $('.commic-hover', '#ul-content-pho-bien').toArray()) {
-                let title = $('.title-commic-tab', element).text().trim();
-                let image = (_c = $('.image-commic-tab > img', element).attr('data-src')) !== null && _c !== void 0 ? _c : "";
-                let id = (_d = $('a', element).first().attr('href')) !== null && _d !== void 0 ? _d : title;
-                let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
-                manga.push(createMangaTile({
-                    id: id,
-                    image: image !== null && image !== void 0 ? image : "",
-                    title: createIconText({ text: title }),
-                    subtitleText: createIconText({ text: subtitle }),
-                }));
-            }
-        }
-    }
-    else {
-        for (const element of $('.commic-hover', '#content-column').toArray()) {
-            let title = $('.title-commic-tab', element).text().trim();
-            let image = (_e = $('.image-commic-tab > img', element).attr('data-src')) !== null && _e !== void 0 ? _e : "";
-            let id = (_f = $('a', element).first().attr('href')) !== null && _f !== void 0 ? _f : title;
-            let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
-            manga.push(createMangaTile({
-                id: id,
-                image: image !== null && image !== void 0 ? image : "",
-                title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: subtitle }),
-            }));
-        }
+    for (const element of $('div.col-6', '.form-row').toArray()) {
+        let title = $('.entry > a', element).last().text().trim();
+        let image = (_a = $('.entry > a > img', element).attr('src')) !== null && _a !== void 0 ? _a : "";
+        let id = (_b = $('.entry > a', element).first().attr('href')) !== null && _b !== void 0 ? _b : title;
+        let subtitle = $(`.date-time`, element).text().trim();
+        manga.push(createMangaTile({
+            id: id,
+            image: image !== null && image !== void 0 ? image : "",
+            title: createIconText({ text: title }),
+            subtitleText: createIconText({ text: subtitle }),
+        }));
     }
     return manga;
 };
@@ -1066,7 +953,7 @@ exports.parseViewMore = ($) => {
 exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
-    for (const page of $(".page-numbers:not(:first-child):not(:last-child)", ".z-pagination").toArray()) {
+    for (const page of $("a.page-numbers:not(:first-child):not(:last-child)", ".z-pagination").toArray()) {
         const p = Number($(page).text().trim());
         if (isNaN(p))
             continue;
