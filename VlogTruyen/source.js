@@ -823,15 +823,15 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             let select = 1;
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = 'https://vlogtruyen.net/de-nghi/pho-bien/moi-nhat';
+                    url = `https://vlogtruyen.net/de-nghi/pho-bien/moi-nhat?page=${page}`;
                     select = 1;
                     break;
                 case "hot":
-                    url = 'https://vlogtruyen.net/de-nghi/pho-bien/dang-hot';
+                    url = `https://vlogtruyen.net/de-nghi/pho-bien/dang-hot?page=${page}`;
                     select = 2;
                     break;
                 case "view":
-                    url = 'https://vlogtruyen.net/de-nghi/pho-bien/xem-nhieu';
+                    url = `https://vlogtruyen.net/de-nghi/pho-bien/xem-nhieu?page=${page}`;
                     select = 3;
                     break;
                 default:
