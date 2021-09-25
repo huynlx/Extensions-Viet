@@ -612,7 +612,7 @@ const paperback_extensions_common_1 = require("paperback-extensions-common");
 const HentaiVipParser_1 = require("./HentaiVipParser");
 const method = 'GET';
 exports.HentaiVipInfo = {
-    version: '2.6.0',
+    version: '1.0.0',
     name: 'HentaiVip',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -685,8 +685,8 @@ class HentaiVip extends paperback_extensions_common_1.Source {
             for (const obj of $('.bixbox > .chap-list > .d-flex ').toArray().reverse()) {
                 i++;
                 let id = $('a', obj).first().attr('href');
-                let chapNum = i;
                 let name = $('a > span:first-child', obj).text().trim();
+                let chapNum = Number($('a > span:first-child', obj).text().trim().split('Chapter')[1].trim());
                 let time = $('a > span:last-child', obj).text().trim().split('/');
                 chapters.push(createChapter({
                     id,
