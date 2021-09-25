@@ -749,7 +749,7 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             ///Get the section data
             //New Updates
             let request = createRequestObject({
-                url: 'https://vlogtruyen.net/de-nghi/pho-bien/moi-nhat',
+                url: 'https://vlogtruyen.net/the-loai/moi-cap-nhap',
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
@@ -771,7 +771,7 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             //hot
             request = createRequestObject({
-                url: 'https://vlogtruyen.net/de-nghi/pho-bien/dang-hot',
+                url: 'https://vlogtruyen.net/the-loai/dang-hot',
                 method: "GET",
             });
             let hotItems = [];
@@ -823,11 +823,11 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             let select = 1;
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `https://vlogtruyen.net/de-nghi/pho-bien/moi-nhat?page=${page}`;
+                    url = `https://vlogtruyen.net/the-loai/moi-cap-nhap?page=${page}`;
                     select = 1;
                     break;
                 case "hot":
-                    url = `https://vlogtruyen.net/de-nghi/pho-bien/dang-hot?page=${page}`;
+                    url = `https://vlogtruyen.net/the-loai/dang-hot?page=${page}`;
                     select = 2;
                     break;
                 case "view":
