@@ -618,7 +618,7 @@ exports.Truyen210Info = {
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from Truyen210',
-    websiteBaseURL: `https://truyen210.com/`,
+    websiteBaseURL: `https://truyen210.net/`,
     contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
         {
@@ -735,7 +735,7 @@ class Truyen210 extends paperback_extensions_common_1.Source {
             ///Get the section data
             //New Updates
             let request = createRequestObject({
-                url: 'https://truyen210.com/danh-sach-truyen',
+                url: 'https://truyen210.net/danh-sach-truyen',
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
@@ -761,7 +761,7 @@ class Truyen210 extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             //hot
             request = createRequestObject({
-                url: 'https://truyen210.com/dang-hot',
+                url: 'https://truyen210.net/dang-hot',
                 method: "GET",
             });
             let newAddItems = [];
