@@ -901,7 +901,7 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             //the loai
             for (const tag of $('#searchCate[name="cate"] > option:not(:first-child)').toArray()) {
                 const label = $(tag).text().trim();
-                const id = $(tag).attr('href');
+                const id = $(tag).attr('value');
                 if (!id || !label)
                     continue;
                 tags.push({ id: id, label: label });
@@ -931,7 +931,7 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
                 tags5.push({ id: id, label: label });
             }
             //sap xep
-            for (const tag of $('#searchCate[name="sort"] > option:not(:first-child)').toArray()) {
+            for (const tag of $('#searchCate[name="sort"] > option').toArray()) {
                 const label = $(tag).text().trim();
                 const id = $(tag).attr('value');
                 if (!id || !label)
