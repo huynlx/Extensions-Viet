@@ -911,24 +911,22 @@ exports.parseSearch = (json) => {
     return manga;
 };
 exports.parseViewMore = ($) => {
-    var _a;
+    var _a, _b;
     const manga = [];
     const collectedIds = [];
     for (const element of $('li', '.manga-list > ul').toArray()) {
         let title = $('.manga-info > h3 > a', element).text().trim();
         let image = (_a = $('.manga-thumb > img', element).attr('data-original')) !== null && _a !== void 0 ? _a : "";
-        let id = $('a', element).attr('href');
-        if (!id)
-            continue;
+        let id = (_b = $('a', element).attr('href')) !== null && _b !== void 0 ? _b : "";
         let subtitle = $(`.chapter > a`, element).text().trim();
-        if (!collectedIds.includes(title)) {
+        if (!collectedIds.includes(id)) {
             manga.push(createMangaTile({
-                id: id !== null && id !== void 0 ? id : "",
+                id: id,
                 image: image !== null && image !== void 0 ? image : "",
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
-            collectedIds.push(title);
+            collectedIds.push(id);
         }
     }
     return manga;
