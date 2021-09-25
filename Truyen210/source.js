@@ -829,16 +829,16 @@ class Truyen210 extends paperback_extensions_common_1.Source {
     getSearchResults(query, metadata) {
         var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
-            let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 0;
+            let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: encodeURI(`https://api.gaito.me/manga/comics?genreId=${tags[0]}&limit=20&offset=${page}&sort=latest`),
+                url: query.title ? encodeURI(`https://truyen210.net/tim-kiem?q=${query.title}&page=${page}`) : (`${tags[0]}?page=${page}`),
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
-            let json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
-            const tiles = Truyen210Parser_1.parseSearch(json);
-            metadata = { page: page + 20 };
+            let $ = this.cheerio.load(data.data);
+            const tiles = Truyen210Parser_1.parseSearch($);
+            metadata = !Truyen210Parser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: tiles,
                 metadata
@@ -889,24 +889,22 @@ exports.generateSearch = (query) => {
     let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
     return encodeURI(keyword);
 };
-exports.parseSearch = (json) => {
+exports.parseSearch = ($) => {
+    var _a, _b;
     const manga = [];
-    const collectedIds = [];
-    var element = '';
-    for (element of json) {
-        let title = element.title;
-        let image = element.cover ? element.cover.dimensions.thumbnail.url : null;
-        let id = element.id;
-        if (!collectedIds.includes(title)) {
-            manga.push(createMangaTile({
-                id: id !== null && id !== void 0 ? id : "",
-                image: image !== null && image !== void 0 ? image : "",
-                title: createIconText({
-                    text: title !== null && title !== void 0 ? title : ""
-                })
-            }));
-            collectedIds.push(title);
-        }
+    for (const element of $('li', '.manga-list > ul').toArray()) {
+        let title = $('.manga-info > h3 > a', element).text().trim();
+        if (!title)
+            continue;
+        let image = (_a = $('.manga-thumb > img', element).attr('data-original')) !== null && _a !== void 0 ? _a : "";
+        let id = (_b = $('a', element).attr('href')) !== null && _b !== void 0 ? _b : "";
+        let subtitle = $(`.chapter > a`, element).text().trim();
+        manga.push(createMangaTile({
+            id: id,
+            image: image !== null && image !== void 0 ? image : "",
+            title: createIconText({ text: title }),
+            subtitleText: createIconText({ text: subtitle }),
+        }));
     }
     return manga;
 };
