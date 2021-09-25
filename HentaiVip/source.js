@@ -726,25 +726,25 @@ class HentaiVip extends paperback_extensions_common_1.Source {
     getHomePageSections(sectionCallback) {
         var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
+            let view = createHomeSection({
+                id: 'view',
+                title: "Truyện Hentai Đề Cử",
+                view_more: true,
+            });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
-                title: "Mới cập nhật",
+                title: "Truyện Hentai Mới",
                 view_more: true,
             });
             let hot = createHomeSection({
                 id: 'hot',
-                title: "Đang hot",
-                view_more: true,
-            });
-            let view = createHomeSection({
-                id: 'view',
-                title: "Xem nhiều",
+                title: "Truyện Hentai Hot",
                 view_more: true,
             });
             //Load empty sections
+            sectionCallback(view);
             sectionCallback(newUpdated);
             sectionCallback(hot);
-            sectionCallback(view);
             ///Get the section data
             //New Updates
             let request = createRequestObject({
@@ -770,17 +770,17 @@ class HentaiVip extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             //hot
             request = createRequestObject({
-                url: 'https://vlogtruyen.net/the-loai/dang-hot',
+                url: 'https://hentaivn.vip/truyen-hot/truyen-hot-nam/',
                 method: "GET",
             });
             let hotItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (const element of $('.commic-hover', '#ul-content-pho-bien').toArray().splice(0, 20)) {
-                let title = $('.title-commic-tab', element).text().trim();
-                let image = (_b = $('.image-commic-tab > img', element).attr('data-src')) !== null && _b !== void 0 ? _b : "";
-                let id = $('a', element).first().attr('href');
-                let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
+            for (const element of $('div.col-6', '.form-row').toArray().splice(0, 20)) {
+                let title = $('.entry > a', element).last().text().trim();
+                let image = (_b = $('.entry > a > img', element).attr('src')) !== null && _b !== void 0 ? _b : "";
+                let id = $('.entry > a', element).first().attr('href');
+                let subtitle = $(`.date-time`, element).text().trim();
                 hotItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
                     image: image !== null && image !== void 0 ? image : "",
@@ -790,19 +790,19 @@ class HentaiVip extends paperback_extensions_common_1.Source {
             }
             hot.items = hotItems;
             sectionCallback(hot);
-            //view
+            //đề cử
             request = createRequestObject({
-                url: 'https://vlogtruyen.net/de-nghi/pho-bien/xem-nhieu',
+                url: 'https://hentaivn.vip/',
                 method: "GET",
             });
             let viewItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (const element of $('.commic-hover', '#ul-content-pho-bien').toArray().splice(0, 20)) {
-                let title = $('.title-commic-tab', element).text().trim();
-                let image = (_c = $('.image-commic-tab > img', element).attr('data-src')) !== null && _c !== void 0 ? _c : "";
+            for (const element of $('.entry ', '.comics').toArray()) {
+                let title = $('.name', element).text().trim();
+                let image = (_c = $('a > img', element).attr('src')) !== null && _c !== void 0 ? _c : "";
                 let id = $('a', element).first().attr('href');
-                let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
+                let subtitle = $(`.date-time`, element).text().trim();
                 viewItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
                     image: image !== null && image !== void 0 ? image : "",
