@@ -932,21 +932,6 @@ exports.parseViewMore = ($) => {
 exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
-    for (const page of $("a", ".wp-pagenavi").toArray()) {
-        const p = Number($(page).text().trim());
-        if (isNaN(p))
-            continue;
-        pages.push(p);
-    }
-    const lastPage = Math.max(...pages);
-    const currentPage = Number($(".wp-pagenavi > span.current").text().trim());
-    if (currentPage >= lastPage)
-        isLast = true;
-    return isLast;
-};
-exports.isLastPage = ($) => {
-    let isLast = false;
-    const pages = [];
     for (const page of $("li", "ul.pagination").toArray()) {
         const p = Number($('a', page).text().trim());
         if (isNaN(p))
