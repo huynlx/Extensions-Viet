@@ -856,8 +856,35 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
+            const search = {
+                cate: '',
+                translator: "",
+                writer: "",
+                status: "Trạng+thái",
+                sort: "moi-nhat"
+            };
+            tags.map((value) => {
+                switch (value.split(".")[0]) {
+                    case 'cate':
+                        search.cate = (value.split(".")[1]);
+                        break;
+                    case 'translator':
+                        search.translator = (value.split(".")[1]);
+                        break;
+                    case 'writer':
+                        search.writer = (value.split(".")[1]);
+                        break;
+                    case 'status':
+                        search.status = (value.split(".")[1]);
+                        break;
+                    case 'sort':
+                        search.sort = (value.split(".")[1]);
+                        break;
+                }
+            });
             const request = createRequestObject({
-                url: query.title ? encodeURI(`https://truyen210.net/tim-kiem?q=${query.title}&page=${page}`) : (`${tags[0]}?page=${page}`),
+                url: query.title ? encodeURI(`https://vlogtruyen.net/tim-kiem?q=${query.title}&page=${page}`) :
+                    (`https://vlogtruyen.net/the-loai/huynh?cate=${search.cate}&translator=${search.translator}&writer=${search.writer}&status=${search.status}&sort=${search.sort}&page=${page}`),
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
