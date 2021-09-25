@@ -797,7 +797,7 @@ class Truyen210 extends paperback_extensions_common_1.Source {
     getViewMoreItems(homepageSectionId, metadata) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 0;
+            let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             let url = '';
             let select = 1;
             switch (homepageSectionId) {
@@ -914,7 +914,7 @@ exports.parseViewMore = ($) => {
     var _a;
     const manga = [];
     const collectedIds = [];
-    for (const element of $('li', '.manga-list').toArray()) {
+    for (const element of $('li', '.manga-list > ul').toArray()) {
         let title = $('.manga-info > h3 > a', element).text().trim();
         let image = (_a = $('.manga-thumb > img', element).attr('data-original')) !== null && _a !== void 0 ? _a : "";
         let id = $('a', element).attr('href');
