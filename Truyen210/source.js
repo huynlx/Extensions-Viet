@@ -682,7 +682,7 @@ class Truyen210 extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             const chapters = [];
             var i = 0;
-            for (const obj of $('#chapters-list-content li:not(:first-child)').toArray()) {
+            for (const obj of $('#chapters-list-content li:not(:first-child)').toArray().reverse()) {
                 i++;
                 let id = $('span:nth-child(1) > a', obj).attr('href');
                 let chapNum = Number($('span:nth-child(1) > a', obj).text().trim().split(' ')[1]);
