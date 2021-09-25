@@ -919,15 +919,15 @@ exports.parseViewMore = ($) => {
         let image = (_a = $('.manga-thumb > img', element).attr('data-original')) !== null && _a !== void 0 ? _a : "";
         let id = (_b = $('a', element).attr('href')) !== null && _b !== void 0 ? _b : "";
         let subtitle = $(`.chapter > a`, element).text().trim();
-        // if (!collectedIds.includes(id)) {
-        manga.push(createMangaTile({
-            id: id,
-            image: image !== null && image !== void 0 ? image : "",
-            title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: subtitle }),
-        }));
-        // collectedIds.push(id);
-        // }
+        if (!collectedIds.includes(title)) {
+            manga.push(createMangaTile({
+                id: id,
+                image: image !== null && image !== void 0 ? image : "",
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: subtitle }),
+            }));
+            collectedIds.push(title);
+        }
     }
     return manga;
 };
