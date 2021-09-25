@@ -729,7 +729,7 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             let newUpdated = createHomeSection({
                 id: 'new_updated',
-                title: "Mới nhất",
+                title: "Mới cập nhật",
                 view_more: true,
             });
             let hot = createHomeSection({
@@ -873,7 +873,21 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
     getSearchTags() {
         return __awaiter(this, void 0, void 0, function* () {
             const tags = [];
-            const url = `https://truyen210.net/`;
+            const tags2 = [
+                {
+                    id: 'https://vlogtruyen.net/bang-xep-hang/top-tuan',
+                    label: 'Top tuần'
+                },
+                {
+                    id: 'https://vlogtruyen.net/bang-xep-hang/top-thang',
+                    label: 'Top tháng'
+                },
+                {
+                    id: 'https://vlogtruyen.net/bang-xep-hang/top-nam',
+                    label: 'Top năm'
+                }
+            ];
+            const url = `https://vlogtruyen.net/`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -881,14 +895,15 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             //the loai
-            for (const tag of $('.manga-box-cat-content > a').toArray()) {
+            for (const tag of $('.list-cate > a').toArray()) {
                 const label = $(tag).text().trim();
                 const id = $(tag).attr('href');
                 if (!id || !label)
                     continue;
                 tags.push({ id: id, label: label });
             }
-            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) })];
+            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
+                createTagSection({ id: '1', label: 'Bảng xếp hạng', tags: tags2.map(x => createTag(x)) })];
             return tagSections;
         });
     }
