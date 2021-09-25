@@ -887,6 +887,10 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
                     label: 'Top năm'
                 }
             ];
+            const tags3 = [];
+            const tags4 = [];
+            const tags5 = [];
+            const tags6 = [];
             const url = `https://vlogtruyen.net/`;
             const request = createRequestObject({
                 url: url,
@@ -902,8 +906,44 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
                     continue;
                 tags.push({ id: id, label: label });
             }
+            //nhom dich
+            for (const tag of $('select[name="translator"] > option:not(:first-child)').toArray()) {
+                const label = $(tag).text().trim();
+                const id = $(tag).attr('value');
+                if (!id || !label)
+                    continue;
+                tags3.push({ id: id, label: label });
+            }
+            //tac gia
+            for (const tag of $('select[name="writer"] > option:not(:first-child)').toArray()) {
+                const label = $(tag).text().trim();
+                const id = $(tag).attr('value');
+                if (!id || !label)
+                    continue;
+                tags4.push({ id: id, label: label });
+            }
+            //trang thai
+            for (const tag of $('select[name="status"] > option:not(:first-child)').toArray()) {
+                const label = $(tag).text().trim();
+                const id = $(tag).attr('value');
+                if (!id || !label)
+                    continue;
+                tags5.push({ id: id, label: label });
+            }
+            //sap xep
+            for (const tag of $('select[name="sort"] > option:not(:first-child)').toArray()) {
+                const label = $(tag).text().trim();
+                const id = $(tag).attr('value');
+                if (!id || !label)
+                    continue;
+                tags6.push({ id: id, label: label });
+            }
             const tagSections = [createTagSection({ id: '0', label: 'Bảng xếp hạng', tags: tags2.map(x => createTag(x)) }),
                 createTagSection({ id: '1', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
+                createTagSection({ id: '2', label: 'Nhóm dịch', tags: tags3.map(x => createTag(x)) }),
+                createTagSection({ id: '3', label: 'Tác giả', tags: tags4.map(x => createTag(x)) }),
+                createTagSection({ id: '4', label: 'Trạng thái', tags: tags5.map(x => createTag(x)) }),
+                createTagSection({ id: '5', label: 'Sắp xếp', tags: tags6.map(x => createTag(x)) }),
             ];
             return tagSections;
         });
