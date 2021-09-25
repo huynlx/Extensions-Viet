@@ -619,11 +619,11 @@ exports.VlogTruyenInfo = {
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from VlogTruyen',
     websiteBaseURL: `https://vlogtruyen.net/`,
-    contentRating: paperback_extensions_common_1.ContentRating.ADULT,
+    contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
         {
-            text: "18+",
-            type: paperback_extensions_common_1.TagType.YELLOW
+            text: "Recommended",
+            type: paperback_extensions_common_1.TagType.BLUE
         }
     ]
 };
@@ -648,22 +648,22 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let tags = [];
-            let creator = $('.col-full > .mt-author > ul > li > a').text().trim();
-            let status = $('.col-full > .meta-data:nth-child(4)').text().trim(); //completed, 1 = Ongoing
+            let creator = $('.top-detail-manga-content > .drawer:nth-child(5) a').text().trim();
+            let status = $('.manga-status > p').text().trim(); //completed, 1 = Ongoing
             let statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
-            let desc = $("#showless").text().trim() !== '' ? $("#showless").text().trim() : $('.summary-content > p:nth-child(3)').text().trim();
-            for (const t of $('.col-full > .meta-data:nth-child(6) > a').toArray()) {
+            let desc = $(".desc-commic-detail").text().trim();
+            for (const t of $('.categories-list-detail-commic > li > a').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            const image = (_b = $('.manga-thumb > img').attr('data-original')) !== null && _b !== void 0 ? _b : "";
+            const image = (_b = $('.image-commic-detail img').attr('data-src')) !== null && _b !== void 0 ? _b : "";
             return createManga({
                 id: mangaId,
                 author: creator,
                 artist: creator,
                 desc: desc,
-                titles: [$('.headline > h1').text().trim()],
+                titles: [$('.title-commic-detail').text().trim()],
                 image: image,
                 status: statusFinal,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
@@ -861,7 +861,7 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: 'https://truyen210.net/'
+            referer: 'https://vlogtruyen.net/'
         };
     }
 }
