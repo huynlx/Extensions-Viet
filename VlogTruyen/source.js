@@ -936,7 +936,7 @@ exports.parseSearch = ($) => {
 exports.parseViewMore = ($) => {
     var _a, _b;
     const manga = [];
-    for (const element of $('.commic-hover', '#ul-content-pho-bien').toArray().splice(0, 20)) {
+    for (const element of $('.commic-hover', '#ul-content-pho-bien').toArray()) {
         let title = $('.title-commic-tab', element).text().trim();
         let image = (_a = $('.image-commic-tab > img', element).attr('data-src')) !== null && _a !== void 0 ? _a : "";
         let id = (_b = $('a', element).first().attr('href')) !== null && _b !== void 0 ? _b : title;
