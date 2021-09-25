@@ -755,7 +755,7 @@ class HentaiVip extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let newUpdatedItems = [];
-            for (const element of $('div', '.form-row').toArray().splice(0, 20)) {
+            for (const element of $('div.col-6', '.form-row').toArray().splice(0, 20)) {
                 let title = $('.entry > a', element).last().text().trim();
                 let image = (_a = $('.entry > a > img', element).attr('src')) !== null && _a !== void 0 ? _a : "";
                 let id = $('.entry > a', element).first().attr('href');
