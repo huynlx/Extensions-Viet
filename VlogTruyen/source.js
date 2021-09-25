@@ -793,7 +793,7 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             sectionCallback(hot);
             //view
             request = createRequestObject({
-                url: 'https://vlogtruyen.net/de-nghi/pho-bien/dang-hot',
+                url: 'https://vlogtruyen.net/de-nghi/pho-bien/xem-nhieu',
                 method: "GET",
             });
             let viewItems = [];
@@ -823,12 +823,16 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             let select = 1;
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `https://truyen210.net/danh-sach-truyen?page=${page}`;
+                    url = 'https://vlogtruyen.net/de-nghi/pho-bien/moi-nhat';
                     select = 1;
                     break;
-                case "view":
-                    url = `https://truyen210.net/dang-hot?page=${page}`;
+                case "hot":
+                    url = 'https://vlogtruyen.net/de-nghi/pho-bien/dang-hot';
                     select = 2;
+                    break;
+                case "view":
+                    url = 'https://vlogtruyen.net/de-nghi/pho-bien/xem-nhieu';
+                    select = 3;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
@@ -932,13 +936,11 @@ exports.parseSearch = ($) => {
 exports.parseViewMore = ($) => {
     var _a, _b;
     const manga = [];
-    for (const element of $('li', '.manga-list > ul').toArray()) {
-        let title = $('.manga-info > h3 > a', element).text().trim();
-        if (!title)
-            continue;
-        let image = (_a = $('.manga-thumb > img', element).attr('data-original')) !== null && _a !== void 0 ? _a : "";
-        let id = (_b = $('a', element).attr('href')) !== null && _b !== void 0 ? _b : "";
-        let subtitle = $(`.chapter > a`, element).text().trim();
+    for (const element of $('.commic-hover', '#ul-content-pho-bien').toArray().splice(0, 20)) {
+        let title = $('.title-commic-tab', element).text().trim();
+        let image = (_a = $('.image-commic-tab > img', element).attr('data-src')) !== null && _a !== void 0 ? _a : "";
+        let id = (_b = $('a', element).first().attr('href')) !== null && _b !== void 0 ? _b : title;
+        let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
         manga.push(createMangaTile({
             id: id,
             image: image !== null && image !== void 0 ? image : "",
