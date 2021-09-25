@@ -651,19 +651,19 @@ class HentaiVip extends paperback_extensions_common_1.Source {
             let creator = $('.author > i > a').text().trim();
             let status = $('.tsinfo  > .imptdt:first-child > i').text().trim(); //completed, 1 = Ongoing
             let statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
-            let desc = $(".comic-description").text().trim();
+            let desc = $(".comic-description > .inner").text().trim();
             for (const t of $('.genre > a').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            const image = (_b = $('.mx-auto').attr('src')) !== null && _b !== void 0 ? _b : "";
+            const image = (_b = $('.comic-info .book > img').attr('src')) !== null && _b !== void 0 ? _b : "";
             return createManga({
                 id: mangaId,
                 author: creator,
                 artist: creator,
                 desc: desc,
-                titles: [$('.name ').text().trim()],
+                titles: [$('.info > h1').text().trim()],
                 image: image,
                 status: statusFinal,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
@@ -682,12 +682,12 @@ class HentaiVip extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             const chapters = [];
             var i = 0;
-            for (const obj of $('.chap-list > div').toArray().reverse()) {
+            for (const obj of $('.bixbox > .chap-list > .d-flex ').toArray().reverse()) {
                 i++;
                 let id = $('a', obj).first().attr('href');
                 let chapNum = i;
-                let name = $('a > span:first-child', obj).text();
-                let time = $('a > span:last-child-child', obj).text().trim().split('/');
+                let name = $('a > span:first-child', obj).text().trim();
+                let time = $('a > span:last-child', obj).text().trim().split('/');
                 chapters.push(createChapter({
                     id,
                     chapNum: isNaN(chapNum) ? i : chapNum,
