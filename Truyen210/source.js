@@ -651,7 +651,7 @@ class Truyen210 extends paperback_extensions_common_1.Source {
             let creator = $('.col-full > .mt-author > ul > li > a').text().trim();
             let status = $('.col-full > .meta-data:nth-child(4)').text().trim(); //completed, 1 = Ongoing
             let statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
-            let desc = $(".summary-content").text().trim();
+            let desc = $("#showless").text().trim();
             for (const t of $('.col-full > .meta-data:nth-child(6) > a').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
@@ -747,7 +747,7 @@ class Truyen210 extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             let newUpdatedItems = [];
             const check = [];
-            for (const element of $('li', '.manga-list').toArray()) {
+            for (const element of $('li', '.manga-list').toArray().splice(0, 20)) {
                 let title = $('.manga-info > h3 > a', element).text().trim();
                 let image = (_a = $('.manga-thumb > img', element).attr('data-original')) !== null && _a !== void 0 ? _a : "";
                 let id = $('a', element).attr('href');
@@ -773,7 +773,7 @@ class Truyen210 extends paperback_extensions_common_1.Source {
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
             const check2 = [];
-            for (const element of $('li', '.manga-list').toArray()) {
+            for (const element of $('li', '.manga-list').toArray().splice(0, 20)) {
                 let title = $('.manga-info > h3 > a', element).text().trim();
                 let image = (_b = $('.manga-thumb > img', element).attr('data-original')) !== null && _b !== void 0 ? _b : "";
                 let id = $('a', element).attr('href');
@@ -800,11 +800,11 @@ class Truyen210 extends paperback_extensions_common_1.Source {
             let select = 1;
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `https://api.gaito.me/manga/comics?limit=20&offset=${page}&sort=latest`;
+                    url = `https://truyen210.net/danh-sach-truyen?page=${page}`;
                     select = 1;
                     break;
                 case "view":
-                    url = `https://api.gaito.me/manga/comics?limit=20&offset=${page}&sort=top-rated`;
+                    url = `https://truyen210.net/dang-hot?page=${page}`;
                     select = 2;
                     break;
                 default:
@@ -815,9 +815,9 @@ class Truyen210 extends paperback_extensions_common_1.Source {
                 method
             });
             let data = yield this.requestManager.schedule(request, 1);
-            let json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
-            let manga = Truyen210Parser_1.parseViewMore(json, select);
-            metadata = { page: page + 20 };
+            let $ = this.cheerio.load(data.data);
+            let manga = Truyen210Parser_1.parseViewMore($);
+            metadata = !Truyen210Parser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: manga,
                 metadata,
@@ -908,21 +908,21 @@ exports.parseSearch = (json) => {
     }
     return manga;
 };
-exports.parseViewMore = (json, select) => {
+exports.parseViewMore = ($) => {
+    var _a;
     const manga = [];
     const collectedIds = [];
-    var element = '';
-    for (element of json) {
-        let title = element.title;
-        let image = element.cover ? element.cover.dimensions.thumbnail.url : null;
-        let id = element.id;
+    for (const element of $('li', '.manga-list').toArray().splice(0, 20)) {
+        let title = $('.manga-info > h3 > a', element).text().trim();
+        let image = (_a = $('.manga-thumb > img', element).attr('data-original')) !== null && _a !== void 0 ? _a : "";
+        let id = $('a', element).attr('href');
+        let subtitle = $(`.chapter > a`, element).text().trim();
         if (!collectedIds.includes(title)) {
             manga.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
                 image: image !== null && image !== void 0 ? image : "",
-                title: createIconText({
-                    text: title !== null && title !== void 0 ? title : ""
-                })
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: subtitle }),
             }));
             collectedIds.push(title);
         }
@@ -940,6 +940,21 @@ exports.isLastPage = ($) => {
     }
     const lastPage = Math.max(...pages);
     const currentPage = Number($(".wp-pagenavi > span.current").text().trim());
+    if (currentPage >= lastPage)
+        isLast = true;
+    return isLast;
+};
+exports.isLastPage = ($) => {
+    let isLast = false;
+    const pages = [];
+    for (const page of $("li", "ul.pagination").toArray()) {
+        const p = Number($('a', page).text().trim());
+        if (isNaN(p))
+            continue;
+        pages.push(p);
+    }
+    const lastPage = Math.max(...pages);
+    const currentPage = Number($("ul.pagination > li.active > span").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
