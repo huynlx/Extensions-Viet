@@ -729,7 +729,7 @@ class HentaiVip extends paperback_extensions_common_1.Source {
             let view = createHomeSection({
                 id: 'view',
                 title: "Truyện Hentai Đề Cử",
-                view_more: true,
+                view_more: false,
             });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
@@ -798,7 +798,7 @@ class HentaiVip extends paperback_extensions_common_1.Source {
             let viewItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (const element of $('.entry ', '.comics').toArray()) {
+            for (const element of $('.entry ', '#girl .comics').toArray()) {
                 let title = $('.name', element).text().trim();
                 let image = (_c = $('a > img', element).attr('src')) !== null && _c !== void 0 ? _c : "";
                 let id = $('a', element).first().attr('href');
@@ -822,17 +822,17 @@ class HentaiVip extends paperback_extensions_common_1.Source {
             let select = 1;
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `https://vlogtruyen.net/the-loai/moi-cap-nhap?page=${page}`;
+                    url = `https://hentaivn.vip/truyen-hentai-moi/page/${page}/`;
                     select = 1;
                     break;
                 case "hot":
-                    url = `https://vlogtruyen.net/the-loai/dang-hot?page=${page}`;
+                    url = `https://hentaivn.vip/truyen-hot/truyen-hot-nam/page/${page}/`;
                     select = 2;
                     break;
-                case "view":
-                    url = `https://vlogtruyen.net/de-nghi/pho-bien/xem-nhieu?page=${page}`;
-                    select = 3;
-                    break;
+                // case "view":
+                //     url = `https://vlogtruyen.net/de-nghi/pho-bien/xem-nhieu?page=${page}`;
+                //     select = 3;
+                //     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
             }
@@ -1049,11 +1049,11 @@ exports.parseSearch = ($, query, tags) => {
 exports.parseViewMore = ($) => {
     var _a, _b;
     const manga = [];
-    for (const element of $('.commic-hover', '#ul-content-pho-bien').toArray()) {
-        let title = $('.title-commic-tab', element).text().trim();
-        let image = (_a = $('.image-commic-tab > img', element).attr('data-src')) !== null && _a !== void 0 ? _a : "";
-        let id = (_b = $('a', element).first().attr('href')) !== null && _b !== void 0 ? _b : title;
-        let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
+    for (const element of $('div.col-6', '.form-row').toArray()) {
+        let title = $('.entry > a', element).last().text().trim();
+        let image = (_a = $('.entry > a > img', element).attr('src')) !== null && _a !== void 0 ? _a : "";
+        let id = (_b = $('.entry > a', element).first().attr('href')) !== null && _b !== void 0 ? _b : title;
+        let subtitle = $(`.date-time`, element).text().trim();
         manga.push(createMangaTile({
             id: id,
             image: image !== null && image !== void 0 ? image : "",
@@ -1066,14 +1066,14 @@ exports.parseViewMore = ($) => {
 exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
-    for (const page of $("li", "ul.pagination").toArray()) {
-        const p = Number($('a', page).text().trim());
+    for (const page of $(".page-numbers", ".z-pagination").toArray()) {
+        const p = Number($('.page-numbers', page).text().trim());
         if (isNaN(p))
             continue;
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($("ul.pagination > li.active > span").text().trim());
+    const currentPage = Number($(".z-pagination > .page-numbers.current").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
