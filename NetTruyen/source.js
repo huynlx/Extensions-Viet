@@ -699,12 +699,12 @@ class Parser {
                 let H = split[0]; //vd => 21:08
                 let D = split[1]; //vd => 25/08 
                 let fixD = D.split('/');
-                let finalD = fixD[2] + '/' + fixD[1] + '/2021';
+                let finalD = fixD[1] + '/' + fixD[0] + '/' + new Date().getFullYear();
                 time = new Date(finalD + ' ' + H);
             }
             else {
                 let split = timeAgo.split('/'); //vd => 05/12/18
-                time = new Date(split[2] + '/' + split[1] + '/' + '20' + split[3]);
+                time = new Date(split[1] + '/' + split[0] + '/' + '20' + split[2]);
             }
         }
         return time;
