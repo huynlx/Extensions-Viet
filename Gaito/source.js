@@ -613,11 +613,11 @@ const GaitoParser_1 = require("./GaitoParser");
 const method = 'GET';
 exports.GaitoInfo = {
     version: '1.0.0',
-    name: 'Gaito',
+    name: 'Gai.to',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from Gaito',
+    description: 'Extension that pulls manga from Gai.to',
     websiteBaseURL: `https://www.gaito.me/truyen-hentai/`,
     contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
