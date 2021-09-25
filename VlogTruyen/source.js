@@ -895,15 +895,16 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             //the loai
-            for (const tag of $('.list-cate > a').toArray()) {
+            for (const tag of $('.list-cate a').toArray()) {
                 const label = $(tag).text().trim();
                 const id = $(tag).attr('href');
                 if (!id || !label)
                     continue;
                 tags.push({ id: id, label: label });
             }
-            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
-                createTagSection({ id: '1', label: 'Bảng xếp hạng', tags: tags2.map(x => createTag(x)) })];
+            const tagSections = [createTagSection({ id: '0', label: 'Bảng xếp hạng', tags: tags2.map(x => createTag(x)) }),
+                createTagSection({ id: '1', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
+            ];
             return tagSections;
         });
     }
