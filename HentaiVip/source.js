@@ -619,11 +619,11 @@ exports.HentaiVipInfo = {
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from HentaiVip',
     websiteBaseURL: `https://hentaivn.vip/`,
-    contentRating: paperback_extensions_common_1.ContentRating.MATURE,
+    contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
         {
-            text: "Recommended",
-            type: paperback_extensions_common_1.TagType.BLUE
+            text: "18+",
+            type: paperback_extensions_common_1.TagType.YELLOW
         }
     ]
 };
@@ -648,32 +648,31 @@ class HentaiVip extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let tags = [];
-            let creator = $('.top-detail-manga-content > .drawer:nth-child(5) a').text().trim();
-            let status = $('.manga-status > p').text().trim(); //completed, 1 = Ongoing
+            let creator = $('.author > i > a').text().trim();
+            let status = $('.tsinfo  > .imptdt:first-child > i').text().trim(); //completed, 1 = Ongoing
             let statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
-            let desc = $(".desc-commic-detail").text().trim();
-            for (const t of $('.categories-list-detail-commic > li > a').toArray()) {
+            let desc = $(".comic-description").text().trim();
+            for (const t of $('.genre > a').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            const image = (_b = $('.image-commic-detail img').attr('data-src')) !== null && _b !== void 0 ? _b : "";
+            const image = (_b = $('.mx-auto').attr('src')) !== null && _b !== void 0 ? _b : "";
             return createManga({
                 id: mangaId,
                 author: creator,
                 artist: creator,
                 desc: desc,
-                titles: [$('.title-commic-detail').text().trim()],
+                titles: [$('.name ').text().trim()],
                 image: image,
                 status: statusFinal,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
-                hentai: false,
+                hentai: true,
                 tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
             });
         });
     }
     getChapters(mangaId) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
                 url: `${mangaId}`,
@@ -683,12 +682,12 @@ class HentaiVip extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             const chapters = [];
             var i = 0;
-            for (const obj of $('.ul-list-chaper-detail-commic > li').toArray().reverse()) {
+            for (const obj of $('.chap-list > div').toArray().reverse()) {
                 i++;
                 let id = $('a', obj).first().attr('href');
-                let chapNum = Number((_a = $('a', obj).first().attr('title')) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
-                let name = $('a', obj).first().attr('title');
-                let time = $('span:nth-child(4)', obj).text().trim().split('-');
+                let chapNum = i;
+                let name = $('a > span:first-child', obj).text();
+                let time = $('a > span:last-child-child', obj).text().trim().split('/');
                 chapters.push(createChapter({
                     id,
                     chapNum: isNaN(chapNum) ? i : chapNum,
@@ -711,7 +710,7 @@ class HentaiVip extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             const pages = [];
-            for (let obj of $('#aniimated-thumbnial > img').toArray()) {
+            for (let obj of $('.content-text img').toArray()) {
                 let link = (_a = $(obj).attr('src')) !== null && _a !== void 0 ? _a : "";
                 pages.push(encodeURI(link));
             }
@@ -759,11 +758,12 @@ class HentaiVip extends paperback_extensions_common_1.Source {
                 let title = $('.entry > a', element).last().text().trim();
                 let image = (_a = $('.entry > a > img', element).attr('src')) !== null && _a !== void 0 ? _a : "";
                 let id = $('.entry > a', element).first().attr('href');
-                // let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
+                let subtitle = $(`.date-time`, element).text().trim();
                 newUpdatedItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
                     image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({ text: title }),
+                    subtitleText: createIconText({ text: subtitle }),
                 }));
             }
             newUpdated.items = newUpdatedItems;
