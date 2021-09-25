@@ -725,25 +725,31 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             let newUpdated = createHomeSection({
                 id: 'new_updated',
-                title: "Truyện mới nhất",
+                title: "Mới nhất",
+                view_more: true,
+            });
+            let hot = createHomeSection({
+                id: 'hot',
+                title: "Đang hot",
                 view_more: true,
             });
             let view = createHomeSection({
                 id: 'view',
-                title: "Truyện đang hot",
+                title: "Xem nhiều",
                 view_more: true,
             });
             //Load empty sections
             sectionCallback(newUpdated);
+            sectionCallback(hot);
             sectionCallback(view);
             ///Get the section data
             //New Updates
             let request = createRequestObject({
-                url: 'https://vlogtruyen.net/the-loai/moi-cap-nhap',
+                url: 'https://vlogtruyen.net/de-nghi/pho-bien/moi-nhat',
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
@@ -765,10 +771,10 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             //hot
             request = createRequestObject({
-                url: 'https://vlogtruyen.net/the-loai/dang-hot',
+                url: 'https://vlogtruyen.net/de-nghi/pho-bien/dang-hot',
                 method: "GET",
             });
-            let newAddItems = [];
+            let hotItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
             for (const element of $('.commic-hover', '#ul-content-pho-bien').toArray().splice(0, 20)) {
@@ -776,14 +782,36 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
                 let image = (_b = $('.image-commic-tab > img', element).attr('data-src')) !== null && _b !== void 0 ? _b : "";
                 let id = $('a', element).first().attr('href');
                 let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
-                newAddItems.push(createMangaTile({
+                hotItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
                     image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({ text: title }),
                     subtitleText: createIconText({ text: subtitle }),
                 }));
             }
-            view.items = newAddItems;
+            hot.items = hotItems;
+            sectionCallback(hot);
+            //view
+            request = createRequestObject({
+                url: 'https://vlogtruyen.net/de-nghi/pho-bien/dang-hot',
+                method: "GET",
+            });
+            let viewItems = [];
+            data = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(data.data);
+            for (const element of $('.commic-hover', '#ul-content-pho-bien').toArray().splice(0, 20)) {
+                let title = $('.title-commic-tab', element).text().trim();
+                let image = (_c = $('.image-commic-tab > img', element).attr('data-src')) !== null && _c !== void 0 ? _c : "";
+                let id = $('a', element).first().attr('href');
+                let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
+                viewItems.push(createMangaTile({
+                    id: id !== null && id !== void 0 ? id : "",
+                    image: image !== null && image !== void 0 ? image : "",
+                    title: createIconText({ text: title }),
+                    subtitleText: createIconText({ text: subtitle }),
+                }));
+            }
+            view.items = viewItems;
             sectionCallback(view);
         });
     }
