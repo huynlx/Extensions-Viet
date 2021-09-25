@@ -607,18 +607,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.VlogTruyen = exports.VlogTruyenInfo = void 0;
+exports.HentaiVip = exports.HentaiVipInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
-const VlogTruyenParser_1 = require("./VlogTruyenParser");
+const HentaiVipParser_1 = require("./HentaiVipParser");
 const method = 'GET';
-exports.VlogTruyenInfo = {
+exports.HentaiVipInfo = {
     version: '2.6.0',
-    name: 'VlogTruyen',
+    name: 'HentaiVip',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from VlogTruyen',
-    websiteBaseURL: `https://vlogtruyen.net/`,
+    description: 'Extension that pulls manga from HentaiVip',
+    websiteBaseURL: `https://hentaivn.vip/`,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
         {
@@ -627,7 +627,7 @@ exports.VlogTruyenInfo = {
         }
     ]
 };
-class VlogTruyen extends paperback_extensions_common_1.Source {
+class HentaiVip extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
         this.requestManager = createRequestManager({
@@ -749,22 +749,21 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             ///Get the section data
             //New Updates
             let request = createRequestObject({
-                url: 'https://vlogtruyen.net/the-loai/moi-cap-nhap',
+                url: 'https://hentaivn.vip/truyen-hentai-moi/',
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let newUpdatedItems = [];
-            for (const element of $('.commic-hover', '#ul-content-pho-bien').toArray().splice(0, 20)) {
-                let title = $('.title-commic-tab', element).text().trim();
-                let image = (_a = $('.image-commic-tab > img', element).attr('data-src')) !== null && _a !== void 0 ? _a : "";
-                let id = $('a', element).first().attr('href');
-                let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
+            for (const element of $('div', '.form-row').toArray().splice(0, 20)) {
+                let title = $('.entry > a', element).last().text().trim();
+                let image = (_a = $('.entry > a > img', element).attr('src')) !== null && _a !== void 0 ? _a : "";
+                let id = $('.entry > a', element).first().attr('href');
+                // let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
                 newUpdatedItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
                     image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({ text: title }),
-                    subtitleText: createIconText({ text: subtitle }),
                 }));
             }
             newUpdated.items = newUpdatedItems;
@@ -843,8 +842,8 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             });
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            let manga = VlogTruyenParser_1.parseViewMore($);
-            metadata = !VlogTruyenParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            let manga = HentaiVipParser_1.parseViewMore($);
+            metadata = !HentaiVipParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: manga,
                 metadata,
@@ -890,8 +889,8 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             });
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            const tiles = VlogTruyenParser_1.parseSearch($, query, tags);
-            metadata = !VlogTruyenParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            const tiles = HentaiVipParser_1.parseSearch($, query, tags);
+            metadata = !HentaiVipParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: tiles,
                 metadata
@@ -978,13 +977,13 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: 'https://vlogtruyen.net/'
+            referer: 'https://hentaivn.vip/'
         };
     }
 }
-exports.VlogTruyen = VlogTruyen;
+exports.HentaiVip = HentaiVip;
 
-},{"./VlogTruyenParser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
+},{"./HentaiVipParser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.capitalizeFirstLetter = void 0;
