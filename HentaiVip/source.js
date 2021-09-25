@@ -686,7 +686,8 @@ class HentaiVip extends paperback_extensions_common_1.Source {
                 i++;
                 let id = $('a', obj).first().attr('href');
                 let name = $('a > span:first-child', obj).text().trim();
-                let chapNum = Number($('a > span:first-child', obj).text().trim().split('Chapter')[1].trim());
+                let cc = $('a > span:first-child', obj).text().trim();
+                let chapNum = Number(cc.includes('Chapter') ? cc.split('Chapter')[1].trim() : 'cc');
                 let time = $('a > span:last-child', obj).text().trim().split('/');
                 chapters.push(createChapter({
                     id,
