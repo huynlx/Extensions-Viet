@@ -667,12 +667,13 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
                 image: image,
                 status: statusFinal,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
-                hentai: true,
+                hentai: false,
                 tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
             });
         });
     }
     getChapters(mangaId) {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
                 url: `${mangaId}`,
@@ -682,12 +683,12 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             const chapters = [];
             var i = 0;
-            for (const obj of $('#chapters-list-content li:not(:first-child)').toArray().reverse()) {
+            for (const obj of $('.ul-list-chaper-detail-commic > li').toArray().reverse()) {
                 i++;
-                let id = $('span:nth-child(1) > a', obj).attr('href');
-                let chapNum = Number($('span:nth-child(1) > a', obj).text().trim().split(' ')[1]);
-                let name = $('span:nth-child(1) > a', obj).text().trim();
-                let time = $('.time', obj).text().trim().split('-');
+                let id = $('a', obj).first().attr('href');
+                let chapNum = Number((_a = $('a', obj).first().attr('title')) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
+                let name = $('a', obj).first().attr('title');
+                let time = $('span:nth-child(4)', obj).text().trim().split('-');
                 chapters.push(createChapter({
                     id,
                     chapNum: isNaN(chapNum) ? i : chapNum,
@@ -710,7 +711,7 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             const pages = [];
-            for (let obj of $('.box-chapter-content > img').toArray()) {
+            for (let obj of $('#aniimated-thumbnial > img').toArray()) {
                 let link = (_a = $(obj).attr('src')) !== null && _a !== void 0 ? _a : "";
                 pages.push(encodeURI(link));
             }
