@@ -890,7 +890,7 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             });
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            const tiles = VlogTruyenParser_1.parseSearch($);
+            const tiles = VlogTruyenParser_1.parseSearch($, tags);
             metadata = !VlogTruyenParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: tiles,
@@ -998,20 +998,36 @@ exports.generateSearch = (query) => {
     let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
     return encodeURI(keyword);
 };
-exports.parseSearch = ($) => {
-    var _a, _b;
+exports.parseSearch = ($, tags) => {
+    var _a, _b, _c, _d;
     const manga = [];
-    for (const element of $('.commic-hover', '#content-column').toArray()) {
-        let title = $('.title-commic-tab', element).text().trim();
-        let image = (_a = $('.image-commic-tab > img', element).attr('data-src')) !== null && _a !== void 0 ? _a : "";
-        let id = (_b = $('a', element).first().attr('href')) !== null && _b !== void 0 ? _b : title;
-        let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
-        manga.push(createMangaTile({
-            id: id,
-            image: image !== null && image !== void 0 ? image : "",
-            title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: subtitle }),
-        }));
+    if (tags[0].includes('.')) {
+        for (const element of $('.commic-hover', '#ul-content-pho-bien').toArray()) {
+            let title = $('.title-commic-tab', element).text().trim();
+            let image = (_a = $('.image-commic-tab > img', element).attr('data-src')) !== null && _a !== void 0 ? _a : "";
+            let id = (_b = $('a', element).first().attr('href')) !== null && _b !== void 0 ? _b : title;
+            let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
+            manga.push(createMangaTile({
+                id: id,
+                image: image !== null && image !== void 0 ? image : "",
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: subtitle }),
+            }));
+        }
+    }
+    else {
+        for (const element of $('.commic-hover', '#content-column').toArray()) {
+            let title = $('.title-commic-tab', element).text().trim();
+            let image = (_c = $('.image-commic-tab > img', element).attr('data-src')) !== null && _c !== void 0 ? _c : "";
+            let id = (_d = $('a', element).first().attr('href')) !== null && _d !== void 0 ? _d : title;
+            let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
+            manga.push(createMangaTile({
+                id: id,
+                image: image !== null && image !== void 0 ? image : "",
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: subtitle }),
+            }));
+        }
     }
     return manga;
 };
