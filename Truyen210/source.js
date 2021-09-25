@@ -681,14 +681,16 @@ class Truyen210 extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             const chapters = [];
+            var i = 0;
             for (const obj of $('#chapters-list-content li:not(:first-child)').toArray()) {
+                i++;
                 let id = $('span:nth-child(1) > a', obj).attr('href');
                 let chapNum = Number($('span:nth-child(1) > a', obj).text().trim().split(' ')[1]);
                 let name = $('span:nth-child(1) > a', obj).text().trim();
                 let time = $('.time', obj).text().trim().split('-');
                 chapters.push(createChapter({
                     id,
-                    chapNum,
+                    chapNum: isNaN(chapNum) ? i : chapNum,
                     name,
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
