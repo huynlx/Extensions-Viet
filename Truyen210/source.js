@@ -635,35 +635,37 @@ class Truyen210 extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
     }
-    getMangaShareUrl(mangaId) { return `https://www.gaito.me/truyen-hentai/comic/${mangaId}`; }
+    getMangaShareUrl(mangaId) { return `${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://api.gaito.me/manga/comics/${mangaId}`;
+            const url = `${mangaId}`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
             });
-            const data = yield this.requestManager.schedule(request, 1);
-            const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
+            let data = yield this.requestManager.schedule(request, 1);
+            let $ = this.cheerio.load(data.data);
             let tags = [];
-            let creator = json.author;
-            let status = json.status; //completed, 1 = Ongoing
-            let desc = json.description;
-            for (const t of json.genres) {
-                const genre = t.name;
-                const id = t.id;
+            let creator = $('.col-full > .mt-author > ul > li > a').text().trim();
+            let status = $('.col-full > .meta-data:nth-child(4)').text().trim(); //completed, 1 = Ongoing
+            let statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
+            let desc = $("#showless > p").text().trim();
+            for (const t of $('.col-full > .meta-data:nth-child(6) > a').toArray()) {
+                const genre = $(t).text().trim();
+                const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            const image = json.cover.data.dimensions.original.url;
+            const image = (_b = $('.manga-thumb > img').attr('data-original')) !== null && _b !== void 0 ? _b : "";
             return createManga({
                 id: mangaId,
                 author: creator,
                 artist: creator,
                 desc: desc,
-                titles: [json.title],
+                titles: [$('.headline > h1').text().trim()],
                 image: image,
-                status,
+                status: statusFinal,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: true,
                 tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
@@ -862,7 +864,7 @@ class Truyen210 extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: 'https://www.gaito.me/'
+            referer: 'https://truyen210.net/'
         };
     }
 }
