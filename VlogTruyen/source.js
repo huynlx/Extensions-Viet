@@ -899,7 +899,7 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             //the loai
-            for (const tag of $('#searchCate[name="cate"] > option:not(:first-child)').toArray()) {
+            for (const tag of $('select[name="cate"] > option:not(:first-child)').toArray()) {
                 const label = $(tag).text().trim();
                 const id = 'cate.' + $(tag).attr('value');
                 if (!id || !label)
@@ -907,7 +907,7 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
                 tags.push({ id: id, label: label });
             }
             //nhom dich
-            for (const tag of $('#searchCate[name="translator"] > option:not(:first-child)').toArray()) {
+            for (const tag of $('select[name="translator"] > option:not(:first-child)').toArray()) {
                 const label = $(tag).text().trim();
                 const id = 'translator.' + $(tag).attr('value');
                 if (!id || !label)
@@ -915,7 +915,7 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
                 tags3.push({ id: id, label: label });
             }
             //tac gia
-            for (const tag of $('#searchCate[name="writer"] > option:not(:first-child)').toArray()) {
+            for (const tag of $('select[name="writer"] > option:not(:first-child)').toArray()) {
                 const label = $(tag).text().trim();
                 const id = 'writer.' + $(tag).attr('value');
                 if (!id || !label)
@@ -923,7 +923,7 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
                 tags4.push({ id: id, label: label });
             }
             //trang thai
-            for (const tag of $('#searchCate[name="status"] > option:not(:first-child)').toArray()) {
+            for (const tag of $('select[name="status"] > option:not(:first-child)').toArray()) {
                 const label = $(tag).text().trim();
                 const id = 'status.' + $(tag).attr('value');
                 if (!id || !label)
@@ -931,7 +931,7 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
                 tags5.push({ id: id, label: label });
             }
             //sap xep
-            for (const tag of $('#searchCate[name="sort"] > option').toArray()) {
+            for (const tag of $('select[name="sort"] > option').toArray()) {
                 const label = $(tag).text().trim();
                 const id = 'sort.' + $(tag).attr('value');
                 if (!id || !label)
@@ -940,8 +940,8 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             }
             const tagSections = [createTagSection({ id: '0', label: 'Bảng xếp hạng', tags: tags2.map(x => createTag(x)) }),
                 createTagSection({ id: '1', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
-                // createTagSection({ id: '2', label: 'Nhóm dịch', tags: tags3.map(x => createTag(x)) }),
-                // createTagSection({ id: '3', label: 'Tác giả', tags: tags4.map(x => createTag(x)) }),
+                createTagSection({ id: '2', label: 'Nhóm dịch', tags: tags3.map(x => createTag(x)) }),
+                createTagSection({ id: '3', label: 'Tác giả', tags: tags4.map(x => createTag(x)) }),
                 createTagSection({ id: '4', label: 'Trạng thái', tags: tags5.map(x => createTag(x)) }),
                 createTagSection({ id: '5', label: 'Sắp xếp', tags: tags6.map(x => createTag(x)) }),
             ];
