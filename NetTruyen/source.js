@@ -696,14 +696,14 @@ class Parser {
         else {
             if (timeAgo.includes(":")) {
                 let split = timeAgo.split(' ');
-                let H = split[0];
-                let D = split[1];
+                let H = split[0]; //vd => 21:08
+                let D = split[1]; //vd => 25/08 
                 let fixD = D.split('/');
-                let finalD = fixD[2] + '/' + fixD[1] + '/' + (new Date().getFullYear());
+                let finalD = fixD[2] + '/' + fixD[1] + '/2021';
                 time = new Date(finalD + ' ' + H);
             }
             else {
-                let split = timeAgo.split('/');
+                let split = timeAgo.split('/'); //vd => 05/12/18
                 time = new Date(split[2] + '/' + split[1] + '/' + '20' + split[3]);
             }
         }
