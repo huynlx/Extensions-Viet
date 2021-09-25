@@ -1066,7 +1066,7 @@ exports.parseViewMore = ($) => {
 exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
-    for (const page of $(".page-numbers", ".z-pagination").toArray()) {
+    for (const page of $(".page-numbers:not(:first-child):not(:last-child)", ".z-pagination").toArray()) {
         const p = Number($('.page-numbers', page).text().trim());
         if (isNaN(p))
             continue;
