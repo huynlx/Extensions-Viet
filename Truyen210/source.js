@@ -651,7 +651,7 @@ class Truyen210 extends paperback_extensions_common_1.Source {
             let creator = $('.col-full > .mt-author > ul > li > a').text().trim();
             let status = $('.col-full > .meta-data:nth-child(4)').text().trim(); //completed, 1 = Ongoing
             let statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
-            let desc = $("#showless > p").text().trim();
+            let desc = $(".summary-content").text().trim();
             for (const t of $('.col-full > .meta-data:nth-child(6) > a').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
@@ -675,38 +675,41 @@ class Truyen210 extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `https://api.gaito.me/manga/chapters?comicId=${mangaId}&mode=by-comic&orderBy=bySortOrderDown`,
+                url: `${mangaId}`,
                 method,
             });
-            const data = yield this.requestManager.schedule(request, 1);
-            const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
+            let data = yield this.requestManager.schedule(request, 1);
+            let $ = this.cheerio.load(data.data);
             const chapters = [];
-            for (const obj of json) {
-                let id = obj.id;
-                let chapNum = Number(obj.sortOrder);
-                let name = obj.serial;
+            for (const obj of $('#chapters-list-content li:not(:first-child)').toArray()) {
+                let id = $('span:nth-child(1) > a', obj).attr('href');
+                let chapNum = Number($('span:nth-child(1) > a', obj).text().trim().split(' ')[1]);
+                let name = $('span:nth-child(1) > a', obj).text().trim();
+                let time = $('.time', obj).text().trim().split('-');
                 chapters.push(createChapter({
                     id,
                     chapNum,
                     name,
                     mangaId: mangaId,
-                    langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE
+                    langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+                    time: new Date(time[1] + '/' + time[0] + '/' + time[2])
                 }));
             }
             return chapters;
         });
     }
     getChapterDetails(mangaId, chapterId) {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `https://api.gaito.me/manga/pages?chapterId=${chapterId}&mode=by-chapter`,
+                url: `${chapterId}`,
                 method
             });
-            const data = yield this.requestManager.schedule(request, 1);
-            const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
+            let data = yield this.requestManager.schedule(request, 1);
+            let $ = this.cheerio.load(data.data);
             const pages = [];
-            for (let obj of json) {
-                let link = obj.image.dimensions.original.url;
+            for (let obj of $('.box-chapter-content > img').toArray()) {
+                let link = (_a = $(obj).attr('src')) !== null && _a !== void 0 ? _a : "";
                 pages.push(link);
             }
             const chapterDetails = createChapterDetails({
@@ -723,12 +726,12 @@ class Truyen210 extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             let newUpdated = createHomeSection({
                 id: 'new_updated',
-                title: "Mới nhất",
+                title: "Truyện mới nhất",
                 view_more: true,
             });
             let view = createHomeSection({
                 id: 'view',
-                title: "Thích nhất",
+                title: "Truyện đang hot",
                 view_more: true,
             });
             //Load empty sections
