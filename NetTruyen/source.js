@@ -735,6 +735,7 @@ class Parser {
                 name: $('div.chapter a', obj).text(),
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+                time: timeFinal
             }));
         }
         return chapters;
