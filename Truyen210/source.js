@@ -710,7 +710,7 @@ class Truyen210 extends paperback_extensions_common_1.Source {
             const pages = [];
             for (let obj of $('.box-chapter-content > img').toArray()) {
                 let link = (_a = $(obj).attr('src')) !== null && _a !== void 0 ? _a : "";
-                pages.push(link);
+                pages.push(encodeURI(link));
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
