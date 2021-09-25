@@ -884,7 +884,8 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             });
             const request = createRequestObject({
                 url: query.title ? encodeURI(`https://vlogtruyen.net/tim-kiem?q=${query.title}&page=${page}`) :
-                    (`https://vlogtruyen.net/the-loai/huynh?cate=${search.cate}&translator=${search.translator}&writer=${search.writer}&status=${search.status}&sort=${search.sort}&page=${page}`),
+                    (tags[0].includes('http') ? (tags[0] + `?page=${page}`) :
+                        (`https://vlogtruyen.net/the-loai/huynh?cate=${search.cate}&translator=${search.translator}&writer=${search.writer}&status=${search.status}&sort=${search.sort}&page=${page}`)),
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
