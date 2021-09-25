@@ -914,7 +914,7 @@ exports.parseViewMore = ($) => {
     var _a;
     const manga = [];
     const collectedIds = [];
-    for (const element of $('li', '.manga-list > ul').toArray()) {
+    for (const element of $('li:not(:last-child)', '.manga-list > ul').toArray()) {
         let title = $('.manga-info > h3 > a', element).text().trim();
         let image = (_a = $('.manga-thumb > img', element).attr('data-original')) !== null && _a !== void 0 ? _a : "";
         let id = $('a', element).attr('href');
