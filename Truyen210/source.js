@@ -848,22 +848,22 @@ class Truyen210 extends paperback_extensions_common_1.Source {
     getSearchTags() {
         return __awaiter(this, void 0, void 0, function* () {
             const tags = [];
-            const url = `https://api.gaito.me/ext/genres?plugin=manga`;
+            const url = `https://truyen210.net/`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
-            let json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
+            let $ = this.cheerio.load(data.data);
             //the loai
-            for (const tag of json) {
-                const label = tag.name;
-                const id = tag.id;
+            for (const tag of $('.manga-box-cat-content > a').toArray()) {
+                const label = $(tag).text().trim();
+                const id = $(tag).attr('href');
                 if (!id || !label)
                     continue;
                 tags.push({ id: id, label: label });
             }
-            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại Hentai', tags: tags.map(x => createTag(x)) })];
+            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) })];
             return tagSections;
         });
     }
