@@ -882,7 +882,7 @@ class HentaiVip extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             //the loai
             for (const tag of $('.genre a').toArray()) {
-                const label = $('strong', tag).text().trim();
+                const label = $(tag).text().trim();
                 const id = $(tag).attr('value');
                 if (!id || !label)
                     continue;
