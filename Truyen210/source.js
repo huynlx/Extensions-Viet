@@ -638,7 +638,7 @@ class Truyen210 extends paperback_extensions_common_1.Source {
     getMangaShareUrl(mangaId) { return `${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
-        var _a, _b;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             const url = `${mangaId}`;
             const request = createRequestObject({
@@ -651,13 +651,13 @@ class Truyen210 extends paperback_extensions_common_1.Source {
             let creator = $('.col-full > .mt-author > ul > li > a').text().trim();
             let status = $('.col-full > .meta-data:nth-child(4)').text().trim(); //completed, 1 = Ongoing
             let statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
-            let desc = $("#showless").text().trim();
+            let desc = (_a = $("#showless").text().trim()) !== null && _a !== void 0 ? _a : $('.summary-content > p:nth-child(3)').text().trim();
             for (const t of $('.col-full > .meta-data:nth-child(6) > a').toArray()) {
                 const genre = $(t).text().trim();
-                const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
+                const id = (_b = $(t).attr('href')) !== null && _b !== void 0 ? _b : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            const image = (_b = $('.manga-thumb > img').attr('data-original')) !== null && _b !== void 0 ? _b : "";
+            const image = (_c = $('.manga-thumb > img').attr('data-original')) !== null && _c !== void 0 ? _c : "";
             return createManga({
                 id: mangaId,
                 author: creator,
