@@ -999,27 +999,43 @@ exports.generateSearch = (query) => {
     return encodeURI(keyword);
 };
 exports.parseSearch = ($, tags) => {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e, _f;
     const manga = [];
-    if (tags[0].includes('.')) {
-        for (const element of $('.commic-hover', '#ul-content-pho-bien').toArray()) {
-            let title = $('.title-commic-tab', element).text().trim();
-            let image = (_a = $('.image-commic-tab > img', element).attr('data-src')) !== null && _a !== void 0 ? _a : "";
-            let id = (_b = $('a', element).first().attr('href')) !== null && _b !== void 0 ? _b : title;
-            let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
-            manga.push(createMangaTile({
-                id: id,
-                image: image !== null && image !== void 0 ? image : "",
-                title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: subtitle }),
-            }));
+    if (tags) {
+        if (tags[0].includes('.')) {
+            for (const element of $('.commic-hover', '#ul-content-pho-bien').toArray()) {
+                let title = $('.title-commic-tab', element).text().trim();
+                let image = (_a = $('.image-commic-tab > img', element).attr('data-src')) !== null && _a !== void 0 ? _a : "";
+                let id = (_b = $('a', element).first().attr('href')) !== null && _b !== void 0 ? _b : title;
+                let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
+                manga.push(createMangaTile({
+                    id: id,
+                    image: image !== null && image !== void 0 ? image : "",
+                    title: createIconText({ text: title }),
+                    subtitleText: createIconText({ text: subtitle }),
+                }));
+            }
+        }
+        else {
+            for (const element of $('.commic-hover', '#content-column').toArray()) {
+                let title = $('.title-commic-tab', element).text().trim();
+                let image = (_c = $('.image-commic-tab > img', element).attr('data-src')) !== null && _c !== void 0 ? _c : "";
+                let id = (_d = $('a', element).first().attr('href')) !== null && _d !== void 0 ? _d : title;
+                let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
+                manga.push(createMangaTile({
+                    id: id,
+                    image: image !== null && image !== void 0 ? image : "",
+                    title: createIconText({ text: title }),
+                    subtitleText: createIconText({ text: subtitle }),
+                }));
+            }
         }
     }
     else {
         for (const element of $('.commic-hover', '#content-column').toArray()) {
             let title = $('.title-commic-tab', element).text().trim();
-            let image = (_c = $('.image-commic-tab > img', element).attr('data-src')) !== null && _c !== void 0 ? _c : "";
-            let id = (_d = $('a', element).first().attr('href')) !== null && _d !== void 0 ? _d : title;
+            let image = (_e = $('.image-commic-tab > img', element).attr('data-src')) !== null && _e !== void 0 ? _e : "";
+            let id = (_f = $('a', element).first().attr('href')) !== null && _f !== void 0 ? _f : title;
             let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
             manga.push(createMangaTile({
                 id: id,
