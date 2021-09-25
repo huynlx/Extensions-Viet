@@ -891,7 +891,7 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             const tags4 = [];
             const tags5 = [];
             const tags6 = [];
-            const url = `https://vlogtruyen.net/`;
+            const url = `https://vlogtruyen.net/the-loai/dang-hot`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -899,7 +899,7 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             //the loai
-            for (const tag of $('.list-cate a').toArray()) {
+            for (const tag of $('#searchCate[name="cate"] > option:not(:first-child)').toArray()) {
                 const label = $(tag).text().trim();
                 const id = $(tag).attr('href');
                 if (!id || !label)
