@@ -1001,13 +1001,11 @@ exports.generateSearch = (query) => {
 exports.parseSearch = ($) => {
     var _a, _b;
     const manga = [];
-    for (const element of $('li', '.manga-list > ul').toArray()) {
-        let title = $('.manga-info > h3 > a', element).text().trim();
-        if (!title)
-            continue;
-        let image = (_a = $('.manga-thumb > img', element).attr('data-original')) !== null && _a !== void 0 ? _a : "";
-        let id = (_b = $('a', element).attr('href')) !== null && _b !== void 0 ? _b : "";
-        let subtitle = $(`.chapter > a`, element).text().trim();
+    for (const element of $('.commic-hover', '#ul-content-pho-bien').toArray()) {
+        let title = $('.title-commic-tab', element).text().trim();
+        let image = (_a = $('.image-commic-tab > img', element).attr('data-src')) !== null && _a !== void 0 ? _a : "";
+        let id = (_b = $('a', element).first().attr('href')) !== null && _b !== void 0 ? _b : title;
+        let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
         manga.push(createMangaTile({
             id: id,
             image: image !== null && image !== void 0 ? image : "",
