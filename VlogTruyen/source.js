@@ -940,8 +940,8 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             }
             const tagSections = [createTagSection({ id: '0', label: 'Bảng xếp hạng', tags: tags2.map(x => createTag(x)) }),
                 createTagSection({ id: '1', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
-                createTagSection({ id: '2', label: 'Nhóm dịch', tags: tags3.map(x => createTag(x)) }),
-                createTagSection({ id: '3', label: 'Tác giả', tags: tags4.map(x => createTag(x)) }),
+                // createTagSection({ id: '2', label: 'Nhóm dịch', tags: tags3.map(x => createTag(x)) }),
+                // createTagSection({ id: '3', label: 'Tác giả', tags: tags4.map(x => createTag(x)) }),
                 createTagSection({ id: '4', label: 'Trạng thái', tags: tags5.map(x => createTag(x)) }),
                 createTagSection({ id: '5', label: 'Sắp xếp', tags: tags6.map(x => createTag(x)) }),
             ];
