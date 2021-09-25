@@ -901,7 +901,7 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             //the loai
             for (const tag of $('#searchCate[name="cate"] > option:not(:first-child)').toArray()) {
                 const label = $(tag).text().trim();
-                const id = $(tag).attr('value');
+                const id = 'cate.' + $(tag).attr('value');
                 if (!id || !label)
                     continue;
                 tags.push({ id: id, label: label });
@@ -909,7 +909,7 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             //nhom dich
             for (const tag of $('#searchCate[name="translator"] > option:not(:first-child)').toArray()) {
                 const label = $(tag).text().trim();
-                const id = $(tag).attr('value');
+                const id = 'translator.' + $(tag).attr('value');
                 if (!id || !label)
                     continue;
                 tags3.push({ id: id, label: label });
@@ -917,7 +917,7 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             //tac gia
             for (const tag of $('#searchCate[name="writer"] > option:not(:first-child)').toArray()) {
                 const label = $(tag).text().trim();
-                const id = $(tag).attr('value');
+                const id = 'writer.' + $(tag).attr('value');
                 if (!id || !label)
                     continue;
                 tags4.push({ id: id, label: label });
@@ -925,7 +925,7 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             //trang thai
             for (const tag of $('#searchCate[name="status"] > option:not(:first-child)').toArray()) {
                 const label = $(tag).text().trim();
-                const id = $(tag).attr('value');
+                const id = 'status.' + $(tag).attr('value');
                 if (!id || !label)
                     continue;
                 tags5.push({ id: id, label: label });
@@ -933,7 +933,7 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             //sap xep
             for (const tag of $('#searchCate[name="sort"] > option').toArray()) {
                 const label = $(tag).text().trim();
-                const id = $(tag).attr('value');
+                const id = 'sort.' + $(tag).attr('value');
                 if (!id || !label)
                     continue;
                 tags6.push({ id: id, label: label });
