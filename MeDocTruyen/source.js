@@ -686,8 +686,8 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             for (const obj of $('#listChuong > ul > li').toArray().reverse()) {
                 i++;
                 let id = 'https://lxhentai.com' + $('a', obj).first().attr('href');
-                let chapNum = Number((_a = $('a', obj).first().attr('title')) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
-                let name = $('a', obj).first().attr('title');
+                let chapNum = Number((_a = $('a', obj).first().text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
+                let name = $('a', obj).first().text();
                 let time = $('div:nth-child(2)', obj).text().trim().split(' ');
                 let H = time[0];
                 let D = time[1].split('/');
@@ -713,9 +713,17 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             const pages = [];
-            for (let obj of $('#aniimated-thumbnial > img').toArray()) {
+            for (let obj of $('#content_chap img').toArray()) {
                 let link = (_a = $(obj).attr('src')) !== null && _a !== void 0 ? _a : "";
-                pages.push(encodeURI(link));
+                if (!link.startsWith("http")) {
+                    if (link.startsWith("//")) {
+                        link = "https:" + link;
+                    }
+                    else {
+                        link = "https:" + link;
+                    }
+                }
+                pages.push(encodeURI(link.trim()));
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
