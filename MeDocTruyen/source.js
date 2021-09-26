@@ -759,7 +759,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             ///Get the section data
             //New Updates
             let request = createRequestObject({
-                url: 'https://lxhentai.com/story/index.php?hot',
+                url: 'https://lxhentai.com/story/index.php',
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
@@ -781,8 +781,9 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             //hot
             let request2 = createRequestObject({
-                url: encodeURI(`https://lxhentai.com/story/index.php?hot`),
+                url: encodeURI(`https://lxhentai.com/story/index.php`),
                 method: "GET",
+                param: '?hot&token=MC44MzI3Njk5MzUwMjU5MTgzMC4wODk3NzI3MDQ2MTM3MTY2Nwvv'
             });
             let hotItems = [];
             let data2 = yield this.requestManager.schedule(request2, 1);
