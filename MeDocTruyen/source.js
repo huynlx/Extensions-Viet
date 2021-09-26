@@ -685,7 +685,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             var i = 0;
             for (const obj of $('#listChuong > ul > li').toArray().reverse()) {
                 i++;
-                let id = $('a', obj).first().attr('href');
+                let id = 'https://lxhentai.com' + $('a', obj).first().attr('href');
                 let chapNum = Number((_a = $('a', obj).first().attr('title')) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
                 let name = $('a', obj).first().attr('title');
                 let time = $('div:nth-child(2)', obj).text().trim().split(' ');
@@ -697,7 +697,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
                     name,
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: new Date(D[1] + '/' + D[0] + '/20' + D[2] + ' ' + H[0])
+                    time: new Date(D[1] + '/' + D[0] + '/20' + D[2] + ' ' + H)
                 }));
             }
             return chapters;
