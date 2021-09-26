@@ -743,17 +743,17 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             ///Get the section data
             //New Updates
             let request = createRequestObject({
-                url: 'https://m.lxhentai.com/story/search.php',
+                url: 'https://lxhentai.com/story/',
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let newUpdatedItems = [];
-            for (const element of $('.container .row > .py-2').toArray().splice(0, 20)) {
+            for (const element of $('.col-md-8 .row > .py-2').toArray()) {
                 let title = $('a', element).last().text().trim();
-                let image = 'https:' + ((_a = $('.py-2 > div', element).first().attr("style")) === null || _a === void 0 ? void 0 : _a.split("'")[1]);
-                let id = 'https://m.lxhentai.com' + $('a', element).first().attr('href');
-                let subtitle = $("small > a", element).first().text().trim();
+                let image = 'https://lxhentai.com' + ((_a = $('.py-2 > div', element).first().attr("style")) === null || _a === void 0 ? void 0 : _a.split("'")[1]);
+                let id = 'https://lxhentai.com' + $('a', element).last().attr('href');
+                let subtitle = $(".newestChapter a", element).first().text().trim();
                 newUpdatedItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
                     image: image !== null && image !== void 0 ? image : "",
@@ -765,7 +765,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             //hot
             let request2 = createRequestObject({
-                url: `https://lxhentai.com/story/index.php?hot`,
+                url: `http://lxhentai.com/story/?hot=hot`,
                 method: "GET"
             });
             let hotItems = [];
@@ -817,7 +817,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             let select = 1;
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `https://m.lxhentai.com/story/search.php?key=&status=&flexCat=&&type=&p=${page}`;
+                    url = `https://lxhentai.com/story/?p=${page}`;
                     select = 1;
                     break;
                 case "hot":
@@ -979,7 +979,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         return createRequestObject({
             url: 'https://lxhentai.com/story/index.php?hot',
             method: 'GET',
-        });
+        }); //dit buoi lam lxhentai nua dkm, ti fix thanh medoctruyen
     }
 }
 exports.MeDocTruyen = MeDocTruyen;
@@ -1050,11 +1050,11 @@ exports.parseSearch = ($, query, tags) => {
 exports.parseViewMore = ($) => {
     var _a;
     const manga = [];
-    for (const element of $('.container .row > .py-2').toArray()) {
+    for (const element of $('.col-md-8 .row > .py-2').toArray()) {
         let title = $('a', element).last().text().trim();
-        let image = 'https:' + ((_a = $('.py-2 > div', element).first().attr("style")) === null || _a === void 0 ? void 0 : _a.split("'")[1]);
-        let id = 'https://m.lxhentai.com' + $('a', element).first().attr('href');
-        let subtitle = $("small > a", element).first().text().trim();
+        let image = 'https://lxhentai.com' + ((_a = $('.py-2 > div', element).first().attr("style")) === null || _a === void 0 ? void 0 : _a.split("'")[1]);
+        let id = 'https://lxhentai.com' + $('a', element).last().attr('href');
+        let subtitle = $(".newestChapter a", element).first().text().trim();
         manga.push(createMangaTile({
             id: id,
             image: image !== null && image !== void 0 ? image : "",
