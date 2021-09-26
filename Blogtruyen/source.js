@@ -938,12 +938,6 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             referer: 'https://blogtruyen.vn/'
         };
     }
-    getCloudflareBypassRequest() {
-        return createRequestObject({
-            url: 'https://blogtruyen.vn/',
-            method: 'GET',
-        });
-    }
 }
 exports.Blogtruyen = Blogtruyen;
 
