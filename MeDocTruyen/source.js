@@ -729,12 +729,12 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             let newUpdated = createHomeSection({
                 id: 'new_updated',
-                title: "Mới cập nhật",
+                title: "Truyện mới",
                 view_more: true,
             });
             let hot = createHomeSection({
                 id: 'hot',
-                title: "Đang hot",
+                title: "Truyện hot",
                 view_more: true,
             });
             let view = createHomeSection({
@@ -771,17 +771,17 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             //hot
             request = createRequestObject({
-                url: 'https://vlogtruyen.net/the-loai/dang-hot',
+                url: `https://lxhentai.com/story/index.php?p=1&hot`,
                 method: "GET",
             });
             let hotItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (const element of $('.commic-hover', '#ul-content-pho-bien').toArray().splice(0, 20)) {
-                let title = $('.title-commic-tab', element).text().trim();
-                let image = (_b = $('.image-commic-tab > img', element).attr('data-src')) !== null && _b !== void 0 ? _b : "";
-                let id = $('a', element).first().attr('href');
-                let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
+            for (const element of $('.col-md-8 .row > .py-2').toArray().splice(0, 20)) {
+                let title = $('a', element).last().text().trim();
+                let image = 'https://lxhentai.com' + ((_b = $('.py-2 > div', element).first().attr("style")) === null || _b === void 0 ? void 0 : _b.split("'")[1]);
+                let id = $('a', element).last().attr('href');
+                let subtitle = $(".newestChapter a", element).first().text().trim();
                 hotItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
                     image: image !== null && image !== void 0 ? image : "",
