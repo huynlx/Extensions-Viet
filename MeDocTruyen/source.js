@@ -648,7 +648,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let tags = [];
-            let creator = $('div.row.mt-2 > div:nth-child(2)').first().text();
+            let creator = $('div.row.mt-2 > div:nth-child(2)').text();
             let status = $('div.row.mt-2 > div:nth-child(4)').text().trim(); //completed, 1 = Ongoing
             let statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
             let desc = $("div.detail-content.mt-4 > p").text();
@@ -657,7 +657,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            const image = (_b = $('.col-md-4 img').first().attr("src")) !== null && _b !== void 0 ? _b : "";
+            const image = (_b = 'https://lxhentai.com' + $('.col-md-4 img').first().attr("src")) !== null && _b !== void 0 ? _b : "";
             return createManga({
                 id: mangaId,
                 author: creator,
@@ -683,19 +683,21 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             const chapters = [];
             var i = 0;
-            for (const obj of $('.ul-list-chaper-detail-commic > li').toArray().reverse()) {
+            for (const obj of $('#listChuong > ul > li').toArray().reverse()) {
                 i++;
                 let id = $('a', obj).first().attr('href');
                 let chapNum = Number((_a = $('a', obj).first().attr('title')) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
                 let name = $('a', obj).first().attr('title');
-                let time = $('span:nth-child(4)', obj).text().trim().split('-');
+                let time = $('div:nth-child(2)', obj).text().trim().split(' ');
+                let H = time[0];
+                let D = time[1].split('/');
                 chapters.push(createChapter({
                     id,
                     chapNum: isNaN(chapNum) ? i : chapNum,
                     name,
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: new Date(time[1] + '/' + time[0] + '/' + time[2])
+                    time: new Date(D[1] + '/' + D[0] + '/20' + D[2] + ' ' + time[0])
                 }));
             }
             return chapters;
