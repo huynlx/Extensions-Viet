@@ -988,12 +988,12 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: '(www.)?lxhentai.com.*'
+            referer: 'https://lxhentai.com/'
         };
     }
     getCloudflareBypassRequest() {
         return createRequestObject({
-            url: '(www.)?lxhentai.com.*',
+            url: 'https://lxhentai.com/',
             method: 'GET',
         });
     }
