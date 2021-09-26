@@ -757,7 +757,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             let newUpdatedItems = [];
             for (const element of $('.col-md-8 .row > .py-2').toArray().splice(0, 20)) {
                 let title = $('a', element).last().text().trim();
-                let image = (_a = $('.py-2 > div', element).first().attr("style")) === null || _a === void 0 ? void 0 : _a.split("'")[1];
+                let image = 'https://lxhentai.com' + ((_a = $('.py-2 > div', element).first().attr("style")) === null || _a === void 0 ? void 0 : _a.split("'")[1]);
                 let id = $('a', element).last().attr('href');
                 let subtitle = $(".newestChapter a", element).first().text().trim();
                 newUpdatedItems.push(createMangaTile({
