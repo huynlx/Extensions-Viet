@@ -648,22 +648,22 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let tags = [];
-            let creator = $('.top-detail-manga-content > .drawer:nth-child(5) a').text().trim();
-            let status = $('.manga-status > p').text().trim(); //completed, 1 = Ongoing
+            let creator = $('div.row.mt-2 > div:nth-child(2)').first().text();
+            let status = $('div.row.mt-2 > div:nth-child(4)').text().trim(); //completed, 1 = Ongoing
             let statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
-            let desc = $(".desc-commic-detail").text().trim();
-            for (const t of $('.categories-list-detail-commic > li > a').toArray()) {
+            let desc = $("div.detail-content.mt-4 > p").text();
+            for (const t of $('div.row.mt-2 > div:nth-child(6) > a').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            const image = (_b = $('.image-commic-detail img').attr('data-src')) !== null && _b !== void 0 ? _b : "";
+            const image = (_b = $('.col-md-4 img').first().attr("src")) !== null && _b !== void 0 ? _b : "";
             return createManga({
                 id: mangaId,
                 author: creator,
                 artist: creator,
                 desc: desc,
-                titles: [$('.title-commic-detail').text().trim()],
+                titles: [$('h1.title-detail').text().trim()],
                 image: image,
                 status: statusFinal,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
@@ -770,17 +770,17 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
             //hot
-            request = createRequestObject({
+            let request2 = createRequestObject({
                 url: `https://lxhentai.com/story/index.php?hot`,
                 method: "GET",
             });
             let hotItems = [];
-            data = yield this.requestManager.schedule(request, 1);
-            $ = this.cheerio.load(data.data);
-            for (const element of $('.col-md-8 .row > .py-2').toArray().splice(0, 20)) {
-                let title = $('a', element).last().text().trim();
-                let image = 'https://lxhentai.com' + ((_b = $('.py-2 > div', element).first().attr("style")) === null || _b === void 0 ? void 0 : _b.split("'")[1]);
-                let id = $('a', element).last().attr('href');
+            let data2 = yield this.requestManager.schedule(request2, 1);
+            let $2 = this.cheerio.load(data2.data);
+            for (const element of $2('.col-md-8 .row > .py-2').toArray().splice(0, 20)) {
+                let title = $2('a', element).last().text().trim();
+                let image = 'https://lxhentai.com' + ((_b = $2('.py-2 > div', element).first().attr("style")) === null || _b === void 0 ? void 0 : _b.split("'")[1]);
+                let id = $2('a', element).last().attr('href');
                 let subtitle = $(".newestChapter a", element).first().text().trim();
                 hotItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
