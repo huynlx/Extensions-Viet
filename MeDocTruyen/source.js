@@ -781,7 +781,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             //hot
             let request2 = createRequestObject({
-                url: `https://lxhentai.com/story/index.php?hot`,
+                url: encodeURI(`https://lxhentai.com/story/index.php?hot`),
                 method: "GET",
             });
             let hotItems = [];
