@@ -697,7 +697,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
                     name,
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: new Date(D[1] + '/' + D[0] + '/20' + D[2] + ' ' + time[0])
+                    time: new Date(D[1] + '/' + D[0] + '/20' + D[2] + ' ' + H[0])
                 }));
             }
             return chapters;
