@@ -783,12 +783,12 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             let request2 = createRequestObject({
                 url: encodeURI(`https://lxhentai.com/story/index.php`),
                 method: "GET",
-                param: '?hot&token=MC44MzI3Njk5MzUwMjU5MTgzMC4wODk3NzI3MDQ2MTM3MTY2Nwvv'
+                param: '?hot'
             });
             let hotItems = [];
             let data2 = yield this.requestManager.schedule(request2, 1);
             let $2 = this.cheerio.load(data2.data);
-            for (const element of $2('.col-md-8 .row > .py-2').toArray().splice(0, 20)) {
+            for (const element of $2('.col-md-8 .row > .py-2').toArray()) {
                 let title = $2('a', element).last().text().trim();
                 let image = 'https://lxhentai.com' + ((_b = $2('.py-2 > div', element).first().attr("style")) === null || _b === void 0 ? void 0 : _b.split("'")[1]);
                 let id = 'https://lxhentai.com' + $2('a', element).last().attr('href');
@@ -834,7 +834,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             let select = 1;
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `https://vlogtruyen.net/the-loai/moi-cap-nhap?page=${page}`;
+                    url = `https://lxhentai.com/story/index.php?p=${page}`;
                     select = 1;
                     break;
                 case "hot":
@@ -1059,13 +1059,13 @@ exports.parseSearch = ($, query, tags) => {
     return manga;
 };
 exports.parseViewMore = ($) => {
-    var _a, _b;
+    var _a;
     const manga = [];
-    for (const element of $('.commic-hover', '#ul-content-pho-bien').toArray()) {
-        let title = $('.title-commic-tab', element).text().trim();
-        let image = (_a = $('.image-commic-tab > img', element).attr('data-src')) !== null && _a !== void 0 ? _a : "";
-        let id = (_b = $('a', element).first().attr('href')) !== null && _b !== void 0 ? _b : title;
-        let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
+    for (const element of $('.col-md-8 .row > .py-2').toArray()) {
+        let title = $('a', element).last().text().trim();
+        let image = 'https://lxhentai.com' + ((_a = $('.py-2 > div', element).first().attr("style")) === null || _a === void 0 ? void 0 : _a.split("'")[1]);
+        let id = 'https://lxhentai.com' + $('a', element).last().attr('href');
+        let subtitle = $(".newestChapter a", element).first().text().trim();
         manga.push(createMangaTile({
             id: id,
             image: image !== null && image !== void 0 ? image : "",
@@ -1085,7 +1085,7 @@ exports.isLastPage = ($) => {
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($("ul.pagination > li.active > span").text().trim());
+    const currentPage = Number($("ul.pagination > li.active + li").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
