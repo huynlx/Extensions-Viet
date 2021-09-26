@@ -991,6 +991,12 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             referer: '(www.)?lxhentai.com.*'
         };
     }
+    getCloudflareBypassRequest() {
+        return createRequestObject({
+            url: '(www.)?lxhentai.com.*',
+            method: 'GET',
+        });
+    }
 }
 exports.MeDocTruyen = MeDocTruyen;
 
