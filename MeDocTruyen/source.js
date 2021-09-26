@@ -834,7 +834,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             let select = 1;
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `https://lxhentai.com/story/index.php?p=${page}`;
+                    url = `https://lxhentai.com/story/index.php?p=2`;
                     select = 1;
                     break;
                 case "hot":
@@ -1086,7 +1086,7 @@ exports.isLastPage = ($) => {
     }
     const lastPage = Math.max(...pages);
     const currentPage = Number($("ul.pagination > li.active + li").text().trim());
-    if (currentPage >= lastPage)
+    if ((currentPage - 1) >= lastPage)
         isLast = true;
     return isLast;
 };
