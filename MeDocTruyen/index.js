@@ -972,12 +972,12 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: 'https://lxhentai.com/story/'
+            referer: 'https://lxhentai.com/story/index.php?hot'
         };
     }
     getCloudflareBypassRequest() {
         return createRequestObject({
-            url: 'https://lxhentai.com/story/',
+            url: 'https://lxhentai.com/story/index.php?hot',
             method: 'GET',
         });
     }
