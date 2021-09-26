@@ -781,9 +781,8 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             //hot
             let request2 = createRequestObject({
-                url: encodeURI(`https://lxhentai.com/story/index.php`),
-                method: "GET",
-                param: '?hot'
+                url: encodeURI(`https://lxhentai.com/story/index.php?hot`),
+                method: "GET"
             });
             let hotItems = [];
             let data2 = yield this.requestManager.schedule(request2, 1);
@@ -834,7 +833,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             let select = 1;
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `https://lxhentai.com/story/index.php?p=2`;
+                    url = `https://lxhentai.com/story/index.php?p=${page}`;
                     select = 1;
                     break;
                 case "hot":
@@ -989,7 +988,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: 'https://lxhentai.com'
+            referer: '(www.)?lxhentai.com.*'
         };
     }
 }
