@@ -737,13 +737,13 @@ class Parser {
     }
     parseChapterList($, mangaId) {
         const chapters = [];
-        for (let obj of $('div.list-chapter > nav > ul > li.row:not(.heading) > div.chapter > a').toArray()) {
+        for (let obj of $('div.list-chapter > nav > ul > li.row:not(.heading)').toArray()) {
             let time = $('div.col-xs-4', obj).text();
             let timeFinal = this.convertTime(time);
             chapters.push(createChapter({
-                id: obj.attribs['href'],
-                chapNum: parseFloat(obj.children[0].data.split(' ')[1]),
-                name: obj.children[0].data,
+                id: $('div.chapter a', obj).attr('href'),
+                chapNum: parseFloat($('div.chapter a', obj).text().split(' ')[1]),
+                name: $('div.chapter a', obj).text(),
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
                 time: timeFinal
