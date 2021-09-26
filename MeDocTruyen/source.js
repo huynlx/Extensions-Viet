@@ -683,7 +683,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             const chapters = [];
             var i = 0;
-            for (const obj of $('#listChuong > ul > li').toArray().reverse()) {
+            for (const obj of $('#listChuong > ul > li:not(:first-child)').toArray().reverse()) {
                 i++;
                 let id = 'https://lxhentai.com' + $('a', obj).first().attr('href');
                 let chapNum = Number((_a = $('a', obj).first().text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
