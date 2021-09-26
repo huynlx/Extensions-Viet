@@ -758,7 +758,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             for (const element of $('.col-md-8 .row > .py-2').toArray().splice(0, 20)) {
                 let title = $('a', element).last().text().trim();
                 let image = 'https://lxhentai.com' + ((_a = $('.py-2 > div', element).first().attr("style")) === null || _a === void 0 ? void 0 : _a.split("'")[1]);
-                let id = $('a', element).last().attr('href');
+                let id = 'https://lxhentai.com' + $('a', element).last().attr('href');
                 let subtitle = $(".newestChapter a", element).first().text().trim();
                 newUpdatedItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
@@ -780,7 +780,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             for (const element of $2('.col-md-8 .row > .py-2').toArray().splice(0, 20)) {
                 let title = $2('a', element).last().text().trim();
                 let image = 'https://lxhentai.com' + ((_b = $2('.py-2 > div', element).first().attr("style")) === null || _b === void 0 ? void 0 : _b.split("'")[1]);
-                let id = $2('a', element).last().attr('href');
+                let id = 'https://lxhentai.com' + $2('a', element).last().attr('href');
                 let subtitle = $(".newestChapter a", element).first().text().trim();
                 hotItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
