@@ -764,7 +764,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             }
             else {
                 if (tag[0].includes('https')) {
-                    url = tag[0];
+                    url = tag[0].split('?')[0];
                 }
                 else {
                     url = `${DOMAIN}${tag[0]}?`;
@@ -780,6 +780,9 @@ class HentaiVN extends paperback_extensions_common_1.Source {
                     method: 'POST',
                     headers: {
                         'content-type': 'text/html'
+                    },
+                    data: {
+                        'idviewtop': tag[0].split('?')[1]
                     }
                 });
             }
@@ -810,19 +813,19 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             const topView = [
                 {
                     label: 'Top View Ngày',
-                    id: 'https://hentaivn.tv/list-top.php?idviewtop=1'
+                    id: 'https://hentaivn.tv/list-top.php?1'
                 },
                 {
                     label: 'Top View Tuần',
-                    id: 'https://hentaivn.tv/list-top.php?idviewtop=2'
+                    id: 'https://hentaivn.tv/list-top.php?2'
                 },
                 {
                     label: 'Top View Tháng',
-                    id: 'https://hentaivn.tv/list-top.php?idviewtop=3'
+                    id: 'https://hentaivn.tv/list-top.php?3'
                 },
                 {
                     label: 'Top View All',
-                    id: 'https://hentaivn.tv/list-top.php?idviewtop=4'
+                    id: 'https://hentaivn.tv/list-top.php?4'
                 }
             ];
             const tagSections = [
