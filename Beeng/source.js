@@ -668,6 +668,7 @@ class Beeng extends paperback_extensions_common_1.Source {
                 url: `${DOMAIN}${mangaId}`,
                 method,
             });
+            var i = 0;
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const chapters = [];
@@ -686,12 +687,13 @@ class Beeng extends paperback_extensions_common_1.Source {
                     chapNum = chapNum.split(":")[0];
                 }
                 else {
-                    chapNum = chapNum;
+                    chapNum = chapNum; //exception => "1346-1350"
                 }
                 if (!collectedIds.includes(chapNum)) {
+                    i++;
                     chapters.push(createChapter({
                         id: $(obj).attr('href'),
-                        chapNum: Number(chapNum),
+                        chapNum: i,
                         name: $('span.name > span.titleComic', obj).text().trim(),
                         mangaId: mangaId,
                         langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
