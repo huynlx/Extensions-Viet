@@ -685,7 +685,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             HentaiVNParser_1.parseHomeSections($, sections, sectionCallback);
             //random
             request = createRequestObject({
-                url: 'https://hentaivn.tv/list-random.php',
+                url: DOMAIN + 'list-random.php',
                 method: 'POST',
                 headers: {
                     'content-type': 'application/x-www-form-urlencoded'
@@ -815,7 +815,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
                         const title = $('.view-top-1 > a', obj).text();
                         const subtitle = $(".view-top-2", obj).text().trim();
                         let request2 = createRequestObject({
-                            url: "https://hentaivn.tv/" + id,
+                            url: DOMAIN + id,
                             method,
                         });
                         let response = yield this.requestManager.schedule(request2, 1);
@@ -855,19 +855,19 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             const topView = [
                 {
                     label: 'Top View Ngày',
-                    id: 'https://hentaivn.tv/list-top.php?1'
+                    id: DOMAIN + 'list-top.php?1'
                 },
                 {
                     label: 'Top View Tuần',
-                    id: 'https://hentaivn.tv/list-top.php?2'
+                    id: DOMAIN + 'list-top.php?2'
                 },
                 {
                     label: 'Top View Tháng',
-                    id: 'https://hentaivn.tv/list-top.php?3'
+                    id: DOMAIN + 'list-top.php?3'
                 },
                 {
                     label: 'Top View All',
-                    id: 'https://hentaivn.tv/list-top.php?4'
+                    id: DOMAIN + 'list-top.php?4'
                 }
             ];
             const tagSections = [
@@ -888,7 +888,7 @@ exports.HentaiVN = HentaiVN;
 },{"./HentaiVNParser":56,"./tags.json":57,"paperback-extensions-common":12}],56:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isLastPage = exports.parseTags = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.parsePopularSections = exports.parseAddedSections = exports.parseRandomSections = exports.parseHomeSections = exports.parseChapterDetails = exports.parseChapters = exports.parseMangaDetails = void 0;
+exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.parsePopularSections = exports.parseAddedSections = exports.parseRandomSections = exports.parseHomeSections = exports.parseChapterDetails = exports.parseChapters = exports.parseMangaDetails = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const entities = require("entities"); //Import package for decoding HTML entities
 exports.parseMangaDetails = ($, mangaId) => {
@@ -1147,22 +1147,6 @@ exports.parseViewMore = ($, select) => {
         }
     }
     return manga;
-};
-exports.parseTags = ($) => {
-    var _a;
-    const arrayTags = [];
-    for (const obj of $("li", "ul").toArray()) {
-        const label = ($("a", obj).text().trim());
-        const id = (_a = $('a', obj).attr('href')) !== null && _a !== void 0 ? _a : "";
-        if (id == "")
-            continue;
-        arrayTags.push({
-            id: id,
-            label: label,
-        });
-    }
-    const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) })];
-    return tagSections;
 };
 exports.isLastPage = ($) => {
     let isLast = false;
