@@ -1052,50 +1052,40 @@ exports.generateSearch = (query) => {
     return encodeURI(keyword);
 };
 exports.parseSearch = ($, tag) => {
-    var _a, _b;
+    var _a;
     let cc = new HentaiVN_1.HentaiVN('cc');
     const mangas = [];
-    var image = '';
-    function asyncCall(id, manga) {
+    // var image = '';
+    function asyncCall() {
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            var request = createRequestObject({
-                url: `https://hentaivn.tv/${id}`,
-                method: 'GET',
-            });
-            const response = yield cc.requestManager.schedule(request, 1);
-            const $2 = cc.cheerio.load(response.data);
-            image = $2('.page-ava > img').attr('src');
-            const title = $('.view-top-1 > a', manga).text();
-            const subtitle = $(".view-top-2", manga).text().trim();
-            mangas.push(createMangaTile({
-                id: encodeURIComponent(id) + "::" + image,
-                image: image !== null && image !== void 0 ? image : "",
-                title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: subtitle }),
-            }));
+            for (let manga of $('li').toArray()) {
+                const id = (_b = (_a = $('.view-top-1 > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop()) !== null && _b !== void 0 ? _b : "";
+                const title = $('.view-top-1 > a', manga).text();
+                const subtitle = $(".view-top-2", manga).text().trim();
+                var request = createRequestObject({
+                    url: `https://hentaivn.tv/${id}`,
+                    method: 'GET',
+                });
+                const response = yield cc.requestManager.schedule(request, 1);
+                const $2 = cc.cheerio.load(response.data);
+                const image = $2('.page-ava > img').attr('src');
+                mangas.push(createMangaTile({
+                    id: encodeURIComponent(id) + "::" + image,
+                    image: image !== null && image !== void 0 ? image : "",
+                    title: createIconText({ text: title }),
+                    subtitleText: createIconText({ text: subtitle }),
+                }));
+            }
         });
     }
     if (tag[0].includes('https')) {
-        for (let manga of $('li').toArray()) {
-            // const title = $('.view-top-1 > a', manga).text();
-            const id = (_a = $('.view-top-1 > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-            if (!id)
-                continue;
-            asyncCall(id, manga);
-            // const subtitle = $(".view-top-2", manga).text().trim();
-            // if (!id || !title) continue;
-            // mangas.push(createMangaTile({
-            //     id: encodeURIComponent(id) + "::" + image,
-            //     image: image ?? "",
-            //     title: createIconText({ text: title }),
-            //     subtitleText: createIconText({ text: subtitle }),
-            // }));
-        }
+        asyncCall();
     }
     else {
         for (let manga of $('.item', '.block-item').toArray()) {
             const title = $('.box-description > p > a', manga).text();
-            const id = (_b = $('.box-cover > a', manga).attr('href')) === null || _b === void 0 ? void 0 : _b.split('/').pop();
+            const id = (_a = $('.box-cover > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
             const image = $('.box-cover > a > img', manga).attr('data-src');
             const subtitle = $(".box-description p:first-child", manga).text().trim();
             const fixsub = subtitle.split(' - ')[1];
