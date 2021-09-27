@@ -754,7 +754,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
         });
     }
     getSearchResults(query, metadata) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tag = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
@@ -793,16 +793,36 @@ class HentaiVN extends paperback_extensions_common_1.Source {
                     param: `&page=${page}`
                 });
             }
-            const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
-            // var request = createRequestObject({
-            //     url: `https://hentaivn.tv/5415-doc-truyen-thanh-nobita.html`,
-            //     method: 'GET',
-            // });
-            // const response = await cc.requestManager.schedule(request, 1);
-            // const $2 = cc.cheerio.load(response.data);
-            // const image = $2('.page-ava > img').attr('src');
-            const manga = HentaiVNParser_1.parseSearch($, tag);
+            var manga = [];
+            var $;
+            // var images: any = [];
+            if (tag[0].includes('https')) {
+                const response = yield this.requestManager.schedule(request, 1); //post
+                $ = this.cheerio.load(response.data);
+                for (let obj of $('li').toArray()) {
+                    const id = (_e = (_d = $('.view-top-1 > a', obj).attr('href')) === null || _d === void 0 ? void 0 : _d.split('/').pop()) !== null && _e !== void 0 ? _e : "";
+                    const title = $('.view-top-1 > a', obj).text();
+                    const subtitle = $(".view-top-2", obj).text().trim();
+                    let request2 = createRequestObject({
+                        url: "https://hentaivn.tv/" + id,
+                        method,
+                    });
+                    let response = yield this.requestManager.schedule(request2, 1);
+                    let $2 = this.cheerio.load(response.data);
+                    let image = $2('.page-ava > img').attr('src');
+                    manga.push(createMangaTile({
+                        id: encodeURIComponent(id) + "::" + image,
+                        image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
+                        title: createIconText({ text: title }),
+                        subtitleText: createIconText({ text: subtitle }),
+                    }));
+                }
+            }
+            else {
+                const response = yield this.requestManager.schedule(request, 1);
+                $ = this.cheerio.load(response.data);
+                manga = HentaiVNParser_1.parseSearch($);
+            }
             if (tag[0].includes('https')) {
                 metadata = undefined;
             }
@@ -1048,38 +1068,23 @@ exports.generateSearch = (query) => {
     let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
     return encodeURI(keyword);
 };
-exports.parseSearch = ($, tag) => {
-    var _a, _b, _c, _d;
+exports.parseSearch = ($) => {
+    var _a;
     const mangas = [];
-    if (tag[0].includes('https')) {
-        for (let manga of $('li').toArray()) {
-            const id = (_b = (_a = $('.view-top-1 > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop()) !== null && _b !== void 0 ? _b : "";
-            const title = $('.view-top-1 > a', manga).text();
-            const subtitle = $(".view-top-2", manga).text().trim();
-            mangas.push(createMangaTile({
-                id: encodeURIComponent(id) + "::" + "",
-                image: (_c = "") !== null && _c !== void 0 ? _c : "",
-                title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: subtitle }),
-            }));
-        }
-    }
-    else {
-        for (let manga of $('.item', '.block-item').toArray()) {
-            const title = $('.box-description > p > a', manga).text();
-            const id = (_d = $('.box-cover > a', manga).attr('href')) === null || _d === void 0 ? void 0 : _d.split('/').pop();
-            const image = $('.box-cover > a > img', manga).attr('data-src');
-            const subtitle = $(".box-description p:first-child", manga).text().trim();
-            const fixsub = subtitle.split(' - ')[1];
-            if (!id || !title)
-                continue;
-            mangas.push(createMangaTile({
-                id: encodeURIComponent(id) + "::" + image,
-                image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
-                title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: fixsub }),
-            }));
-        }
+    for (let manga of $('.item', '.block-item').toArray()) {
+        const title = $('.box-description > p > a', manga).text();
+        const id = (_a = $('.box-cover > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+        const image = $('.box-cover > a > img', manga).attr('data-src');
+        const subtitle = $(".box-description p:first-child", manga).text().trim();
+        const fixsub = subtitle.split(' - ')[1];
+        if (!id || !title)
+            continue;
+        mangas.push(createMangaTile({
+            id: encodeURIComponent(id) + "::" + image,
+            image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
+            title: createIconText({ text: title }),
+            subtitleText: createIconText({ text: fixsub }),
+        }));
     }
     return mangas;
 };
