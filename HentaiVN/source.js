@@ -795,6 +795,13 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             }
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
+            // var request = createRequestObject({
+            //     url: `https://hentaivn.tv/5415-doc-truyen-thanh-nobita.html`,
+            //     method: 'GET',
+            // });
+            // const response = await cc.requestManager.schedule(request, 1);
+            // const $2 = cc.cheerio.load(response.data);
+            // const image = $2('.page-ava > img').attr('src');
             const manga = HentaiVNParser_1.parseSearch($, tag);
             if (tag[0].includes('https')) {
                 metadata = undefined;
@@ -845,19 +852,9 @@ exports.HentaiVN = HentaiVN;
 
 },{"./HentaiVNParser":56,"./tags.json":57,"paperback-extensions-common":12}],56:[function(require,module,exports){
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isLastPage = exports.parseTags = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.parsePopularSections = exports.parseAddedSections = exports.parseRandomSections = exports.parseHomeSections = exports.parseChapterDetails = exports.parseChapters = exports.parseMangaDetails = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
-const HentaiVN_1 = require("./HentaiVN");
 const entities = require("entities"); //Import package for decoding HTML entities
 exports.parseMangaDetails = ($, mangaId) => {
     var _a;
@@ -1052,39 +1049,25 @@ exports.generateSearch = (query) => {
     return encodeURI(keyword);
 };
 exports.parseSearch = ($, tag) => {
-    var _a;
-    let cc = new HentaiVN_1.HentaiVN('cc');
+    var _a, _b, _c, _d;
     const mangas = [];
-    function asyncCall() {
-        var _a, _b;
-        return __awaiter(this, void 0, void 0, function* () {
-            var request = createRequestObject({
-                url: `https://hentaivn.tv/5415-doc-truyen-thanh-nobita.html`,
-                method: 'GET',
-            });
-            const response = yield cc.requestManager.schedule(request, 1);
-            const $2 = cc.cheerio.load(response.data);
-            const image = $2('.page-ava > img').attr('src');
-            for (let manga of $('li').toArray()) {
-                const id = (_b = (_a = $('.view-top-1 > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop()) !== null && _b !== void 0 ? _b : "";
-                const title = $('.view-top-1 > a', manga).text();
-                const subtitle = $(".view-top-2", manga).text().trim();
-                mangas.push(createMangaTile({
-                    id: encodeURIComponent(id) + "::" + image,
-                    image: image !== null && image !== void 0 ? image : "",
-                    title: createIconText({ text: title }),
-                    subtitleText: createIconText({ text: subtitle }),
-                }));
-            }
-        });
-    }
     if (tag[0].includes('https')) {
-        asyncCall();
+        for (let manga of $('li').toArray()) {
+            const id = (_b = (_a = $('.view-top-1 > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop()) !== null && _b !== void 0 ? _b : "";
+            const title = $('.view-top-1 > a', manga).text();
+            const subtitle = $(".view-top-2", manga).text().trim();
+            mangas.push(createMangaTile({
+                id: encodeURIComponent(id) + "::" + "",
+                image: (_c = "") !== null && _c !== void 0 ? _c : "",
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: subtitle }),
+            }));
+        }
     }
     else {
         for (let manga of $('.item', '.block-item').toArray()) {
             const title = $('.box-description > p > a', manga).text();
-            const id = (_a = $('.box-cover > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+            const id = (_d = $('.box-cover > a', manga).attr('href')) === null || _d === void 0 ? void 0 : _d.split('/').pop();
             const image = $('.box-cover > a > img', manga).attr('data-src');
             const subtitle = $(".box-description p:first-child", manga).text().trim();
             const fixsub = subtitle.split(' - ')[1];
@@ -1180,7 +1163,7 @@ const decodeHTMLEntity = (str) => {
     return entities.decodeHTML(str);
 };
 
-},{"./HentaiVN":55,"entities":1,"paperback-extensions-common":12}],57:[function(require,module,exports){
+},{"entities":1,"paperback-extensions-common":12}],57:[function(require,module,exports){
 module.exports=[
     {
         "id": "/the-loai-3-3d_hentai.html",
