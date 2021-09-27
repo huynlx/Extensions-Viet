@@ -852,7 +852,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
                 }
             ];
             const tagSections = [
-                createTagSection({ id: '0', label: 'Bảng Xếp Hạng', tags: topView.map(x => createTag(x)) }),
+                // createTagSection({ id: '0', label: 'Bảng Xếp Hạng', tags: topView.map(x => createTag(x)) }),
                 createTagSection({ id: '1', label: 'Thể Loại', tags: tags_json_1.default.map(x => createTag(x)) })
             ];
             return tagSections;
@@ -991,7 +991,7 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
         }));
     }
     sections[2].items = staffPick;
-    // sectionCallback(sections[2]);
+    sectionCallback(sections[2]);
 };
 exports.parseRandomSections = ($, sections, sectionCallback) => {
     var _a;
