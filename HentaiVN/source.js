@@ -794,11 +794,9 @@ class HentaiVN extends paperback_extensions_common_1.Source {
                 });
             }
             var manga = [];
-            var $;
-            // var images: any = [];
+            const response = yield this.requestManager.schedule(request, 1);
+            const $ = this.cheerio.load(response.data);
             if (tag[0].includes('https')) {
-                const response = yield this.requestManager.schedule(request, 1); //post
-                $ = this.cheerio.load(response.data);
                 for (let obj of $('li').toArray()) {
                     const id = (_e = (_d = $('.view-top-1 > a', obj).attr('href')) === null || _d === void 0 ? void 0 : _d.split('/').pop()) !== null && _e !== void 0 ? _e : "";
                     const title = $('.view-top-1 > a', obj).text();
@@ -819,8 +817,6 @@ class HentaiVN extends paperback_extensions_common_1.Source {
                 }
             }
             else {
-                const response = yield this.requestManager.schedule(request, 1);
-                $ = this.cheerio.load(response.data);
                 manga = HentaiVNParser_1.parseSearch($);
             }
             if (tag[0].includes('https')) {
