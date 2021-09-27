@@ -989,20 +989,18 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             };
             var url = '';
             var set = 1;
-            if (tags.length) {
-                if (tags[0].split('.')[0] === 'year' || tags[0].split('.')[0] === 'sort') {
-                    if (year && sort) {
-                        url = encodeURI(`${year[0]}page/${page}/?${sort[0]}`);
+            if (tags[0].split('.')[0] === 'year' || tags[0].split('.')[0] === 'sort') {
+                if (year && sort) {
+                    url = encodeURI(`${year[0]}page/${page}/?${sort[0]}`);
+                }
+                else {
+                    if (tags[0].split('.')[0] === 'year') {
+                        set = 0;
+                        url = encodeURI(`${year[0]}page/${page}/`);
                     }
                     else {
-                        if (tags[0].split('.')[0] === 'year') {
-                            set = 0;
-                            url = encodeURI(`${year[0]}page/${page}/`);
-                        }
-                        else {
-                            set = 1;
-                            url = encodeURI(`https://hentaicube.net/page/${page}/?s&post_type=wp-manga&${sort[0]}`);
-                        }
+                        set = 1;
+                        url = encodeURI(`https://hentaicube.net/page/${page}/?s&post_type=wp-manga&${sort[0]}`);
                     }
                 }
             }
