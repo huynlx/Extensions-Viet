@@ -990,13 +990,18 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             var url = '';
             var set = 1;
             if (tags[0].split('.')[0] === 'year' || tags[0].split('.')[0] === 'sort') {
-                if (tags[0].split('.')[0] === 'year') {
-                    set = 0;
-                    url = encodeURI(`${year[0]}page/${page}/`);
+                if (year && sort) {
+                    url = `${year[0]}?${sort[0]}`;
                 }
                 else {
-                    set = 1;
-                    url = encodeURI(`https://hentaicube.net/page/${page}/?s&post_type=wp-manga&${sort[0]}`);
+                    if (tags[0].split('.')[0] === 'year') {
+                        set = 0;
+                        url = encodeURI(`${year[0]}page/${page}/`);
+                    }
+                    else {
+                        set = 1;
+                        url = encodeURI(`https://hentaicube.net/page/${page}/?s&post_type=wp-manga&${sort[0]}`);
+                    }
                 }
             }
             else {
@@ -1136,7 +1141,7 @@ exports.parseSearch = ($, set) => {
             if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
                 mangas.push(createMangaTile({
                     id: id,
-                    image: image,
+                    image: image.replace('110x150', '193x278'),
                     title: createIconText({
                         text: title,
                     }),
