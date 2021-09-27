@@ -674,7 +674,6 @@ class Beeng extends paperback_extensions_common_1.Source {
             var i = 0;
             const collectedIds = [];
             for (const obj of $("#scrollbar a").toArray().reverse()) {
-                i++;
                 const getTime = $('span.name > span.views', obj).text().trim().split(' ');
                 const time = {
                     date: getTime[0],
@@ -684,6 +683,7 @@ class Beeng extends paperback_extensions_common_1.Source {
                 const fixDate = [arrDate[1], arrDate[0], arrDate[2]].join('/');
                 const finalTime = new Date(fixDate + ' ' + time.time);
                 if (!collectedIds.includes($('span.name > span.titleComic', obj).text().trim())) {
+                    i++;
                     chapters.push(createChapter({
                         id: $(obj).attr('href'),
                         chapNum: i,
