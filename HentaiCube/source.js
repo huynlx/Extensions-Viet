@@ -991,6 +991,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             var set = 1;
             if (tags[0].split('.')[0] === 'year' || tags[0].split('.')[0] === 'sort') {
                 if (year.length !== 0 && sort.length !== 0) {
+                    set = 0;
                     url = encodeURI(`${year[0]}page/${page}/?${sort[0]}`);
                 }
                 else {
