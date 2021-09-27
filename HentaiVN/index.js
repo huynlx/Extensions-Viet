@@ -688,7 +688,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
                 url: 'https://hentaivn.tv/list-random.php',
                 method: 'POST',
                 headers: {
-                    'content-type': 'text/html'
+                    'content-type': 'application/x-www-form-urlencoded'
                 }
             });
             response = yield this.requestManager.schedule(request, 1);
@@ -779,7 +779,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
                     url,
                     method: 'POST',
                     headers: {
-                        'content-type': 'text/html'
+                        'content-type': 'application/x-www-form-urlencoded'
                     },
                     data: {
                         'idviewtop': tag[0].split('?')[1]
