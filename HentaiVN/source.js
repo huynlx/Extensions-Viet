@@ -775,7 +775,28 @@ class HentaiVN extends paperback_extensions_common_1.Source {
     }
     getSearchTags() {
         return __awaiter(this, void 0, void 0, function* () {
-            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại (Chỉ chọn 1)', tags: tags_json_1.default.map(x => createTag(x)) })];
+            const topView = [
+                {
+                    label: 'Top view ngày',
+                    id: 'https://hentaivn.tv/list-top.php?idviewtop=1'
+                },
+                {
+                    label: 'Top view tuần',
+                    id: 'https://hentaivn.tv/list-top.php?idviewtop=2'
+                },
+                {
+                    label: 'Top view tháng',
+                    id: 'https://hentaivn.tv/list-top.php?idviewtop=3'
+                },
+                {
+                    label: 'Top view all',
+                    id: 'https://hentaivn.tv/list-top.php?idviewtop=4'
+                }
+            ];
+            const tagSections = [
+                createTagSection({ id: '0', label: 'Bảng Xếp Hạng', tags: topView.map(x => createTag(x)) }),
+                createTagSection({ id: '1', label: 'Thể Loại (Chỉ chọn 1)', tags: tags_json_1.default.map(x => createTag(x)) })
+            ];
             return tagSections;
         });
     }
