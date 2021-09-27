@@ -733,7 +733,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             });
             let newest = createHomeSection({
                 id: 'new',
-                title: "New",
+                title: "Mới thêm",
                 view_more: true,
             });
             //Load empty sections
@@ -967,17 +967,19 @@ class HentaiCube extends paperback_extensions_common_1.Source {
         });
     }
     getSearchTags() {
-        var _a, _b;
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
             const tags = [];
             const tags2 = [];
-            const url = `https://hentaicube.net/?s=&post_type=wp-manga`;
-            const request = createRequestObject({
+            const tags3 = [];
+            const tags4 = [];
+            let url = `https://hentaicube.net/?s=&post_type=wp-manga`;
+            let request = createRequestObject({
                 url: url,
                 method: "GET",
             });
-            const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
+            let response = yield this.requestManager.schedule(request, 1);
+            let $ = this.cheerio.load(response.data);
             //the loai
             for (const tag of $('.checkbox', '.checkbox-group').toArray()) {
                 const label = $('label', tag).text().trim();
@@ -994,8 +996,34 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                     continue;
                 tags2.push({ id: id, label: label });
             }
+            url = `https://hentaicube.net/manga/`;
+            request = createRequestObject({
+                url: url,
+                method: "GET",
+            });
+            response = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(response.data);
+            //nam
+            for (const tag of $('li', '#wp_manga_release_id-2 .c-released_content .list-released').toArray()) {
+                const label = $('a', tag).text().trim();
+                const id = (_c = 'year.' + $('a', tag).attr('href')) !== null && _c !== void 0 ? _c : label;
+                if (!id || !label)
+                    continue;
+                tags3.push({ id: id, label: label });
+            }
+            //sap xep
+            for (const tag of $('li', '.c-tabs-content').toArray()) {
+                const label = $('a', tag).text().trim();
+                const id = (_d = 'sort.' + $('a', tag).attr('href')) !== null && _d !== void 0 ? _d : label;
+                if (!id || !label)
+                    continue;
+                tags3.push({ id: id, label: label });
+            }
             const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
-                createTagSection({ id: '1', label: 'Tình Trạng', tags: tags2.map(x => createTag(x)) })];
+                createTagSection({ id: '1', label: 'Tình Trạng', tags: tags2.map(x => createTag(x)) }),
+                createTagSection({ id: '2', label: 'Năm', tags: tags3.map(x => createTag(x)) }),
+                createTagSection({ id: '3', label: 'Năm', tags: tags4.map(x => createTag(x)) })
+            ];
             return tagSections;
         });
     }
