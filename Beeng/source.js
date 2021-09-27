@@ -671,7 +671,7 @@ class Beeng extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const chapters = [];
-            var i = 0;
+            // var i = 0;
             const collectedIds = [];
             for (const obj of $("#scrollbar a").toArray().reverse()) {
                 const getTime = $('span.name > span.views', obj).text().trim().split(' ');
@@ -682,17 +682,17 @@ class Beeng extends paperback_extensions_common_1.Source {
                 const arrDate = time.date.split(/\-/);
                 const fixDate = [arrDate[1], arrDate[0], arrDate[2]].join('/');
                 const finalTime = new Date(fixDate + ' ' + time.time);
-                if (!collectedIds.includes($('span.name > span.titleComic', obj).text().trim())) {
-                    i++;
+                if (!collectedIds.includes(Number($('span.name > span.titleComic', obj).text().trim().split(' ')[1]))) {
+                    // i++;
                     chapters.push(createChapter({
                         id: $(obj).attr('href'),
-                        chapNum: i,
+                        chapNum: Number($('span.name > span.titleComic', obj).text().trim().split(' ')[1]),
                         name: $('span.name > span.titleComic', obj).text().trim(),
                         mangaId: mangaId,
                         langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
                         time: finalTime
                     }));
-                    collectedIds.push($('span.name > span.titleComic', obj).text().trim());
+                    collectedIds.push(Number($('span.name > span.titleComic', obj).text().trim().split(' ')[1]));
                 }
             }
             return chapters;
