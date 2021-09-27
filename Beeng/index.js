@@ -671,7 +671,6 @@ class Beeng extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const chapters = [];
-            // var i = 0;
             const collectedIds = [];
             for (const obj of $("#scrollbar a").toArray().reverse()) {
                 const getTime = $('span.name > span.views', obj).text().trim().split(' ');
@@ -689,18 +688,17 @@ class Beeng extends paperback_extensions_common_1.Source {
                 else {
                     chapNum = chapNum;
                 }
-                // if (!collectedIds.includes(Number($('span.name > span.titleComic', obj).text().trim().split(' ')[1]))) {
-                // i++;
-                chapters.push(createChapter({
-                    id: $(obj).attr('href'),
-                    chapNum: Number(chapNum),
-                    name: $('span.name > span.titleComic', obj).text().trim(),
-                    mangaId: mangaId,
-                    langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: finalTime
-                }));
-                //     collectedIds.push(Number($('span.name > span.titleComic', obj).text().trim().split(' ')[1]));
-                // }
+                if (!collectedIds.includes(chapNum)) {
+                    chapters.push(createChapter({
+                        id: $(obj).attr('href'),
+                        chapNum: Number(chapNum),
+                        name: $('span.name > span.titleComic', obj).text().trim(),
+                        mangaId: mangaId,
+                        langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+                        time: finalTime
+                    }));
+                    collectedIds.push(chapNum);
+                }
             }
             return chapters;
         });
