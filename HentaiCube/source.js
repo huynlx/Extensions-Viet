@@ -1005,11 +1005,13 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             $ = this.cheerio.load(response.data);
             //nam
             for (const tag of $('li', '#wp_manga_release_id-2 .c-released_content .list-released').toArray()) {
-                const label = $('a', tag).text().trim();
-                const id = (_c = 'year.' + $('a', tag).attr('href')) !== null && _c !== void 0 ? _c : label;
-                if (!id || !label)
-                    continue;
-                tags3.push({ id: id, label: label });
+                for (const tag2 of $('a', tag).toArray()) {
+                    const label = $(tag2).text().trim();
+                    const id = (_c = 'year.' + $(tag2).attr('href')) !== null && _c !== void 0 ? _c : label;
+                    if (!id || !label)
+                        continue;
+                    tags3.push({ id: id, label: label });
+                }
             }
             //sap xep
             for (const tag of $('li', '.c-tabs-content').toArray()) {
@@ -1022,7 +1024,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
                 createTagSection({ id: '1', label: 'Tình Trạng', tags: tags2.map(x => createTag(x)) }),
                 createTagSection({ id: '2', label: 'Năm', tags: tags3.map(x => createTag(x)) }),
-                createTagSection({ id: '3', label: 'Năm', tags: tags4.map(x => createTag(x)) })
+                createTagSection({ id: '3', label: 'Xếp theo', tags: tags4.map(x => createTag(x)) })
             ];
             return tagSections;
         });
