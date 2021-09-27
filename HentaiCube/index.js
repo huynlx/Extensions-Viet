@@ -742,6 +742,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                 view_more: true,
             });
             //Load empty sections
+            sectionCallback(top);
             sectionCallback(hot);
             sectionCallback(newUpdated);
             sectionCallback(view);
@@ -796,7 +797,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                 }));
             }
             top.items = topItems;
-            sectionCallback(hot);
+            sectionCallback(top);
             //Hot
             url = '';
             request = createRequestObject({
