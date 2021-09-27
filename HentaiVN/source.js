@@ -1058,17 +1058,17 @@ exports.parseSearch = ($, tag) => {
     function asyncCall() {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
+            var request = createRequestObject({
+                url: `https://hentaivn.tv/5415-doc-truyen-thanh-nobita.html`,
+                method: 'GET',
+            });
+            const response = yield cc.requestManager.schedule(request, 1);
+            const $2 = cc.cheerio.load(response.data);
+            const image = $2('.page-ava > img').attr('src');
             for (let manga of $('li').toArray()) {
                 const id = (_b = (_a = $('.view-top-1 > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop()) !== null && _b !== void 0 ? _b : "";
                 const title = $('.view-top-1 > a', manga).text();
                 const subtitle = $(".view-top-2", manga).text().trim();
-                var request = createRequestObject({
-                    url: `https://hentaivn.tv/5415-doc-truyen-thanh-nobita.html`,
-                    method: 'GET',
-                });
-                const response = yield cc.requestManager.schedule(request, 1);
-                const $2 = cc.cheerio.load(response.data);
-                const image = $2('.page-ava > img').attr('src');
                 mangas.push(createMangaTile({
                     id: encodeURIComponent(id) + "::" + image,
                     image: image !== null && image !== void 0 ? image : "",
