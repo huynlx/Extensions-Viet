@@ -1056,7 +1056,7 @@ exports.parseSearch = ($, tag) => {
     let cc = new HentaiVN_1.HentaiVN('cc');
     const mangas = [];
     var image = '';
-    function asyncCall(id) {
+    function asyncCall(id, manga) {
         return __awaiter(this, void 0, void 0, function* () {
             var request = createRequestObject({
                 url: `https://hentaivn.tv/${id}`,
@@ -1065,22 +1065,31 @@ exports.parseSearch = ($, tag) => {
             const response = yield cc.requestManager.schedule(request, 1);
             const $2 = cc.cheerio.load(response.data);
             image = $2('.page-ava > img').attr('src');
-        });
-    }
-    if (tag[0].includes('https')) {
-        for (let manga of $('li').toArray()) {
             const title = $('.view-top-1 > a', manga).text();
-            const id = (_a = $('.view-top-1 > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-            asyncCall(id);
             const subtitle = $(".view-top-2", manga).text().trim();
-            if (!id || !title)
-                continue;
             mangas.push(createMangaTile({
                 id: encodeURIComponent(id) + "::" + image,
                 image: image !== null && image !== void 0 ? image : "",
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
+        });
+    }
+    if (tag[0].includes('https')) {
+        for (let manga of $('li').toArray()) {
+            // const title = $('.view-top-1 > a', manga).text();
+            const id = (_a = $('.view-top-1 > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+            if (!id)
+                continue;
+            asyncCall(id, manga);
+            // const subtitle = $(".view-top-2", manga).text().trim();
+            // if (!id || !title) continue;
+            // mangas.push(createMangaTile({
+            //     id: encodeURIComponent(id) + "::" + image,
+            //     image: image ?? "",
+            //     title: createIconText({ text: title }),
+            //     subtitleText: createIconText({ text: subtitle }),
+            // }));
         }
     }
     else {
