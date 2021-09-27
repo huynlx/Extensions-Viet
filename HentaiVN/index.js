@@ -760,7 +760,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             const tag = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             var url = '';
             if (query.title) {
-                url = `${DOMAIN}tim-kiem-truyen.html?key=${encodeURI(query.title)}`;
+                url = `${DOMAIN}tim-kiem-truyen.html?key=${encodeURI(query.title)}`; //encodeURI để search được chữ có dấu
             }
             else {
                 if (tag[0].includes('https')) {
@@ -770,11 +770,26 @@ class HentaiVN extends paperback_extensions_common_1.Source {
                     url = `${DOMAIN}${tag[0]}?`;
                 }
             }
-            const request = createRequestObject({
+            var request = createRequestObject({
                 url,
-                method,
-                param: `&page=${page}`
+                method
             });
+            if (tag[0].includes('https')) {
+                request = createRequestObject({
+                    url,
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'text/html'
+                    }
+                });
+            }
+            else {
+                request = createRequestObject({
+                    url,
+                    method,
+                    param: `&page=${page}`
+                });
+            }
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const manga = HentaiVNParser_1.parseSearch($, tag);
@@ -1027,7 +1042,7 @@ exports.parseSearch = ($, tag) => {
     var _a, _b;
     const mangas = [];
     if (tag[0].includes('https')) {
-        for (let manga of $('li', '#page-view-top').toArray()) {
+        for (let manga of $('li').toArray()) {
             const title = $('.view-top-1 > a', manga).text();
             const id = (_a = $('.view-top-1 > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
             // const image = $('.box-cover > a > img', manga).attr('data-src');
