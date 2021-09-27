@@ -601,7 +601,7 @@ const tags_json_1 = __importDefault(require("./tags.json"));
 const DOMAIN = `https://hentaivn.tv/`;
 const method = 'GET';
 exports.HentaiVNInfo = {
-    version: '2.5.0',
+    version: '2.7.0',
     name: 'HentaiVN',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -774,56 +774,75 @@ class HentaiVN extends paperback_extensions_common_1.Source {
                 url,
                 method
             });
-            if (tag[0].includes('https')) {
-                request = createRequestObject({
-                    url,
-                    method: 'POST',
-                    headers: {
-                        'content-type': 'application/x-www-form-urlencoded'
-                    },
-                    data: {
-                        'idviewtop': tag[0].split('?')[1]
-                    }
-                });
-            }
-            else {
+            if (query.title) {
                 request = createRequestObject({
                     url,
                     method,
                     param: `&page=${page}`
                 });
             }
+            else {
+                if (tag[0].includes('https')) {
+                    request = createRequestObject({
+                        url,
+                        method: 'POST',
+                        headers: {
+                            'content-type': 'application/x-www-form-urlencoded'
+                        },
+                        data: {
+                            'idviewtop': tag[0].split('?')[1]
+                        }
+                    });
+                }
+                else {
+                    request = createRequestObject({
+                        url,
+                        method,
+                        param: `&page=${page}`
+                    });
+                }
+            }
             var manga = [];
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            if (tag[0].includes('https')) {
-                for (let obj of $('li').toArray()) {
-                    const id = (_e = (_d = $('.view-top-1 > a', obj).attr('href')) === null || _d === void 0 ? void 0 : _d.split('/').pop()) !== null && _e !== void 0 ? _e : "";
-                    const title = $('.view-top-1 > a', obj).text();
-                    const subtitle = $(".view-top-2", obj).text().trim();
-                    let request2 = createRequestObject({
-                        url: "https://hentaivn.tv/" + id,
-                        method,
-                    });
-                    let response = yield this.requestManager.schedule(request2, 1);
-                    let $2 = this.cheerio.load(response.data);
-                    let image = $2('.page-ava > img').attr('src');
-                    manga.push(createMangaTile({
-                        id: encodeURIComponent(id) + "::" + image,
-                        image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
-                        title: createIconText({ text: title }),
-                        subtitleText: createIconText({ text: subtitle }),
-                    }));
-                }
-            }
-            else {
+            if (query.title) {
                 manga = HentaiVNParser_1.parseSearch($);
             }
-            if (tag[0].includes('https')) {
-                metadata = undefined;
+            else {
+                if (tag[0].includes('https')) {
+                    for (let obj of $('li').toArray()) {
+                        const id = (_e = (_d = $('.view-top-1 > a', obj).attr('href')) === null || _d === void 0 ? void 0 : _d.split('/').pop()) !== null && _e !== void 0 ? _e : "";
+                        const title = $('.view-top-1 > a', obj).text();
+                        const subtitle = $(".view-top-2", obj).text().trim();
+                        let request2 = createRequestObject({
+                            url: "https://hentaivn.tv/" + id,
+                            method,
+                        });
+                        let response = yield this.requestManager.schedule(request2, 1);
+                        let $2 = this.cheerio.load(response.data);
+                        let image = $2('.page-ava > img').attr('src');
+                        manga.push(createMangaTile({
+                            id: encodeURIComponent(id) + "::" + image,
+                            image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
+                            title: createIconText({ text: title }),
+                            subtitleText: createIconText({ text: subtitle }),
+                        }));
+                    }
+                }
+                else {
+                    manga = HentaiVNParser_1.parseSearch($);
+                }
+            }
+            if (query.title) {
+                metadata = !HentaiVNParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             }
             else {
-                metadata = !HentaiVNParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+                if (tag[0].includes('https')) {
+                    metadata = undefined;
+                }
+                else {
+                    metadata = !HentaiVNParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+                }
             }
             return createPagedResults({
                 results: manga,
@@ -852,7 +871,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
                 }
             ];
             const tagSections = [
-                // createTagSection({ id: '0', label: 'Bảng Xếp Hạng', tags: topView.map(x => createTag(x)) }),
+                createTagSection({ id: '0', label: 'Bảng Xếp Hạng', tags: topView.map(x => createTag(x)) }),
                 createTagSection({ id: '1', label: 'Thể Loại', tags: tags_json_1.default.map(x => createTag(x)) })
             ];
             return tagSections;
