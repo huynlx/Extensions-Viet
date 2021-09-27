@@ -988,15 +988,19 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                 return genresFinal;
             };
             var url = '';
+            var set = 1;
             if (tags[0].split('.')[0] === 'year' || tags[0].split('.')[0] === 'sort') {
                 if (tags[0].split('.')[0] === 'year') {
+                    set = 0;
                     url = encodeURI(`${year[0]}page/${page}/`);
                 }
                 else {
+                    set = 1;
                     url = encodeURI(`https://hentaicube.net/page/${page}/?s&post_type=wp-manga&${sort[0]}`);
                 }
             }
             else {
+                set = 1;
                 url = encodeURI(`https://hentaicube.net/page/${page}/?s=${(_d = query.title) !== null && _d !== void 0 ? _d : ""}&post_type=wp-manga&${convertGenres(genre)}&op=&author=&artist=&release=&adult=&${convertStatus(status)}`);
             }
             const request = createRequestObject({
@@ -1005,7 +1009,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            const tiles = HentaiCubeParser_1.parseSearch($);
+            const tiles = HentaiCubeParser_1.parseSearch($, set);
             metadata = !HentaiCubeParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: tiles,
@@ -1098,27 +1102,50 @@ exports.generateSearch = (query) => {
     let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
     return encodeURI(keyword);
 };
-exports.parseSearch = ($) => {
-    var _a, _b;
+exports.parseSearch = ($, set) => {
+    var _a, _b, _c, _d;
     const collectedIds = [];
     const mangas = [];
-    for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
-        let title = $(`.post-title > h3 > a`, obj).text().trim();
-        let subtitle = $(`.chapter > a`, obj).text().trim();
-        const image = (_a = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _a !== void 0 ? _a : "";
-        let id = (_b = $(`.c-image-hover > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
-        if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
-            mangas.push(createMangaTile({
-                id: id,
-                image: image,
-                title: createIconText({
-                    text: title,
-                }),
-                subtitleText: createIconText({
-                    text: (subtitle),
-                }),
-            }));
-            collectedIds.push(id);
+    if (set === 1) {
+        for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
+            let title = $(`.post-title > h3 > a`, obj).text().trim();
+            let subtitle = $(`.chapter > a`, obj).text().trim();
+            const image = (_a = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _a !== void 0 ? _a : "";
+            let id = (_b = $(`.c-image-hover > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
+            if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
+                mangas.push(createMangaTile({
+                    id: id,
+                    image: image,
+                    title: createIconText({
+                        text: title,
+                    }),
+                    subtitleText: createIconText({
+                        text: (subtitle),
+                    }),
+                }));
+                collectedIds.push(id);
+            }
+        }
+    }
+    else {
+        for (let obj of $('.page-listing-item > .row > .col-12', '.tab-content-wrap').toArray()) {
+            let title = $(`.post-title > h3 > a`, obj).text().trim();
+            let subtitle = $(`.chapter > a`, obj).text().trim();
+            const image = (_c = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _c !== void 0 ? _c : "";
+            let id = (_d = $(`.c-image-hover > a`, obj).attr('href')) !== null && _d !== void 0 ? _d : title;
+            if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
+                mangas.push(createMangaTile({
+                    id: id,
+                    image: image,
+                    title: createIconText({
+                        text: title,
+                    }),
+                    subtitleText: createIconText({
+                        text: (subtitle),
+                    }),
+                }));
+                collectedIds.push(id);
+            }
         }
     }
     return mangas;
