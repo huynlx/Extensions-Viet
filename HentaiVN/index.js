@@ -991,7 +991,7 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
         }));
     }
     sections[2].items = staffPick;
-    sectionCallback(sections[2]);
+    // sectionCallback(sections[2]);
 };
 exports.parseRandomSections = ($, sections, sectionCallback) => {
     var _a;
