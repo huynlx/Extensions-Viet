@@ -636,13 +636,25 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             let creator = '';
             let status = 1; //completed, 1 = Ongoing
             let desc = $('.description-summary > .summary__content').text();
-            for (const t of $('.post-content > div:nth-child(8) > .summary-content a').toArray()) {
-                const genre = $(t).text().trim();
-                const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
-                tags.push(createTag({ label: genre, id }));
+            for (const test of $('.post-content_item', '.post-content').toArray()) {
+                switch ($('.summary-heading > h5', test).text().trim()) {
+                    case 'Tác giả':
+                        creator = $('.author-content', test).text();
+                        break;
+                    case 'Thể loại':
+                        for (const t of $('.genres-content > a', test).toArray()) {
+                            const genre = $(t).text().trim();
+                            const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
+                            tags.push(createTag({ label: genre, id }));
+                        }
+                        break;
+                    case 'Tình trạng':
+                        status = $('.summary-content', test).text().trim().toLowerCase().includes("đang") ? 1 : 0;
+                        break;
+                    default:
+                        break;
+                }
             }
-            creator = $('.info > p:nth-child(1) > span').text();
-            status = $('.post-status > div:nth-child(2) > .summary-content').text().trim().toLowerCase().includes("đang") ? 1 : 0;
             const image = (_c = (_b = $('.tab-summary img').attr('data-src')) === null || _b === void 0 ? void 0 : _b.replace('-193x278', '')) !== null && _c !== void 0 ? _c : "";
             return createManga({
                 id: mangaId,
@@ -1142,7 +1154,7 @@ exports.parseSearch = ($, set) => {
             if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
                 mangas.push(createMangaTile({
                     id: id,
-                    image: image.replace('110x150', '193x278'),
+                    image: image.replace('-110x150', ''),
                     title: createIconText({
                         text: title,
                     }),
