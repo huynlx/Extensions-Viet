@@ -656,13 +656,13 @@ class TruyenVN extends paperback_extensions_common_1.Source {
         const chapters = [];
         var i = 0;
         for (const obj of $("#chapterList > a").toArray().reverse()) {
-            var chapNum = parseFloat($('span:first-child', obj).text().trim().split(' ')[1]);
+            var chapNum = parseFloat($('span:nth-child(1)', obj).text().trim().split(' ')[1]);
             i++;
-            var time = $('span:last-child', obj).split('/');
+            var time = $('span:nth-child(2)', obj).split('/');
             chapters.push(createChapter({
                 id: $(obj).first().attr('href'),
                 chapNum: chapNum,
-                name: $('span:first-child', obj).text().trim(),
+                name: $('span:nth-child(1)', obj).text().trim(),
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
                 time: new Date(time[1] + '/' + time[0] + '/' + time[2])
