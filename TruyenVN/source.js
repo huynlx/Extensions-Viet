@@ -752,8 +752,8 @@ class TruyenVN extends paperback_extensions_common_1.Source {
         for (let obj of $('a', '.container > section#home').toArray()) {
             let title = $(`h2.name > span`, obj).text().trim();
             let subtitle = $(`.badge > h3`, obj).text().trim();
-            const image = $(`a > img`, obj).css('background');
-            const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+            const image = $(obj).css('background-image');
+            const bg = image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
             let id = (_b = $(obj).attr("href")) !== null && _b !== void 0 ? _b : title;
             topItems.push(createMangaTile({
                 id: id,
