@@ -581,15 +581,6 @@ __exportStar(require("./RawData"), exports);
 
 },{"./Chapter":14,"./ChapterDetails":13,"./Constants":15,"./DynamicUI":31,"./HomeSection":32,"./Languages":33,"./Manga":36,"./MangaTile":34,"./MangaUpdate":35,"./PagedResults":37,"./RawData":38,"./RequestHeaders":39,"./RequestInterceptor":40,"./RequestManager":41,"./RequestObject":42,"./ResponseObject":43,"./SearchField":44,"./SearchRequest":45,"./SourceInfo":46,"./SourceManga":47,"./SourceStateManager":48,"./SourceTag":49,"./TagSection":50,"./TrackedManga":52,"./TrackedMangaChapterReadAction":51,"./TrackerActionQueue":53}],55:[function(require,module,exports){
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -623,259 +614,236 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             requestsPerSecond: 5,
             requestTimeout: 20000
         });
-        // getCloudflareBypassRequest() {
-        //     return createRequestObject({
-        //         url: `${DOMAIN}`,
-        //         method: 'GET',
-        //     })
-        // }
     }
     getMangaShareUrl(mangaId) { return `${DOMAIN}${mangaId}`; }
     ;
-    getMangaDetails(mangaId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const request = createRequestObject({
-                url: `${DOMAIN}`,
-                method,
-                param: mangaId.split("::")[0],
-            });
-            const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
-            return HentaiVNParser_1.parseMangaDetails($, mangaId);
+    async getMangaDetails(mangaId) {
+        const request = createRequestObject({
+            url: `${DOMAIN}`,
+            method,
+            param: mangaId.split("::")[0],
         });
+        const response = await this.requestManager.schedule(request, 1);
+        const $ = this.cheerio.load(response.data);
+        return HentaiVNParser_1.parseMangaDetails($, mangaId);
     }
-    getChapters(mangaId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const request = createRequestObject({
-                url: `${DOMAIN}`,
-                method,
-                param: mangaId.split("::")[0],
-            });
-            const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
-            return HentaiVNParser_1.parseChapters($, mangaId);
+    async getChapters(mangaId) {
+        const request = createRequestObject({
+            url: `${DOMAIN}`,
+            method,
+            param: mangaId.split("::")[0],
         });
+        const response = await this.requestManager.schedule(request, 1);
+        const $ = this.cheerio.load(response.data);
+        return HentaiVNParser_1.parseChapters($, mangaId);
     }
-    getChapterDetails(mangaId, chapterId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const request = createRequestObject({
-                url: `${DOMAIN}`,
-                method,
-                param: chapterId,
-            });
-            const response = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(response.data);
-            return HentaiVNParser_1.parseChapterDetails($, mangaId, chapterId);
+    async getChapterDetails(mangaId, chapterId) {
+        const request = createRequestObject({
+            url: `${DOMAIN}`,
+            method,
+            param: chapterId,
         });
+        const response = await this.requestManager.schedule(request, 1);
+        let $ = this.cheerio.load(response.data);
+        return HentaiVNParser_1.parseChapterDetails($, mangaId, chapterId);
     }
-    getHomePageSections(sectionCallback) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const section0 = createHomeSection({ id: 'featured', title: 'Tiêu điểm', type: paperback_extensions_common_1.HomeSectionType.featured });
-            const section5 = createHomeSection({ id: 'random', title: 'Truyện ngẫu nhiên', view_more: false });
-            const section1 = createHomeSection({ id: 'recently-updated', title: 'Mới cập nhật', view_more: true });
-            const section2 = createHomeSection({ id: 'popular', title: 'Tiêu điểm', view_more: true });
-            const section3 = createHomeSection({ id: 'recently_added', title: 'Truyện mới đăng', view_more: true });
-            const sections = [section0, section5, section1, section2, section3];
-            let request = createRequestObject({
-                url: `${DOMAIN}`,
-                method,
-            });
-            let response = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(response.data);
-            HentaiVNParser_1.parseHomeSections($, sections, sectionCallback);
-            //random
-            request = createRequestObject({
-                url: DOMAIN + 'list-random.php',
-                method: 'POST',
-                headers: {
-                    'content-type': 'application/x-www-form-urlencoded'
-                }
-            });
-            response = yield this.requestManager.schedule(request, 1);
-            $ = this.cheerio.load(response.data);
-            HentaiVNParser_1.parseRandomSections($, sections, sectionCallback);
-            //added
-            request = createRequestObject({
-                url: `${DOMAIN}danh-sach.html`,
-                method,
-            });
-            response = yield this.requestManager.schedule(request, 1);
-            $ = this.cheerio.load(response.data);
-            HentaiVNParser_1.parseAddedSections($, sections, sectionCallback);
-            //popular
-            request = createRequestObject({
-                url: `${DOMAIN}tieu-diem.html`,
-                method,
-            });
-            response = yield this.requestManager.schedule(request, 1);
-            $ = this.cheerio.load(response.data);
-            HentaiVNParser_1.parsePopularSections($, sections, sectionCallback);
+    async getHomePageSections(sectionCallback) {
+        const section0 = createHomeSection({ id: 'featured', title: 'Tiêu điểm', type: paperback_extensions_common_1.HomeSectionType.featured });
+        const section5 = createHomeSection({ id: 'random', title: 'Truyện ngẫu nhiên', view_more: false });
+        const section1 = createHomeSection({ id: 'recently-updated', title: 'Mới cập nhật', view_more: true });
+        const section2 = createHomeSection({ id: 'popular', title: 'Tiêu điểm', view_more: true });
+        const section3 = createHomeSection({ id: 'recently_added', title: 'Truyện mới đăng', view_more: true });
+        const sections = [section0, section5, section1, section2, section3];
+        let request = createRequestObject({
+            url: `${DOMAIN}`,
+            method,
         });
-    }
-    getViewMoreItems(homepageSectionId, metadata) {
-        var _a;
-        return __awaiter(this, void 0, void 0, function* () {
-            let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            let select = 1;
-            let param = '';
-            let url = '';
-            switch (homepageSectionId) {
-                case "recently-updated":
-                    url = `${DOMAIN}`;
-                    param = `?page=${page}`;
-                    select = 1;
-                    break;
-                case "recently_added":
-                    url = `${DOMAIN}danh-sach.html`;
-                    param = `?page=${page}`;
-                    select = 2;
-                    break;
-                case "popular":
-                    url = `${DOMAIN}tieu-diem.html`;
-                    param = `?page=${page}`;
-                    select = 3;
-                    break;
-                default:
-                    return Promise.resolve(createPagedResults({ results: [] }));
+        let response = await this.requestManager.schedule(request, 1);
+        let $ = this.cheerio.load(response.data);
+        HentaiVNParser_1.parseHomeSections($, sections, sectionCallback);
+        request = createRequestObject({
+            url: DOMAIN + 'list-random.php',
+            method: 'POST',
+            headers: {
+                'content-type': 'application/x-www-form-urlencoded'
             }
-            const request = createRequestObject({
-                url,
-                method,
-                param
-            });
-            const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
-            const manga = HentaiVNParser_1.parseViewMore($, select);
-            metadata = !HentaiVNParser_1.isLastPage($) ? { page: page + 1 } : undefined;
-            return createPagedResults({
-                results: manga,
-                metadata,
-            });
+        });
+        response = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(response.data);
+        HentaiVNParser_1.parseRandomSections($, sections, sectionCallback);
+        request = createRequestObject({
+            url: `${DOMAIN}danh-sach.html`,
+            method,
+        });
+        response = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(response.data);
+        HentaiVNParser_1.parseAddedSections($, sections, sectionCallback);
+        request = createRequestObject({
+            url: `${DOMAIN}tieu-diem.html`,
+            method,
+        });
+        response = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(response.data);
+        HentaiVNParser_1.parsePopularSections($, sections, sectionCallback);
+    }
+    async getViewMoreItems(homepageSectionId, metadata) {
+        var _a;
+        let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
+        let select = 1;
+        let param = '';
+        let url = '';
+        switch (homepageSectionId) {
+            case "recently-updated":
+                url = `${DOMAIN}`;
+                param = `?page=${page}`;
+                select = 1;
+                break;
+            case "recently_added":
+                url = `${DOMAIN}danh-sach.html`;
+                param = `?page=${page}`;
+                select = 2;
+                break;
+            case "popular":
+                url = `${DOMAIN}tieu-diem.html`;
+                param = `?page=${page}`;
+                select = 3;
+                break;
+            default:
+                return Promise.resolve(createPagedResults({ results: [] }));
+        }
+        const request = createRequestObject({
+            url,
+            method,
+            param
+        });
+        const response = await this.requestManager.schedule(request, 1);
+        const $ = this.cheerio.load(response.data);
+        const manga = HentaiVNParser_1.parseViewMore($, select);
+        metadata = !HentaiVNParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+        return createPagedResults({
+            results: manga,
+            metadata,
         });
     }
-    getSearchResults(query, metadata) {
+    async getSearchResults(query, metadata) {
         var _a, _b, _c, _d, _e;
-        return __awaiter(this, void 0, void 0, function* () {
-            let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            const tag = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
-            var url = '';
-            if (query.title) {
-                url = `${DOMAIN}tim-kiem-truyen.html?key=${encodeURI(query.title)}`; //encodeURI để search được chữ có dấu
+        let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
+        const tag = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
+        var url = '';
+        if (query.title) {
+            url = `${DOMAIN}tim-kiem-truyen.html?key=${encodeURI(query.title)}`;
+        }
+        else {
+            if (tag[0].includes('https')) {
+                url = tag[0].split('?')[0];
             }
             else {
-                if (tag[0].includes('https')) {
-                    url = tag[0].split('?')[0];
-                }
-                else {
-                    url = `${DOMAIN}${tag[0]}?`;
-                }
+                url = `${DOMAIN}${tag[0]}?`;
             }
-            var request = createRequestObject({
+        }
+        var request = createRequestObject({
+            url,
+            method
+        });
+        if (query.title) {
+            request = createRequestObject({
                 url,
-                method
+                method,
+                param: `&page=${page}`
             });
-            if (query.title) {
+        }
+        else {
+            if (tag[0].includes('https')) {
+                request = createRequestObject({
+                    url,
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/x-www-form-urlencoded'
+                    },
+                    data: {
+                        'idviewtop': tag[0].split('?')[1]
+                    }
+                });
+            }
+            else {
                 request = createRequestObject({
                     url,
                     method,
                     param: `&page=${page}`
                 });
             }
-            else {
-                if (tag[0].includes('https')) {
-                    request = createRequestObject({
-                        url,
-                        method: 'POST',
-                        headers: {
-                            'content-type': 'application/x-www-form-urlencoded'
-                        },
-                        data: {
-                            'idviewtop': tag[0].split('?')[1]
-                        }
-                    });
-                }
-                else {
-                    request = createRequestObject({
-                        url,
+        }
+        var manga = [];
+        const response = await this.requestManager.schedule(request, 1);
+        const $ = this.cheerio.load(response.data);
+        if (query.title) {
+            manga = HentaiVNParser_1.parseSearch($);
+        }
+        else {
+            if (tag[0].includes('https')) {
+                for (let obj of $('li').toArray()) {
+                    const id = (_e = (_d = $('.view-top-1 > a', obj).attr('href')) === null || _d === void 0 ? void 0 : _d.split('/').pop()) !== null && _e !== void 0 ? _e : "";
+                    const title = $('.view-top-1 > a', obj).text();
+                    const subtitle = $(".view-top-2", obj).text().trim();
+                    let request2 = createRequestObject({
+                        url: DOMAIN + id,
                         method,
-                        param: `&page=${page}`
                     });
+                    let response = await this.requestManager.schedule(request2, 1);
+                    let $2 = this.cheerio.load(response.data);
+                    let image = $2('.page-ava > img').attr('src');
+                    manga.push(createMangaTile({
+                        id: encodeURIComponent(id) + "::" + image,
+                        image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
+                        title: createIconText({ text: title }),
+                        subtitleText: createIconText({ text: subtitle }),
+                    }));
                 }
             }
-            var manga = [];
-            const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
-            if (query.title) {
+            else {
                 manga = HentaiVNParser_1.parseSearch($);
             }
-            else {
-                if (tag[0].includes('https')) {
-                    for (let obj of $('li').toArray()) {
-                        const id = (_e = (_d = $('.view-top-1 > a', obj).attr('href')) === null || _d === void 0 ? void 0 : _d.split('/').pop()) !== null && _e !== void 0 ? _e : "";
-                        const title = $('.view-top-1 > a', obj).text();
-                        const subtitle = $(".view-top-2", obj).text().trim();
-                        let request2 = createRequestObject({
-                            url: DOMAIN + id,
-                            method,
-                        });
-                        let response = yield this.requestManager.schedule(request2, 1);
-                        let $2 = this.cheerio.load(response.data);
-                        let image = $2('.page-ava > img').attr('src');
-                        manga.push(createMangaTile({
-                            id: encodeURIComponent(id) + "::" + image,
-                            image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
-                            title: createIconText({ text: title }),
-                            subtitleText: createIconText({ text: subtitle }),
-                        }));
-                    }
-                }
-                else {
-                    manga = HentaiVNParser_1.parseSearch($);
-                }
+        }
+        if (query.title) {
+            metadata = !HentaiVNParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+        }
+        else {
+            if (tag[0].includes('https')) {
+                metadata = undefined;
             }
-            if (query.title) {
+            else {
                 metadata = !HentaiVNParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             }
-            else {
-                if (tag[0].includes('https')) {
-                    metadata = undefined;
-                }
-                else {
-                    metadata = !HentaiVNParser_1.isLastPage($) ? { page: page + 1 } : undefined;
-                }
-            }
-            return createPagedResults({
-                results: manga,
-                metadata
-            });
+        }
+        return createPagedResults({
+            results: manga,
+            metadata
         });
     }
-    getSearchTags() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const topView = [
-                {
-                    label: 'Top View Ngày',
-                    id: DOMAIN + 'list-top.php?1'
-                },
-                {
-                    label: 'Top View Tuần',
-                    id: DOMAIN + 'list-top.php?2'
-                },
-                {
-                    label: 'Top View Tháng',
-                    id: DOMAIN + 'list-top.php?3'
-                },
-                {
-                    label: 'Top View All',
-                    id: DOMAIN + 'list-top.php?4'
-                }
-            ];
-            const tagSections = [
-                createTagSection({ id: '0', label: 'Bảng Xếp Hạng', tags: topView.map(x => createTag(x)) }),
-                createTagSection({ id: '1', label: 'Thể Loại', tags: tags_json_1.default.map(x => createTag(x)) })
-            ];
-            return tagSections;
-        });
+    async getSearchTags() {
+        const topView = [
+            {
+                label: 'Top View Ngày',
+                id: DOMAIN + 'list-top.php?1'
+            },
+            {
+                label: 'Top View Tuần',
+                id: DOMAIN + 'list-top.php?2'
+            },
+            {
+                label: 'Top View Tháng',
+                id: DOMAIN + 'list-top.php?3'
+            },
+            {
+                label: 'Top View All',
+                id: DOMAIN + 'list-top.php?4'
+            }
+        ];
+        const tagSections = [
+            createTagSection({ id: '0', label: 'Bảng Xếp Hạng', tags: topView.map(x => createTag(x)) }),
+            createTagSection({ id: '1', label: 'Thể Loại', tags: tags_json_1.default.map(x => createTag(x)) })
+        ];
+        return tagSections;
     }
     globalRequestHeaders() {
         return {
@@ -890,12 +858,12 @@ exports.HentaiVN = HentaiVN;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.parsePopularSections = exports.parseAddedSections = exports.parseRandomSections = exports.parseHomeSections = exports.parseChapterDetails = exports.parseChapters = exports.parseMangaDetails = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
-const entities = require("entities"); //Import package for decoding HTML entities
+const entities = require("entities");
 exports.parseMangaDetails = ($, mangaId) => {
     var _a;
     let tags = [];
     let creator = '';
-    let status = 1; //completed, 1 = Ongoing
+    let status = 1;
     let desc = '';
     for (const obj of $('p', '.page-info').toArray()) {
         switch ($('span.info:first-child', obj).text().trim()) {
@@ -973,7 +941,6 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
     var _a, _b;
     for (const section of sections)
         sectionCallback(section);
-    //featured
     let featured = [];
     for (let manga of $('li', '.block-top').toArray()) {
         const title = $('.box-description h2', manga).first().text();
@@ -992,7 +959,6 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
     }
     sections[0].items = featured;
     sectionCallback(sections[0]);
-    //Recently Updated
     let staffPick = [];
     for (let manga of $('ul', 'ul.page-item').toArray()) {
         const title = $('span > a > h2', manga).first().text();
@@ -1014,7 +980,6 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
 };
 exports.parseRandomSections = ($, sections, sectionCallback) => {
     var _a;
-    //Random
     let random = [];
     for (let manga of $('li', '.page-random').toArray()) {
         const title = $('.des-same > a > b', manga).text();
@@ -1036,7 +1001,6 @@ exports.parseRandomSections = ($, sections, sectionCallback) => {
 };
 exports.parseAddedSections = ($, sections, sectionCallback) => {
     var _a;
-    //Recently Added
     let added = [];
     for (let manga of $('.item', '.block-item').toArray()) {
         const title = $('.box-description > p > a', manga).text();
@@ -1058,7 +1022,6 @@ exports.parseAddedSections = ($, sections, sectionCallback) => {
 };
 exports.parsePopularSections = ($, sections, sectionCallback) => {
     var _a;
-    //popular
     let popular = [];
     for (let manga of $('.item', '.block-item').toArray()) {
         const title = $('.box-description > p > a', manga).text();
