@@ -694,7 +694,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
         var _a, _b, _c, _d;
         let featured = createHomeSection({
             id: 'featured',
-            title: "Top",
+            title: "On Top",
             type: paperback_extensions_common_1.HomeSectionType.featured
         });
         let hot = createHomeSection({
@@ -855,10 +855,9 @@ class TruyenVN extends paperback_extensions_common_1.Source {
         let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
         const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
         const search = {
-            genres: '',
-            status: "0",
-            sort: "last_update",
-            name: (_d = query.title) !== null && _d !== void 0 ? _d : ''
+            top: '',
+            name: (_d = query.title) !== null && _d !== void 0 ? _d : '',
+            genres: ''
         };
         tags.map((value) => {
             if (value.indexOf('.') === -1) {
@@ -866,17 +865,21 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             }
             else {
                 switch (value.split(".")[0]) {
-                    case 'sort':
-                        search.sort = (value.split(".")[1]);
-                        break;
-                    case 'status':
-                        search.status = (value.split(".")[1]);
+                    case 'top':
+                        search.top = (value.split(".")[1]);
                         break;
                 }
             }
         });
+        var url = '';
+        if (search.name) {
+            url = `https://truyenvn.tv/danh-sach-truyen/page/${page}?q=${search.name}`;
+        }
+        else {
+            url = tags[0] + `/page/${page}`;
+        }
         const request = createRequestObject({
-            url: (tags[0] === 'all' ? (DOMAIN + 'danh-sach-truyen.html?') : encodeURI(`${DOMAIN}danh-sach-truyen.html?status=${search.status}&name=${search.name}&genre=${search.genres}&sort=${search.sort}`)),
+            url,
             method: "GET",
             param: encodeURI(`&page=${page}`)
         });
@@ -952,16 +955,16 @@ exports.generateSearch = (query) => {
     return encodeURI(keyword);
 };
 exports.parseSearch = ($) => {
-    var _a;
+    var _a, _b, _c;
     const mangas = [];
-    for (let obj of $('li', 'ul#danhsachtruyen').toArray()) {
-        let title = $(`.info-bottom > a`, obj).text().trim();
-        let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
-        var image = $('a', obj).first().attr('data-src');
-        let id = (_a = $(`.info-bottom > a`, obj).attr("href")) !== null && _a !== void 0 ? _a : title;
+    for (let obj of $('.entry ', '.form-row').toArray()) {
+        let title = (_a = $(`a`, obj).attr('title')) !== null && _a !== void 0 ? _a : "";
+        let subtitle = $(`span.link`, obj).text().trim();
+        const image = (_b = $(`a > img`, obj).attr('data-src')) !== null && _b !== void 0 ? _b : "";
+        let id = (_c = $(`a`, obj).attr("href")) !== null && _c !== void 0 ? _c : title;
         mangas.push(createMangaTile({
             id: id,
-            image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://saytruyen.net/' + image)),
+            image,
             title: createIconText({ text: decodeHTMLEntity(title) }),
             subtitleText: createIconText({ text: subtitle }),
         }));
