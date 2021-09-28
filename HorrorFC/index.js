@@ -622,6 +622,7 @@ class HorrorFC extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
         this.parser = new HorrorFCParser_1.Parser();
+        this.count = '';
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
             requestTimeout: 20000
@@ -706,6 +707,7 @@ class HorrorFC extends paperback_extensions_common_1.Source {
             });
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
+            this.count = $('a.item > span:nth-child(2)').text().trim();
             viewest.items = this.parser.parsePopularSection($);
             sectionCallback(viewest);
         });
@@ -741,7 +743,7 @@ class HorrorFC extends paperback_extensions_common_1.Source {
     }
     getSearchTags() {
         return __awaiter(this, void 0, void 0, function* () {
-            const tags = [{ 'id': 'https://horrorfc.net/', 'label': 'Tất Cả' }];
+            const tags = [{ 'id': 'https://horrorfc.net/', 'label': 'Tất Cả (' + this.count + ')' }];
             const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) })];
             return tagSections;
         });
