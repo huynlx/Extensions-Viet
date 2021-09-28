@@ -647,7 +647,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
                             const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                             tags.push(createTag({ label: genre, id }));
                         }
-                        status = $('.color-red', test.next()).text().toLowerCase().includes("đang") ? 1 : 0;
+                        status = $('.color-red', $(test).next()).text().toLowerCase().includes("đang") ? 1 : 0;
                         break;
                     default:
                         break;
