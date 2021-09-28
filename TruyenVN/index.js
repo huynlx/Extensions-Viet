@@ -632,7 +632,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             tags.push(createTag({ label: genre, id }));
         }
         creator = $('.author > a').text().trim();
-        status = $('.status').clone().children().remove().end().text().trim().toLowerCase().includes("1") ? 1 : 0;
+        status = $('.status').clone().children().remove().end().text().trim().toLowerCase().includes("hoàn thành") ? 0 : 1;
         const image = $('.book  > img').attr('src');
         return createManga({
             id: mangaId,
@@ -670,7 +670,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
     }
     async getChapterDetails(mangaId, chapterId) {
         const request = createRequestObject({
-            url: encodeURI(`${chapterId}`),
+            url: `${chapterId}`,
             method
         });
         const response = await this.requestManager.schedule(request, 1);
