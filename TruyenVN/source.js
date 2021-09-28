@@ -672,7 +672,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
     }
     async getChapterDetails(mangaId, chapterId) {
         const request = createRequestObject({
-            url: encodeURI(`${chapterId}`),
+            url: (`${chapterId}`),
             method
         });
         const response = await this.requestManager.schedule(request, 1);
