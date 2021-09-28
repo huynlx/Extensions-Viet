@@ -588,7 +588,7 @@ const TruyenVNParser_1 = require("./TruyenVNParser");
 const DOMAIN = 'https://truyenvn.tv/';
 const method = 'GET';
 exports.TruyenVNInfo = {
-    version: '2.0.0',
+    version: '1.0.0',
     name: 'TruyenVN',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -718,7 +718,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
         let hotItems = [];
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        for (let obj of $('.entry', '#home > section:nth-child(2) .form-row').toArray()) {
+        for (let obj of $('.entry', '.container > section:nth-child(2) .form-row').toArray()) {
             let title = $(`h3.name > a`, obj).text().trim();
             let subtitle = $(`span.link`, obj).text().trim();
             const image = $(`a > img`, obj).attr('data-src');
@@ -858,252 +858,46 @@ class TruyenVN extends paperback_extensions_common_1.Source {
         });
     }
     async getSearchTags() {
-        const tags = [
-            {
-                "id": "all",
-                "label": "Tất cả"
-            },
-            {
-                "id": "18",
-                "label": "18+"
-            },
-            {
-                "id": "action",
-                "label": "Action"
-            },
-            {
-                "id": "adult",
-                "label": "Adult"
-            },
-            {
-                "id": "adventure",
-                "label": "Adventure"
-            },
-            {
-                "id": "anime",
-                "label": "Anime"
-            },
-            {
-                "id": "chuyển sinh",
-                "label": "Chuyển Sinh"
-            },
-            {
-                "id": "comedy",
-                "label": "Comedy"
-            },
-            {
-                "id": "comic",
-                "label": "Comic"
-            },
-            {
-                "id": "cooking",
-                "label": "Cooking"
-            },
-            {
-                "id": "cổ đại",
-                "label": "Cổ Đại"
-            },
-            {
-                "id": "doujinshi",
-                "label": "Doujinshi"
-            },
-            {
-                "id": "drama",
-                "label": "Drama"
-            },
-            {
-                "id": "đam mỹ",
-                "label": "Đam Mỹ"
-            },
-            {
-                "id": "ecchi",
-                "label": "Ecchi"
-            },
-            {
-                "id": "fantasy",
-                "label": "Fantasy"
-            },
-            {
-                "id": "gender bender",
-                "label": "Gender Bender"
-            },
-            {
-                "id": "harem",
-                "label": "Harem"
-            },
-            {
-                "id": "historical",
-                "label": "Historical"
-            },
-            {
-                "id": "horror",
-                "label": "Horror"
-            },
-            {
-                "id": "isekai",
-                "label": "Isekai"
-            },
-            {
-                "id": "josei",
-                "label": "Josei"
-            },
-            {
-                "id": "live action",
-                "label": "Live action"
-            },
-            {
-                "id": "manga",
-                "label": "Manga"
-            },
-            {
-                "id": "manhua",
-                "label": "Manhua"
-            },
-            {
-                "id": "manhwa",
-                "label": "Manhwa"
-            },
-            {
-                "id": "martial arts",
-                "label": "Martial Arts"
-            },
-            {
-                "id": "mature",
-                "label": "Mature"
-            },
-            {
-                "id": "mecha",
-                "label": "Mecha"
-            },
-            {
-                "id": "mystery",
-                "label": "Mystery"
-            },
-            {
-                "id": "ngôn tình",
-                "label": "Ngôn Tình"
-            },
-            {
-                "id": "one shot",
-                "label": "One shot"
-            },
-            {
-                "id": "psychological",
-                "label": "Psychological"
-            },
-            {
-                "id": "romance",
-                "label": "Romance"
-            },
-            {
-                "id": "school life",
-                "label": "School Life"
-            },
-            {
-                "id": "sci-fi",
-                "label": "Sci-fi"
-            },
-            {
-                "id": "seinen",
-                "label": "Seinen"
-            },
-            {
-                "id": "shoujo",
-                "label": "Shoujo"
-            },
-            {
-                "id": "shoujo ai",
-                "label": "Shoujo Ai"
-            },
-            {
-                "id": "shounen",
-                "label": "Shounen"
-            },
-            {
-                "id": "shounen ai",
-                "label": "Shounen Ai"
-            },
-            {
-                "id": "slice of life",
-                "label": "Slice of Life"
-            },
-            {
-                "id": "smut",
-                "label": "Smut"
-            },
-            {
-                "id": "soft yaoi",
-                "label": "Soft Yaoi"
-            },
-            {
-                "id": "soft yuri",
-                "label": "Soft Yuri"
-            },
-            {
-                "id": "sports",
-                "label": "Sports"
-            },
-            {
-                "id": "supernatural",
-                "label": "Supernatural"
-            },
-            {
-                "id": "tragedy",
-                "label": "Tragedy"
-            },
-            {
-                "id": "trinh thám",
-                "label": "Trinh Thám"
-            },
-            {
-                "id": "truyện màu",
-                "label": "Truyện Màu"
-            },
-            {
-                "id": "webtoon",
-                "label": "Webtoon"
-            },
-            {
-                "id": "xuyên không",
-                "label": "Xuyên Không"
-            }
-        ];
+        var _a;
+        const tags = [];
+        const request = createRequestObject({
+            url: 'https://truyenvn.tv/the-loai-truyen',
+            method: "GET",
+        });
+        const data = await this.requestManager.schedule(request, 1);
+        let $ = this.cheerio.load(data.data);
+        for (const tag of $('.theloai a').toArray()) {
+            const label = $(tag).text().trim();
+            const id = (_a = $(tag).attr('href')) !== null && _a !== void 0 ? _a : label;
+            if (!id || !label)
+                continue;
+            tags.push({ id: id, label: label });
+        }
         const tags1 = [
             {
-                "id": "status.0",
-                "label": "Tất Cả"
+                "id": "top.https://truyenvn.tv/truyen-hot",
+                "label": "Top All"
             },
             {
-                "id": "status.2",
-                "label": "Đang Tiến Hành"
+                "id": "top.https://truyenvn.tv/top-ngay",
+                "label": "Top Ngày"
             },
             {
-                "id": "status.1",
-                "label": "Đã Hoàn Thành"
-            }
-        ];
-        const tags2 = [
-            {
-                "id": "sort.name",
-                "label": "Tên Truyện"
+                "id": "top.https://truyenvn.tv/top-tuan",
+                "label": "Top Tuần"
             },
             {
-                "id": "sort.views",
-                "label": "Lượt Xem"
+                "id": "top.https://truyenvn.tv/top-thang",
+                "label": "Top Tháng"
             },
             {
-                "id": "sort.last_update",
-                "label": "Ngày Cập Nhật"
-            },
-            {
-                "id": "sort.id",
-                "label": " Truyện Mới"
+                "id": "top.https://truyenvn.tv/top-nam",
+                "label": "Top Năm"
             }
         ];
         const tagSections = [
             createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
-            createTagSection({ id: '1', label: 'Trạng Thái', tags: tags1.map(x => createTag(x)) }),
-            createTagSection({ id: '2', label: 'Xếp Theo', tags: tags2.map(x => createTag(x)) }),
+            createTagSection({ id: '1', label: 'Bảng Xếp Hạng', tags: tags1.map(x => createTag(x)) })
         ];
         return tagSections;
     }
