@@ -691,7 +691,12 @@ class TruyenVN extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
+        let featured = createHomeSection({
+            id: 'featured',
+            title: "Truyện Đề Cử",
+            type: paperback_extensions_common_1.HomeSectionType.featured
+        });
         let hot = createHomeSection({
             id: 'hot',
             title: "Truyện Đề Cử",
@@ -707,6 +712,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             title: "Truyện Full (Đã hoàn thành)",
             view_more: true,
         });
+        sectionCallback(featured);
         sectionCallback(hot);
         sectionCallback(newUpdated);
         sectionCallback(newAdded);
@@ -736,6 +742,32 @@ class TruyenVN extends paperback_extensions_common_1.Source {
         }
         hot.items = hotItems;
         sectionCallback(hot);
+        request = createRequestObject({
+            url: DOMAIN,
+            method: "GET",
+        });
+        let topItems = [];
+        data = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(data.data);
+        for (let obj of $('a', '.container > section#home').toArray()) {
+            let title = $(`h2.name > span`, obj).text().trim();
+            let subtitle = $(`.badge > h3`, obj).text().trim();
+            const image = $(`a > img`, obj).css('background');
+            const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+            let id = (_b = $(obj).attr("href")) !== null && _b !== void 0 ? _b : title;
+            topItems.push(createMangaTile({
+                id: id,
+                image: bg,
+                title: createIconText({
+                    text: title,
+                }),
+                subtitleText: createIconText({
+                    text: subtitle,
+                }),
+            }));
+        }
+        featured.items = topItems;
+        sectionCallback(featured);
         url = '';
         request = createRequestObject({
             url: 'https://truyenvn.tv/danh-sach-truyen',
@@ -748,7 +780,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             let title = $(`a`, obj).attr('title');
             let subtitle = $(`span.link`, obj).text().trim();
             const image = $(`a > img`, obj).attr('data-src');
-            let id = (_b = $(`a`, obj).attr("href")) !== null && _b !== void 0 ? _b : title;
+            let id = (_c = $(`a`, obj).attr("href")) !== null && _c !== void 0 ? _c : title;
             newUpdatedItems.push(createMangaTile({
                 id: id,
                 image: image,
@@ -774,7 +806,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             let title = $(`a`, obj).attr('title');
             let subtitle = $(`span.link`, obj).text().trim();
             const image = $(`a > img`, obj).attr('data-src');
-            let id = (_c = $(`a`, obj).attr("href")) !== null && _c !== void 0 ? _c : title;
+            let id = (_d = $(`a`, obj).attr("href")) !== null && _d !== void 0 ? _d : title;
             newAddItems.push(createMangaTile({
                 id: id,
                 image: image,
