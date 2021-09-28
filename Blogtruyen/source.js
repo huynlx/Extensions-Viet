@@ -751,6 +751,9 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let featuredItems = [];
+            function htmlDecode(value) {
+                return $('<div/>').html(value).text();
+            }
             for (let manga of $('a', 'div#storyPinked').toArray()) {
                 const title = $('p:first-child', $(manga).next()).text().trim();
                 const id = $(manga).attr('href');
@@ -761,8 +764,8 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
                 featuredItems.push(createMangaTile({
                     id: id,
                     image: encodeURI(image),
-                    title: createIconText({ text: unescape(title) }),
-                    subtitleText: createIconText({ text: unescape(subtitle) }),
+                    title: createIconText({ text: htmlDecode(title) }),
+                    subtitleText: createIconText({ text: htmlDecode(subtitle) }),
                 }));
             }
             featured.items = featuredItems;
