@@ -661,7 +661,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
                 author: creator,
                 artist: creator,
                 desc: desc,
-                titles: [$('.entry-title > a').text().trim()],
+                titles: [BlogtruyenParser_1.decodeHTMLEntity($('.entry-title > a').text().trim())],
                 image: encodeURI(image),
                 status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
@@ -693,7 +693,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
                 chapters.push(createChapter({
                     id: $('span.title > a', obj).first().attr('href'),
                     chapNum: i,
-                    name: $('span.title > a', obj).text().trim(),
+                    name: BlogtruyenParser_1.decodeHTMLEntity($('span.title > a', obj).text().trim()),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
                     time: finalTime
@@ -797,10 +797,10 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
                     id: id,
                     image: encodeURI(image.replace('150', '200')),
                     title: createIconText({
-                        text: title,
+                        text: BlogtruyenParser_1.decodeHTMLEntity(title),
                     }),
                     subtitleText: createIconText({
-                        text: subtitle,
+                        text: (subtitle),
                     }),
                 }));
             }
@@ -825,7 +825,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
                     id: id,
                     image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.replace('150_150', '200')),
                     title: createIconText({
-                        text: title,
+                        text: BlogtruyenParser_1.decodeHTMLEntity(title),
                     }),
                     subtitleText: createIconText({
                         text: 'Chương ' + subtitle,
@@ -853,7 +853,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
                     id: id,
                     image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.replace('86_86', '200')),
                     title: createIconText({
-                        text: title,
+                        text: BlogtruyenParser_1.decodeHTMLEntity(title),
                     })
                     // subtitleText: createIconText({
                     //     text: subtitle,
@@ -935,7 +935,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             //the loai
             for (const tag of $('li', '.list-unstyled.row').toArray()) {
-                const label = $(tag).text().trim();
+                const label = BlogtruyenParser_1.decodeHTMLEntity($(tag).text().trim());
                 const id = (_a = $(tag).attr('data-id')) !== null && _a !== void 0 ? _a : label;
                 if (!id || !label)
                     continue;
