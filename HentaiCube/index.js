@@ -651,7 +651,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             author: creator,
             artist: creator,
             desc: desc,
-            titles: [$('.post-title > h1').text().trim()],
+            titles: [HentaiCubeParser_1.decodeHTMLEntity($('.post-title > h1').text().trim())],
             image: image,
             status,
             hentai: true,
