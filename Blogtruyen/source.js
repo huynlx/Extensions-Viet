@@ -639,7 +639,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             for (const test of $('p', '.description').toArray()) {
                 switch ($(test).clone().children().remove().end().text().trim()) {
                     case 'Tác giả:':
-                        creator = $('a', test).text();
+                        creator = BlogtruyenParser_1.decodeHTMLEntity($('a', test).text());
                         break;
                     case 'Thể loại:':
                         for (const t of $('.category > a', test).toArray()) {
@@ -677,9 +677,9 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const chapters = [];
-            var i = 0;
+            // var i = 0;
             for (const obj of $("#list-chapters > p").toArray().reverse()) {
-                i++;
+                // i++;
                 const getTime = $('.publishedDate', obj).text().trim().split(' ');
                 const time = {
                     date: getTime[0],
@@ -690,7 +690,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
                 const finalTime = new Date(fixDate + ' ' + time.time);
                 chapters.push(createChapter({
                     id: $('span.title > a', obj).first().attr('href'),
-                    chapNum: i,
+                    chapNum: Number($('span.title > a', obj).text().trim().split(" ").pop()),
                     name: BlogtruyenParser_1.decodeHTMLEntity($('span.title > a', obj).text().trim()),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
