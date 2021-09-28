@@ -690,7 +690,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
                 const finalTime = new Date(fixDate + ' ' + time.time);
                 chapters.push(createChapter({
                     id: $('span.title > a', obj).first().attr('href'),
-                    chapNum: isNaN(Number($('span.title > a', obj).text().trim().split(" ").pop())) ? i : Number($('span.title > a', obj).text().trim().split(" ").pop()),
+                    chapNum: i,
                     name: BlogtruyenParser_1.decodeHTMLEntity($('span.title > a', obj).text().trim()),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
