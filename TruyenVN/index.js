@@ -718,7 +718,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
         let hotItems = [];
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        for (let obj of $('.entry', '.form-row').toArray()) {
+        for (let obj of $('.entry', '#home > section:nth-child(2) .form-row').toArray()) {
             let title = $(`h3.name > a`, obj).text().trim();
             let subtitle = $(`span.link`, obj).text().trim();
             const image = $(`a > img`, obj).attr('data-src');
