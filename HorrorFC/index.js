@@ -671,8 +671,16 @@ class HorrorFC extends paperback_extensions_common_1.Source {
         });
     }
     getSearchResults(query, metadata) {
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const tiles = [];
+            const tags = (_b = (_a = query.includedTags) === null || _a === void 0 ? void 0 : _a.map(tag => tag.id)) !== null && _b !== void 0 ? _b : [];
+            const request = createRequestObject({
+                url: encodeURI(tags[0]),
+                method: "GET"
+            });
+            const data = yield this.requestManager.schedule(request, 1);
+            let $ = this.cheerio.load(data.data);
+            const tiles = this.parser.parsePopularSection($);
             metadata = undefined;
             return createPagedResults({
                 results: tiles,
@@ -685,7 +693,7 @@ class HorrorFC extends paperback_extensions_common_1.Source {
             let viewest = createHomeSection({
                 id: 'viewest',
                 title: "Projects",
-                view_more: true,
+                view_more: false,
             });
             //Load empty sections
             sectionCallback(viewest);
@@ -729,6 +737,13 @@ class HorrorFC extends paperback_extensions_common_1.Source {
                 results: manga,
                 metadata
             });
+        });
+    }
+    getSearchTags() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const tags = [{ 'id': 'https://horrorfc.net/', 'label': 'Full' }];
+            const tagSections = [createTagSection({ id: '0', label: 'Tất Cả', tags: tags.map(x => createTag(x)) })];
+            return tagSections;
         });
     }
     globalRequestHeaders() {
