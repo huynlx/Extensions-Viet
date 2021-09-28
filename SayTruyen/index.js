@@ -747,7 +747,7 @@ class SayTruyen extends paperback_extensions_common_1.Source {
                 // if (!id || !subtitle) continue;
                 hotItems.push(createMangaTile({
                     id: id,
-                    image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : (DOMAIN + image)),
+                    image: (DOMAIN + image),
                     title: createIconText({
                         text: title,
                     }),
@@ -770,12 +770,12 @@ class SayTruyen extends paperback_extensions_common_1.Source {
             for (let obj of $('li', '#main-content > .wrap-content-part:nth-child(5) > .body-content-part > ul').toArray().splice(0, 15)) {
                 let title = $(`.info-bottom > a`, obj).text().trim();
                 let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
-                const image = $(`a > img`, obj).attr('src');
+                const image = $(`a > img`, obj).attr('data-src');
                 let id = (_b = $(`.info-bottom > a`, obj).attr("href")) !== null && _b !== void 0 ? _b : title;
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
-                    image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : (DOMAIN + image)),
+                    image: (DOMAIN + image),
                     title: createIconText({
                         text: title,
                     }),
@@ -798,7 +798,7 @@ class SayTruyen extends paperback_extensions_common_1.Source {
             for (let obj of $('li', '#main-content > .wrap-content-part:nth-child(7) > .body-content-part > ul').toArray()) {
                 let title = $(`.info-bottom > a`, obj).text().trim();
                 let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
-                const image = $(`a > img`, obj).attr('src');
+                const image = $(`a > img`, obj).attr('data-src');
                 let id = (_c = $(`.info-bottom > a`, obj).attr("href")) !== null && _c !== void 0 ? _c : title;
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
@@ -1134,7 +1134,7 @@ exports.parseViewMore = ($) => {
         if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
             manga.push(createMangaTile({
                 id: encodeURIComponent(id),
-                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://sayhentai.net/' + image)),
+                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://saytruyen.net/' + image)),
                 title: createIconText({ text: decodeHTMLEntity(title) }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
