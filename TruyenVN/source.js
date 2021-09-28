@@ -860,16 +860,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             genres: ''
         };
         tags.map((value) => {
-            if (value.indexOf('.') === -1) {
-                search.genres = value;
-            }
-            else {
-                switch (value.split(".")[0]) {
-                    case 'top':
-                        search.top = (value.split(".")[1]);
-                        break;
-                }
-            }
+            search.genres = value;
         });
         var url = '';
         if (search.name) {
@@ -910,23 +901,23 @@ class TruyenVN extends paperback_extensions_common_1.Source {
         }
         const tags1 = [
             {
-                "id": "top.https://truyenvn.tv/truyen-hot",
+                "id": "https://truyenvn.tv/truyen-hot",
                 "label": "Top All"
             },
             {
-                "id": "top.https://truyenvn.tv/top-ngay",
+                "id": "https://truyenvn.tv/top-ngay",
                 "label": "Top Ngày"
             },
             {
-                "id": "top.https://truyenvn.tv/top-tuan",
+                "id": "https://truyenvn.tv/top-tuan",
                 "label": "Top Tuần"
             },
             {
-                "id": "top.https://truyenvn.tv/top-thang",
+                "id": "https://truyenvn.tv/top-thang",
                 "label": "Top Tháng"
             },
             {
-                "id": "top.https://truyenvn.tv/top-nam",
+                "id": "https://truyenvn.tv/top-nam",
                 "label": "Top Năm"
             }
         ];
