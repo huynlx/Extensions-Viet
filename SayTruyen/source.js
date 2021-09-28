@@ -650,7 +650,7 @@ class SayTruyen extends paperback_extensions_common_1.Source {
                 artist: creator,
                 desc: desc,
                 titles: [$('.wrap-content-info > h1').text().trim()],
-                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://sayhentai.net/' + image)),
+                image: (DOMAIN + image),
                 status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: true,
@@ -692,10 +692,10 @@ class SayTruyen extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(response.data);
             const pages = [];
             for (let obj of $('#lst_content > img').toArray()) {
-                if (!obj.attribs['data-src'])
+                if (!obj.attribs['src'])
                     continue;
-                let link = obj.attribs['data-src'].includes('http') ?
-                    (obj.attribs['data-src']).trim() : (DOMAIN + obj.attribs['data-src']).trim();
+                let link = obj.attribs['src'].includes('http') ?
+                    (obj.attribs['src']).trim() : (DOMAIN + obj.attribs['src']).trim();
                 pages.push(link);
             }
             const chapterDetails = createChapterDetails({
@@ -803,7 +803,7 @@ class SayTruyen extends paperback_extensions_common_1.Source {
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
                     id: id,
-                    image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : (DOMAIN + image)),
+                    image: (DOMAIN + image),
                     title: createIconText({
                         text: title,
                     }),
