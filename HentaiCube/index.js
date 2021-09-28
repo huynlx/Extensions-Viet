@@ -1001,7 +1001,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             };
             var url = '';
             var set = 1;
-            if (year.length !== 0 || sort.length !== 0) {
+            if (year.length !== 0) { //year + sort
                 if (tags[0].split('.')[0] === 'year' || tags[0].split('.')[0] === 'sort') {
                     if (year.length !== 0 && sort.length !== 0) {
                         set = 0;
@@ -1019,9 +1019,9 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                     }
                 }
             }
-            else {
+            else { //keyword + genre + status
                 set = 1;
-                url = encodeURI(`https://hentaicube.net/page/${page}/?s=${(_d = query.title) !== null && _d !== void 0 ? _d : ""}&post_type=wp-manga&${convertGenres(genre)}&op=&author=&artist=&release=&adult=&${convertStatus(status)}`);
+                url = encodeURI(`https://hentaicube.net/page/${page}/?s=${(_d = query.title) !== null && _d !== void 0 ? _d : ""}&post_type=wp-manga&${convertGenres(genre)}&op=&author=&artist=&release=&adult=&${convertStatus(status)}&${sort[0]}`);
             }
             const request = createRequestObject({
                 url,
