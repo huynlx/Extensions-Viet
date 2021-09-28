@@ -680,7 +680,7 @@ class HorrorFC extends paperback_extensions_common_1.Source {
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            const tiles = this.parser.parseSearch($);
+            const tiles = query.title ? [] : this.parser.parseSearch($);
             metadata = undefined;
             return createPagedResults({
                 results: tiles,
