@@ -761,8 +761,8 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
                 featuredItems.push(createMangaTile({
                     id: id,
                     image: encodeURI(image),
-                    title: createIconText({ text: title }),
-                    subtitleText: createIconText({ text: subtitle }),
+                    title: createIconText({ text: unescape(title) }),
+                    subtitleText: createIconText({ text: unescape(subtitle) }),
                 }));
             }
             featured.items = featuredItems;
