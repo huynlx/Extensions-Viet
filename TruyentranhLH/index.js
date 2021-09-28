@@ -636,13 +636,25 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             let creator = '';
             let status = 1; //completed, 1 = Ongoing
             let desc = $('.summary-content > p').text();
-            for (const t of $('.info-item:nth-child(2) > .info-value > a').toArray()) {
-                const genre = $('span', t).text().trim();
-                const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
-                tags.push(createTag({ label: genre, id }));
+            for (const test of $('.info-item', '.series-information').toArray()) {
+                switch ($('.info-name', test).text().trim()) {
+                    case 'Tác giả:':
+                        creator = $('.info-value', test).text();
+                        break;
+                    case 'Thể loại:':
+                        for (const t of $('.info-value > a', test).toArray()) {
+                            const genre = $('span', t).text().trim();
+                            const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
+                            tags.push(createTag({ label: genre, id }));
+                        }
+                        break;
+                    case 'Tình trạng:':
+                        status = $('.info-value > a', test).text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
+                        break;
+                    default:
+                        break;
+                }
             }
-            creator = $('.info-item:nth-child(3) > .info-value').text();
-            status = $('.info-item:nth-child(4) > .info-value > a').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
             const image = $('.top-part > .row > .col-12 > .series-cover > .a6-ratio > div').css('background-image');
             const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
             return createManga({
