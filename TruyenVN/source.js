@@ -654,15 +654,13 @@ class TruyenVN extends paperback_extensions_common_1.Source {
         const response = await this.requestManager.schedule(request, 1);
         const $ = this.cheerio.load(response.data);
         const chapters = [];
-        var i = 0;
-        for (const obj of $("#chapterList > a").toArray().reverse()) {
-            var chapNum = parseFloat($('span:nth-child(1)', obj).text().trim().split(' ')[1]);
-            i++;
-            var time = $('span:nth-child(2)', obj).split('/');
+        for (const obj of $("#chapterList a").toArray()) {
+            var chapNum = parseFloat($('span:first-child', obj).text().trim().split(' ')[1]);
+            var time = $('span:last-child', obj).text().trim().split('/');
             chapters.push(createChapter({
                 id: $(obj).first().attr('href'),
                 chapNum: chapNum,
-                name: $('span:nth-child(1)', obj).text().trim(),
+                name: $('span:first-child', obj).text().trim(),
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
                 time: new Date(time[1] + '/' + time[0] + '/' + time[2])
@@ -672,7 +670,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
     }
     async getChapterDetails(mangaId, chapterId) {
         const request = createRequestObject({
-            url: (`${chapterId}`),
+            url: encodeURI(`${chapterId}`),
             method
         });
         const response = await this.requestManager.schedule(request, 1);
@@ -1139,7 +1137,7 @@ exports.parseSearch = ($) => {
         var image = $('a', obj).first().attr('data-src');
         let id = (_a = $(`.info-bottom > a`, obj).attr("href")) !== null && _a !== void 0 ? _a : title;
         mangas.push(createMangaTile({
-            id: encodeURIComponent(id),
+            id: id,
             image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://saytruyen.net/' + image)),
             title: createIconText({ text: decodeHTMLEntity(title) }),
             subtitleText: createIconText({ text: subtitle }),
@@ -1158,7 +1156,7 @@ exports.parseViewMore = ($) => {
         let id = (_c = $(`a`, obj).attr("href")) !== null && _c !== void 0 ? _c : title;
         if (!collectedIds.includes(id)) {
             manga.push(createMangaTile({
-                id: (id),
+                id: id,
                 image: image,
                 title: createIconText({ text: decodeHTMLEntity(title) }),
                 subtitleText: createIconText({ text: subtitle }),
