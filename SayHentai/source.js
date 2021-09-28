@@ -851,13 +851,33 @@ class SayHentai extends paperback_extensions_common_1.Source {
         });
     }
     getSearchResults(query, metadata) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
+            const search = {
+                genres: '',
+                status: "0",
+                sort: "last_update",
+                name: (_d = query.title) !== null && _d !== void 0 ? _d : ''
+            };
+            tags.map((value) => {
+                if (value.indexOf('.') === -1) {
+                    search.genres = value;
+                }
+                else {
+                    switch (value.split(".")[0]) {
+                        case 'sort':
+                            search.sort = (value.split(".")[1]);
+                            break;
+                        case 'status':
+                            search.status = (value.split(".")[1]);
+                            break;
+                    }
+                }
+            });
             const request = createRequestObject({
-                url: query.title ? encodeURI(`https://sayhentai.net/danh-sach-truyen.html?name=${query.title}`) :
-                    (tags[0] === 'all' ? 'https://sayhentai.net/danh-sach-truyen.html?' : encodeURI(`https://sayhentai.net/danh-sach-truyen.html?status=0&name=&genre=${tags[0]}&sort=last_update`)),
+                url: (tags[0] === 'all' ? 'https://sayhentai.net/danh-sach-truyen.html?' : encodeURI(`https://sayhentai.net/danh-sach-truyen.html?status=${search.status}&name=${search.name}&genre=${search.genres}&sort=${search.sort}`)),
                 method: "GET",
                 param: encodeURI(`&page=${page}`)
             });
@@ -1083,7 +1103,43 @@ class SayHentai extends paperback_extensions_common_1.Source {
                     "label": "Xuyên Không"
                 }
             ];
-            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) })];
+            const tags1 = [
+                {
+                    "id": "status.0",
+                    "label": "Tất Cả"
+                },
+                {
+                    "id": "status.2",
+                    "label": "Đang Tiến Hành"
+                },
+                {
+                    "id": "status.1",
+                    "label": "Đã Hoàn Thành"
+                }
+            ];
+            const tags2 = [
+                {
+                    "id": "sort.name",
+                    "label": "Tên Truyện"
+                },
+                {
+                    "id": "sort.views",
+                    "label": "Lượt Xem"
+                },
+                {
+                    "id": "sort.last_update",
+                    "label": "Ngày Cập Nhật"
+                },
+                {
+                    "id": "sort.id",
+                    "label": " Truyện Mới"
+                }
+            ];
+            const tagSections = [
+                createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
+                createTagSection({ id: '1', label: 'Trạng Thái', tags: tags1.map(x => createTag(x)) }),
+                createTagSection({ id: '2', label: 'Xếp Theo', tags: tags2.map(x => createTag(x)) }),
+            ];
             return tagSections;
         });
     }
