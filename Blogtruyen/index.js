@@ -761,8 +761,8 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
                 featuredItems.push(createMangaTile({
                     id: id,
                     image: encodeURI(image),
-                    title: createIconText({ text: title }),
-                    subtitleText: createIconText({ text: subtitle }),
+                    title: createIconText({ text: unescape(title) }),
+                    subtitleText: createIconText({ text: unescape(subtitle) }),
                 }));
             }
             featured.items = featuredItems;
@@ -804,7 +804,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
             for (let obj of $('.row', '.list-mainpage .storyitem').toArray().splice(0, 20)) {
-                let title = $(`h3.title > a`, obj).text().trim();
+                let title = $(`h3.title > a`, obj).attr('title');
                 let subtitle = $(`div:nth-child(2) > div:nth-child(4) > span:nth-child(1) > .color-red`, obj).text();
                 const image = $(`div:nth-child(1) > a > img`, obj).attr('src');
                 let id = (_e = $(`div:nth-child(1) > a`, obj).attr('href')) !== null && _e !== void 0 ? _e : title;
