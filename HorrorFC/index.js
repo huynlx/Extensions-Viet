@@ -675,7 +675,7 @@ class HorrorFC extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             const tags = (_b = (_a = query.includedTags) === null || _a === void 0 ? void 0 : _a.map(tag => tag.id)) !== null && _b !== void 0 ? _b : [];
             const request = createRequestObject({
-                url: encodeURI(tags[0]),
+                url: query.title ? encodeURI(tags[0]) : encodeURI(tags[0]),
                 method: "GET"
             });
             const data = yield this.requestManager.schedule(request, 1);
