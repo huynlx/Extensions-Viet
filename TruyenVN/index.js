@@ -1148,18 +1148,18 @@ exports.parseSearch = ($) => {
     return mangas;
 };
 exports.parseViewMore = ($) => {
-    var _a, _b;
+    var _a, _b, _c;
     const manga = [];
     const collectedIds = [];
     for (let obj of $('.entry ', '.form-row').toArray()) {
         let title = (_a = $(`a`, obj).attr('title')) !== null && _a !== void 0 ? _a : "";
         let subtitle = $(`span.link`, obj).text().trim();
-        const image = $(`a > img`, obj).attr('data-src');
-        let id = (_b = $(`a`, obj).attr("href")) !== null && _b !== void 0 ? _b : title;
+        const image = (_b = $(`a > img`, obj).attr('data-src')) !== null && _b !== void 0 ? _b : "";
+        let id = (_c = $(`a`, obj).attr("href")) !== null && _c !== void 0 ? _c : title;
         if (!collectedIds.includes(id)) {
             manga.push(createMangaTile({
-                id: encodeURIComponent(id),
-                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://saytruyen.net/' + image)),
+                id: (id),
+                image: image,
                 title: createIconText({ text: decodeHTMLEntity(title) }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
