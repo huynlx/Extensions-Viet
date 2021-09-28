@@ -635,7 +635,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             let tags = [];
             let creator = '';
             let status = 1; //completed, 1 = Ongoing
-            let desc = $('.content > p').text();
+            let desc = $('.content').text();
             for (const test of $('p', '.description').toArray()) {
                 switch ($(test).clone().children().remove().end().text().trim()) {
                     case 'Tác giả:':
