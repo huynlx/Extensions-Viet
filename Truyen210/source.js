@@ -636,7 +636,7 @@ class Truyen210 extends paperback_extensions_common_1.Source {
             id: mangaId,
             author: creator,
             artist: creator,
-            desc: desc,
+            desc: desc.replace(/ +(?= )/g, ''),
             titles: [$('.headline > h1').text().trim()],
             image: image,
             status: statusFinal,

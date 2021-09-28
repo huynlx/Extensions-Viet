@@ -611,7 +611,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
     }
-    getMangaShareUrl(mangaId) { return `${mangaId}`; }
+    getMangaShareUrl(mangaId) { return encodeURI(`${mangaId}`); }
     ;
     async getMangaDetails(mangaId) {
         var _a;
@@ -858,9 +858,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             name: (_d = query.title) !== null && _d !== void 0 ? _d : '',
             genres: ''
         };
-        tags.map((value) => {
-            search.genres = value;
-        });
+        search.genres = tags[0];
         var url = '';
         if (search.name) {
             url = `https://truyenvn.tv/danh-sach-truyen/page/${page}?q=${search.name}`;
