@@ -647,9 +647,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
                             const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                             tags.push(createTag({ label: genre, id }));
                         }
-                        break;
-                    case 'Đăng bởi:Trạng thái:':
-                        status = $('.color-red', test).text().toLowerCase().includes("đang") ? 1 : 0;
+                        status = $('.color-red', test.next()).text().toLowerCase().includes("đang") ? 1 : 0;
                         break;
                     default:
                         break;
@@ -736,7 +734,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             });
             let hot = createHomeSection({
                 id: 'hot',
-                title: "Top All",
+                title: "Truyện xem nhiều nhất",
                 view_more: true,
             });
             let newUpdated = createHomeSection({
@@ -1016,7 +1014,7 @@ exports.parseViewMore = ($, select) => {
                     id: id,
                     image: encodeURI(image.replace('150', '200')),
                     title: createIconText({
-                        text: title,
+                        text: exports.decodeHTMLEntity(title),
                     }),
                     subtitleText: createIconText({
                         text: subtitle,
