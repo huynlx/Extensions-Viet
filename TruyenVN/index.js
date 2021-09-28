@@ -615,7 +615,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
     ;
     async getMangaDetails(mangaId) {
         var _a;
-        const url = `${mangaId}`;
+        const url = encodeURI(`${mangaId}`);
         const request = createRequestObject({
             url: url,
             method: "GET",
@@ -648,7 +648,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
     }
     async getChapters(mangaId) {
         const request = createRequestObject({
-            url: `${mangaId}`,
+            url: encodeURI(`${mangaId}`),
             method,
         });
         const response = await this.requestManager.schedule(request, 1);
@@ -672,7 +672,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
     }
     async getChapterDetails(mangaId, chapterId) {
         const request = createRequestObject({
-            url: `${chapterId}`,
+            url: encodeURI(`${chapterId}`),
             method
         });
         const response = await this.requestManager.schedule(request, 1);
@@ -1151,7 +1151,7 @@ exports.parseViewMore = ($) => {
     var _a, _b;
     const manga = [];
     const collectedIds = [];
-    for (let obj of $('.entry ', '.form-row').toArray().splice(0, 15)) {
+    for (let obj of $('.entry ', '.form-row').toArray()) {
         let title = (_a = $(`a`, obj).attr('title')) !== null && _a !== void 0 ? _a : "";
         let subtitle = $(`span.link`, obj).text().trim();
         const image = $(`a > img`, obj).attr('data-src');
