@@ -1001,7 +1001,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             };
             var url = '';
             var set = 1;
-            if (!query.title) {
+            if (year.length !== 0 || sort.length !== 0) {
                 if (tags[0].split('.')[0] === 'year' || tags[0].split('.')[0] === 'sort') {
                     if (year.length !== 0 && sort.length !== 0) {
                         set = 0;
