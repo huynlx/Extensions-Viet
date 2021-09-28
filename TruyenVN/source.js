@@ -694,17 +694,17 @@ class TruyenVN extends paperback_extensions_common_1.Source {
         var _a, _b, _c;
         let hot = createHomeSection({
             id: 'hot',
-            title: "Top Trong Ngày",
-            view_more: true,
+            title: "Truyện Đề Cử",
+            view_more: false,
         });
         let newUpdated = createHomeSection({
             id: 'new_updated',
-            title: "Mới Cập Nhật",
+            title: "Truyện Mới Cập Nhật",
             view_more: true,
         });
         let newAdded = createHomeSection({
             id: 'new_added',
-            title: "Truyện Mới",
+            title: "Truyện Full (Đã hoàn thành)",
             view_more: true,
         });
         sectionCallback(hot);
@@ -718,14 +718,14 @@ class TruyenVN extends paperback_extensions_common_1.Source {
         let hotItems = [];
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        for (let obj of $('li', '#main-content > .wrap-content-part:nth-child(4) > .body-content-part > ul').toArray()) {
-            let title = $(`.info-bottom > a`, obj).text().trim();
-            let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
+        for (let obj of $('.entry', '.form-row').toArray()) {
+            let title = $(`h3.name > a`, obj).text().trim();
+            let subtitle = $(`span.link`, obj).text().trim();
             const image = $(`a > img`, obj).attr('src');
-            let id = (_a = $(`.info-bottom > a`, obj).attr("href")) !== null && _a !== void 0 ? _a : title;
+            let id = (_a = $(`a`, obj).attr("href")) !== null && _a !== void 0 ? _a : title;
             hotItems.push(createMangaTile({
                 id: id,
-                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://saytruyen.net/' + image)),
+                image: image,
                 title: createIconText({
                     text: title,
                 }),
@@ -764,20 +764,20 @@ class TruyenVN extends paperback_extensions_common_1.Source {
         sectionCallback(newUpdated);
         url = DOMAIN;
         request = createRequestObject({
-            url: DOMAIN,
+            url: 'https://truyenvn.tv/truyen-hoan-thanh',
             method: "GET",
         });
         let newAddItems = [];
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
-        for (let obj of $('li', '#main-content > .wrap-content-part:nth-child(7) > .body-content-part > ul').toArray()) {
-            let title = $(`.info-bottom > a`, obj).text().trim();
-            let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
+        for (let obj of $('.entry ', '.form-row').toArray().splice(0, 15)) {
+            let title = $(`a`, obj).attr('title');
+            let subtitle = $(`span.link`, obj).text().trim();
             const image = $(`a > img`, obj).attr('data-src');
-            let id = (_c = $(`.info-bottom > a`, obj).attr("href")) !== null && _c !== void 0 ? _c : title;
+            let id = (_c = $(`a`, obj).attr("href")) !== null && _c !== void 0 ? _c : title;
             newAddItems.push(createMangaTile({
                 id: id,
-                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://saytruyen.net/' + image)),
+                image: image,
                 title: createIconText({
                     text: title,
                 }),
@@ -795,14 +795,11 @@ class TruyenVN extends paperback_extensions_common_1.Source {
         let param = '';
         let url = '';
         switch (homepageSectionId) {
-            case "hot":
-                url = `${DOMAIN}danh-sach-truyen.html?status=0&sort=views&page=${page}`;
-                break;
             case "new_updated":
                 url = `https://truyenvn.tv/danh-sach-truyen/page/${page}`;
                 break;
             case "new_added":
-                url = `${DOMAIN}danh-sach-truyen.html?status=0&sort=id&page=${page}`;
+                url = `https://truyenvn.tv/truyen-hoan-thanh/page/${page}`;
                 break;
             default:
                 return Promise.resolve(createPagedResults({ results: [] }));
