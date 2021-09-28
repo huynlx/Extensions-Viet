@@ -855,7 +855,6 @@ class TruyenVN extends paperback_extensions_common_1.Source {
         let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
         const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
         const search = {
-            top: '',
             name: (_d = query.title) !== null && _d !== void 0 ? _d : '',
             genres: ''
         };
@@ -867,12 +866,11 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             url = `https://truyenvn.tv/danh-sach-truyen/page/${page}?q=${search.name}`;
         }
         else {
-            url = tags[0] + `/page/${page}`;
+            url = search.genres + `/page/${page}`;
         }
         const request = createRequestObject({
             url,
-            method: "GET",
-            param: encodeURI(`&page=${page}`)
+            method: "GET"
         });
         const data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
