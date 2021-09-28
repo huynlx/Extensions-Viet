@@ -636,13 +636,25 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             let creator = '';
             let status = 1; //completed, 1 = Ongoing
             let desc = $('.content > p').text();
-            for (const t of $('.description > p:nth-child(3) > .category > a').toArray()) {
-                const genre = $(t).text().trim();
-                const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
-                tags.push(createTag({ label: genre, id }));
+            for (const test of $('p', '.description').toArray()) {
+                switch ($(test).clone().children().remove().end().text().trim()) {
+                    case 'Tác giả:':
+                        creator = $('a', test).text();
+                        break;
+                    case 'Thể loại:':
+                        for (const t of $('.category > a', test).toArray()) {
+                            const genre = $(t).text().trim();
+                            const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
+                            tags.push(createTag({ label: genre, id }));
+                        }
+                        break;
+                    case 'Trạng thái:':
+                        status = $('.color-red', test).text().toLowerCase().includes("đang") ? 1 : 0;
+                        break;
+                    default:
+                        break;
+                }
             }
-            creator = $('.description > p:nth-child(1) > a').text();
-            status = $('.description > p:nth-child(4) > .color-red').text().toLowerCase().includes("đang") ? 1 : 0;
             const image = (_b = $('.thumbnail > img').attr('src')) !== null && _b !== void 0 ? _b : "";
             return createManga({
                 id: mangaId,
