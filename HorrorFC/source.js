@@ -741,8 +741,8 @@ class HorrorFC extends paperback_extensions_common_1.Source {
     }
     getSearchTags() {
         return __awaiter(this, void 0, void 0, function* () {
-            const tags = [{ 'id': 'https://horrorfc.net/', 'label': 'Full' }];
-            const tagSections = [createTagSection({ id: '0', label: 'Tất Cả', tags: tags.map(x => createTag(x)) })];
+            const tags = [{ 'id': 'https://horrorfc.net/', 'label': 'Tất Cả' }];
+            const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) })];
             return tagSections;
         });
     }
