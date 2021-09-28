@@ -648,7 +648,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
                             tags.push(createTag({ label: genre, id }));
                         }
                         break;
-                    case 'Trạng thái:':
+                    case 'Đăng bởi:Trạng thái:':
                         status = $('.color-red', test).text().toLowerCase().includes("đang") ? 1 : 0;
                         break;
                     default:
@@ -764,17 +764,17 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             let featuredItems = [];
             for (let manga of $('a', 'div#storyPinked').toArray()) {
-                const title = escape($('p:first-child', $(manga).next()).text().trim());
+                const title = ($('p:first-child', $(manga).next()).text().trim());
                 const id = $(manga).attr('href');
                 const image = (_b = (_a = $('img', manga).attr('src')) === null || _a === void 0 ? void 0 : _a.replace('182_182', '400')) !== null && _b !== void 0 ? _b : "";
-                const subtitle = escape($('p:last-child', $(manga).next()).text().trim());
+                const subtitle = ($('p:last-child', $(manga).next()).text().trim());
                 if (!id || !title)
                     continue;
                 featuredItems.push(createMangaTile({
                     id: id,
                     image: encodeURI(image),
-                    title: createIconText({ text: unescape(title) }),
-                    subtitleText: createIconText({ text: unescape(subtitle) }),
+                    title: createIconText({ text: BlogtruyenParser_1.decodeHTMLEntity(title) }),
+                    subtitleText: createIconText({ text: BlogtruyenParser_1.decodeHTMLEntity(subtitle) }),
                 }));
             }
             featured.items = featuredItems;
@@ -956,8 +956,8 @@ exports.Blogtruyen = Blogtruyen;
 },{"./BlogtruyenParser":56,"paperback-extensions-common":12}],56:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
-const entities = require("entities"); //Import package for decoding HTML entities
+exports.decodeHTMLEntity = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
+const entities = require("entities"); //Import package for decoding HTML entities (unescape string)
 exports.generateSearch = (query) => {
     var _a;
     let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
@@ -976,7 +976,7 @@ exports.parseSearch = ($) => {
             mangas.push(createMangaTile({
                 id: encodeURI(id),
                 image: encodeURI(image.replace('150', '200')),
-                title: createIconText({ text: decodeHTMLEntity(title) }),
+                title: createIconText({ text: exports.decodeHTMLEntity(title) }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
             collectedIds.push(id);
@@ -998,7 +998,7 @@ exports.parseViewMore = ($, select) => {
                 manga.push(createMangaTile({
                     id: id,
                     image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.replace('150_150', '200')),
-                    title: createIconText({ text: decodeHTMLEntity(title) }),
+                    title: createIconText({ text: exports.decodeHTMLEntity(title) }),
                     subtitleText: createIconText({ text: 'Chương ' + subtitle }),
                 }));
                 collectedIds.push(id);
@@ -1043,7 +1043,7 @@ exports.isLastPage = ($) => {
         isLast = true;
     return isLast;
 };
-const decodeHTMLEntity = (str) => {
+exports.decodeHTMLEntity = (str) => {
     return entities.decodeHTML(str);
 };
 
