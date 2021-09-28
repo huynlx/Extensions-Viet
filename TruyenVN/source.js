@@ -694,7 +694,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
         var _a, _b, _c, _d;
         let featured = createHomeSection({
             id: 'featured',
-            title: "Truyện Đề Cử",
+            title: "Top",
             type: paperback_extensions_common_1.HomeSectionType.featured
         });
         let hot = createHomeSection({
