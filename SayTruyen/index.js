@@ -739,7 +739,7 @@ class SayTruyen extends paperback_extensions_common_1.Source {
             let hotItems = [];
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            for (let obj of $('li', '#main-content > .wrap-content-part:nth-child(1) > .body-content-part > ul').toArray()) {
+            for (let obj of $('li', '#main-content > .wrap-content-part:nth-child(2) > .body-content-part > ul').toArray()) {
                 let title = $(`.info-bottom > a`, obj).text().trim();
                 let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
                 const image = $(`a > img`, obj).attr('src');
@@ -767,7 +767,7 @@ class SayTruyen extends paperback_extensions_common_1.Source {
             let newUpdatedItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('li', '#main-content > .wrap-content-part:nth-child(3) > .body-content-part > ul').toArray().splice(0, 15)) {
+            for (let obj of $('li', '#main-content > .wrap-content-part:nth-child(4) > .body-content-part > ul').toArray().splice(0, 15)) {
                 let title = $(`.info-bottom > a`, obj).text().trim();
                 let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
                 const image = $(`a > img`, obj).attr('src');
@@ -795,7 +795,7 @@ class SayTruyen extends paperback_extensions_common_1.Source {
             let newAddItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('li', '#main-content > .wrap-content-part:nth-child(5) > .body-content-part > ul').toArray()) {
+            for (let obj of $('li', '#main-content > .wrap-content-part:nth-child(6) > .body-content-part > ul').toArray()) {
                 let title = $(`.info-bottom > a`, obj).text().trim();
                 let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
                 const image = $(`a > img`, obj).attr('src');

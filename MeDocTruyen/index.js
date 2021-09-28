@@ -817,7 +817,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             let select = 1;
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `https://lxhentai.com/story/?p=${page}`;
+                    url = `https://lxhentai.com/story/index.php?p=${page}`;
                     select = 1;
                     break;
                 case "hot":
