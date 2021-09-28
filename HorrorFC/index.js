@@ -680,7 +680,7 @@ class HorrorFC extends paperback_extensions_common_1.Source {
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            const tiles = this.parser.parsePopularSection($);
+            const tiles = this.parser.parseSearch($);
             metadata = undefined;
             return createPagedResults({
                 results: tiles,
@@ -807,6 +807,22 @@ class Parser {
     parsePopularSection($) {
         let viewestItems = [];
         for (let manga of $('li', 'ul.row').toArray().splice(0, 10)) {
+            const title = $('a', manga).attr('title');
+            const id = $('a', manga).attr('href');
+            const image = $('a > img', manga).first().attr('src');
+            if (!id || !title)
+                continue;
+            viewestItems.push(createMangaTile({
+                id: id + "::" + image,
+                image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
+                title: createIconText({ text: title }),
+            }));
+        }
+        return viewestItems;
+    }
+    parseSearch($) {
+        let viewestItems = [];
+        for (let manga of $('li', 'ul.row').toArray()) {
             const title = $('a', manga).attr('title');
             const id = $('a', manga).attr('href');
             const image = $('a > img', manga).first().attr('src');
