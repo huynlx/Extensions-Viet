@@ -672,7 +672,7 @@ class Beeng extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const chapters = [];
-            const collectedIds = [];
+            // const collectedIds: any = [];
             for (const obj of $("#scrollbar a").toArray().reverse()) {
                 const getTime = $('span.name > span.views', obj).text().trim().split(' ');
                 const time = {
@@ -682,19 +682,19 @@ class Beeng extends paperback_extensions_common_1.Source {
                 const arrDate = time.date.split(/\-/);
                 const fixDate = [arrDate[1], arrDate[0], arrDate[2]].join('/');
                 const finalTime = new Date(fixDate + ' ' + time.time);
-                let chapNum = $('span.name > span.titleComic', obj).text().trim().split(' ')[1]; //a:,a-b,a
-                if (!collectedIds.includes(chapNum)) {
-                    i++;
-                    chapters.push(createChapter({
-                        id: $(obj).attr('href'),
-                        chapNum: i,
-                        name: $('span.name > span.titleComic', obj).text().trim(),
-                        mangaId: mangaId,
-                        langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                        time: finalTime
-                    }));
-                    collectedIds.push(chapNum);
-                }
+                // let chapNum = $('span.name > span.titleComic', obj).text().trim().split(' ')[1]; //a:,a-b,a
+                // if (!collectedIds.includes(chapNum)) {
+                i++;
+                chapters.push(createChapter({
+                    id: $(obj).attr('href'),
+                    chapNum: i,
+                    name: $('span.name > span.titleComic', obj).text().trim(),
+                    mangaId: mangaId,
+                    langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+                    time: finalTime
+                }));
+                //     collectedIds.push(chapNum);
+                // }
             }
             return chapters;
         });
