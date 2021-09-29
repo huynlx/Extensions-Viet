@@ -1101,7 +1101,7 @@ class SayTruyen extends paperback_extensions_common_1.Source {
             },
             {
                 "id": "sort.id",
-                "label": " Truyện Mới"
+                "label": "Truyện Mới"
             }
         ];
         const tagSections = [
