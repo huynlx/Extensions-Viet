@@ -643,7 +643,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             }
         }
         let desc = $(".summary-content").text();
-        const image = (_b = $('.info-cover img').attr("src")) !== null && _b !== void 0 ? _b : "";
+        const image = (_b = 'https://manhuarock.net/' + $('.info-cover img').attr("src")) !== null && _b !== void 0 ? _b : "";
         return createManga({
             id: mangaId,
             author: creator,
@@ -895,7 +895,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: 'https://manhuarock.com/'
+            referer: 'https://storage.manhuarock.com/'
         };
     }
 }
