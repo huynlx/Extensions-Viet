@@ -705,7 +705,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
         let featured = createHomeSection({
             id: 'featured',
             title: "Gợi ý hôm nay",
@@ -828,7 +828,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                 id: id !== null && id !== void 0 ? id : "",
                 image: image !== null && image !== void 0 ? image : "",
                 title: createIconText({
-                    text: title !== null && title !== void 0 ? title : "",
+                    text: (_k = HentaiCubeParser_1.decodeHTMLEntity(title)) !== null && _k !== void 0 ? _k : "",
                 }),
                 subtitleText: createIconText({
                     text: subtitle
@@ -848,8 +848,8 @@ class HentaiCube extends paperback_extensions_common_1.Source {
         for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
             let title = $(`.post-title > h3 > a`, obj).text().trim();
             let subtitle = $(`.chapter > a`, obj).text().trim();
-            const image = (_k = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _k !== void 0 ? _k : "";
-            let id = (_l = $(`.c-image-hover > a`, obj).attr('href')) !== null && _l !== void 0 ? _l : title;
+            const image = (_l = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _l !== void 0 ? _l : "";
+            let id = (_m = $(`.c-image-hover > a`, obj).attr('href')) !== null && _m !== void 0 ? _m : title;
             newAddItems.push(createMangaTile({
                 id: id,
                 image: image !== null && image !== void 0 ? image : "",
@@ -874,8 +874,8 @@ class HentaiCube extends paperback_extensions_common_1.Source {
         for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
             let title = $(`.post-title > h3 > a`, obj).text().trim();
             let subtitle = $(`.chapter > a`, obj).text().trim();
-            const image = (_m = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _m !== void 0 ? _m : "";
-            let id = (_o = $(`.c-image-hover > a`, obj).attr('href')) !== null && _o !== void 0 ? _o : title;
+            const image = (_o = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _o !== void 0 ? _o : "";
+            let id = (_p = $(`.c-image-hover > a`, obj).attr('href')) !== null && _p !== void 0 ? _p : title;
             newItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
                 image: image !== null && image !== void 0 ? image : "",
