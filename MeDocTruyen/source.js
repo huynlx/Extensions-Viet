@@ -614,7 +614,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
     ;
     async getMangaDetails(mangaId) {
         var _a, _b;
-        const url = `https://manhuarock.net/truyen-ta-la-nha-giau-so-mot-ta-khong-muon-trong-sinh.html`;
+        const url = `https://manhuarock.net/` + mangaId;
         const request = createRequestObject({
             url: url,
             method: "GET",
@@ -659,7 +659,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
     async getChapters(mangaId) {
         var _a;
         const request = createRequestObject({
-            url: `https://manhuarock.net/truyen-ta-la-nha-giau-so-mot-ta-khong-muon-trong-sinh.html`,
+            url: `https://manhuarock.net/` + mangaId,
             method,
         });
         let data = await this.requestManager.schedule(request, 1);
@@ -703,7 +703,6 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
-        var _a;
         let newUpdated = createHomeSection({
             id: 'new_updated',
             title: "Truyện mới",
@@ -723,17 +722,17 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         sectionCallback(hot);
         sectionCallback(view);
         let request = createRequestObject({
-            url: 'https://lxhentai.com/story/',
+            url: 'https://manhuarock.net/manga-list.html?listType=pagination&page=1&artist=&author=&group=&m_status=&name=&genre=&ungenre=&sort=last_update&sort_type=DESC',
             method: "GET",
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         let newUpdatedItems = [];
-        for (const element of $('.col-md-8 .row > .py-2').toArray()) {
-            let title = $('a', element).last().text().trim();
-            let image = 'https://lxhentai.com' + ((_a = $('.py-2 > div', element).first().attr("style")) === null || _a === void 0 ? void 0 : _a.split("'")[1]);
-            let id = 'https://lxhentai.com' + $('a', element).last().attr('href');
-            let subtitle = $(".newestChapter a", element).first().text().trim();
+        for (const element of $('.card-body > .row > .thumb-item-flow').toArray()) {
+            let title = $('.series-title > a', element).text().trim();
+            let image = 'https://manhuarock.net' + $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
+            let id = $('a.series-title > a', element).attr('href');
+            let subtitle = 'Chương ' + $(".chapter-title > a", element).text().trim();
             newUpdatedItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
                 image: image !== null && image !== void 0 ? image : "",
