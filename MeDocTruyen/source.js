@@ -729,7 +729,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         let newUpdatedItems = [];
-        for (const element of $('.card-body > .row > .thumb-item-flow').toArray()) {
+        for (const element of $('.card-body > .row-last-update > .thumb-item-flow').toArray()) {
             let title = $('.series-title > a', element).text().trim();
             let image = $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
             let id = $('.series-title > a', element).attr('href');
