@@ -750,7 +750,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         let select = 1;
         switch (homepageSectionId) {
             case "new_updated":
-                url = `https://lxhentai.com/story/index.php?p=${page}`;
+                url = `https://manhuarock.net/manga-list.html?listType=pagination&page=${page}&artist=&author=&group=&m_status=&name=&genre=&ungenre=&sort=last_update&sort_type=DESC`;
                 select = 1;
                 break;
             case "hot":
@@ -967,11 +967,11 @@ exports.parseSearch = ($, query, tags) => {
 exports.parseViewMore = ($) => {
     var _a;
     const manga = [];
-    for (const element of $('.col-md-8 .row > .py-2').toArray()) {
-        let title = $('a', element).last().text().trim();
-        let image = 'https://lxhentai.com' + ((_a = $('.py-2 > div', element).first().attr("style")) === null || _a === void 0 ? void 0 : _a.split("'")[1]);
-        let id = 'https://lxhentai.com' + $('a', element).last().attr('href');
-        let subtitle = $(".newestChapter a", element).first().text().trim();
+    for (const element of $('.card-body > .row > .thumb-item-flow').toArray()) {
+        let title = $('.series-title > a', element).text().trim();
+        let image = 'https://manhuarock.net' + $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
+        let id = (_a = $('.series-title > a', element).attr('href')) !== null && _a !== void 0 ? _a : title;
+        let subtitle = 'Chương ' + $(".chapter-title > a", element).text().trim();
         manga.push(createMangaTile({
             id: id,
             image: image !== null && image !== void 0 ? image : "",
@@ -991,8 +991,8 @@ exports.isLastPage = ($) => {
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($("ul.pagination > li.active + li").text().trim());
-    if ((currentPage - 1) >= lastPage)
+    const currentPage = Number($("ul.pagination > li > a.active").text().trim());
+    if (currentPage >= lastPage)
         isLast = true;
     return isLast;
 };
