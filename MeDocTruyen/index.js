@@ -615,7 +615,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
     ;
     async getMangaDetails(mangaId) {
         var _a, _b;
-        const url = DOMAIN + mangaId;
+        const url = 'https://truyentranhaudio.com/truyen-bat-bai-chan-ma.html';
         const request = createRequestObject({
             url: url,
             method: "GET",
@@ -660,7 +660,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
     async getChapters(mangaId) {
         var _a;
         const request = createRequestObject({
-            url: DOMAIN + mangaId,
+            url: 'https://truyentranhaudio.com/truyen-bat-bai-chan-ma.html',
             method,
         });
         let data = await this.requestManager.schedule(request, 1);
