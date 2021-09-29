@@ -622,22 +622,34 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         let tags = [];
-        let creator = $('div.row.mt-2 > div:nth-child(2)').text();
-        let status = $('div.row.mt-2 > div:nth-child(4)').text().trim();
-        let statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
-        let desc = $("div.detail-content.mt-4 > p").text();
-        for (const t of $('div.row.mt-2 > div:nth-child(6) > a').toArray()) {
-            const genre = $(t).text().trim();
-            const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
-            tags.push(createTag({ label: genre, id }));
+        let creator = '';
+        let statusFinal = 1;
+        for (const test of $('li', '.manga-info').toArray()) {
+            switch ($('b', test).text().trim()) {
+                case "Tác giả":
+                    creator = $('a', test).text().trim();
+                    break;
+                case "Thể loại":
+                    for (const t of $('a', test).toArray()) {
+                        const genre = $(t).text().trim();
+                        const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
+                        tags.push(createTag({ label: genre, id }));
+                    }
+                    break;
+                case "Tình trạng":
+                    let status = $('a', test).text().trim();
+                    statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
+                    break;
+            }
         }
-        const image = (_b = 'https://lxhentai.com' + $('.col-md-4 img').first().attr("src")) !== null && _b !== void 0 ? _b : "";
+        let desc = $(".summary-content").text();
+        const image = (_b = $('.info-cover img').attr("src")) !== null && _b !== void 0 ? _b : "";
         return createManga({
             id: mangaId,
             author: creator,
             artist: creator,
             desc: desc,
-            titles: [$('h1.title-detail').text().trim()],
+            titles: [$('.manga-info h3').text().trim()],
             image: image,
             status: statusFinal,
             hentai: false,
@@ -647,28 +659,24 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
     async getChapters(mangaId) {
         var _a;
         const request = createRequestObject({
-            url: `${mangaId}`,
+            url: `https://manhuarock.net/truyen-ta-la-nha-giau-so-mot-ta-khong-muon-trong-sinh.html`,
             method,
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         const chapters = [];
         var i = 0;
-        for (const obj of $('#listChuong > ul > li:not(:first-child)').toArray().reverse()) {
+        for (const obj of $('.list-chapters > a').toArray().reverse()) {
             i++;
-            let id = 'https://lxhentai.com' + $('a', obj).first().attr('href');
-            let chapNum = Number((_a = $('a', obj).first().text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
-            let name = $('a', obj).first().text();
-            let time = $('div:nth-child(2)', obj).text().trim().split(' ');
-            let H = time[0];
-            let D = time[1].split('/');
+            let id = $(obj).first().attr('href');
+            let chapNum = parseFloat((_a = $('.chapter-name', obj).first().text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
+            let name = $('.chapter-name', obj).first().text();
             chapters.push(createChapter({
                 id,
                 chapNum: isNaN(chapNum) ? i : chapNum,
                 name,
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                time: new Date(D[1] + '/' + D[0] + '/20' + D[2] + ' ' + H)
             }));
         }
         return chapters;
@@ -682,16 +690,8 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         const pages = [];
-        for (let obj of $('#content_chap img').toArray()) {
-            let link = (_a = $(obj).attr('src')) !== null && _a !== void 0 ? _a : "";
-            if (!link.startsWith("http")) {
-                if (link.startsWith("//")) {
-                    link = "https:" + link;
-                }
-                else {
-                    link = "https:" + link;
-                }
-            }
+        for (let obj of $('.chapter-content img').toArray()) {
+            let link = (_a = $(obj).attr('data-original')) !== null && _a !== void 0 ? _a : "";
             pages.push(encodeURI(link.trim()));
         }
         const chapterDetails = createChapterDetails({
