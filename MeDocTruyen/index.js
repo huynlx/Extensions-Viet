@@ -586,7 +586,6 @@ exports.MeDocTruyen = exports.MeDocTruyenInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const MeDocTruyenParser_1 = require("./MeDocTruyenParser");
 const method = 'GET';
-const DOMAIN = 'https://truyentranhaudio.com/';
 exports.MeDocTruyenInfo = {
     version: '2.0.0',
     name: 'MeDocTruyen',
@@ -615,7 +614,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
     ;
     async getMangaDetails(mangaId) {
         var _a, _b;
-        const url = 'https://truyentranhaudio.com/truyen-bat-bai-chan-ma.html';
+        const url = `https://manhuarock.net/` + mangaId;
         const request = createRequestObject({
             url: url,
             method: "GET",
@@ -644,7 +643,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             }
         }
         let desc = $(".summary-content").text();
-        const image = (_b = DOMAIN + $('.info-cover img').attr("src")) !== null && _b !== void 0 ? _b : "";
+        const image = (_b = 'https://manhuarock.net/' + $('.info-cover img').attr("src")) !== null && _b !== void 0 ? _b : "";
         return createManga({
             id: mangaId,
             author: creator,
@@ -660,7 +659,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
     async getChapters(mangaId) {
         var _a;
         const request = createRequestObject({
-            url: 'https://truyentranhaudio.com/truyen-bat-bai-chan-ma.html',
+            url: `https://manhuarock.net/` + mangaId,
             method,
         });
         let data = await this.requestManager.schedule(request, 1);
@@ -723,15 +722,15 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         sectionCallback(hot);
         sectionCallback(view);
         let request = createRequestObject({
-            url: 'https://truyentranhaudio.com/danh-sach-truyen.html',
+            url: 'https://manhuarock.net/manga-list.html?listType=pagination&page=1&artist=&author=&group=&m_status=&name=&genre=&ungenre=&sort=last_update&sort_type=DESC',
             method: "GET",
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         let newUpdatedItems = [];
-        for (const element of $('.card-body > .row-last-update > .thumb-item-flow').toArray()) {
+        for (const element of $('.card-body > .row > .thumb-item-flow').toArray()) {
             let title = $('.series-title > a', element).text().trim();
-            let image = $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
+            let image = 'https://manhuarock.net' + $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
             let id = $('.series-title > a', element).attr('href');
             let subtitle = 'Chương ' + $(".chapter-title > a", element).text().trim();
             newUpdatedItems.push(createMangaTile({
@@ -896,7 +895,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: 'https://truyentranhaudio.com/'
+            referer: 'https://manhuarock.net/'
         };
     }
 }
