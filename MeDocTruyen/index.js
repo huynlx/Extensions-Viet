@@ -895,7 +895,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: 'https://lxhentai.com/story/index.php?hot'
+            referer: 'https://manhuarock.net/'
         };
     }
     getCloudflareBypassRequest() {
