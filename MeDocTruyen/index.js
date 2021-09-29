@@ -731,6 +731,12 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         for (const element of $('.card-body > .row > .thumb-item-flow').toArray()) {
             let title = $('.series-title > a', element).text().trim();
             let image = 'https://manhuarock.net' + $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
+            if (!(image === null || image === void 0 ? void 0 : image.includes('https'))) {
+                image = 'https://manhuarock.net' + image;
+            }
+            else {
+                image = image;
+            }
             let id = $('.series-title > a', element).attr('href');
             let subtitle = 'Chương ' + $(".chapter-title > a", element).text().trim();
             newUpdatedItems.push(createMangaTile({
@@ -969,7 +975,13 @@ exports.parseViewMore = ($) => {
     const manga = [];
     for (const element of $('.card-body > .row > .thumb-item-flow').toArray()) {
         let title = $('.series-title > a', element).text().trim();
-        let image = 'https://manhuarock.net' + $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
+        let image = $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
+        if (!(image === null || image === void 0 ? void 0 : image.includes('https'))) {
+            image = 'https://manhuarock.net' + image;
+        }
+        else {
+            image = image;
+        }
         let id = (_a = $('.series-title > a', element).attr('href')) !== null && _a !== void 0 ? _a : title;
         let subtitle = 'Chương ' + $(".chapter-title > a", element).text().trim();
         manga.push(createMangaTile({
