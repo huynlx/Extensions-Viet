@@ -900,7 +900,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
     }
     getCloudflareBypassRequest() {
         return createRequestObject({
-            url: 'https://storage.manhuarock.com/',
+            url: 'https://manhuarock.net/',
             method: 'GET',
         });
     }
