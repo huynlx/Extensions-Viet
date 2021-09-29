@@ -731,7 +731,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         for (const element of $('.card-body > .row > .thumb-item-flow').toArray()) {
             let title = $('.series-title > a', element).text().trim();
             let image = 'https://manhuarock.net' + $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
-            if (!(image === null || image === void 0 ? void 0 : image.includes('https'))) {
+            if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
                 image = 'https://manhuarock.net' + image;
             }
             else {
@@ -976,7 +976,7 @@ exports.parseViewMore = ($) => {
     for (const element of $('.card-body > .row > .thumb-item-flow').toArray()) {
         let title = $('.series-title > a', element).text().trim();
         let image = $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
-        if (!(image === null || image === void 0 ? void 0 : image.includes('https'))) {
+        if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
             image = 'https://manhuarock.net' + image;
         }
         else {
