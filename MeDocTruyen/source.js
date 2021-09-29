@@ -668,7 +668,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         var i = 0;
         for (const obj of $('.list-chapters > a').toArray().reverse()) {
             i++;
-            let id = $(obj).first().attr('href');
+            let id = 'https://manhuarock.net/' + $(obj).first().attr('href');
             let chapNum = parseFloat((_a = $('.chapter-name', obj).first().text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
             let name = $('.chapter-name', obj).first().text();
             chapters.push(createChapter({
