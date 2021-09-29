@@ -895,7 +895,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: 'https://storage.manhuarock.com/'
+            referer: 'https://manhuarock.net/'
         };
     }
 }
