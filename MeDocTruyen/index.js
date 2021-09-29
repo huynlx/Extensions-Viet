@@ -895,14 +895,8 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: 'https://manhuarock.net/'
+            referer: 'https://storage.manhuarock.com/'
         };
-    }
-    getCloudflareBypassRequest() {
-        return createRequestObject({
-            url: 'https://manhuarock.net/',
-            method: 'GET',
-        });
     }
 }
 exports.MeDocTruyen = MeDocTruyen;
