@@ -582,12 +582,12 @@ __exportStar(require("./RawData"), exports);
 },{"./Chapter":14,"./ChapterDetails":13,"./Constants":15,"./DynamicUI":31,"./HomeSection":32,"./Languages":33,"./Manga":36,"./MangaTile":34,"./MangaUpdate":35,"./PagedResults":37,"./RawData":38,"./RequestHeaders":39,"./RequestInterceptor":40,"./RequestManager":41,"./RequestObject":42,"./ResponseObject":43,"./SearchField":44,"./SearchRequest":45,"./SourceInfo":46,"./SourceManga":47,"./SourceStateManager":48,"./SourceTag":49,"./TagSection":50,"./TrackedManga":52,"./TrackedMangaChapterReadAction":51,"./TrackerActionQueue":53}],55:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Truyentranh24h = exports.ManhuaRockInfo = void 0;
+exports.Truyentranh24h = exports.Truyentranh24hInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const Truyentranh24hParser_1 = require("./Truyentranh24hParser");
 const DOMAIN = 'https://truyentranh24.com/';
 const method = 'GET';
-exports.ManhuaRockInfo = {
+exports.Truyentranh24hInfo = {
     version: '2.0.0',
     name: 'Truyentranh24h',
     icon: 'icon.png',
@@ -650,7 +650,7 @@ class Truyentranh24h extends paperback_extensions_common_1.Source {
     getMangaShareUrl(mangaId) { return (DOMAIN + mangaId); }
     ;
     async getMangaDetails(mangaId) {
-        var _a;
+        var _a, _b;
         const url = DOMAIN + mangaId;
         const request = createRequestObject({
             url: url,
@@ -661,17 +661,32 @@ class Truyentranh24h extends paperback_extensions_common_1.Source {
         let tags = [];
         let creator = '';
         let statusFinal = 1;
-        creator = $('.manga-author > span').text().trim();
-        let status = $('.manga-status > span').text().trim();
-        statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
-        let desc = $(".manga-content").text();
-        const image = (_a = $('.manga-thumbnail > img').attr("data-src")) !== null && _a !== void 0 ? _a : "";
+        for (const test of $('li', '.manga-info').toArray()) {
+            switch ($('b', test).text().trim()) {
+                case "Tác giả":
+                    creator = $('a', test).text().trim();
+                    break;
+                case "Thể loại":
+                    for (const t of $('a', test).toArray()) {
+                        const genre = $(t).text().trim();
+                        const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
+                        tags.push(createTag({ label: genre, id }));
+                    }
+                    break;
+                case "Tình trạng":
+                    let status = $('a', test).text().trim();
+                    statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
+                    break;
+            }
+        }
+        let desc = $(".summary-content").text();
+        const image = (_b = $('.info-cover img').attr("src")) !== null && _b !== void 0 ? _b : "";
         return createManga({
             id: mangaId,
             author: creator,
             artist: creator,
             desc: desc,
-            titles: [$('.manga-title').text().trim()],
+            titles: [$('.manga-info h3').text().trim()],
             image: image.includes('http') ? image : (DOMAIN + image),
             status: statusFinal,
             hentai: false,
@@ -688,19 +703,19 @@ class Truyentranh24h extends paperback_extensions_common_1.Source {
         let $ = this.cheerio.load(data.data);
         const chapters = [];
         var i = 0;
-        for (const obj of $('.chapter-list > .chapter-item').toArray().reverse()) {
+        for (const obj of $('.list-chapters > a').toArray().reverse()) {
             i++;
             let id = DOMAIN + $(obj).first().attr('href');
             let chapNum = parseFloat((_a = $('.chapter-name', obj).first().text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
-            let name = $('.chapter-views > a', obj).first().text().trim();
-            let time = $('.chapter-update', obj).first().text().trim().split('-');
+            let name = $('.chapter-view', obj).first().text().trim();
+            let time = $('.chapter-time', obj).first().text().trim();
             chapters.push(createChapter({
                 id,
                 chapNum: isNaN(chapNum) ? i : chapNum,
                 name,
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                time: new Date(time[1] + '/' + time[0] + '/' + time[2])
+                time: this.convertTime(time)
             }));
         }
         return chapters;
@@ -708,14 +723,14 @@ class Truyentranh24h extends paperback_extensions_common_1.Source {
     async getChapterDetails(mangaId, chapterId) {
         var _a;
         const request = createRequestObject({
-            url: `https://truyentranh24.com/${chapterId}`,
+            url: `${chapterId}`,
             method
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         const pages = [];
         for (let obj of $('.chapter-content img').toArray()) {
-            let link = (_a = $(obj).attr('data-src')) !== null && _a !== void 0 ? _a : "";
+            let link = (_a = $(obj).attr('data-original')) !== null && _a !== void 0 ? _a : "";
             pages.push(link.replace(/\n/g, ''));
         }
         const chapterDetails = createChapterDetails({
@@ -769,17 +784,23 @@ class Truyentranh24h extends paperback_extensions_common_1.Source {
         hot.items = popular;
         sectionCallback(hot);
         request = createRequestObject({
-            url: DOMAIN,
+            url: DOMAIN + 'manga-list.html?listType=pagination&page=1&artist=&author=&group=&m_status=&name=&genre=&ungenre=&sort=last_update&sort_type=DESC',
             method: "GET",
         });
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
         let newUpdatedItems = [];
-        for (const element of $('.container-lm > section:nth-child(1) > .item-medium').toArray()) {
-            let title = $('.item-title > a', element).text().trim();
-            let image = $('.item-thumbnail > img', element).attr("data-src");
-            let id = (_b = $('.item-title > a', element).attr('href').split('/')[1]) !== null && _b !== void 0 ? _b : title;
-            let subtitle = $("span.background-1", element).text().trim();
+        for (const element of $('.card-body > .row > .thumb-item-flow').toArray()) {
+            let title = $('.series-title > a', element).text().trim();
+            let image = $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
+            if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
+                image = 'https://manhuarock.net' + image;
+            }
+            else {
+                image = image;
+            }
+            let id = (_b = $('.series-title > a', element).attr('href')) !== null && _b !== void 0 ? _b : title;
+            let subtitle = 'Chương ' + $(".chapter-title > a", element).text().trim();
             newUpdatedItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
                 image: image !== null && image !== void 0 ? image : "",
