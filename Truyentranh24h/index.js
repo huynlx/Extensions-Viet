@@ -692,7 +692,7 @@ class Truyentranh24h extends paperback_extensions_common_1.Source {
         const data = await this.requestManager.schedule(request, 1);
         const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
         const chapters = [];
-        for (const obj of json) {
+        for (const obj of json.chapters) {
             let id = obj.id;
             let chapNum = obj.name;
             let name = obj.views + ' lượt đọc';
