@@ -949,7 +949,13 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             tags.push({ id: id, label: label });
         }
         for (const tag of $('select#TinhTrang option').toArray()) {
-            const label = $(tag).text().trim();
+            var label = $(tag).text().trim();
+            if (label === 'Hoàn thành') {
+                label = 'Đang tiến hành';
+            }
+            else if (label === 'Đang tiến hành') {
+                label = 'Hoàn thành';
+            }
             const id = 'status.' + $(tag).attr('value');
             if (!id || !label)
                 continue;
