@@ -736,43 +736,70 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
+        let featured = createHomeSection({
+            id: 'featured',
+            title: "Truyện Đề Cử",
+            type: paperback_extensions_common_1.HomeSectionType.featured
+        });
         let hot = createHomeSection({
             id: 'hot',
-            title: "TRUYỆN HOT TRONG NGÀY",
+            title: "Truyện Hot",
             view_more: false,
         });
         let newUpdated = createHomeSection({
             id: 'new_updated',
-            title: "TRUYỆN MỚI CẬP NHẬT",
+            title: "Truyện mới cập nhật",
             view_more: true,
         });
-        let view = createHomeSection({
-            id: 'view',
-            title: "TRUYỆN MỚI ĐĂNG",
-            view_more: false,
-        });
+        sectionCallback(featured);
         sectionCallback(hot);
         sectionCallback(newUpdated);
-        sectionCallback(view);
         let request = createRequestObject({
             url: DOMAIN,
             method: "GET",
         });
-        let popular = [];
+        let featuredItems = [];
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        for (let manga of $('.owl-item', '.owl-stage').toArray()) {
-            const title = $('.series-title', manga).text().trim();
-            const id = $('.thumb-wrapper > a', manga).attr('href');
-            const image = (_a = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', manga).css('background-image')) !== null && _a !== void 0 ? _a : "";
-            const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
-            const sub = $('.chapter-title > a', manga).text().trim();
-            popular.push(createMangaTile({
-                id: id,
-                image: (bg === null || bg === void 0 ? void 0 : bg.includes('http')) ? (bg) : ("https://manhuarock.net" + bg),
+        for (const element of $('.owl-carousel .slide-item').toArray()) {
+            let title = $('.slide-info > h3 > a', element).text().trim();
+            let img = (_a = $('a > img', element).attr("data-src")) !== null && _a !== void 0 ? _a : $('a > img', element).attr("src");
+            let id = (_b = $('.slide-info > h3 > a', element).attr('href')) !== null && _b !== void 0 ? _b : title;
+            let subtitle = $(".detail-slide > a", element).text().trim();
+            featuredItems.push(createMangaTile({
+                id: id !== null && id !== void 0 ? id : "",
+                image: img !== null && img !== void 0 ? img : "",
                 title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: sub.replace('Chap', 'Chương') }),
+                subtitleText: createIconText({ text: subtitle }),
+            }));
+        }
+        featured.items = featuredItems;
+        sectionCallback(featured);
+        request = createRequestObject({
+            url: 'https://doctruyen3q.com/hot',
+            method: "GET",
+        });
+        let popular = [];
+        data = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(data.data);
+        for (const element of $('#home > .body > .main-left .item-manga > .item').toArray()) {
+            let title = $('.caption > h3 > a', element).text().trim();
+            let check = $('.image-item > a > img', element).attr("data-original");
+            let img = '';
+            if (check) {
+                img = $('.image-item > a > img', element).attr('data-original');
+            }
+            else {
+                img = $('.image-item > a > img', element).attr('src');
+            }
+            let id = (_c = $('.caption > h3 > a', element).attr('href')) !== null && _c !== void 0 ? _c : title;
+            let subtitle = $("ul > li:first-child > a", element).text().trim();
+            popular.push(createMangaTile({
+                id: id !== null && id !== void 0 ? id : "",
+                image: img !== null && img !== void 0 ? img : "",
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: subtitle }),
             }));
         }
         hot.items = popular;
@@ -794,7 +821,7 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
             else {
                 img = $('.image-item > a > img', element).attr('src');
             }
-            let id = (_b = $('.caption > h3 > a', element).attr('href')) !== null && _b !== void 0 ? _b : title;
+            let id = (_d = $('.caption > h3 > a', element).attr('href')) !== null && _d !== void 0 ? _d : title;
             let subtitle = $("ul > li:first-child > a", element).text().trim();
             newUpdatedItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
@@ -805,33 +832,6 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
         }
         newUpdated.items = newUpdatedItems;
         sectionCallback(newUpdated);
-        request = createRequestObject({
-            url: DOMAIN,
-            method: "GET",
-        });
-        let viewItems = [];
-        data = await this.requestManager.schedule(request, 1);
-        $ = this.cheerio.load(data.data);
-        for (let manga of $('.thumb-item-flow:not(:last-child)', '.col-md-8 > .card:nth-child(5) .row').toArray()) {
-            let title = $('.series-title > a', manga).text().trim();
-            let image = $('.a6-ratio > .img-in-ratio', manga).attr("data-bg");
-            if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
-                image = 'https://manhuarock.net' + image;
-            }
-            else {
-                image = image;
-            }
-            let id = (_c = $('.series-title > a', manga).attr('href')) !== null && _c !== void 0 ? _c : title;
-            let subtitle = $(".chapter-title > a", manga).text().trim();
-            viewItems.push(createMangaTile({
-                id: id !== null && id !== void 0 ? id : "",
-                image: image !== null && image !== void 0 ? image : "",
-                title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: subtitle }),
-            }));
-        }
-        view.items = viewItems;
-        sectionCallback(view);
     }
     async getViewMoreItems(homepageSectionId, metadata) {
         var _a;
