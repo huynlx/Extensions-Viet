@@ -690,7 +690,7 @@ class Truyentranh24h extends paperback_extensions_common_1.Source {
         for (const obj of $('.chapter-list > .chapter-item').toArray().reverse()) {
             let id = $('.chapter-name > a', obj).attr('href');
             let chapNum = parseFloat((_a = $('.chapter-name > a', obj).text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
-            let name = $('.chapter-views', obj).text().trim();
+            let name = $('.chapter-views', obj).text().trim() + ' lượt đọc';
             let time = this.convertTime($('.chapter-update', obj).text().trim());
             chapters.push(createChapter({
                 id,
