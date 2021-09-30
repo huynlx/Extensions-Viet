@@ -783,7 +783,7 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
         let popular = [];
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
-        for (const element of $('#hot > .body > .main-left .item-manga > .item').toArray()) {
+        for (const element of $('#hot > .body > .main-left .item-manga > .item').toArray().splice(0, 20)) {
             let title = $('.caption > h3 > a', element).text().trim();
             let img = (_c = $('.image-item > a > img', element).attr("data-original")) !== null && _c !== void 0 ? _c : $('.image-item > a > img', element).attr('src');
             let id = (_d = $('.caption > h3 > a', element).attr('href')) !== null && _d !== void 0 ? _d : title;
@@ -804,7 +804,7 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
         let newUpdatedItems = [];
-        for (const element of $('#home > .body > .main-left .item-manga > .item').toArray()) {
+        for (const element of $('#home > .body > .main-left .item-manga > .item').toArray().splice(0, 20)) {
             let title = $('.caption > h3 > a', element).text().trim();
             let img = (_e = $('.image-item > a > img', element).attr("data-original")) !== null && _e !== void 0 ? _e : $('.image-item > a > img', element).attr('src');
             let id = (_f = $('.caption > h3 > a', element).attr('href')) !== null && _f !== void 0 ? _f : title;
@@ -839,7 +839,7 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        let manga = Doctruyen3QParser_1.parseViewMore($);
+        let manga = Doctruyen3QParser_1.parseViewMore($, homepageSectionId);
         metadata = !Doctruyen3QParser_1.isLastPage($) ? { page: page + 1 } : undefined;
         return createPagedResults({
             results: manga,
@@ -1000,20 +1000,36 @@ exports.parseSearch = ($) => {
     }
     return manga;
 };
-exports.parseViewMore = ($) => {
-    var _a, _b;
+exports.parseViewMore = ($, homepageSectionId) => {
+    var _a, _b, _c, _d;
     const manga = [];
-    for (const element of $('#home > .body > .main-left .item-manga > .item').toArray()) {
-        let title = $('.caption > h3 > a', element).text().trim();
-        let img = (_a = $('.image-item > a > img', element).attr("data-original")) !== null && _a !== void 0 ? _a : $('.image-item > a > img', element).attr('src');
-        let id = (_b = $('.caption > h3 > a', element).attr('href')) !== null && _b !== void 0 ? _b : title;
-        let subtitle = $("ul > li:first-child > a", element).text().trim();
-        manga.push(createMangaTile({
-            id: id !== null && id !== void 0 ? id : "",
-            image: img !== null && img !== void 0 ? img : "",
-            title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: subtitle }),
-        }));
+    if (homepageSectionId === 'hot') {
+        for (const element of $('#hot > .body > .main-left .item-manga > .item').toArray()) {
+            let title = $('.caption > h3 > a', element).text().trim();
+            let img = (_a = $('.image-item > a > img', element).attr("data-original")) !== null && _a !== void 0 ? _a : $('.image-item > a > img', element).attr('src');
+            let id = (_b = $('.caption > h3 > a', element).attr('href')) !== null && _b !== void 0 ? _b : title;
+            let subtitle = $("ul > li:first-child > a", element).text().trim();
+            manga.push(createMangaTile({
+                id: id !== null && id !== void 0 ? id : "",
+                image: img !== null && img !== void 0 ? img : "",
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: subtitle }),
+            }));
+        }
+    }
+    else {
+        for (const element of $('#home > .body > .main-left .item-manga > .item').toArray()) {
+            let title = $('.caption > h3 > a', element).text().trim();
+            let img = (_c = $('.image-item > a > img', element).attr("data-original")) !== null && _c !== void 0 ? _c : $('.image-item > a > img', element).attr('src');
+            let id = (_d = $('.caption > h3 > a', element).attr('href')) !== null && _d !== void 0 ? _d : title;
+            let subtitle = $("ul > li:first-child > a", element).text().trim();
+            manga.push(createMangaTile({
+                id: id !== null && id !== void 0 ? id : "",
+                image: img !== null && img !== void 0 ? img : "",
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: subtitle }),
+            }));
+        }
     }
     return manga;
 };
