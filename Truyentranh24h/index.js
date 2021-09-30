@@ -692,6 +692,7 @@ class Truyentranh24h extends paperback_extensions_common_1.Source {
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
+        const dataId = $(".container").attr('data-id');
         const chapters = [];
         for (const obj of $('.chapter-list > .chapter-item').toArray().reverse()) {
             let id = $('.chapter-name > a', obj).attr('href');
