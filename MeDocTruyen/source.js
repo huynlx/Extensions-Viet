@@ -646,7 +646,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         }
         return time;
     }
-    getMangaShareUrl(mangaId) { return `${mangaId}`; }
+    getMangaShareUrl(mangaId) { return (`https://manhuarock.net/` + mangaId); }
     ;
     async getMangaDetails(mangaId) {
         var _a, _b;
@@ -864,26 +864,23 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         });
     }
     async getSearchResults(query, metadata) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
         const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
         const search = {
             cate: '',
-            translator: "",
-            writer: "",
-            status: "Trạng+thái",
-            sort: "moi-nhat"
+            translater: "",
+            status: "",
+            sort: "last_update",
+            type: 'DESC'
         };
         tags.map((value) => {
             switch (value.split(".")[0]) {
                 case 'cate':
                     search.cate = (value.split(".")[1]);
                     break;
-                case 'translator':
-                    search.translator = (value.split(".")[1]);
-                    break;
-                case 'writer':
-                    search.writer = (value.split(".")[1]);
+                case 'translater':
+                    search.translater = (value.split(".")[1]);
                     break;
                 case 'status':
                     search.status = (value.split(".")[1]);
@@ -891,17 +888,18 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
                 case 'sort':
                     search.sort = (value.split(".")[1]);
                     break;
+                case 'type':
+                    search.type = (value.split(".")[1]);
+                    break;
             }
         });
         const request = createRequestObject({
-            url: query.title ? encodeURI(`https://vlogtruyen.net/tim-kiem?q=${query.title}&page=${page}`) :
-                (tags[0].includes('http') ? (tags[0] + `?page=${page}`) :
-                    encodeURI(`https://vlogtruyen.net/the-loai/huynh?cate=${search.cate}&translator=${search.translator}&writer=${search.writer}&status=${search.status}&sort=${search.sort}&page=${page}`)),
+            url: `https://manhuarock.net/manga-list.html?listType=pagination&page=${page}&group=${search.translater}&m_status=${search.status}&name=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&genre=${search.cate}&sort=${search.sort}&sort_type=${search.type}`,
             method: "GET",
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        const tiles = MeDocTruyenParser_1.parseSearch($, query, tags);
+        const tiles = MeDocTruyenParser_1.parseSearch($);
         metadata = !MeDocTruyenParser_1.isLastPage($) ? { page: page + 1 } : undefined;
         return createPagedResults({
             results: tiles,
@@ -924,6 +922,16 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
                 label: 'Mới Cập Nhật'
             }
         ];
+        const tagss = [
+            {
+                id: 'type.ASC',
+                label: 'ASC'
+            },
+            {
+                id: 'type.DESC',
+                label: 'DESC'
+            }
+        ];
         const tags5 = [];
         const tags6 = [];
         const url = `https://manhuarock.net/search`;
@@ -933,9 +941,9 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        for (const tag of $('#chontheloai li.item').toArray()) {
+        for (const tag of $('.navbar-nav > li.nav-item:nth-child(1) .no-gutters a.genres-item').toArray()) {
             const label = $(tag).text().trim();
-            const id = 'cate.' + $(tag).attr('data-genres');
+            const id = 'cate.' + $(tag).attr('href').split('-the-loai-')[1].split('.')[0];
             if (!id || !label)
                 continue;
             tags.push({ id: id, label: label });
@@ -957,6 +965,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         const tagSections = [
             createTagSection({ id: '1', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
             createTagSection({ id: '3', label: 'Sắp xếp theo', tags: tags2.map(x => createTag(x)) }),
+            createTagSection({ id: '0', label: 'Kiểu sắp xếp', tags: tagss.map(x => createTag(x)) }),
             createTagSection({ id: '4', label: 'Trạng thái', tags: tags5.map(x => createTag(x)) }),
             createTagSection({ id: '5', label: 'Nhóm dịch', tags: tags6.map(x => createTag(x)) }),
         ];
@@ -984,52 +993,26 @@ exports.generateSearch = (query) => {
     let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
     return encodeURI(keyword);
 };
-exports.parseSearch = ($, query, tags) => {
-    var _a, _b, _c, _d, _e, _f;
+exports.parseSearch = ($) => {
+    var _a;
     const manga = [];
-    if (!query.title) {
-        if (tags[0].includes('http')) {
-            for (const element of $('.commic-hover', '#content-column').toArray()) {
-                let title = $('.title-commic-tab', element).text().trim();
-                let image = (_a = $('.image-commic-tab > img', element).attr('data-src')) !== null && _a !== void 0 ? _a : "";
-                let id = (_b = $('a', element).first().attr('href')) !== null && _b !== void 0 ? _b : title;
-                let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
-                manga.push(createMangaTile({
-                    id: id,
-                    image: image !== null && image !== void 0 ? image : "",
-                    title: createIconText({ text: title }),
-                    subtitleText: createIconText({ text: subtitle }),
-                }));
-            }
+    for (const element of $('.card-body > .row > .thumb-item-flow').toArray()) {
+        let title = $('.series-title > a', element).text().trim();
+        let image = $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
+        if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
+            image = 'https://manhuarock.net' + image;
         }
         else {
-            for (const element of $('.commic-hover', '#ul-content-pho-bien').toArray()) {
-                let title = $('.title-commic-tab', element).text().trim();
-                let image = (_c = $('.image-commic-tab > img', element).attr('data-src')) !== null && _c !== void 0 ? _c : "";
-                let id = (_d = $('a', element).first().attr('href')) !== null && _d !== void 0 ? _d : title;
-                let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
-                manga.push(createMangaTile({
-                    id: id,
-                    image: image !== null && image !== void 0 ? image : "",
-                    title: createIconText({ text: title }),
-                    subtitleText: createIconText({ text: subtitle }),
-                }));
-            }
+            image = image;
         }
-    }
-    else {
-        for (const element of $('.commic-hover', '#content-column').toArray()) {
-            let title = $('.title-commic-tab', element).text().trim();
-            let image = (_e = $('.image-commic-tab > img', element).attr('data-src')) !== null && _e !== void 0 ? _e : "";
-            let id = (_f = $('a', element).first().attr('href')) !== null && _f !== void 0 ? _f : title;
-            let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
-            manga.push(createMangaTile({
-                id: id,
-                image: image !== null && image !== void 0 ? image : "",
-                title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: subtitle }),
-            }));
-        }
+        let id = (_a = $('.series-title > a', element).attr('href')) !== null && _a !== void 0 ? _a : title;
+        let subtitle = 'Chương ' + $(".chapter-title > a", element).text().trim();
+        manga.push(createMangaTile({
+            id: id,
+            image: image !== null && image !== void 0 ? image : "",
+            title: createIconText({ text: title }),
+            subtitleText: createIconText({ text: subtitle }),
+        }));
     }
     return manga;
 };
