@@ -653,7 +653,7 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
         }
         return time;
     }
-    getMangaShareUrl(mangaId) { return (DOMAIN + mangaId); }
+    getMangaShareUrl(mangaId) { return mangaId; }
     ;
     async getMangaDetails(mangaId) {
         var _a, _b;
@@ -745,7 +745,7 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
         let hot = createHomeSection({
             id: 'hot',
             title: "Truyện Hot",
-            view_more: false,
+            view_more: true,
         });
         let newUpdated = createHomeSection({
             id: 'new_updated',
@@ -847,7 +847,7 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
         });
     }
     async getSearchResults(query, metadata) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c;
         let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
         const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
         const search = {
@@ -877,7 +877,7 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
             }
         });
         const request = createRequestObject({
-            url: encodeURI(`${DOMAIN}manga-list.html?listType=pagination&page=${page}&group=${search.translater}&m_status=${search.status}&name=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&genre=${search.cate}&sort=${search.sort}&sort_type=${search.type}`),
+            url: encodeURI(`${DOMAIN}tim-truyen?keyword=${query.title}&page=${page}`),
             method: "GET",
         });
         let data = await this.requestManager.schedule(request, 1);
@@ -984,22 +984,16 @@ exports.generateSearch = (query) => {
     return encodeURI(keyword);
 };
 exports.parseSearch = ($) => {
-    var _a;
+    var _a, _b;
     const manga = [];
-    for (const element of $('.card-body > .row > .thumb-item-flow').toArray()) {
-        let title = $('.series-title > a', element).text().trim();
-        let image = $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
-        if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
-            image = 'https://manhuarock.net' + image;
-        }
-        else {
-            image = image;
-        }
-        let id = (_a = $('.series-title > a', element).attr('href')) !== null && _a !== void 0 ? _a : title;
-        let subtitle = 'Chương ' + $(".chapter-title > a", element).text().trim();
+    for (const element of $('.content-search-left > .main-left .item-manga > .item').toArray()) {
+        let title = $('.caption > h3 > a', element).text().trim();
+        let img = (_a = $('.image-item > a > img', element).attr("data-original")) !== null && _a !== void 0 ? _a : $('.image-item > a > img', element).attr('src');
+        let id = (_b = $('.caption > h3 > a', element).attr('href')) !== null && _b !== void 0 ? _b : title;
+        let subtitle = $("ul > li:first-child > a", element).text().trim();
         manga.push(createMangaTile({
-            id: id,
-            image: image !== null && image !== void 0 ? image : "",
+            id: id !== null && id !== void 0 ? id : "",
+            image: img !== null && img !== void 0 ? img : "",
             title: createIconText({ text: title }),
             subtitleText: createIconText({ text: subtitle }),
         }));
@@ -1033,7 +1027,7 @@ exports.isLastPage = ($) => {
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($("ul.pagination > li.active > span").text().trim());
+    const currentPage = Number($("ul.pagination > li.active").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
