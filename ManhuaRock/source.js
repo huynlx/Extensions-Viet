@@ -647,7 +647,7 @@ class ManhuaRock extends paperback_extensions_common_1.Source {
         }
         return time;
     }
-    getMangaShareUrl(mangaId) { return (`https://manhuarock.net/` + mangaId); }
+    getMangaShareUrl(mangaId) { return (DOMAIN + mangaId); }
     ;
     async getMangaDetails(mangaId) {
         var _a, _b;

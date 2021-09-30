@@ -582,18 +582,18 @@ __exportStar(require("./RawData"), exports);
 },{"./Chapter":14,"./ChapterDetails":13,"./Constants":15,"./DynamicUI":31,"./HomeSection":32,"./Languages":33,"./Manga":36,"./MangaTile":34,"./MangaUpdate":35,"./PagedResults":37,"./RawData":38,"./RequestHeaders":39,"./RequestInterceptor":40,"./RequestManager":41,"./RequestObject":42,"./ResponseObject":43,"./SearchField":44,"./SearchRequest":45,"./SourceInfo":46,"./SourceManga":47,"./SourceStateManager":48,"./SourceTag":49,"./TagSection":50,"./TrackedManga":52,"./TrackedMangaChapterReadAction":51,"./TrackerActionQueue":53}],55:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ManhuaRock = exports.ManhuaRockInfo = void 0;
+exports.Vcomi = exports.VcomiInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
-const ManhuaRockParser_1 = require("./ManhuaRockParser");
-const DOMAIN = 'https://manhuarock.net/';
+const VcomiParser_1 = require("./VcomiParser");
+const DOMAIN = 'https://vcomi.co/';
 const method = 'GET';
-exports.ManhuaRockInfo = {
+exports.VcomiInfo = {
     version: '2.0.0',
-    name: 'ManhuaRock',
+    name: 'Vcomi',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from ManhuaRock',
+    description: 'Extension that pulls manga from Vcomi',
     websiteBaseURL: DOMAIN,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
@@ -603,7 +603,7 @@ exports.ManhuaRockInfo = {
         }
     ]
 };
-class ManhuaRock extends paperback_extensions_common_1.Source {
+class Vcomi extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
         this.requestManager = createRequestManager({
@@ -776,7 +776,7 @@ class ManhuaRock extends paperback_extensions_common_1.Source {
             const sub = $('.chapter-title > a', manga).text().trim();
             popular.push(createMangaTile({
                 id: id,
-                image: (bg === null || bg === void 0 ? void 0 : bg.includes('http')) ? (bg) : ("https://manhuarock.net" + bg),
+                image: (bg === null || bg === void 0 ? void 0 : bg.includes('http')) ? (bg) : ("https://vcomi.co" + bg),
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: sub.replace('Chap', 'Chương') }),
             }));
@@ -794,7 +794,7 @@ class ManhuaRock extends paperback_extensions_common_1.Source {
             let title = $('.series-title > a', element).text().trim();
             let image = $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
             if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
-                image = 'https://manhuarock.net' + image;
+                image = 'https://vcomi.co' + image;
             }
             else {
                 image = image;
@@ -821,7 +821,7 @@ class ManhuaRock extends paperback_extensions_common_1.Source {
             let title = $('.series-title > a', manga).text().trim();
             let image = $('.a6-ratio > .img-in-ratio', manga).attr("data-bg");
             if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
-                image = 'https://manhuarock.net' + image;
+                image = 'https://vcomi.co' + image;
             }
             else {
                 image = image;
@@ -857,8 +857,8 @@ class ManhuaRock extends paperback_extensions_common_1.Source {
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        let manga = ManhuaRockParser_1.parseViewMore($);
-        metadata = !ManhuaRockParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+        let manga = VcomiParser_1.parseViewMore($);
+        metadata = !VcomiParser_1.isLastPage($) ? { page: page + 1 } : undefined;
         return createPagedResults({
             results: manga,
             metadata,
@@ -900,8 +900,8 @@ class ManhuaRock extends paperback_extensions_common_1.Source {
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        const tiles = ManhuaRockParser_1.parseSearch($);
-        metadata = !ManhuaRockParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+        const tiles = VcomiParser_1.parseSearch($);
+        metadata = !VcomiParser_1.isLastPage($) ? { page: page + 1 } : undefined;
         return createPagedResults({
             results: tiles,
             metadata
@@ -985,9 +985,9 @@ class ManhuaRock extends paperback_extensions_common_1.Source {
         };
     }
 }
-exports.ManhuaRock = ManhuaRock;
+exports.Vcomi = Vcomi;
 
-},{"./ManhuaRockParser":56,"paperback-extensions-common":12}],56:[function(require,module,exports){
+},{"./VcomiParser":56,"paperback-extensions-common":12}],56:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.capitalizeFirstLetter = void 0;
@@ -1008,7 +1008,7 @@ exports.parseSearch = ($) => {
         let title = $('.series-title > a', element).text().trim();
         let image = $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
         if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
-            image = 'https://manhuarock.net' + image;
+            image = 'https://vcomi.co' + image;
         }
         else {
             image = image;
@@ -1031,7 +1031,7 @@ exports.parseViewMore = ($) => {
         let title = $('.series-title > a', element).text().trim();
         let image = $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
         if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
-            image = 'https://manhuarock.net' + image;
+            image = 'https://vcomi.co' + image;
         }
         else {
             image = image;
