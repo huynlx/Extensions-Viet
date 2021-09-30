@@ -871,7 +871,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             cate: '',
             translater: "",
             status: "",
-            sort: "view",
+            sort: "views",
             type: 'DESC'
         };
         tags.map((value) => {
