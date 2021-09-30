@@ -764,7 +764,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             const sub = $('.chapter-title > a', manga).text().trim();
             popular.push(createMangaTile({
                 id: id,
-                image: (bg === null || bg === void 0 ? void 0 : bg.includes('http')) ? (bg) : ("https:" + bg),
+                image: (bg === null || bg === void 0 ? void 0 : bg.includes('http')) ? (bg) : ("https://manhuarock.net" + bg),
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: sub }),
             }));
@@ -778,20 +778,22 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         let viewItems = [];
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
-        for (let manga of $('.thumb-item-flow:not(:last-child)', '.col-lg-8.col-sm-8 > .card:nth-child(6) .row-last-update').toArray()) {
-            const title = $('.series-title', manga).text().trim();
-            const id = (_c = $('.series-title > a', manga).attr('href')) !== null && _c !== void 0 ? _c : title;
-            const image = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', manga).attr('data-bg');
-            const sub = $('a', manga).last().text().trim();
+        for (let manga of $('.thumb-item-flow:not(:last-child)', '.col-md-8 > .card:nth-child(5) .row').toArray()) {
+            let title = $('.series-title > a', manga).text().trim();
+            let image = $('.a6-ratio > .img-in-ratio', manga).attr("data-bg");
+            if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
+                image = 'https://manhuarock.net' + image;
+            }
+            else {
+                image = image;
+            }
+            let id = (_c = $('.series-title > a', manga).attr('href')) !== null && _c !== void 0 ? _c : title;
+            let subtitle = 'Chương ' + $(".chapter-title > a", manga).text().trim();
             viewItems.push(createMangaTile({
-                id: id,
-                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? (image) : ("https:" + image),
-                title: createIconText({
-                    text: title,
-                }),
-                subtitleText: createIconText({
-                    text: sub,
-                }),
+                id: id !== null && id !== void 0 ? id : "",
+                image: image !== null && image !== void 0 ? image : "",
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: subtitle }),
             }));
         }
         view.items = viewItems;
