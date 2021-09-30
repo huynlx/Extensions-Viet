@@ -719,8 +719,8 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             title: "TRUYỆN MỚI ĐĂNG",
             view_more: false,
         });
-        sectionCallback(newUpdated);
         sectionCallback(hot);
+        sectionCallback(newUpdated);
         sectionCallback(view);
         let request = createRequestObject({
             url: 'https://manhuarock.net/',
@@ -809,14 +809,6 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
                 url = `https://manhuarock.net/manga-list.html?listType=pagination&page=${page}&artist=&author=&group=&m_status=&name=&genre=&ungenre=&sort=last_update&sort_type=DESC`;
                 select = 1;
                 break;
-            case "hot":
-                url = `https://vlogtruyen.net/the-loai/dang-hot?page=${page}`;
-                select = 2;
-                break;
-            case "view":
-                url = `https://vlogtruyen.net/de-nghi/pho-bien/xem-nhieu?page=${page}`;
-                select = 3;
-                break;
             default:
                 return Promise.resolve(createPagedResults({ results: [] }));
         }
@@ -898,16 +890,16 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         const tags4 = [];
         const tags5 = [];
         const tags6 = [];
-        const url = `https://vlogtruyen.net/the-loai/dang-hot`;
+        const url = `https://manhuarock.net/search`;
         const request = createRequestObject({
             url: url,
             method: "GET",
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        for (const tag of $('select[name="cate"] > option:not(:first-child)').toArray()) {
+        for (const tag of $('#chontheloai li.item').toArray()) {
             const label = $(tag).text().trim();
-            const id = 'cate.' + $(tag).attr('value');
+            const id = 'cate.' + $(tag).attr('data-genres');
             if (!id || !label)
                 continue;
             tags.push({ id: id, label: label });
@@ -926,26 +918,24 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
                 continue;
             tags4.push({ id: id, label: label });
         }
-        for (const tag of $('select[name="status"] > option:not(:first-child)').toArray()) {
+        for (const tag of $('select#TinhTrang option').toArray()) {
             const label = $(tag).text().trim();
             const id = 'status.' + $(tag).attr('value');
             if (!id || !label)
                 continue;
             tags5.push({ id: id, label: label });
         }
-        for (const tag of $('select[name="sort"] > option').toArray()) {
+        for (const tag of $('.no-gutters a.genres-item').toArray()) {
             const label = $(tag).text().trim();
-            const id = 'sort.' + $(tag).attr('value');
+            const id = 'translater.' + $(tag).attr('href');
             if (!id || !label)
                 continue;
             tags6.push({ id: id, label: label });
         }
-        const tagSections = [createTagSection({ id: '0', label: 'Bảng xếp hạng', tags: tags2.map(x => createTag(x)) }),
+        const tagSections = [
             createTagSection({ id: '1', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
-            createTagSection({ id: '2', label: 'Nhóm dịch', tags: tags3.map(x => createTag(x)) }),
-            createTagSection({ id: '3', label: 'Tác giả', tags: tags4.map(x => createTag(x)) }),
             createTagSection({ id: '4', label: 'Trạng thái', tags: tags5.map(x => createTag(x)) }),
-            createTagSection({ id: '5', label: 'Sắp xếp', tags: tags6.map(x => createTag(x)) }),
+            createTagSection({ id: '5', label: 'Nhóm dịch', tags: tags6.map(x => createTag(x)) }),
         ];
         return tagSections;
     }
