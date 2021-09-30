@@ -786,7 +786,7 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
         let newUpdatedItems = [];
         for (const element of $('#home > .body > .main-left .item-manga > .item').toArray()) {
             let title = $('.caption > h3 > a', element).text().trim();
-            let check = $('.image-item > a > img', element).hasAttribute("data-original");
+            let check = $('.image-item > a > img', element).attr("data-original");
             let img = '';
             if (check) {
                 img = $('.image-item > a > img', element).attr('data-original');
