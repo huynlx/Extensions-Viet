@@ -736,7 +736,7 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
         let featured = createHomeSection({
             id: 'featured',
             title: "Truyện Đề Cử",
@@ -752,9 +752,21 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
             title: "Truyện mới cập nhật",
             view_more: true,
         });
+        let boy = createHomeSection({
+            id: 'boy',
+            title: "Truyện Tranh Con Trai",
+            view_more: true,
+        });
+        let girl = createHomeSection({
+            id: 'girl',
+            title: "Truyện Tranh Con Gái ",
+            view_more: true,
+        });
         sectionCallback(featured);
         sectionCallback(hot);
         sectionCallback(newUpdated);
+        sectionCallback(boy);
+        sectionCallback(girl);
         let request = createRequestObject({
             url: DOMAIN,
             method: "GET",
@@ -818,6 +830,48 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
         }
         newUpdated.items = newUpdatedItems;
         sectionCallback(newUpdated);
+        request = createRequestObject({
+            url: 'https://doctruyen3q.com/truyen-con-trai',
+            method: "GET",
+        });
+        data = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(data.data);
+        let boyItems = [];
+        for (const element of $('#male-comics > .body > .main-left .item-manga > .item').toArray().splice(0, 20)) {
+            let title = $('.caption > h3 > a', element).text().trim();
+            let img = (_g = $('.image-item > a > img', element).attr("data-original")) !== null && _g !== void 0 ? _g : $('.image-item > a > img', element).attr('src');
+            let id = (_h = $('.caption > h3 > a', element).attr('href')) !== null && _h !== void 0 ? _h : title;
+            let subtitle = $("ul > li:first-child > a", element).text().trim();
+            boyItems.push(createMangaTile({
+                id: id !== null && id !== void 0 ? id : "",
+                image: img !== null && img !== void 0 ? img : "",
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: subtitle }),
+            }));
+        }
+        boy.items = boyItems;
+        sectionCallback(boy);
+        request = createRequestObject({
+            url: 'https://doctruyen3q.com/truyen-con-gai',
+            method: "GET",
+        });
+        data = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(data.data);
+        let girlItems = [];
+        for (const element of $('#female-comics > .body > .main-left .item-manga > .item').toArray().splice(0, 20)) {
+            let title = $('.caption > h3 > a', element).text().trim();
+            let img = (_j = $('.image-item > a > img', element).attr("data-original")) !== null && _j !== void 0 ? _j : $('.image-item > a > img', element).attr('src');
+            let id = (_k = $('.caption > h3 > a', element).attr('href')) !== null && _k !== void 0 ? _k : title;
+            let subtitle = $("ul > li:first-child > a", element).text().trim();
+            girlItems.push(createMangaTile({
+                id: id !== null && id !== void 0 ? id : "",
+                image: img !== null && img !== void 0 ? img : "",
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: subtitle }),
+            }));
+        }
+        girl.items = girlItems;
+        sectionCallback(girl);
     }
     async getViewMoreItems(homepageSectionId, metadata) {
         var _a;
@@ -829,6 +883,12 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
                 break;
             case "new_updated":
                 url = `https://doctruyen3q.com/?page=${page}`;
+                break;
+            case "boy":
+                url = `https://doctruyen3q.com/truyen-con-trai?page=${page}`;
+                break;
+            case "girl":
+                url = `https://doctruyen3q.com/truyen-con-gai?page=${page}`;
                 break;
             default:
                 return Promise.resolve(createPagedResults({ results: [] }));
@@ -1001,7 +1061,7 @@ exports.parseSearch = ($) => {
     return manga;
 };
 exports.parseViewMore = ($, homepageSectionId) => {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e, _f, _g, _h;
     const manga = [];
     if (homepageSectionId === 'hot') {
         for (const element of $('#hot > .body > .main-left .item-manga > .item').toArray()) {
@@ -1017,11 +1077,39 @@ exports.parseViewMore = ($, homepageSectionId) => {
             }));
         }
     }
-    else {
+    else if (homepageSectionId === 'home') {
         for (const element of $('#home > .body > .main-left .item-manga > .item').toArray()) {
             let title = $('.caption > h3 > a', element).text().trim();
             let img = (_c = $('.image-item > a > img', element).attr("data-original")) !== null && _c !== void 0 ? _c : $('.image-item > a > img', element).attr('src');
             let id = (_d = $('.caption > h3 > a', element).attr('href')) !== null && _d !== void 0 ? _d : title;
+            let subtitle = $("ul > li:first-child > a", element).text().trim();
+            manga.push(createMangaTile({
+                id: id !== null && id !== void 0 ? id : "",
+                image: img !== null && img !== void 0 ? img : "",
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: subtitle }),
+            }));
+        }
+    }
+    else if (homepageSectionId === 'boy') {
+        for (const element of $('#male-comics > .body > .main-left .item-manga > .item').toArray()) {
+            let title = $('.caption > h3 > a', element).text().trim();
+            let img = (_e = $('.image-item > a > img', element).attr("data-original")) !== null && _e !== void 0 ? _e : $('.image-item > a > img', element).attr('src');
+            let id = (_f = $('.caption > h3 > a', element).attr('href')) !== null && _f !== void 0 ? _f : title;
+            let subtitle = $("ul > li:first-child > a", element).text().trim();
+            manga.push(createMangaTile({
+                id: id !== null && id !== void 0 ? id : "",
+                image: img !== null && img !== void 0 ? img : "",
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: subtitle }),
+            }));
+        }
+    }
+    else {
+        for (const element of $('#female-comics > .body > .main-left .item-manga > .item').toArray()) {
+            let title = $('.caption > h3 > a', element).text().trim();
+            let img = (_g = $('.image-item > a > img', element).attr("data-original")) !== null && _g !== void 0 ? _g : $('.image-item > a > img', element).attr('src');
+            let id = (_h = $('.caption > h3 > a', element).attr('href')) !== null && _h !== void 0 ? _h : title;
             let subtitle = $("ul > li:first-child > a", element).text().trim();
             manga.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
