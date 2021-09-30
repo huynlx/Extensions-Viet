@@ -724,7 +724,7 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
         let $ = this.cheerio.load(data.data);
         const pages = [];
         for (let obj of $('.list-image-detail img').toArray()) {
-            let link = (_a = $(obj).attr('data-original')) !== null && _a !== void 0 ? _a : "";
+            let link = (_a = $(obj).attr('data-original')) !== null && _a !== void 0 ? _a : $(obj).attr('src');
             pages.push(link);
         }
         const chapterDetails = createChapterDetails({
