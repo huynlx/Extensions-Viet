@@ -585,7 +585,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Doctruyen3Q = exports.Doctruyen3QInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const Doctruyen3QParser_1 = require("./Doctruyen3QParser");
-const DOMAIN = 'https://manhuarock.net/';
+const DOMAIN = 'https://doctruyen3q.com/';
 const method = 'GET';
 exports.Doctruyen3QInfo = {
     version: '2.0.0',
@@ -651,7 +651,7 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
     ;
     async getMangaDetails(mangaId) {
         var _a, _b;
-        const url = DOMAIN + mangaId;
+        const url = mangaId;
         const request = createRequestObject({
             url: url,
             method: "GET",
@@ -661,33 +661,23 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
         let tags = [];
         let creator = '';
         let statusFinal = 1;
-        for (const test of $('li', '.manga-info').toArray()) {
-            switch ($('b', test).text().trim()) {
-                case "Tác giả":
-                    creator = $('a', test).text().trim();
-                    break;
-                case "Thể loại":
-                    for (const t of $('a', test).toArray()) {
-                        const genre = $(t).text().trim();
-                        const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
-                        tags.push(createTag({ label: genre, id }));
-                    }
-                    break;
-                case "Tình trạng":
-                    let status = $('a', test).text().trim();
-                    statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
-                    break;
-            }
+        creator = $('.info-detail-comic > .author > .detail-info').text().trim();
+        for (const t of $('.info-detail-comic > .category > .detail-info > a').toArray()) {
+            const genre = $(t).text().trim();
+            const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
+            tags.push(createTag({ label: genre, id }));
         }
-        let desc = $(".summary-content").text();
-        const image = (_b = $('.info-cover img').attr("src")) !== null && _b !== void 0 ? _b : "";
+        let status = $('.info-detail-comic > .status > .detail-info > span').text().trim();
+        statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
+        let desc = $(".detail-summary").text();
+        const image = (_b = $('.image-info img').attr("src")) !== null && _b !== void 0 ? _b : "";
         return createManga({
             id: mangaId,
             author: creator,
             artist: creator,
             desc: desc,
-            titles: [$('.manga-info h3').text().trim()],
-            image: image.includes('http') ? image : (DOMAIN + image),
+            titles: [$('.title-manga').text().trim()],
+            image,
             status: statusFinal,
             hentai: false,
             tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
@@ -696,22 +686,20 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
     async getChapters(mangaId) {
         var _a;
         const request = createRequestObject({
-            url: DOMAIN + mangaId,
+            url: mangaId,
             method,
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         const chapters = [];
-        var i = 0;
-        for (const obj of $('.list-chapters > a').toArray().reverse()) {
-            i++;
-            let id = DOMAIN + $(obj).first().attr('href');
-            let chapNum = parseFloat((_a = $('.chapter-name', obj).first().text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
-            let name = $('.chapter-view', obj).first().text().trim();
-            let time = $('.chapter-time', obj).first().text().trim();
+        for (const obj of $('#list-chapter-dt > ul > li.row:not(.head-list-chap)').toArray()) {
+            let id = $('.chapters', obj).attr('href');
+            let chapNum = parseFloat((_a = $('.chapters', obj).text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
+            let name = $('.chapters', obj).text().trim();
+            let time = $('div:nth-child(2)', obj).text().trim();
             chapters.push(createChapter({
                 id,
-                chapNum: isNaN(chapNum) ? i : chapNum,
+                chapNum: chapNum,
                 name,
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
@@ -729,9 +717,9 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         const pages = [];
-        for (let obj of $('.chapter-content img').toArray()) {
-            let link = (_a = $(obj).attr('data-original')) !== null && _a !== void 0 ? _a : "";
-            pages.push(link.replace(/\n/g, ''));
+        for (let obj of $('.list-image-detail img').toArray()) {
+            let link = (_a = $(obj).attr('src')) !== null && _a !== void 0 ? _a : "";
+            pages.push(link);
         }
         const chapterDetails = createChapterDetails({
             id: chapterId,
