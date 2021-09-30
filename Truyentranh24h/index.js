@@ -642,7 +642,7 @@ class Truyentranh24h extends paperback_extensions_common_1.Source {
             }
             else {
                 let split = timeAgo.split('-');
-                time = new Date(split[1] + '/' + split[0] + '/' + '20' + split[2]);
+                time = new Date(split[1] + '/' + split[0] + '/' + split[2]);
             }
         }
         return time;
