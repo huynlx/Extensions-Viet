@@ -610,6 +610,42 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
     }
+    convertTime(timeAgo) {
+        var _a;
+        let time;
+        let trimmed = Number(((_a = /\d*/.exec(timeAgo)) !== null && _a !== void 0 ? _a : [])[0]);
+        trimmed = (trimmed == 0 && timeAgo.includes('a')) ? 1 : trimmed;
+        if (timeAgo.includes('giây') || timeAgo.includes('secs')) {
+            time = new Date(Date.now() - trimmed * 1000);
+        }
+        else if (timeAgo.includes('phút')) {
+            time = new Date(Date.now() - trimmed * 60000);
+        }
+        else if (timeAgo.includes('giờ')) {
+            time = new Date(Date.now() - trimmed * 3600000);
+        }
+        else if (timeAgo.includes('ngày')) {
+            time = new Date(Date.now() - trimmed * 86400000);
+        }
+        else if (timeAgo.includes('năm')) {
+            time = new Date(Date.now() - trimmed * 31556952000);
+        }
+        else {
+            if (timeAgo.includes(":")) {
+                let split = timeAgo.split(' ');
+                let H = split[0];
+                let D = split[1];
+                let fixD = D.split('/');
+                let finalD = fixD[1] + '/' + fixD[0] + '/' + new Date().getFullYear();
+                time = new Date(finalD + ' ' + H);
+            }
+            else {
+                let split = timeAgo.split('/');
+                time = new Date(split[1] + '/' + split[0] + '/' + '20' + split[2]);
+            }
+        }
+        return time;
+    }
     getMangaShareUrl(mangaId) { return `${mangaId}`; }
     ;
     async getMangaDetails(mangaId) {
@@ -670,13 +706,15 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             i++;
             let id = 'https://manhuarock.net/' + $(obj).first().attr('href');
             let chapNum = parseFloat((_a = $('.chapter-name', obj).first().text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
-            let name = $('.chapter-name', obj).first().text();
+            let name = $('.chapter-view', obj).first().text().trim();
+            let time = $('.chapter-time', obj).first().text().trim();
             chapters.push(createChapter({
                 id,
                 chapNum: isNaN(chapNum) ? i : chapNum,
                 name,
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+                time: this.convertTime(time)
             }));
         }
         return chapters;
@@ -874,20 +912,18 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         const tags = [];
         const tags2 = [
             {
-                id: 'https://vlogtruyen.net/bang-xep-hang/top-tuan',
-                label: 'Top tuần'
+                id: 'sort.name',
+                label: 'A-Z'
             },
             {
-                id: 'https://vlogtruyen.net/bang-xep-hang/top-thang',
-                label: 'Top tháng'
+                id: 'sort.views',
+                label: 'Lượt Xem'
             },
             {
-                id: 'https://vlogtruyen.net/bang-xep-hang/top-nam',
-                label: 'Top năm'
+                id: 'sort.last_update',
+                label: 'Mới Cập Nhật'
             }
         ];
-        const tags3 = [];
-        const tags4 = [];
         const tags5 = [];
         const tags6 = [];
         const url = `https://manhuarock.net/search`;
@@ -903,20 +939,6 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             if (!id || !label)
                 continue;
             tags.push({ id: id, label: label });
-        }
-        for (const tag of $('select[name="translator"] > option:not(:first-child)').toArray()) {
-            const label = $(tag).text().trim();
-            const id = 'translator.' + $(tag).attr('value');
-            if (!id || !label)
-                continue;
-            tags3.push({ id: id, label: label });
-        }
-        for (const tag of $('select[name="writer"] > option:not(:first-child)').toArray()) {
-            const label = $(tag).text().trim();
-            const id = 'writer.' + $(tag).attr('value');
-            if (!id || !label)
-                continue;
-            tags4.push({ id: id, label: label });
         }
         for (const tag of $('select#TinhTrang option').toArray()) {
             const label = $(tag).text().trim();
@@ -934,6 +956,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         }
         const tagSections = [
             createTagSection({ id: '1', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
+            createTagSection({ id: '3', label: 'Sắp xếp theo', tags: tags2.map(x => createTag(x)) }),
             createTagSection({ id: '4', label: 'Trạng thái', tags: tags5.map(x => createTag(x)) }),
             createTagSection({ id: '5', label: 'Nhóm dịch', tags: tags6.map(x => createTag(x)) }),
         ];
