@@ -703,7 +703,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
-        var _a;
+        var _a, _b, _c;
         let newUpdated = createHomeSection({
             id: 'new_updated',
             title: "Truyện mới",
@@ -749,6 +749,53 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         }
         newUpdated.items = newUpdatedItems;
         sectionCallback(newUpdated);
+        request = createRequestObject({
+            url: 'https://manhuarock.net/',
+            method: "GET",
+        });
+        let popular = [];
+        data = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(data.data);
+        for (let manga of $('.owl-item', '.owl-stage').toArray()) {
+            const title = $('.series-title', manga).text().trim();
+            const id = $('.thumb-wrapper > a', manga).attr('href');
+            const image = (_b = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', manga).css('background-image')) !== null && _b !== void 0 ? _b : "";
+            const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+            const sub = $('.chapter-title > a', manga).text().trim();
+            popular.push(createMangaTile({
+                id: id,
+                image: (bg === null || bg === void 0 ? void 0 : bg.includes('http')) ? (bg) : ("https:" + bg),
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: sub }),
+            }));
+        }
+        hot.items = popular;
+        sectionCallback(hot);
+        request = createRequestObject({
+            url: 'https://manhuarock.net/',
+            method: "GET",
+        });
+        let viewItems = [];
+        data = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(data.data);
+        for (let manga of $('.thumb-item-flow:not(:last-child)', '.col-lg-8.col-sm-8 > .card:nth-child(6) .row-last-update').toArray()) {
+            const title = $('.series-title', manga).text().trim();
+            const id = (_c = $('.series-title > a', manga).attr('href')) !== null && _c !== void 0 ? _c : title;
+            const image = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', manga).attr('data-bg');
+            const sub = $('a', manga).last().text().trim();
+            viewItems.push(createMangaTile({
+                id: id,
+                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? (image) : ("https:" + image),
+                title: createIconText({
+                    text: title,
+                }),
+                subtitleText: createIconText({
+                    text: sub,
+                }),
+            }));
+        }
+        view.items = viewItems;
+        sectionCallback(view);
     }
     async getViewMoreItems(homepageSectionId, metadata) {
         var _a;
