@@ -628,6 +628,12 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
         else if (timeAgo.includes('ngày')) {
             time = new Date(Date.now() - trimmed * 86400000);
         }
+        else if (timeAgo.includes('tuần')) {
+            time = new Date(Date.now() - trimmed * 86400000 * 7);
+        }
+        else if (timeAgo.includes('tháng')) {
+            time = new Date(Date.now() - trimmed * 86400000 * 7 * 4);
+        }
         else if (timeAgo.includes('năm')) {
             time = new Date(Date.now() - trimmed * 31556952000);
         }
@@ -692,10 +698,10 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         const chapters = [];
-        for (const obj of $('#list-chapter-dt ul > li.row:not(.head-list-chap)').toArray()) {
-            let id = $('.chapters', obj).attr('href');
-            let chapNum = parseFloat((_a = $('.chapters', obj).text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
-            let name = $('.chapters', obj).text().trim();
+        for (const obj of $('#list-chapter-dt > nav > ul > li:not(:first-child)').toArray()) {
+            let id = $('.chapters > a', obj).attr('href');
+            let chapNum = parseFloat((_a = $('.chapters > a', obj).text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
+            let name = $('.chapters > a', obj).text().trim();
             let time = $('div:nth-child(2)', obj).text().trim();
             chapters.push(createChapter({
                 id,
@@ -780,12 +786,13 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
         let newUpdatedItems = [];
         for (const element of $('#home > .body > .main-left .item-manga > .item').toArray()) {
             let title = $('.caption > h3 > a', element).text().trim();
-            let image = $('.image-item > a > img', element).attr("data-original");
+            let image = $('.image-item > a > img', element);
+            let imageFinal = image.hasAttr("data-original") ? image.attr("data-original") : image.attr('src');
             let id = (_b = $('.caption > h3 > a', element).attr('href')) !== null && _b !== void 0 ? _b : title;
             let subtitle = $("ul > li:first-child > a", element).text().trim();
             newUpdatedItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: image !== null && image !== void 0 ? image : "",
+                image: imageFinal !== null && imageFinal !== void 0 ? imageFinal : "",
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
