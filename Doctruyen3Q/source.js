@@ -692,7 +692,7 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         const chapters = [];
-        for (const obj of $('#list-chapter-dt > ul > li.row:not(.head-list-chap)').toArray()) {
+        for (const obj of $('#list-chapter-dt ul > li.row:not(.head-list-chap)').toArray()) {
             let id = $('.chapters', obj).attr('href');
             let chapNum = parseFloat((_a = $('.chapters', obj).text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
             let name = $('.chapters', obj).text().trim();
@@ -718,7 +718,7 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
         let $ = this.cheerio.load(data.data);
         const pages = [];
         for (let obj of $('.list-image-detail img').toArray()) {
-            let link = (_a = $(obj).attr('src')) !== null && _a !== void 0 ? _a : "";
+            let link = (_a = $(obj).attr('data-original')) !== null && _a !== void 0 ? _a : "";
             pages.push(link);
         }
         const chapterDetails = createChapterDetails({
@@ -780,7 +780,7 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
         let newUpdatedItems = [];
         for (const element of $('#home > .body > .main-left .item-manga > .item').toArray()) {
             let title = $('.caption > h3 > a', element).text().trim();
-            let image = $('.image-item > a > img', element).attr("src");
+            let image = $('.image-item > a > img', element).attr("data-original");
             let id = (_b = $('.caption > h3 > a', element).attr('href')) !== null && _b !== void 0 ? _b : title;
             let subtitle = $("ul > li:first-child > a", element).text().trim();
             newUpdatedItems.push(createMangaTile({
