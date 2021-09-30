@@ -675,7 +675,7 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
         }
         let status = $('.info-detail-comic > .status > .detail-info > span').text().trim();
         statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
-        let desc = $(".detail-summary").text();
+        let desc = $(".summary-content > p").text();
         const image = (_b = $('.image-info img').attr("src")) !== null && _b !== void 0 ? _b : "";
         return createManga({
             id: mangaId,
@@ -783,7 +783,7 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
         let popular = [];
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
-        for (const element of $('#home > .body > .main-left .item-manga > .item').toArray()) {
+        for (const element of $('#hot > .body > .main-left .item-manga > .item').toArray()) {
             let title = $('.caption > h3 > a', element).text().trim();
             let check = $('.image-item > a > img', element).attr("data-original");
             let img = '';
