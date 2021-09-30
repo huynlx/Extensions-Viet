@@ -739,7 +739,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
                 id: id,
                 image: (bg === null || bg === void 0 ? void 0 : bg.includes('http')) ? (bg) : ("https://manhuarock.net" + bg),
                 title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: sub }),
+                subtitleText: createIconText({ text: sub.replace('Chap', 'Chương') }),
             }));
         }
         hot.items = popular;
@@ -925,7 +925,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
                 continue;
             tags5.push({ id: id, label: label });
         }
-        for (const tag of $('.no-gutters a.genres-item').toArray()) {
+        for (const tag of $('.navbar-nav > li.nav-item:nth-child(2) .no-gutters a.genres-item').toArray()) {
             const label = $(tag).text().trim();
             const id = 'translater.' + $(tag).attr('href');
             if (!id || !label)
