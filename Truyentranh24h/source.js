@@ -716,7 +716,7 @@ class Truyentranh24h extends paperback_extensions_common_1.Source {
         const pages = [];
         for (let obj of $('.chapter-content img').toArray()) {
             let link = (_a = $(obj).attr('data-src')) !== null && _a !== void 0 ? _a : "";
-            pages.push(link.replace(/\n/g, ''));
+            pages.push(link);
         }
         const chapterDetails = createChapterDetails({
             id: chapterId,
