@@ -687,16 +687,14 @@ class Truyentranh24h extends paperback_extensions_common_1.Source {
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         const chapters = [];
-        var i = 0;
         for (const obj of $('.chapter-list > .chapter-item').toArray().reverse()) {
-            i++;
-            let id = DOMAIN + $(obj).first().attr('href');
-            let chapNum = parseFloat((_a = $('.chapter-name', obj).first().text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
-            let name = $('.chapter-views > a', obj).first().text().trim();
-            let time = $('.chapter-update', obj).first().text().trim().split('-');
+            let id = $('.chapter-name > a', obj).attr('href');
+            let chapNum = parseFloat((_a = $('.chapter-name > a', obj).text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
+            let name = $('.chapter-views > a', obj).text().trim();
+            let time = $('.chapter-update', obj).text().trim().split('-');
             chapters.push(createChapter({
                 id,
-                chapNum: isNaN(chapNum) ? i : chapNum,
+                chapNum: chapNum,
                 name,
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
@@ -708,7 +706,7 @@ class Truyentranh24h extends paperback_extensions_common_1.Source {
     async getChapterDetails(mangaId, chapterId) {
         var _a;
         const request = createRequestObject({
-            url: `https://truyentranh24.com/${chapterId}`,
+            url: `https://truyentranh24.com${chapterId}`,
             method
         });
         let data = await this.requestManager.schedule(request, 1);
