@@ -871,7 +871,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             cate: '',
             translater: "",
             status: "",
-            sort: "last_update",
+            sort: "view",
             type: 'DESC'
         };
         tags.map((value) => {
@@ -894,7 +894,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             }
         });
         const request = createRequestObject({
-            url: `https://manhuarock.net/manga-list.html?listType=pagination&page=${page}&group=${search.translater}&m_status=${search.status}&name=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&genre=${search.cate}&sort=${search.sort}&sort_type=${search.type}`,
+            url: encodeURI(`https://manhuarock.net/manga-list.html?listType=pagination&page=${page}&group=${search.translater}&m_status=${search.status}&name=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&genre=${search.cate}&sort=${search.sort}&sort_type=${search.type}`),
             method: "GET",
         });
         let data = await this.requestManager.schedule(request, 1);
