@@ -628,6 +628,12 @@ class Truyentranh24h extends paperback_extensions_common_1.Source {
         else if (timeAgo.includes('ngày')) {
             time = new Date(Date.now() - trimmed * 86400000);
         }
+        else if (timeAgo.includes('tuần')) {
+            time = new Date(Date.now() - trimmed * 86400000 * 7);
+        }
+        else if (timeAgo.includes('tháng')) {
+            time = new Date(Date.now() - trimmed * 86400000 * 7 * 4);
+        }
         else if (timeAgo.includes('năm')) {
             time = new Date(Date.now() - trimmed * 31556952000);
         }
