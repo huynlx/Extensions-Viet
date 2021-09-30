@@ -957,7 +957,8 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         }
         for (const tag of $('.navbar-nav > li.nav-item:nth-child(2) .no-gutters a.genres-item').toArray()) {
             const label = $(tag).text().trim();
-            const id = 'translater.' + $(tag).attr('href');
+            const id = 'translater.' + $(tag).attr('href').split('-nhom-dich-')[1].split('.')[0];
+            ;
             if (!id || !label)
                 continue;
             tags6.push({ id: id, label: label });
