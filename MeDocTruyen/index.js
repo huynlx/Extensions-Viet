@@ -679,14 +679,14 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             }
         }
         let desc = $(".summary-content").text();
-        const image = (_b = 'https://manhuarock.net/' + $('.info-cover img').attr("src")) !== null && _b !== void 0 ? _b : "";
+        const image = (_b = $('.info-cover img').attr("src")) !== null && _b !== void 0 ? _b : "";
         return createManga({
             id: mangaId,
             author: creator,
             artist: creator,
             desc: desc,
             titles: [$('.manga-info h3').text().trim()],
-            image: image,
+            image: image.includes('http') ? image : ('https://manhuarock.net/' + image),
             status: statusFinal,
             hentai: false,
             tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
