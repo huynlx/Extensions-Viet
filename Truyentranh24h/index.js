@@ -641,7 +641,7 @@ class Truyentranh24h extends paperback_extensions_common_1.Source {
                 time = new Date(finalD + ' ' + H);
             }
             else {
-                let split = timeAgo.split('/');
+                let split = timeAgo.split('-');
                 time = new Date(split[1] + '/' + split[0] + '/' + '20' + split[2]);
             }
         }
@@ -690,15 +690,15 @@ class Truyentranh24h extends paperback_extensions_common_1.Source {
         for (const obj of $('.chapter-list > .chapter-item').toArray().reverse()) {
             let id = $('.chapter-name > a', obj).attr('href');
             let chapNum = parseFloat((_a = $('.chapter-name > a', obj).text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
-            let name = $('.chapter-views > a', obj).text().trim();
-            let time = $('.chapter-update', obj).text().trim().split('-');
+            let name = $('.chapter-views', obj).text().trim();
+            let time = this.convertTime($('.chapter-update', obj).text().trim());
             chapters.push(createChapter({
                 id,
                 chapNum: chapNum,
                 name,
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                time: new Date(time[1] + '/' + time[0] + '/' + time[2])
+                time: time
             }));
         }
         return chapters;
