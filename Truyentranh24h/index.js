@@ -685,27 +685,25 @@ class Truyentranh24h extends paperback_extensions_common_1.Source {
         });
     }
     async getChapters(mangaId) {
-        var _a;
         const request = createRequestObject({
-            url: DOMAIN + mangaId,
+            url: 'https://truyentranh24.com/api/mangas/100380/chapters?offset=5&limit=100',
             method,
         });
-        let data = await this.requestManager.schedule(request, 1);
-        let $ = this.cheerio.load(data.data);
-        const dataId = $(".container").attr('data-id');
+        const data = await this.requestManager.schedule(request, 1);
+        const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
         const chapters = [];
-        for (const obj of $('.chapter-list > .chapter-item').toArray().reverse()) {
-            let id = $('.chapter-name > a', obj).attr('href');
-            let chapNum = parseFloat((_a = $('.chapter-name > a', obj).text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
-            let name = $('.chapter-views', obj).text().trim() + ' lượt đọc';
-            let time = this.convertTime($('.chapter-update', obj).text().trim());
+        for (const obj of json) {
+            let id = obj.id;
+            let chapNum = obj.name;
+            let name = obj.views + ' lượt đọc';
+            let time = obj.created_at;
             chapters.push(createChapter({
                 id,
                 chapNum: chapNum,
                 name,
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                time: time
+                time: new Date(time)
             }));
         }
         return chapters;
