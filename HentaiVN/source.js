@@ -1059,7 +1059,7 @@ exports.parseSearch = ($) => {
             continue;
         mangas.push(createMangaTile({
             id: encodeURIComponent(id) + "::" + image,
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
+            image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image),
             title: createIconText({ text: title }),
             subtitleText: createIconText({ text: fixsub.trim() }),
         }));
