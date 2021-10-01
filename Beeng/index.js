@@ -691,7 +691,7 @@ class Beeng extends paperback_extensions_common_1.Source {
             if (!obj.attribs['src'])
                 continue;
             let link = obj.attribs['src'];
-            pages.push(link);
+            pages.push(encodeURI(link));
         }
         const chapterDetails = createChapterDetails({
             id: chapterId,

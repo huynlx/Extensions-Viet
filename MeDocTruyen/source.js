@@ -649,8 +649,8 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
     getMangaShareUrl(mangaId) { return (`https://manhuarock.net/` + mangaId); }
     ;
     async getMangaDetails(mangaId) {
-        var _a, _b;
-        const url = `https://manhuarock.net/` + mangaId;
+        var _a;
+        const url = mangaId;
         const request = createRequestObject({
             url: url,
             method: "GET",
@@ -659,35 +659,24 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         let $ = this.cheerio.load(data.data);
         let tags = [];
         let creator = '';
-        let statusFinal = 1;
-        for (const test of $('li', '.manga-info').toArray()) {
-            switch ($('b', test).text().trim()) {
-                case "Tác giả":
-                    creator = $('a', test).text().trim();
-                    break;
-                case "Thể loại":
-                    for (const t of $('a', test).toArray()) {
-                        const genre = $(t).text().trim();
-                        const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
-                        tags.push(createTag({ label: genre, id }));
-                    }
-                    break;
-                case "Tình trạng":
-                    let status = $('a', test).text().trim();
-                    statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
-                    break;
-            }
+        var info = $(".detail_infos");
+        creator = $(".other_infos font", info).first().text();
+        for (const t of $('.other_infos:nth-child(3) > div:nth-child(2) > a', info).toArray()) {
+            const genre = $(t).text().trim();
+            const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
+            tags.push(createTag({ label: genre, id }));
         }
-        let desc = $(".summary-content").text();
-        const image = (_b = $('.info-cover img').attr("src")) !== null && _b !== void 0 ? _b : "";
+        let status = info.html().indexOf("Đang tiến hành") === -1 ? 0 : 1;
+        let desc = $(".summary", info).text();
+        const image = $(".detail_info img").first().attr("src");
         return createManga({
             id: mangaId,
             author: creator,
             artist: creator,
             desc: desc,
-            titles: [$('.manga-info h3').text().trim()],
-            image: image.includes('http') ? image : ('https://manhuarock.net/' + image),
-            status: statusFinal,
+            titles: [$('.title', info).text().trim()],
+            image: image,
+            status: status,
             hentai: false,
             tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
         });
@@ -799,7 +788,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             });
         });
         var el = $('.morelistCon a').toArray();
-        for (var i = 0; i < el.length; i++) {
+        for (var i = 0; i < 20; i++) {
             var e = el[i];
             updateItems.push(createMangaTile({
                 id: $(e).attr("href"),
