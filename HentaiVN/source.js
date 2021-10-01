@@ -1020,15 +1020,15 @@ exports.parsePopularSections = ($, sections, sectionCallback) => {
         const title = $('.box-description > p > a', manga).text();
         const id = (_a = $('.box-cover > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
         const image = $('.box-cover > a > img', manga).attr('data-src');
-        const subtitle = $(".box-description p:first-child", manga).text().trim();
-        const fixsub = subtitle.split(' - ')[1];
+        const subtitle = $(".box-description p:nth-child(1)", manga).text().trim();
+        const fixsub = subtitle.split('-')[1];
         if (!id || !title)
             continue;
         popular.push(createMangaTile({
             id: encodeURIComponent(id) + "::" + image,
             image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
             title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: fixsub }),
+            subtitleText: createIconText({ text: fixsub.trim() }),
         }));
     }
     sections[3].items = popular;
@@ -1046,15 +1046,15 @@ exports.parseSearch = ($) => {
         const title = $('.box-description > p > a', manga).text();
         const id = (_a = $('.box-cover > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
         const image = $('.box-cover > a > img', manga).attr('data-src');
-        const subtitle = $(".box-description p:first-child", manga).text().trim();
-        const fixsub = subtitle.split(' - ')[1];
+        const subtitle = $(".box-description p:nth-child(1)", manga).text().trim();
+        const fixsub = subtitle.split('-')[1];
         if (!id || !title)
             continue;
         mangas.push(createMangaTile({
             id: encodeURIComponent(id) + "::" + image,
             image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
             title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: fixsub }),
+            subtitleText: createIconText({ text: fixsub.trim() }),
         }));
     }
     return mangas;
@@ -1087,8 +1087,8 @@ exports.parseViewMore = ($, select) => {
             const title = $('.box-description > p > a', obj).text();
             const id = (_b = $('.box-cover > a', obj).attr('href')) === null || _b === void 0 ? void 0 : _b.split('/').pop();
             const image = $('.box-cover > a > img', obj).attr('data-src');
-            const subtitle = $(".box-description p:first-child", obj).text().trim();
-            const fixsub = subtitle.split(' - ')[1];
+            const subtitle = $(".box-description p:nth-child(1)", obj).text().trim();
+            const fixsub = subtitle.split('-')[1];
             if (!id || !title)
                 continue;
             if (!collectedIds.includes(id)) {
@@ -1096,7 +1096,7 @@ exports.parseViewMore = ($, select) => {
                     id: encodeURIComponent(id) + "::" + image,
                     image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({ text: decodeHTMLEntity(title) }),
-                    subtitleText: createIconText({ text: fixsub }),
+                    subtitleText: createIconText({ text: fixsub.trim() }),
                 }));
             }
             collectedIds.push(id);
