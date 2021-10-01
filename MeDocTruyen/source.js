@@ -682,7 +682,6 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         });
     }
     async getChapters(mangaId) {
-        var _a;
         const request = createRequestObject({
             url: mangaId,
             method,
@@ -690,19 +689,28 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         const chapters = [];
-        var i = 0;
-        for (const obj of $('.chapter_pages a').toArray().reverse()) {
-            i++;
-            let id = $(obj).attr('href');
-            let chapNum = parseFloat((_a = $(obj).text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
-            let name = $(obj).text().trim();
-            chapters.push(createChapter({
-                id,
-                chapNum: isNaN(chapNum) ? i : chapNum,
-                name,
-                mangaId: mangaId,
-                langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-            }));
+        var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
+        if (dt)
+            dt = JSON.parse(dt[1]);
+        var novels = dt === null || dt === void 0 ? void 0 : dt.props.pageProps.initialState.detail.story_chapters;
+        var covers = [];
+        for (const t of novels) {
+            for (const v of t) {
+                covers.push({
+                    time: v.time,
+                    id: v.chapter_index,
+                    title: v.title,
+                    chapNum: v.chapter_index
+                });
+                chapters.push(createChapter({
+                    id: mangaId + '/' + v.chapter_index,
+                    chapNum: v.chapter_index,
+                    name: v.title,
+                    mangaId: mangaId,
+                    langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+                    time: v.time
+                }));
+            }
         }
         return chapters;
     }
