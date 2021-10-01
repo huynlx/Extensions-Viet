@@ -678,6 +678,13 @@ class HentaiVN extends paperback_extensions_common_1.Source {
         response = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(response.data);
         HentaiVNParser_1.parseAddedSections($, sections, sectionCallback);
+        request = createRequestObject({
+            url: `${DOMAIN}tieu-diem.html`,
+            method,
+        });
+        response = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(response.data);
+        HentaiVNParser_1.parsePopularSections($, sections, sectionCallback);
     }
     async getViewMoreItems(homepageSectionId, metadata) {
         var _a;

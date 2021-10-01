@@ -1077,7 +1077,7 @@ exports.parseViewMore = ($, homepageSectionId) => {
             }));
         }
     }
-    else if (homepageSectionId === 'home') {
+    else if (homepageSectionId === 'new_updated') {
         for (const element of $('#home > .body > .main-left .item-manga > .item').toArray()) {
             let title = $('.caption > h3 > a', element).text().trim();
             let img = (_c = $('.image-item > a > img', element).attr("data-original")) !== null && _c !== void 0 ? _c : $('.image-item > a > img', element).attr('src');
