@@ -794,13 +794,13 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
         }
         hot.items = popular;
         request = createRequestObject({
-            url: 'http://truyentranhtuan.com/',
+            url: 'http://truyentranhtuan.com/danh-sach-truyen',
             method: "GET",
         });
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
         let newUpdatedItems = [];
-        for (const element of $('#story-list .manga-focus').toArray()) {
+        for (const element of $('#new-chapter .manga-focus').toArray()) {
             let title = $('.manga > a', element).text().trim();
             let img = '';
             let id = (_e = $('.manga > a', element).attr('href')) !== null && _e !== void 0 ? _e : title;
