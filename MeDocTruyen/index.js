@@ -790,15 +790,23 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         if (dt)
             dt = JSON.parse(dt[1]);
         var novels = dt.props.pageProps.initialState.more.moreList.list;
-        for (const t of novels) {
-            for (const t2 of $('.morelistCon a').toArray()) {
-                updateItems.push(createMangaTile({
-                    id: t2.attribs['href'],
-                    image: t.coverimg,
-                    title: createIconText({ text: t.title }),
-                    subtitleText: createIconText({ text: t.newest_chapter_name }),
-                }));
-            }
+        var covers = [];
+        novels.forEach((v) => {
+            covers.push({
+                image: v.coverimg,
+                title: v.title,
+                chapter: v.newest_chapter_name
+            });
+        });
+        var el = $('.morelistCon a').toArray();
+        for (var i = 0; i < el.length; i++) {
+            var e = el[i];
+            updateItems.push(createMangaTile({
+                id: $(e).attr("href"),
+                image: covers[i].image,
+                title: createIconText({ text: covers[i].title }),
+                subtitleText: createIconText({ text: covers[i].chapter }),
+            }));
         }
         newUpdated.items = updateItems;
         sectionCallback(newUpdated);
