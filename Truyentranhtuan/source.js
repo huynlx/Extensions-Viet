@@ -800,11 +800,11 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
         let newUpdatedItems = [];
-        for (const element of $('#story-icon .manga-update').toArray().splice(0, 20)) {
-            let title = $('.easy-tooltip > a', element).first().text().trim();
-            let img = $('img', element).attr("src").replace('-80x90', '');
-            let id = (_e = $('.easy-tooltip > a', element).attr('href')) !== null && _e !== void 0 ? _e : title;
-            let subtitle = $("a", element).last().text().trim();
+        for (const element of $('#story-list .manga-focus').toArray()) {
+            let title = $('.manga > a', element).text().trim();
+            let img = '';
+            let id = (_e = $('.manga > a', element).attr('href')) !== null && _e !== void 0 ? _e : title;
+            let subtitle = $(".chapter > a", element).text().trim();
             newUpdatedItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
                 image: img !== null && img !== void 0 ? img : "",
