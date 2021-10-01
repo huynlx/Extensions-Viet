@@ -741,7 +741,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
-        var _a, _b, _c;
+        var _a, _b;
         let hot = createHomeSection({
             id: 'hot',
             title: "TRUYỆN HOT TRONG NGÀY",
@@ -757,9 +757,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             title: "TRUYỆN MỚI ĐĂNG",
             view_more: false,
         });
-        sectionCallback(hot);
         sectionCallback(newUpdated);
-        sectionCallback(view);
         let request = createRequestObject({
             url: 'https://manhuarock.net/',
             method: "GET",
@@ -783,31 +781,29 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         hot.items = popular;
         sectionCallback(hot);
         request = createRequestObject({
-            url: 'https://manhuarock.net/manga-list.html?listType=pagination&page=1&artist=&author=&group=&m_status=&name=&genre=&ungenre=&sort=last_update&sort_type=DESC',
+            url: 'https://www.medoctruyentranh.net/de-xuat/cap-nhat-moi/2',
             method: "GET",
         });
+        let updateItems = [];
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
-        let newUpdatedItems = [];
-        for (const element of $('.card-body > .row > .thumb-item-flow').toArray()) {
-            let title = $('.series-title > a', element).text().trim();
-            let image = $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
-            if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
-                image = 'https://manhuarock.net' + image;
-            }
-            else {
-                image = image;
-            }
-            let id = (_b = $('.series-title > a', element).attr('href')) !== null && _b !== void 0 ? _b : title;
-            let subtitle = 'Chương ' + $(".chapter-title > a", element).text().trim();
-            newUpdatedItems.push(createMangaTile({
-                id: id !== null && id !== void 0 ? id : "",
-                image: image !== null && image !== void 0 ? image : "",
-                title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: subtitle }),
+        var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
+        if (dt)
+            dt = JSON.parse(dt[1]);
+        var novels = dt.props.pageProps.initialState.more.moreList.list;
+        var covers = [];
+        novels.forEach((v) => {
+            covers.push(v.coverimg);
+        });
+        for (const t of covers) {
+            updateItems.push(createMangaTile({
+                id: t,
+                image: t,
+                title: createIconText({ text: 'ok' }),
+                subtitleText: createIconText({ text: 'ok' }),
             }));
         }
-        newUpdated.items = newUpdatedItems;
+        newUpdated.items = updateItems;
         sectionCallback(newUpdated);
         request = createRequestObject({
             url: 'https://manhuarock.net/',
@@ -825,7 +821,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             else {
                 image = image;
             }
-            let id = (_c = $('.series-title > a', manga).attr('href')) !== null && _c !== void 0 ? _c : title;
+            let id = (_b = $('.series-title > a', manga).attr('href')) !== null && _b !== void 0 ? _b : title;
             let subtitle = $(".chapter-title > a", manga).text().trim();
             viewItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
