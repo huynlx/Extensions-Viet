@@ -794,7 +794,7 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
         }
         hot.items = popular;
         request = createRequestObject({
-            url: 'http://truyentranhtuan.com/',
+            url: 'http://truyentranhtuan.com/danh-sach-truyen',
             method: "GET",
         });
         data = await this.requestManager.schedule(request, 1);
