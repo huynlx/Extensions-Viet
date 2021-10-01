@@ -666,7 +666,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
             tags.push(createTag({ label: genre, id }));
         }
-        let status = info.indexOf("Đang tiến hành") >= 0 ? 1 : 0;
+        let status = info.includes("Đang tiến hành") ? 1 : 0;
         let desc = $(".summary", info).text();
         const image = $(".detail_info img").first().attr("src");
         return createManga({
