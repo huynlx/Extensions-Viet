@@ -1126,7 +1126,7 @@ exports.parseViewMore = ($) => {
         });
     });
     var el = $('.morelistCon a').toArray();
-    for (var i = 0; i < 20; i++) {
+    for (var i = 0; i < el.length; i++) {
         var e = el[i];
         manga.push(createMangaTile({
             id: $(e).attr("href"),
