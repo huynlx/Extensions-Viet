@@ -907,23 +907,18 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
         });
     }
     async getSearchResults(query, metadata) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
         const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
         const search = {
             cate: '',
-            translater: "",
-            status: "",
-            sort: "views",
-            type: 'DESC'
+            status: "2",
+            sort: "1"
         };
         tags.map((value) => {
             switch (value.split(".")[0]) {
                 case 'cate':
                     search.cate = (value.split(".")[1]);
-                    break;
-                case 'translater':
-                    search.translater = (value.split(".")[1]);
                     break;
                 case 'status':
                     search.status = (value.split(".")[1]);
@@ -931,13 +926,10 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
                 case 'sort':
                     search.sort = (value.split(".")[1]);
                     break;
-                case 'type':
-                    search.type = (value.split(".")[1]);
-                    break;
             }
         });
         const request = createRequestObject({
-            url: encodeURI(`${DOMAIN}tim-truyen?keyword=${query.title}&page=${page}`),
+            url: encodeURI(`https://doctruyen3q.com/tim-truyen/${search.cate}?keyword=${(_d = query.title) !== null && _d !== void 0 ? _d : ""}&sort=${search.sort}&status=${search.status}&page=${page}`),
             method: "GET",
         });
         let data = await this.requestManager.schedule(request, 1);
@@ -967,7 +959,7 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
                 continue;
             tags.push({ id: id, label: label });
         }
-        for (const tag of $('#status-comic li a').toArray()) {
+        for (const tag of $('#status-comic a').toArray()) {
             var label = $(tag).text().trim();
             const id = 'status.' + $(tag).attr('href').split('=')[1];
             if (!id || !label)
@@ -976,7 +968,7 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
         }
         for (const tag of $('.list-select > a').toArray()) {
             var label = $(tag).text().trim();
-            const id = 'status.' + $(tag).attr('href').split('=')[1];
+            const id = 'sort.' + $(tag).attr('href').split('=')[1];
             if (!id || !label)
                 continue;
             tags2.push({ id: id, label: label });
