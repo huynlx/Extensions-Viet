@@ -697,11 +697,11 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             for (const v of t) {
                 chapters.push(createChapter({
                     id: mangaId + '/' + v.chapter_index,
-                    chapNum: v.chapter_index,
+                    chapNum: parseFloat(v.title.split(' ')[1]),
                     name: v.title,
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: v.time
+                    time: new Date(v.time)
                 }));
             }
         }
