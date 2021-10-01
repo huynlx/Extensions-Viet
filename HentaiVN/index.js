@@ -661,30 +661,6 @@ class HentaiVN extends paperback_extensions_common_1.Source {
         let response = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(response.data);
         HentaiVNParser_1.parseHomeSections($, sections, sectionCallback);
-        request = createRequestObject({
-            url: DOMAIN + 'list-random.php',
-            method: 'POST',
-            headers: {
-                'content-type': 'application/x-www-form-urlencoded'
-            }
-        });
-        response = await this.requestManager.schedule(request, 1);
-        $ = this.cheerio.load(response.data);
-        HentaiVNParser_1.parseRandomSections($, sections, sectionCallback);
-        request = createRequestObject({
-            url: `${DOMAIN}danh-sach.html`,
-            method,
-        });
-        response = await this.requestManager.schedule(request, 1);
-        $ = this.cheerio.load(response.data);
-        HentaiVNParser_1.parseAddedSections($, sections, sectionCallback);
-        request = createRequestObject({
-            url: `${DOMAIN}tieu-diem.html`,
-            method,
-        });
-        response = await this.requestManager.schedule(request, 1);
-        $ = this.cheerio.load(response.data);
-        HentaiVNParser_1.parsePopularSections($, sections, sectionCallback);
     }
     async getViewMoreItems(homepageSectionId, metadata) {
         var _a;
