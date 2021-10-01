@@ -754,11 +754,17 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             title: "Chuyên mục Artbook",
             view_more: true,
         });
+        let selected = createHomeSection({
+            id: 'selected',
+            title: "Nội dung chọn lọc",
+            view_more: true,
+        });
         sectionCallback(newUpdated);
         sectionCallback(view);
         sectionCallback(suggest);
         sectionCallback(chapter);
         sectionCallback(artbook);
+        sectionCallback(selected);
         let request = createRequestObject({
             url: 'https://www.medoctruyentranh.net/de-xuat/cap-nhat-moi/2',
             method: "GET",
@@ -779,7 +785,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             });
         });
         var el = $('.morelistCon a').toArray();
-        for (var i = 0; i < 20; i++) {
+        for (var i = 0; i < 10; i++) {
             var e = el[i];
             updateItems.push(createMangaTile({
                 id: $(e).attr("href"),
@@ -810,7 +816,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             });
         });
         var el = $('.morelistCon a').toArray();
-        for (var i = 0; i < 20; i++) {
+        for (var i = 0; i < 10; i++) {
             var e = el[i];
             viewItems.push(createMangaTile({
                 id: $(e).attr("href"),
@@ -841,7 +847,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             });
         });
         var el = $('.morelistCon a').toArray();
-        for (var i = 0; i < 20; i++) {
+        for (var i = 0; i < 10; i++) {
             var e = el[i];
             suggestItems.push(createMangaTile({
                 id: $(e).attr("href"),
@@ -872,7 +878,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             });
         });
         var el = $('.morelistCon a').toArray();
-        for (var i = 0; i < 20; i++) {
+        for (var i = 0; i < 10; i++) {
             var e = el[i];
             chapterItems.push(createMangaTile({
                 id: $(e).attr("href"),
@@ -903,7 +909,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             });
         });
         var el = $('.morelistCon a').toArray();
-        for (var i = 0; i < 20; i++) {
+        for (var i = 0; i < 10; i++) {
             var e = el[i];
             artbookItems.push(createMangaTile({
                 id: $(e).attr("href"),
@@ -914,6 +920,37 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         }
         artbook.items = artbookItems;
         sectionCallback(artbook);
+        request = createRequestObject({
+            url: 'https://www.medoctruyentranh.net/de-xuat/hay',
+            method: "GET",
+        });
+        let selectedItems = [];
+        data = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(data.data);
+        var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
+        if (dt)
+            dt = JSON.parse(dt[1]);
+        var novels = dt.props.pageProps.initialState.more.moreList.list;
+        var covers = [];
+        novels.forEach((v) => {
+            covers.push({
+                image: v.coverimg,
+                title: v.title,
+                chapter: v.newest_chapter_name
+            });
+        });
+        var el = $('.morelistCon a').toArray();
+        for (var i = 0; i < 5; i++) {
+            var e = el[i];
+            selectedItems.push(createMangaTile({
+                id: $(e).attr("href"),
+                image: covers[i].image,
+                title: createIconText({ text: covers[i].title }),
+                subtitleText: createIconText({ text: covers[i].chapter }),
+            }));
+        }
+        selected.items = selectedItems;
+        sectionCallback(selected);
     }
     async getViewMoreItems(homepageSectionId, metadata) {
         var _a;
@@ -934,6 +971,9 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
                 break;
             case "artbook":
                 url = `https://www.medoctruyentranh.net/de-xuat/chuyen-muc-artbook/36`;
+                break;
+            case "selected":
+                url = `https://www.medoctruyentranh.net/de-xuat/hay`;
                 break;
             default:
                 return Promise.resolve(createPagedResults({ results: [] }));
