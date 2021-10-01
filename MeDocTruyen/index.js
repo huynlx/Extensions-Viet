@@ -779,7 +779,6 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             }));
         }
         hot.items = popular;
-        sectionCallback(hot);
         request = createRequestObject({
             url: 'https://www.medoctruyentranh.net/de-xuat/cap-nhat-moi/2',
             method: "GET",
@@ -787,21 +786,19 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         let updateItems = [];
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
-        var dt = $.match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
+        var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
         if (dt)
             dt = JSON.parse(dt[1]);
         var novels = dt.props.pageProps.initialState.more.moreList.list;
-        var covers = [];
-        novels.forEach((v) => {
-            covers.push(v.coverimg);
-        });
-        for (const t of covers) {
-            updateItems.push(createMangaTile({
-                id: t,
-                image: t,
-                title: createIconText({ text: 'ok' }),
-                subtitleText: createIconText({ text: 'ok' }),
-            }));
+        for (const t of novels) {
+            for (const t2 of $('.morelistCon a').toArray()) {
+                updateItems.push(createMangaTile({
+                    id: t2.attr('href'),
+                    image: t.coverimg,
+                    title: createIconText({ text: t.title }),
+                    subtitleText: createIconText({ text: t.newest_chapter_name }),
+                }));
+            }
         }
         newUpdated.items = updateItems;
         sectionCallback(newUpdated);
@@ -831,7 +828,6 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             }));
         }
         view.items = viewItems;
-        sectionCallback(view);
     }
     async getViewMoreItems(homepageSectionId, metadata) {
         var _a;
