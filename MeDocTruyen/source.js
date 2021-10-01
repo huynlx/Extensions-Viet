@@ -684,43 +684,42 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
     async getChapters(mangaId) {
         var _a;
         const request = createRequestObject({
-            url: `https://manhuarock.net/` + mangaId,
+            url: mangaId,
             method,
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         const chapters = [];
         var i = 0;
-        for (const obj of $('.list-chapters > a').toArray().reverse()) {
+        for (const obj of $('.chapter_pages a').toArray().reverse()) {
             i++;
-            let id = 'https://manhuarock.net/' + $(obj).first().attr('href');
-            let chapNum = parseFloat((_a = $('.chapter-name', obj).first().text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
-            let name = $('.chapter-view', obj).first().text().trim();
-            let time = $('.chapter-time', obj).first().text().trim();
+            let id = $(obj).attr('href');
+            let chapNum = parseFloat((_a = $(obj).text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
+            let name = $(obj).text().trim();
             chapters.push(createChapter({
                 id,
                 chapNum: isNaN(chapNum) ? i : chapNum,
                 name,
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                time: this.convertTime(time)
             }));
         }
         return chapters;
     }
     async getChapterDetails(mangaId, chapterId) {
-        var _a;
         const request = createRequestObject({
             url: `${chapterId}`,
             method
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
+        var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
+        if (dt)
+            dt = JSON.parse(dt[1]);
         const pages = [];
-        for (let obj of $('.chapter-content img').toArray()) {
-            let link = (_a = $(obj).attr('data-original')) !== null && _a !== void 0 ? _a : "";
-            pages.push(link.replace(/\n/g, ''));
-        }
+        dt.props.pageProps.initialState.read.detail_item.elements.forEach((v) => {
+            pages.push(v.content);
+        });
         const chapterDetails = createChapterDetails({
             id: chapterId,
             mangaId: mangaId,
