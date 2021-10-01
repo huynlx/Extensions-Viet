@@ -588,7 +588,7 @@ const ManhuaRockParser_1 = require("./ManhuaRockParser");
 const DOMAIN = 'https://manhuarock.net/';
 const method = 'GET';
 exports.ManhuaRockInfo = {
-    version: '2.0.0',
+    version: '1.5.0',
     name: 'ManhuaRock',
     icon: 'icon.png',
     author: 'Huynhzip3',
