@@ -661,6 +661,23 @@ class HentaiVN extends paperback_extensions_common_1.Source {
         let response = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(response.data);
         HentaiVNParser_1.parseHomeSections($, sections, sectionCallback);
+        request = createRequestObject({
+            url: DOMAIN + 'list-random.php',
+            method: 'POST',
+            headers: {
+                'content-type': 'application/x-www-form-urlencoded'
+            }
+        });
+        response = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(response.data);
+        HentaiVNParser_1.parseRandomSections($, sections, sectionCallback);
+        request = createRequestObject({
+            url: `${DOMAIN}danh-sach.html`,
+            method,
+        });
+        response = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(response.data);
+        HentaiVNParser_1.parseAddedSections($, sections, sectionCallback);
     }
     async getViewMoreItems(homepageSectionId, metadata) {
         var _a;
@@ -982,15 +999,15 @@ exports.parseAddedSections = ($, sections, sectionCallback) => {
         const title = $('.box-description > p > a', manga).text();
         const id = (_a = $('.box-cover > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
         const image = $('.box-cover > a > img', manga).attr('data-src');
-        const subtitle = $(".box-description p:first-child", manga).text().trim();
-        const fixsub = subtitle.split(' - ')[1];
+        const subtitle = $(".box-description p:nth-child(1)", manga).text().trim();
+        const fixsub = subtitle.split('-')[1];
         if (!id || !title)
             continue;
         added.push(createMangaTile({
             id: encodeURIComponent(id) + "::" + image,
             image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
             title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: fixsub }),
+            subtitleText: createIconText({ text: fixsub.trim() }),
         }));
     }
     sections[4].items = added;
