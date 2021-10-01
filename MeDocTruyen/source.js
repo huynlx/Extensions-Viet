@@ -787,7 +787,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         let updateItems = [];
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
-        var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
+        var dt = $.match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
         if (dt)
             dt = JSON.parse(dt[1]);
         var novels = dt.props.pageProps.initialState.more.moreList.list;
