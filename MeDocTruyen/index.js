@@ -731,22 +731,34 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
     async getHomePageSections(sectionCallback) {
         let newUpdated = createHomeSection({
             id: 'new_updated',
-            title: "TRUYỆN MỚI CẬP NHẬT",
+            title: "Cập nhật mới",
             view_more: true,
         });
         let view = createHomeSection({
             id: 'view',
-            title: "TRUYỆN MỚI ĐĂNG",
-            view_more: false,
+            title: "Tác phẩm mới",
+            view_more: true,
         });
         let suggest = createHomeSection({
             id: 'suggest',
-            title: "TRUYỆN HOT TRONG NGÀY",
-            view_more: false,
+            title: "Đề xuất truyện mới",
+            view_more: true,
+        });
+        let chapter = createHomeSection({
+            id: 'chapter',
+            title: "Truyện nhiều chương",
+            view_more: true,
+        });
+        let artbook = createHomeSection({
+            id: 'artbook',
+            title: "Chuyên mục Artbook",
+            view_more: true,
         });
         sectionCallback(newUpdated);
         sectionCallback(view);
         sectionCallback(suggest);
+        sectionCallback(chapter);
+        sectionCallback(artbook);
         let request = createRequestObject({
             url: 'https://www.medoctruyentranh.net/de-xuat/cap-nhat-moi/2',
             method: "GET",
@@ -840,16 +852,88 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         }
         suggest.items = suggestItems;
         sectionCallback(suggest);
+        request = createRequestObject({
+            url: 'https://www.medoctruyentranh.net/de-xuat/truyen-nhieu-chuong/35',
+            method: "GET",
+        });
+        let chapterItems = [];
+        data = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(data.data);
+        var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
+        if (dt)
+            dt = JSON.parse(dt[1]);
+        var novels = dt.props.pageProps.initialState.more.moreList.list;
+        var covers = [];
+        novels.forEach((v) => {
+            covers.push({
+                image: v.coverimg,
+                title: v.title,
+                chapter: v.newest_chapter_name
+            });
+        });
+        var el = $('.morelistCon a').toArray();
+        for (var i = 0; i < 20; i++) {
+            var e = el[i];
+            chapterItems.push(createMangaTile({
+                id: $(e).attr("href"),
+                image: covers[i].image,
+                title: createIconText({ text: covers[i].title }),
+                subtitleText: createIconText({ text: covers[i].chapter }),
+            }));
+        }
+        chapter.items = chapterItems;
+        sectionCallback(chapter);
+        request = createRequestObject({
+            url: 'https://www.medoctruyentranh.net/de-xuat/chuyen-muc-artbook/36',
+            method: "GET",
+        });
+        let artbookItems = [];
+        data = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(data.data);
+        var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
+        if (dt)
+            dt = JSON.parse(dt[1]);
+        var novels = dt.props.pageProps.initialState.more.moreList.list;
+        var covers = [];
+        novels.forEach((v) => {
+            covers.push({
+                image: v.coverimg,
+                title: v.title,
+                chapter: v.newest_chapter_name
+            });
+        });
+        var el = $('.morelistCon a').toArray();
+        for (var i = 0; i < 20; i++) {
+            var e = el[i];
+            artbookItems.push(createMangaTile({
+                id: $(e).attr("href"),
+                image: covers[i].image,
+                title: createIconText({ text: covers[i].title }),
+                subtitleText: createIconText({ text: covers[i].chapter }),
+            }));
+        }
+        artbook.items = artbookItems;
+        sectionCallback(artbook);
     }
     async getViewMoreItems(homepageSectionId, metadata) {
         var _a;
         let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
         let url = '';
-        let select = 1;
         switch (homepageSectionId) {
             case "new_updated":
-                url = `https://manhuarock.net/manga-list.html?listType=pagination&page=${page}&artist=&author=&group=&m_status=&name=&genre=&ungenre=&sort=last_update&sort_type=DESC`;
-                select = 1;
+                url = `https://www.medoctruyentranh.net/de-xuat/cap-nhat-moi/2`;
+                break;
+            case "view":
+                url = `https://www.medoctruyentranh.net/de-xuat/tac-pham-moi/20`;
+                break;
+            case "suggest":
+                url = `https://www.medoctruyentranh.net/de-xuat/de-xuat-truyen-moi/37`;
+                break;
+            case "chapter":
+                url = `https://www.medoctruyentranh.net/de-xuat/truyen-nhieu-chuong/35`;
+                break;
+            case "artbook":
+                url = `https://www.medoctruyentranh.net/de-xuat/chuyen-muc-artbook/36`;
                 break;
             default:
                 return Promise.resolve(createPagedResults({ results: [] }));
@@ -1028,24 +1112,27 @@ exports.parseSearch = ($) => {
     return manga;
 };
 exports.parseViewMore = ($) => {
-    var _a;
     const manga = [];
-    for (const element of $('.card-body > .row > .thumb-item-flow').toArray()) {
-        let title = $('.series-title > a', element).text().trim();
-        let image = $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
-        if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
-            image = 'https://manhuarock.net' + image;
-        }
-        else {
-            image = image;
-        }
-        let id = (_a = $('.series-title > a', element).attr('href')) !== null && _a !== void 0 ? _a : title;
-        let subtitle = 'Chương ' + $(".chapter-title > a", element).text().trim();
+    var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
+    if (dt)
+        dt = JSON.parse(dt[1]);
+    var novels = dt.props.pageProps.initialState.more.moreList.list;
+    var covers = [];
+    novels.forEach((v) => {
+        covers.push({
+            image: v.coverimg,
+            title: v.title,
+            chapter: v.newest_chapter_name
+        });
+    });
+    var el = $('.morelistCon a').toArray();
+    for (var i = 0; i < 20; i++) {
+        var e = el[i];
         manga.push(createMangaTile({
-            id: id,
-            image: image !== null && image !== void 0 ? image : "",
-            title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: subtitle }),
+            id: $(e).attr("href"),
+            image: covers[i].image,
+            title: createIconText({ text: covers[i].title }),
+            subtitleText: createIconText({ text: covers[i].chapter }),
         }));
     }
     return manga;
