@@ -793,7 +793,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         for (const t of novels) {
             for (const t2 of $('.morelistCon a').toArray()) {
                 updateItems.push(createMangaTile({
-                    id: t2.attr('href'),
+                    id: t2.attribs['href'],
                     image: t.coverimg,
                     title: createIconText({ text: t.title }),
                     subtitleText: createIconText({ text: t.newest_chapter_name }),
