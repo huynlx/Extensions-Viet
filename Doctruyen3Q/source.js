@@ -951,73 +951,40 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
     }
     async getSearchTags() {
         const tags = [];
-        const tags2 = [
-            {
-                id: 'sort.name',
-                label: 'A-Z'
-            },
-            {
-                id: 'sort.views',
-                label: 'Lượt Xem'
-            },
-            {
-                id: 'sort.last_update',
-                label: 'Mới Cập Nhật'
-            }
-        ];
-        const tagss = [
-            {
-                id: 'type.ASC',
-                label: 'ASC'
-            },
-            {
-                id: 'type.DESC',
-                label: 'DESC'
-            }
-        ];
+        const tags2 = [];
         const tags5 = [];
-        const tags6 = [];
-        const url = DOMAIN + `search`;
+        const url = 'https://doctruyen3q.com/tim-truyen';
         const request = createRequestObject({
             url: url,
             method: "GET",
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        for (const tag of $('.navbar-nav > li.nav-item:nth-child(1) .no-gutters a.genres-item').toArray()) {
+        for (const tag of $('.categories-detail li:not(.active) > a').toArray()) {
             const label = $(tag).text().trim();
             const id = 'cate.' + $(tag).attr('href').split('-the-loai-')[1].split('.')[0];
             if (!id || !label)
                 continue;
             tags.push({ id: id, label: label });
         }
-        for (const tag of $('select#TinhTrang option').toArray()) {
+        for (const tag of $('#status-comic li a').toArray()) {
             var label = $(tag).text().trim();
-            if (label === 'Hoàn thành') {
-                label = 'Đang tiến hành';
-            }
-            else if (label === 'Đang tiến hành') {
-                label = 'Hoàn thành';
-            }
-            const id = 'status.' + $(tag).attr('value');
+            const id = 'status.' + $(tag).attr('href').split('=')[1];
             if (!id || !label)
                 continue;
             tags5.push({ id: id, label: label });
         }
-        for (const tag of $('.navbar-nav > li.nav-item:nth-child(2) .no-gutters a.genres-item').toArray()) {
-            const label = $(tag).text().trim();
-            const id = 'translater.' + $(tag).attr('href').split('-nhom-dich-')[1].split('.')[0];
-            ;
+        for (const tag of $('.list-select > a').toArray()) {
+            var label = $(tag).text().trim();
+            const id = 'status.' + $(tag).attr('href').split('=')[1];
             if (!id || !label)
                 continue;
-            tags6.push({ id: id, label: label });
+            tags2.push({ id: id, label: label });
         }
         const tagSections = [
             createTagSection({ id: '1', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
-            createTagSection({ id: '3', label: 'Sắp xếp theo', tags: tags2.map(x => createTag(x)) }),
-            createTagSection({ id: '0', label: 'Kiểu sắp xếp', tags: tagss.map(x => createTag(x)) }),
             createTagSection({ id: '4', label: 'Trạng thái', tags: tags5.map(x => createTag(x)) }),
-            createTagSection({ id: '5', label: 'Nhóm dịch', tags: tags6.map(x => createTag(x)) }),
+            createTagSection({ id: '3', label: 'Sắp xếp theo', tags: tags2.map(x => createTag(x)) }),
         ];
         return tagSections;
     }
