@@ -693,15 +693,8 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         if (dt)
             dt = JSON.parse(dt[1]);
         var novels = dt === null || dt === void 0 ? void 0 : dt.props.pageProps.initialState.detail.story_chapters;
-        var covers = [];
         for (const t of novels) {
             for (const v of t) {
-                covers.push({
-                    time: v.time,
-                    id: v.chapter_index,
-                    title: v.title,
-                    chapNum: v.chapter_index
-                });
                 chapters.push(createChapter({
                     id: mangaId + '/' + v.chapter_index,
                     chapNum: v.chapter_index,
