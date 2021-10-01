@@ -891,7 +891,7 @@ exports.parseMangaDetails = ($, mangaId) => {
         artist: creator,
         desc: desc === "" ? 'Không có mô tả' : desc,
         titles: [$('.page-info > h1').text().trim()],
-        image: encodeURI(mangaId.split("::")[1].replace('190', '300')),
+        image: encodeURI(mangaId.split("::")[1].replace('190', '300').trim()),
         status,
         hentai: true,
         tags: [createTagSection({ label: "genres", tags: tags, id: '0' })],
@@ -1059,7 +1059,7 @@ exports.parseSearch = ($) => {
             continue;
         mangas.push(createMangaTile({
             id: encodeURIComponent(id) + "::" + image,
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image),
+            image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.trim()),
             title: createIconText({ text: title }),
             subtitleText: createIconText({ text: fixsub.trim() }),
         }));
