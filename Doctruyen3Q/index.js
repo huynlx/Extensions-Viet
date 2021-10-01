@@ -962,7 +962,7 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
         let $ = this.cheerio.load(data.data);
         for (const tag of $('.categories-detail li:not(.active) > a').toArray()) {
             const label = $(tag).text().trim();
-            const id = 'cate.' + $(tag).attr('href').split('-the-loai-')[1].split('.')[0];
+            const id = 'cate.' + $(tag).attr('href').split('/').pop();
             if (!id || !label)
                 continue;
             tags.push({ id: id, label: label });
