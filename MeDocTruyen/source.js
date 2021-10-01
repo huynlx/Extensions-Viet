@@ -776,7 +776,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             covers.push({
                 image: v.coverimg,
                 title: v.title,
-                chapter: v.newest_chapter_name
+                chapter: 'Chapter ' + v.chapter_num
             });
         });
         var el = $('.morelistCon a').toArray();
@@ -807,7 +807,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             covers.push({
                 image: v.coverimg,
                 title: v.title,
-                chapter: v.newest_chapter_name
+                chapter: 'Chapter ' + v.chapter_num
             });
         });
         var el = $('.morelistCon a').toArray();
@@ -838,7 +838,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             covers.push({
                 image: v.coverimg,
                 title: v.title,
-                chapter: v.newest_chapter_name
+                chapter: 'Chapter ' + v.chapter_num
             });
         });
         var el = $('.morelistCon a').toArray();
@@ -869,7 +869,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             covers.push({
                 image: v.coverimg,
                 title: v.title,
-                chapter: v.newest_chapter_name
+                chapter: 'Chapter ' + v.chapter_num
             });
         });
         var el = $('.morelistCon a').toArray();
@@ -900,7 +900,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             covers.push({
                 image: v.coverimg,
                 title: v.title,
-                chapter: v.newest_chapter_name
+                chapter: 'Chapter ' + v.chapter_num
             });
         });
         var el = $('.morelistCon a').toArray();
@@ -1123,7 +1123,7 @@ exports.parseViewMore = ($) => {
         covers.push({
             image: v.coverimg,
             title: v.title,
-            chapter: v.newest_chapter_name
+            chapter: 'Chapter ' + v.chapter_num
         });
     });
     var el = $('.morelistCon a').toArray();
