@@ -736,7 +736,7 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+        var _a, _b, _c, _d, _e;
         let featured = createHomeSection({
             id: 'featured',
             title: "Truyện Đề Cử",
@@ -752,21 +752,7 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
             title: "Truyện mới cập nhật",
             view_more: true,
         });
-        let boy = createHomeSection({
-            id: 'boy',
-            title: "Truyện Tranh Con Trai",
-            view_more: true,
-        });
-        let girl = createHomeSection({
-            id: 'girl',
-            title: "Truyện Tranh Con Gái ",
-            view_more: true,
-        });
-        sectionCallback(featured);
-        sectionCallback(hot);
         sectionCallback(newUpdated);
-        sectionCallback(boy);
-        sectionCallback(girl);
         let request = createRequestObject({
             url: DOMAIN,
             method: "GET",
@@ -787,7 +773,6 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
             }));
         }
         featured.items = featuredItems;
-        sectionCallback(featured);
         request = createRequestObject({
             url: 'https://doctruyen3q.com/hot',
             method: "GET",
@@ -808,7 +793,6 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
             }));
         }
         hot.items = popular;
-        sectionCallback(hot);
         request = createRequestObject({
             url: 'http://truyentranhtuan.com/',
             method: "GET",
@@ -830,48 +814,6 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
         }
         newUpdated.items = newUpdatedItems;
         sectionCallback(newUpdated);
-        request = createRequestObject({
-            url: 'https://doctruyen3q.com/truyen-con-trai',
-            method: "GET",
-        });
-        data = await this.requestManager.schedule(request, 1);
-        $ = this.cheerio.load(data.data);
-        let boyItems = [];
-        for (const element of $('#male-comics > .body > .main-left .item-manga > .item').toArray().splice(0, 20)) {
-            let title = $('.caption > h3 > a', element).text().trim();
-            let img = (_f = $('.image-item > a > img', element).attr("data-original")) !== null && _f !== void 0 ? _f : $('.image-item > a > img', element).attr('src');
-            let id = (_g = $('.caption > h3 > a', element).attr('href')) !== null && _g !== void 0 ? _g : title;
-            let subtitle = $("ul > li:first-child > a", element).text().trim();
-            boyItems.push(createMangaTile({
-                id: id !== null && id !== void 0 ? id : "",
-                image: img !== null && img !== void 0 ? img : "",
-                title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: subtitle }),
-            }));
-        }
-        boy.items = boyItems;
-        sectionCallback(boy);
-        request = createRequestObject({
-            url: 'https://doctruyen3q.com/truyen-con-gai',
-            method: "GET",
-        });
-        data = await this.requestManager.schedule(request, 1);
-        $ = this.cheerio.load(data.data);
-        let girlItems = [];
-        for (const element of $('#female-comics > .body > .main-left .item-manga > .item').toArray().splice(0, 20)) {
-            let title = $('.caption > h3 > a', element).text().trim();
-            let img = (_h = $('.image-item > a > img', element).attr("data-original")) !== null && _h !== void 0 ? _h : $('.image-item > a > img', element).attr('src');
-            let id = (_j = $('.caption > h3 > a', element).attr('href')) !== null && _j !== void 0 ? _j : title;
-            let subtitle = $("ul > li:first-child > a", element).text().trim();
-            girlItems.push(createMangaTile({
-                id: id !== null && id !== void 0 ? id : "",
-                image: img !== null && img !== void 0 ? img : "",
-                title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: subtitle }),
-            }));
-        }
-        girl.items = girlItems;
-        sectionCallback(girl);
     }
     async getViewMoreItems(homepageSectionId, metadata) {
         var _a;
