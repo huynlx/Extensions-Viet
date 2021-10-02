@@ -585,16 +585,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GocTruyenTranh = exports.GocTruyenTranhInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const GocTruyenTranhParser_1 = require("./GocTruyenTranhParser");
-const DOMAIN = 'https://truyentranhlh.net/';
+const DOMAIN = 'https://goctruyentranh.com/';
 const method = 'GET';
 exports.GocTruyenTranhInfo = {
-    version: '2.0.0',
+    version: '1.0.0',
     name: 'GocTruyenTranh',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from GocTruyenTranh',
-    websiteBaseURL: `https://truyentranhlh.net/`,
+    websiteBaseURL: DOMAIN,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
         {
@@ -836,8 +836,10 @@ exports.generateSearch = (query) => {
     return encodeURI(keyword);
 };
 exports.parseSearch = (json) => {
+    var _a;
     const mangas = [];
-    for (let obj of json.result.data) {
+    const array = (_a = json.result.data) !== null && _a !== void 0 ? _a : json.result;
+    for (let obj of array) {
         let title = obj.name;
         let subtitle = 'Chương ' + obj.chapterLatest[0];
         const image = obj.photo;
