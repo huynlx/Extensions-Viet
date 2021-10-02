@@ -617,7 +617,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
         var _a;
         const url = `${mangaId}`;
         const request = createRequestObject({
-            url: url,
+            url: encodeURI(url),
             method: "GET",
         });
         const data = await this.requestManager.schedule(request, 1);
