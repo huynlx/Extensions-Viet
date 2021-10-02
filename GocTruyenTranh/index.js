@@ -947,7 +947,7 @@ exports.parseSearch = ($) => {
         const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
         let id = (_b = (_a = $(`.series-title > a`, obj).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) !== null && _b !== void 0 ? _b : title;
         mangas.push(createMangaTile({
-            id: encodeURIComponent(id),
+            id: (id),
             image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
             title: createIconText({ text: title }),
             subtitleText: createIconText({ text: subtitle }),
@@ -965,7 +965,7 @@ exports.parseViewMore = (json) => {
         let id = 'https://goctruyentranh.com/truyen/' + obj.nameEn;
         if (!collectedIds.includes(id)) {
             manga.push(createMangaTile({
-                id: encodeURIComponent(id),
+                id: (id),
                 image: image !== null && image !== void 0 ? image : "",
                 title: createIconText({ text: exports.decodeHTMLEntity(title) }),
                 subtitleText: createIconText({ text: subtitle }),
