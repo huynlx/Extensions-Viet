@@ -801,7 +801,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         var novels = dt.props.pageProps.initialState.home.list[0].items;
         novels.forEach((v) => {
             featuredItems.push(createMangaTile({
-                id: 'https://m.medoctruyentranh.net/storyDetail/' + v.obj_id,
+                id: 'https://www.medoctruyentranh.net/truyen-tranh/' + MeDocTruyenParser_1.ChangeToSlug(v.title) + '-' + v.obj_id,
                 image: v.img_url,
                 title: createIconText({ text: v.title }),
                 subtitleText: createIconText({ text: 'Chapter ' + v.newest_chapters[0].chapter_index }),
@@ -1010,7 +1010,7 @@ exports.MeDocTruyen = MeDocTruyen;
 },{"./MeDocTruyenParser":56,"paperback-extensions-common":12}],56:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.capitalizeFirstLetter = void 0;
+exports.ChangeToSlug = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.capitalizeFirstLetter = void 0;
 const entities = require("entities");
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -1083,6 +1083,27 @@ exports.isLastPage = ($) => {
 const decodeHTMLEntity = (str) => {
     return entities.decodeHTML(str);
 };
+function ChangeToSlug(title) {
+    var title, slug;
+    slug = title.toLowerCase();
+    slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a');
+    slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e');
+    slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/gi, 'i');
+    slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/gi, 'o');
+    slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, 'u');
+    slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, 'y');
+    slug = slug.replace(/đ/gi, 'd');
+    slug = slug.replace(/\`|\~|\!|\@|\#|\||\$|\%|\^|\&|\*|\(|\)|\+|\=|\,|\.|\/|\?|\>|\<|\'|\"|\:|\;|_/gi, '');
+    slug = slug.replace(/ /gi, "-");
+    slug = slug.replace(/\-\-\-\-\-/gi, '-');
+    slug = slug.replace(/\-\-\-\-/gi, '-');
+    slug = slug.replace(/\-\-\-/gi, '-');
+    slug = slug.replace(/\-\-/gi, '-');
+    slug = '@' + slug + '@';
+    slug = slug.replace(/\@\-|\-\@|\@/gi, '');
+    return slug;
+}
+exports.ChangeToSlug = ChangeToSlug;
 
 },{"entities":1}]},{},[55])(55)
 });
