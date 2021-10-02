@@ -776,14 +776,18 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         if (dt)
             dt = JSON.parse(dt[1]);
         var novels = dt.props.pageProps.initialState.home.list[1].items.splice(0, 10);
-        novels.forEach((v) => {
-            updateItems.push(createMangaTile({
-                id: 'https://m.medoctruyentranh.net/storyDetail/' + v.obj_id,
-                image: v.img_url,
-                title: createIconText({ text: v.title }),
-                subtitleText: createIconText({ text: 'Chapter ' + v.newest_chapters[0].chapter_index }),
-            }));
-        });
+        var el = $('.home-main-left > .area-con:nth-child(2) > .story-list-box > .story-item').toArray();
+        for (var i = 0; i < el.length; i++) {
+            var e = el[i];
+            novels.forEach((v) => {
+                updateItems.push(createMangaTile({
+                    id: $('a', e).first().attr('href'),
+                    image: v.img_url,
+                    title: createIconText({ text: v.title }),
+                    subtitleText: createIconText({ text: 'Chapter ' + v.newest_chapters[0].chapter_index }),
+                }));
+            });
+        }
         newUpdated.items = updateItems;
         sectionCallback(newUpdated);
         request = createRequestObject({
