@@ -943,7 +943,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
         const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
         const search = {
-            cate: '',
+            cate: 'toan-bo',
             status: "",
         };
         tags.map((value) => {
@@ -957,7 +957,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             }
         });
         const request = createRequestObject({
-            url: encodeURI(`https://www.medoctruyentranh.net/tim-truyen/${search.cate}/${page}?${search.status}`),
+            url: encodeURI(query.title ? `https://www.medoctruyentranh.net/search/${query.title}` : `https://www.medoctruyentranh.net/tim-truyen/${search.cate}/${page}?${search.status}`),
             method: "GET",
         });
         let data = await this.requestManager.schedule(request, 1);
