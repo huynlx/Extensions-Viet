@@ -686,10 +686,10 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
         const response = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(response.data);
         const pages = [];
-        for (let obj of $('#chapter-content > img').toArray()) {
-            if (!obj.attribs['data-src'])
+        for (let obj of $('.view-section > .viewer > img').toArray()) {
+            if (!obj.attribs['src'])
                 continue;
-            let link = obj.attribs['data-src'];
+            let link = obj.attribs['src'];
             pages.push(encodeURI(link));
         }
         const chapterDetails = createChapterDetails({
