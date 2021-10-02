@@ -942,13 +942,13 @@ exports.generateSearch = (query) => {
     return encodeURI(keyword);
 };
 exports.parseSearch = ($) => {
-    var _a, _b, _c, _d;
+    var _a, _b, _c;
     const mangas = [];
     for (let obj of $('.entry ', '.form-row').toArray()) {
         let title = (_a = $(`a`, obj).attr('title')) !== null && _a !== void 0 ? _a : "";
-        let subtitle = (_b = $(`span.link`, obj).text().trim()) !== null && _b !== void 0 ? _b : ($(`span.bg-info`, obj).text().trim() + ' views');
-        const image = (_c = $(`a > img`, obj).attr('data-src')) !== null && _c !== void 0 ? _c : "";
-        let id = (_d = $(`a`, obj).attr("href")) !== null && _d !== void 0 ? _d : title;
+        let subtitle = $(`span.link`, obj).text().trim() !== '' ? $(`span.link`, obj).text().trim() : ($(`span.bg-info`, obj).text().trim() + ' views');
+        const image = (_b = $(`a > img`, obj).attr('data-src')) !== null && _b !== void 0 ? _b : "";
+        let id = (_c = $(`a`, obj).attr("href")) !== null && _c !== void 0 ? _c : title;
         mangas.push(createMangaTile({
             id: id,
             image,
