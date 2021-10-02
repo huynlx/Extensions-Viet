@@ -658,7 +658,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
     }
     async getChapters(mangaId) {
         const request = createRequestObject({
-            url: `https://goctruyentranh.com/api/comic/${mangaId.split("::")[1]}/chapter?offset=0&limit=-1`,
+            url: `https://goctruyentranh.com/api/comic/0000000665/chapter?offset=0&limit=-1`,
             method,
         });
         const data = await this.requestManager.schedule(request, 1);
@@ -670,7 +670,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
             chapters.push(createChapter({
                 id: mangaId.split('::')[0] + '/chuong-' + obj.numberChapter,
                 chapNum: chapNum,
-                name: obj.name,
+                name: mangaId.split('::')[1],
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
                 time: GocTruyenTranhParser_1.convertTime(timeStr)
@@ -962,7 +962,7 @@ exports.parseViewMore = (json) => {
         let id = 'https://goctruyentranh.com/truyen/' + obj.nameEn + "::" + obj.id;
         if (!collectedIds.includes(id)) {
             manga.push(createMangaTile({
-                id: (id),
+                id: id,
                 image: image !== null && image !== void 0 ? image : "",
                 title: createIconText({ text: exports.decodeHTMLEntity(title) }),
                 subtitleText: createIconText({ text: subtitle }),
