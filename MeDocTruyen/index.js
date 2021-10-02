@@ -810,7 +810,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         featured.items = featuredItems;
         sectionCallback(featured);
         request = createRequestObject({
-            url: 'https://www.medoctruyentranh.net/de-xuat/tac-pham-moi/20',
+            url: 'https://www.medoctruyentranh.net/',
             method: "GET",
         });
         let viewItems = [];
@@ -819,29 +819,20 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
         if (dt)
             dt = JSON.parse(dt[1]);
-        var novels = dt.props.pageProps.initialState.more.moreList.list;
+        var novels = dt.props.pageProps.initialState.home.list[2].items;
         var covers = [];
         novels.forEach((v) => {
-            covers.push({
-                image: v.coverimg,
-                title: v.title,
-                chapter: 'Chapter ' + v.chapter_num
-            });
-        });
-        var el = $('.morelistCon a').toArray();
-        for (var i = 0; i < 10; i++) {
-            var e = el[i];
             viewItems.push(createMangaTile({
-                id: $(e).attr("href"),
-                image: covers[i].image,
-                title: createIconText({ text: covers[i].title }),
-                subtitleText: createIconText({ text: covers[i].chapter }),
+                id: 'https://m.medoctruyentranh.net/storyDetail/' + v.obj_id,
+                image: v.img_url,
+                title: createIconText({ text: v.title }),
+                subtitleText: createIconText({ text: 'Chapter ' + v.newest_chapters[0].chapter_index }),
             }));
-        }
+        });
         view.items = viewItems;
         sectionCallback(view);
         request = createRequestObject({
-            url: 'https://www.medoctruyentranh.net/de-xuat/de-xuat-truyen-moi/37',
+            url: 'https://www.medoctruyentranh.net/',
             method: "GET",
         });
         let suggestItems = [];
@@ -850,29 +841,20 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
         if (dt)
             dt = JSON.parse(dt[1]);
-        var novels = dt.props.pageProps.initialState.more.moreList.list;
+        var novels = dt.props.pageProps.initialState.home.list[3].items;
         var covers = [];
         novels.forEach((v) => {
-            covers.push({
-                image: v.coverimg,
-                title: v.title,
-                chapter: 'Chapter ' + v.chapter_num
-            });
-        });
-        var el = $('.morelistCon a').toArray();
-        for (var i = 0; i < 10; i++) {
-            var e = el[i];
             suggestItems.push(createMangaTile({
-                id: $(e).attr("href"),
-                image: covers[i].image,
-                title: createIconText({ text: covers[i].title }),
-                subtitleText: createIconText({ text: covers[i].chapter }),
+                id: 'https://m.medoctruyentranh.net/storyDetail/' + v.obj_id,
+                image: v.img_url,
+                title: createIconText({ text: v.title }),
+                subtitleText: createIconText({ text: 'Chapter ' + v.newest_chapters[0].chapter_index }),
             }));
-        }
+        });
         suggest.items = suggestItems;
         sectionCallback(suggest);
         request = createRequestObject({
-            url: 'https://www.medoctruyentranh.net/de-xuat/truyen-nhieu-chuong/35',
+            url: 'https://www.medoctruyentranh.net/',
             method: "GET",
         });
         let chapterItems = [];
@@ -881,29 +863,20 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
         if (dt)
             dt = JSON.parse(dt[1]);
-        var novels = dt.props.pageProps.initialState.more.moreList.list;
+        var novels = dt.props.pageProps.initialState.home.list[4].items;
         var covers = [];
         novels.forEach((v) => {
-            covers.push({
-                image: v.coverimg,
-                title: v.title,
-                chapter: 'Chapter ' + v.chapter_num
-            });
-        });
-        var el = $('.morelistCon a').toArray();
-        for (var i = 0; i < 10; i++) {
-            var e = el[i];
             chapterItems.push(createMangaTile({
-                id: $(e).attr("href"),
-                image: covers[i].image,
-                title: createIconText({ text: covers[i].title }),
-                subtitleText: createIconText({ text: covers[i].chapter }),
+                id: 'https://m.medoctruyentranh.net/storyDetail/' + v.obj_id,
+                image: v.img_url,
+                title: createIconText({ text: v.title }),
+                subtitleText: createIconText({ text: 'Chapter ' + v.newest_chapters[0].chapter_index }),
             }));
-        }
+        });
         chapter.items = chapterItems;
         sectionCallback(chapter);
         request = createRequestObject({
-            url: 'https://www.medoctruyentranh.net/de-xuat/chuyen-muc-artbook/36',
+            url: 'https://www.medoctruyentranh.net/',
             method: "GET",
         });
         let artbookItems = [];
@@ -912,25 +885,16 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
         if (dt)
             dt = JSON.parse(dt[1]);
-        var novels = dt.props.pageProps.initialState.more.moreList.list;
+        var novels = dt.props.pageProps.initialState.home.list[5].items;
         var covers = [];
         novels.forEach((v) => {
-            covers.push({
-                image: v.coverimg,
-                title: v.title,
-                chapter: 'Chapter ' + v.chapter_num
-            });
-        });
-        var el = $('.morelistCon a').toArray();
-        for (var i = 0; i < 10; i++) {
-            var e = el[i];
             artbookItems.push(createMangaTile({
-                id: $(e).attr("href"),
-                image: covers[i].image,
-                title: createIconText({ text: covers[i].title }),
-                subtitleText: createIconText({ text: covers[i].chapter }),
+                id: 'https://m.medoctruyentranh.net/storyDetail/' + v.obj_id,
+                image: v.img_url,
+                title: createIconText({ text: v.title }),
+                subtitleText: createIconText({ text: 'Chapter ' + v.newest_chapters[0].chapter_index }),
             }));
-        }
+        });
         artbook.items = artbookItems;
         sectionCallback(artbook);
     }
