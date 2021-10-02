@@ -645,7 +645,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
             .text().includes('Đang') ? 1 : 0;
         const image = $('.detail-section .photo > img').attr('src');
         return createManga({
-            id: mangaId.split("::")[0],
+            id: mangaId,
             author: creator,
             artist: creator,
             desc: desc,
