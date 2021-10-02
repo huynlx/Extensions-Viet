@@ -615,9 +615,9 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
     ;
     async getMangaDetails(mangaId) {
         var _a;
-        const url = `${mangaId}`;
+        const url = `${mangaId.split("::")[0]}`;
         const request = createRequestObject({
-            url: (url),
+            url: url,
             method: "GET",
         });
         const data = await this.requestManager.schedule(request, 1);
@@ -645,7 +645,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
             .text().includes('Đang') ? 1 : 0;
         const image = $('.detail-section .photo > img').attr('src');
         return createManga({
-            id: mangaId,
+            id: mangaId.split("::")[0],
             author: creator,
             artist: creator,
             desc: desc,
@@ -658,25 +658,22 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
     }
     async getChapters(mangaId) {
         const request = createRequestObject({
-            url: `${mangaId}`,
+            url: `https://goctruyentranh.com/api/comic/${mangaId.split("::")[1]}/chapter?offset=0&limit=-1`,
             method,
         });
-        const response = await this.requestManager.schedule(request, 1);
-        const $ = this.cheerio.load(response.data);
+        const data = await this.requestManager.schedule(request, 1);
+        const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
         const chapters = [];
-        var i = 0;
-        for (const obj of $(".list-chapters.at-series > a").toArray().reverse()) {
-            var chapNum = parseFloat($('li > .chapter-name', obj).text().trim().split(' ')[1]);
-            i++;
-            const timeStr = $('li > .chapter-time', obj).text().trim().split(/\//);
-            const time = new Date([timeStr[1], timeStr[0], timeStr[2]].join('/'));
+        for (const obj of json.result.chapters) {
+            var chapNum = parseFloat(obj.numberChapter);
+            const timeStr = obj.stringUpdateTime;
             chapters.push(createChapter({
-                id: $(obj).first().attr('href'),
-                chapNum: isNaN(chapNum) ? i : chapNum,
-                name: $('li > .chapter-name', obj).text(),
+                id: mangaId.split('::')[0] + '/chuong-' + obj.numberChapter,
+                chapNum: chapNum,
+                name: obj.name,
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                time
+                time: GocTruyenTranhParser_1.convertTime(timeStr)
             }));
         }
         return chapters;
@@ -931,7 +928,7 @@ exports.GocTruyenTranh = GocTruyenTranh;
 },{"./GocTruyenTranhParser":56,"paperback-extensions-common":12}],56:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.decodeHTMLEntity = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
+exports.convertTime = exports.decodeHTMLEntity = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
 const entities = require("entities");
 exports.generateSearch = (query) => {
     var _a;
@@ -962,7 +959,7 @@ exports.parseViewMore = (json) => {
         let title = obj.name;
         let subtitle = 'Chương ' + obj.chapterLatest[0];
         const image = obj.photo;
-        let id = 'https://goctruyentranh.com/truyen/' + obj.nameEn;
+        let id = 'https://goctruyentranh.com/truyen/' + obj.nameEn + "::" + obj.id;
         if (!collectedIds.includes(id)) {
             manga.push(createMangaTile({
                 id: (id),
@@ -993,6 +990,49 @@ exports.isLastPage = ($) => {
 exports.decodeHTMLEntity = (str) => {
     return entities.decodeHTML(str);
 };
+function convertTime(timeAgo) {
+    var _a;
+    let time;
+    let trimmed = Number(((_a = /\d*/.exec(timeAgo)) !== null && _a !== void 0 ? _a : [])[0]);
+    trimmed = (trimmed == 0 && timeAgo.includes('a')) ? 1 : trimmed;
+    if (timeAgo.includes('giây') || timeAgo.includes('secs')) {
+        time = new Date(Date.now() - trimmed * 1000);
+    }
+    else if (timeAgo.includes('phút')) {
+        time = new Date(Date.now() - trimmed * 60000);
+    }
+    else if (timeAgo.includes('giờ')) {
+        time = new Date(Date.now() - trimmed * 3600000);
+    }
+    else if (timeAgo.includes('ngày')) {
+        time = new Date(Date.now() - trimmed * 86400000);
+    }
+    else if (timeAgo.includes('tuần')) {
+        time = new Date(Date.now() - trimmed * 86400000 * 7);
+    }
+    else if (timeAgo.includes('tháng')) {
+        time = new Date(Date.now() - trimmed * 86400000 * 7 * 4);
+    }
+    else if (timeAgo.includes('năm')) {
+        time = new Date(Date.now() - trimmed * 31556952000);
+    }
+    else {
+        if (timeAgo.includes(":")) {
+            let split = timeAgo.split(' ');
+            let H = split[0];
+            let D = split[1];
+            let fixD = D.split('/');
+            let finalD = fixD[1] + '/' + fixD[0] + '/' + new Date().getFullYear();
+            time = new Date(finalD + ' ' + H);
+        }
+        else {
+            let split = timeAgo.split('-');
+            time = new Date(split[1] + '/' + split[0] + '/' + split[2]);
+        }
+    }
+    return time;
+}
+exports.convertTime = convertTime;
 
 },{"entities":1}]},{},[55])(55)
 });
