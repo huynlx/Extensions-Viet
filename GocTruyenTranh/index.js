@@ -736,7 +736,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
             let title = (_a = $(obj).attr('title')) !== null && _a !== void 0 ? _a : "";
             let subtitle = 'Chương ' + $('.chapter > a:nth-child(2)', obj).text().trim();
             const image = (_b = $(`a > img`, obj).attr('data-original')) !== null && _b !== void 0 ? _b : "";
-            let id = (_c = $(`a`, obj).attr("href")) !== null && _c !== void 0 ? _c : title;
+            let id = (_c = 'https://goctruyentranh.com' + $(`a`, obj).attr("href")) !== null && _c !== void 0 ? _c : title;
             hotItems.push(createMangaTile({
                 id: id,
                 image: image !== null && image !== void 0 ? image : "",
@@ -760,7 +760,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
         $ = this.cheerio.load(data.data);
         for (let obj of $('.background-banner ', '#slideshow').toArray()) {
             const image = (_d = $(`a > img`, obj).attr('src')) !== null && _d !== void 0 ? _d : "";
-            let id = (_e = $(`a`, obj).attr("href")) !== null && _e !== void 0 ? _e : "";
+            let id = (_e = 'https://goctruyentranh.com' + $(`a`, obj).attr("href")) !== null && _e !== void 0 ? _e : "";
             featuredItems.push(createMangaTile({
                 id: id,
                 image: image !== null && image !== void 0 ? image : "",
@@ -786,7 +786,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
             let title = (_f = $(obj).attr('title')) !== null && _f !== void 0 ? _f : "";
             let subtitle = 'Chương ' + $('.chapter > a:nth-child(2)', obj).text().trim();
             const image = (_g = $(`a > img`, obj).attr('data-original')) !== null && _g !== void 0 ? _g : "";
-            let id = (_h = $(`a`, obj).attr("href")) !== null && _h !== void 0 ? _h : title;
+            let id = (_h = 'https://goctruyentranh.com' + $(`a`, obj).attr("href")) !== null && _h !== void 0 ? _h : title;
             newUpdatedItems.push(createMangaTile({
                 id: id,
                 image: image !== null && image !== void 0 ? image : "",
@@ -812,7 +812,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
             let title = (_j = $(obj).attr('title')) !== null && _j !== void 0 ? _j : "";
             let subtitle = 'Chương ' + $('.chapter > a:nth-child(2)', obj).text().trim();
             const image = (_k = $(`a > img`, obj).attr('data-original')) !== null && _k !== void 0 ? _k : "";
-            let id = (_l = $(`a`, obj).attr("href")) !== null && _l !== void 0 ? _l : title;
+            let id = (_l = 'https://goctruyentranh.com' + $(`a`, obj).attr("href")) !== null && _l !== void 0 ? _l : title;
             newAddItems.push(createMangaTile({
                 id: id,
                 image: image !== null && image !== void 0 ? image : "",
