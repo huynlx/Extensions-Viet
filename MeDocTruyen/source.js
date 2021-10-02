@@ -880,7 +880,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
         if (dt)
             dt = JSON.parse(dt[1]);
-        var novels = dt.props.pageProps.initialState.home.list[5].items;
+        var novels = dt.props.pageProps.initialState.home.list[11].items;
         novels.forEach((v) => {
             artbookItems.push(createMangaTile({
                 id: 'https://m.medoctruyentranh.net/storyDetail/' + v.obj_id,
