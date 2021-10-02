@@ -962,7 +962,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        const tiles = MeDocTruyenParser_1.parseSearch($);
+        const tiles = MeDocTruyenParser_1.parseSearch($, query);
         metadata = !MeDocTruyenParser_1.isLastPage($) ? { page: page + 1 } : undefined;
         return createPagedResults({
             results: tiles,
@@ -1021,13 +1021,13 @@ exports.generateSearch = (query) => {
     let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
     return encodeURI(keyword);
 };
-exports.parseSearch = ($) => {
+exports.parseSearch = ($, query) => {
     const manga = [];
     var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
     if (dt)
         dt = JSON.parse(dt[1]);
-    var novels = dt.props.pageProps.initialState.classify.comics;
-    var el = $('.classifyList > a').toArray();
+    var novels = query.title ? dt.props.pageProps.initialState.search.searchResult.storys : dt.props.pageProps.initialState.classify.comics;
+    var el = $('.listCon > a').toArray();
     for (var i = 0; i < el.length; i++) {
         var e = el[i];
         manga.push(createMangaTile({
