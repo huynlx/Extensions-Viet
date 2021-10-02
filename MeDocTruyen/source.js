@@ -1027,7 +1027,7 @@ exports.parseSearch = ($, query) => {
     if (dt)
         dt = JSON.parse(dt[1]);
     var novels = query.title ? dt.props.pageProps.initialState.search.searchResult.storys : dt.props.pageProps.initialState.classify.comics;
-    var el = $('.listCon > a').toArray();
+    var el = query.title ? $('.listCon > a').toArray() : $('.classifyList > a').toArray();
     for (var i = 0; i < el.length; i++) {
         var e = el[i];
         manga.push(createMangaTile({
