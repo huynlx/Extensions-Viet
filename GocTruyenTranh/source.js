@@ -721,30 +721,30 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
         sectionCallback(newAdded);
         let url = '';
         let request = createRequestObject({
-            url: 'https://goctruyentranh.com/api/comic/search/view?p=1',
+            url: 'https://goctruyentranh.com/api/comic/search/view?p=0',
             method: "GET",
         });
         let data = await this.requestManager.schedule(request, 1);
         let json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
-        hot.items = GocTruyenTranhParser_1.parseViewMore(json);
+        hot.items = GocTruyenTranhParser_1.parseViewMore(json).splice(0, 10);
         sectionCallback(hot);
         url = '';
         request = createRequestObject({
-            url: 'https://goctruyentranh.com/api/comic/search/recent?p=1',
+            url: 'https://goctruyentranh.com/api/comic/search/recent?p=0',
             method: "GET",
         });
         data = await this.requestManager.schedule(request, 1);
         json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
-        newUpdated.items = GocTruyenTranhParser_1.parseViewMore(json);
+        newUpdated.items = GocTruyenTranhParser_1.parseViewMore(json).splice(0, 10);
         sectionCallback(newUpdated);
         url = DOMAIN;
         request = createRequestObject({
-            url: 'https://goctruyentranh.com/api/comic/search/new?p=1',
+            url: 'https://goctruyentranh.com/api/comic/search/new?p=0',
             method: "GET",
         });
         data = await this.requestManager.schedule(request, 1);
         json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
-        newAdded.items = GocTruyenTranhParser_1.parseViewMore(json);
+        newAdded.items = GocTruyenTranhParser_1.parseViewMore(json).splice(0, 10);
         sectionCallback(newAdded);
     }
     async getViewMoreItems(homepageSectionId, metadata) {
