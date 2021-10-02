@@ -658,7 +658,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
     }
     async getChapters(mangaId) {
         const request = createRequestObject({
-            url: `https://goctruyentranh.com/api/comic/${mangaId.split("::")[1]}/chapter?offset=0&limit=-1`,
+            url: `https://goctruyentranh.com/api/comic/0000036681/chapter?offset=0&limit=-1`,
             method,
         });
         const data = await this.requestManager.schedule(request, 1);
