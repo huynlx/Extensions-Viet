@@ -611,11 +611,11 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
     }
-    getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh/${mangaId}`; }
+    getMangaShareUrl(mangaId) { return `${mangaId}`; }
     ;
     async getMangaDetails(mangaId) {
         var _a;
-        const url = `${DOMAIN}truyen-tranh/${mangaId}`;
+        const url = `${mangaId}`;
         const request = createRequestObject({
             url: url,
             method: "GET",
@@ -625,35 +625,32 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
         let tags = [];
         let creator = '';
         let status = 1;
-        let desc = $('.summary-content > p').text();
-        for (const test of $('.info-item', '.series-information').toArray()) {
-            switch ($('.info-name', test).text().trim()) {
-                case 'Tác giả:':
-                    creator = $('.info-value', test).text();
-                    break;
-                case 'Thể loại:':
-                    for (const t of $('.info-value > a', test).toArray()) {
-                        const genre = $('span', t).text().trim();
-                        const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
-                        tags.push(createTag({ label: genre, id }));
-                    }
-                    break;
-                case 'Tình trạng:':
-                    status = $('.info-value > a', test).text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
-                    break;
-                default:
-                    break;
-            }
+        let desc = $('.detail-section .description .content').text();
+        creator = $('.detail-section .author')
+            .clone()
+            .children()
+            .remove()
+            .end()
+            .text();
+        for (const t of $('.detail-section .category a').toArray()) {
+            const genre = $(t).text().trim();
+            const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
+            tags.push(createTag({ label: genre, id }));
         }
-        const image = $('.top-part > .row > .col-12 > .series-cover > .a6-ratio > div').css('background-image');
-        const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
+        status = $('.detail-section .status')
+            .clone()
+            .children()
+            .remove()
+            .end()
+            .text().includes('Đang') ? 1 : 0;
+        const image = $('.detail-section .photo > img').attr('src');
         return createManga({
             id: mangaId,
             author: creator,
             artist: creator,
             desc: desc,
-            titles: [GocTruyenTranhParser_1.decodeHTMLEntity($('.series-name > a').text().trim())],
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
+            titles: [GocTruyenTranhParser_1.decodeHTMLEntity($('.detail-section .title > h1').text().trim())],
+            image,
             status,
             hentai: false,
             tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
@@ -661,7 +658,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
     }
     async getChapters(mangaId) {
         const request = createRequestObject({
-            url: `${DOMAIN}truyen-tranh/${mangaId}`,
+            url: `${mangaId}`,
             method,
         });
         const response = await this.requestManager.schedule(request, 1);
@@ -836,7 +833,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
         let param = '';
         let url = '';
         switch (homepageSectionId) {
-            case "featured":
+            case "hot":
                 url = `https://goctruyentranh.com/api/comic/search/view?p=${page}`;
                 break;
             case "new_updated":
