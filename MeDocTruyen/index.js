@@ -776,7 +776,6 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         if (dt)
             dt = JSON.parse(dt[1]);
         var novels = dt.props.pageProps.initialState.home.list[1].items;
-        var covers = [];
         novels.forEach((v) => {
             updateItems.push(createMangaTile({
                 id: 'https://m.medoctruyentranh.net/storyDetail/' + v.obj_id,
@@ -798,7 +797,6 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         if (dt)
             dt = JSON.parse(dt[1]);
         var novels = dt.props.pageProps.initialState.home.list[0].items;
-        var covers = [];
         novels.forEach((v) => {
             featuredItems.push(createMangaTile({
                 id: 'https://m.medoctruyentranh.net/storyDetail/' + v.obj_id,
@@ -820,7 +818,6 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         if (dt)
             dt = JSON.parse(dt[1]);
         var novels = dt.props.pageProps.initialState.home.list[2].items;
-        var covers = [];
         novels.forEach((v) => {
             viewItems.push(createMangaTile({
                 id: 'https://m.medoctruyentranh.net/storyDetail/' + v.obj_id,
@@ -841,8 +838,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
         if (dt)
             dt = JSON.parse(dt[1]);
-        var novels = dt.props.pageProps.initialState.home.list[3].items;
-        var covers = [];
+        var novels = dt.props.pageProps.initialState.home.list[4].items;
         novels.forEach((v) => {
             suggestItems.push(createMangaTile({
                 id: 'https://m.medoctruyentranh.net/storyDetail/' + v.obj_id,
@@ -863,8 +859,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
         if (dt)
             dt = JSON.parse(dt[1]);
-        var novels = dt.props.pageProps.initialState.home.list[4].items;
-        var covers = [];
+        var novels = dt.props.pageProps.initialState.home.list[3].items;
         novels.forEach((v) => {
             chapterItems.push(createMangaTile({
                 id: 'https://m.medoctruyentranh.net/storyDetail/' + v.obj_id,
@@ -886,7 +881,6 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         if (dt)
             dt = JSON.parse(dt[1]);
         var novels = dt.props.pageProps.initialState.home.list[5].items;
-        var covers = [];
         novels.forEach((v) => {
             artbookItems.push(createMangaTile({
                 id: 'https://m.medoctruyentranh.net/storyDetail/' + v.obj_id,
