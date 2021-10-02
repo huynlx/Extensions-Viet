@@ -611,7 +611,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
     }
-    getMangaShareUrl(mangaId) { return `${mangaId}`; }
+    getMangaShareUrl(mangaId) { return `${mangaId.split("::")[0]}`; }
     ;
     async getMangaDetails(mangaId) {
         var _a;
@@ -790,7 +790,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
         const data = await this.requestManager.schedule(request, 1);
         const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
         const tiles = GocTruyenTranhParser_1.parseSearch(json);
-        metadata = { page: page + 1 };
+        metadata = query.title ? undefined : { page: page + 1 };
         return createPagedResults({
             results: tiles,
             metadata
