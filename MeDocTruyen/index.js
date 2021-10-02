@@ -776,7 +776,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         if (dt)
             dt = JSON.parse(dt[1]);
         var novels = dt.props.pageProps.initialState.home.list[1].items.splice(0, 10);
-        var el = $('.home-main-left > .area-con:nth-child(2) > .story-list-box > .story-item').toArray();
+        var el = $('.home-main-left > .area-con:nth-child(1) > .story-list-box > .story-item').toArray();
         for (var i = 0; i < el.length; i++) {
             var e = el[i];
             updateItems.push(createMangaTile({
