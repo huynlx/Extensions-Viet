@@ -712,7 +712,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
         let hot = createHomeSection({
             id: 'hot',
             title: "Truyện Đề Xuất",
-            view_more: false,
+            view_more: true,
         });
         let newUpdated = createHomeSection({
             id: 'new_updated',
@@ -832,15 +832,18 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
     }
     async getViewMoreItems(homepageSectionId, metadata) {
         var _a;
-        let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
+        let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 0;
         let param = '';
         let url = '';
         switch (homepageSectionId) {
+            case "featured":
+                url = `https://goctruyentranh.com/api/comic/search/view?p=${page}`;
+                break;
             case "new_updated":
-                url = `${DOMAIN}danh-sach?sort=update&page=${page}`;
+                url = `https://goctruyentranh.com/api/comic/search/recent?p=${page}`;
                 break;
             case "new_added":
-                url = `${DOMAIN}danh-sach?sort=new&page=${page}`;
+                url = `https://goctruyentranh.com/api/comic/search/new?p=${page}`;
                 break;
             default:
                 return Promise.resolve(createPagedResults({ results: [] }));
@@ -850,10 +853,10 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
             method,
             param
         });
-        const response = await this.requestManager.schedule(request, 1);
-        const $ = this.cheerio.load(response.data);
-        const manga = GocTruyenTranhParser_1.parseViewMore($);
-        metadata = !GocTruyenTranhParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+        const data = await this.requestManager.schedule(request, 1);
+        const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
+        const manga = GocTruyenTranhParser_1.parseViewMore(json);
+        metadata = { page: page + 1 };
         return createPagedResults({
             results: manga,
             metadata,
@@ -955,15 +958,14 @@ exports.parseSearch = ($) => {
     }
     return mangas;
 };
-exports.parseViewMore = ($) => {
-    var _a, _b;
+exports.parseViewMore = (json) => {
     const manga = [];
     const collectedIds = [];
-    for (let obj of $('.thumb-item-flow', '.col-md-8 > .card > .card-body > .row').toArray()) {
-        let title = $(`.series-title > a`, obj).text().trim();
-        let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
-        const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
-        let id = (_b = (_a = $(`.series-title > a`, obj).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) !== null && _b !== void 0 ? _b : title;
+    for (let obj of json.result.data) {
+        let title = obj.name;
+        let subtitle = 'Chương ' + obj.chapterLatest[0];
+        const image = obj.photo;
+        let id = 'https://goctruyentranh.com/truyen/' + obj.nameEn;
         if (!collectedIds.includes(id)) {
             manga.push(createMangaTile({
                 id: encodeURIComponent(id),
