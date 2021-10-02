@@ -939,37 +939,25 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         });
     }
     async getSearchResults(query, metadata) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c;
         let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
         const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
         const search = {
             cate: '',
-            translater: "",
             status: "",
-            sort: "views",
-            type: 'DESC'
         };
         tags.map((value) => {
             switch (value.split(".")[0]) {
                 case 'cate':
                     search.cate = (value.split(".")[1]);
                     break;
-                case 'translater':
-                    search.translater = (value.split(".")[1]);
-                    break;
                 case 'status':
                     search.status = (value.split(".")[1]);
-                    break;
-                case 'sort':
-                    search.sort = (value.split(".")[1]);
-                    break;
-                case 'type':
-                    search.type = (value.split(".")[1]);
                     break;
             }
         });
         const request = createRequestObject({
-            url: encodeURI(`https://manhuarock.net/manga-list.html?listType=pagination&page=${page}&group=${search.translater}&m_status=${search.status}&name=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&genre=${search.cate}&sort=${search.sort}&sort_type=${search.type}`),
+            url: encodeURI(`https://www.medoctruyentranh.net/tim-truyen/${search.cate}/${page}?${search.status}`),
             method: "GET",
         });
         let data = await this.requestManager.schedule(request, 1);
@@ -993,14 +981,14 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         let $ = this.cheerio.load(data.data);
         for (const tag of $('.searchCon > .search:nth-child(1) > .right > a').toArray()) {
             const label = $(tag).text().trim();
-            const id = 'cate.' + $(tag).attr('href');
+            const id = 'cate.' + $(tag).attr('href').split('/').pop();
             if (!id || !label)
                 continue;
             tags.push({ id: id, label: label });
         }
         for (const tag of $('.searchCon > .search:nth-child(2) > .right > a').toArray()) {
             var label = $(tag).text().trim();
-            const id = 'status.' + $(tag).attr('href');
+            const id = 'status.' + $(tag).attr('href').split('?').pop();
             if (!id || !label)
                 continue;
             tags5.push({ id: id, label: label });
@@ -1013,7 +1001,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: 'https://manhuarock.net/'
+            referer: 'https://www.medoctruyentranh.net/'
         };
     }
 }
@@ -1034,24 +1022,19 @@ exports.generateSearch = (query) => {
     return encodeURI(keyword);
 };
 exports.parseSearch = ($) => {
-    var _a;
     const manga = [];
-    for (const element of $('.card-body > .row > .thumb-item-flow').toArray()) {
-        let title = $('.series-title > a', element).text().trim();
-        let image = $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
-        if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
-            image = 'https://manhuarock.net' + image;
-        }
-        else {
-            image = image;
-        }
-        let id = (_a = $('.series-title > a', element).attr('href')) !== null && _a !== void 0 ? _a : title;
-        let subtitle = 'Chương ' + $(".chapter-title > a", element).text().trim();
+    var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
+    if (dt)
+        dt = JSON.parse(dt[1]);
+    var novels = dt.props.pageProps.initialState.classify.comics;
+    var el = $('.classifyList > a').toArray();
+    for (var i = 0; i < el.length; i++) {
+        var e = el[i];
         manga.push(createMangaTile({
-            id: id,
-            image: image !== null && image !== void 0 ? image : "",
-            title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: subtitle }),
+            id: $(e).attr('href'),
+            image: novels[i].coverimg,
+            title: createIconText({ text: novels[i].title }),
+            subtitleText: createIconText({ text: 'Chapter ' + novels[i].chapter_num }),
         }));
     }
     return manga;
