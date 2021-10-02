@@ -593,7 +593,7 @@ exports.MeDocTruyenInfo = {
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from MeDocTruyen',
-    websiteBaseURL: `https://www.medoctruyentranh.net/`,
+    websiteBaseURL: `https://m.medoctruyentranh.net/`,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
         {
@@ -859,7 +859,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
         if (dt)
             dt = JSON.parse(dt[1]);
-        var novels = dt.props.pageProps.initialState.home.list[3].items;
+        var novels = dt.props.pageProps.initialState.home.list[9].items;
         novels.forEach((v) => {
             chapterItems.push(createMangaTile({
                 id: 'https://m.medoctruyentranh.net/storyDetail/' + v.obj_id,
