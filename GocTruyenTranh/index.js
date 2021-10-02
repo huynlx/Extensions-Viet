@@ -707,7 +707,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f, _g, _h;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
         let hot = createHomeSection({
             id: 'hot',
             title: "Truyện hot trong ngày",
@@ -728,21 +728,20 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
         sectionCallback(newAdded);
         let url = '';
         let request = createRequestObject({
-            url: DOMAIN,
+            url: 'https://goctruyentranh.com/trang-chu',
             method: "GET",
         });
         let hotItems = [];
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        for (let obj of $('.owl-item', '.owl-stage').toArray()) {
-            let title = $(`.series-title > a`, obj).text().trim();
-            let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
-            const image = $(`.a6-ratio > div.img-in-ratio`, obj).css('background-image');
-            const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
-            let id = (_b = (_a = $(`.series-title > a`, obj).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) !== null && _b !== void 0 ? _b : title;
+        for (let obj of $('.card-item ', '.list-comic > .new-content:nth-child(5)').toArray()) {
+            let title = (_a = $(obj).attr('title')) !== null && _a !== void 0 ? _a : "";
+            let subtitle = 'Chương ' + $('.chapter > a:nth-child(2)', obj).text().trim();
+            const image = (_b = $(`a > img`, obj).attr('data-original')) !== null && _b !== void 0 ? _b : "";
+            let id = (_c = $(`a`, obj).attr("href")) !== null && _c !== void 0 ? _c : title;
             hotItems.push(createMangaTile({
                 id: id,
-                image: bg !== null && bg !== void 0 ? bg : "",
+                image: image !== null && image !== void 0 ? image : "",
                 title: createIconText({
                     text: title,
                 }),
@@ -762,10 +761,10 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
         for (let obj of $('.card-item ', '.list-comic > .new-content:nth-child(2)').toArray()) {
-            let title = (_c = $(obj).attr('title')) !== null && _c !== void 0 ? _c : "";
+            let title = (_d = $(obj).attr('title')) !== null && _d !== void 0 ? _d : "";
             let subtitle = 'Chương ' + $('.chapter > a:nth-child(2)', obj).text().trim();
-            const image = (_d = $(`a > img`, obj).attr('data-original')) !== null && _d !== void 0 ? _d : "";
-            let id = (_e = $(`a`, obj).attr("href")) !== null && _e !== void 0 ? _e : title;
+            const image = (_e = $(`a > img`, obj).attr('data-original')) !== null && _e !== void 0 ? _e : "";
+            let id = (_f = $(`a`, obj).attr("href")) !== null && _f !== void 0 ? _f : title;
             newUpdatedItems.push(createMangaTile({
                 id: id,
                 image: image !== null && image !== void 0 ? image : "",
@@ -787,11 +786,11 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
         let newAddItems = [];
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
-        for (let obj of $('.card-item ', '.list-comic > .new-content:nth-child(4)').toArray()) {
-            let title = (_f = $(obj).attr('title')) !== null && _f !== void 0 ? _f : "";
+        for (let obj of $('.card-item ', '.list-comic > .new-content:nth-child(8)').toArray()) {
+            let title = (_g = $(obj).attr('title')) !== null && _g !== void 0 ? _g : "";
             let subtitle = 'Chương ' + $('.chapter > a:nth-child(2)', obj).text().trim();
-            const image = (_g = $(`a > img`, obj).attr('data-original')) !== null && _g !== void 0 ? _g : "";
-            let id = (_h = $(`a`, obj).attr("href")) !== null && _h !== void 0 ? _h : title;
+            const image = (_h = $(`a > img`, obj).attr('data-original')) !== null && _h !== void 0 ? _h : "";
+            let id = (_j = $(`a`, obj).attr("href")) !== null && _j !== void 0 ? _j : title;
             newAddItems.push(createMangaTile({
                 id: id,
                 image: image !== null && image !== void 0 ? image : "",
