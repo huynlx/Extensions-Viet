@@ -779,14 +779,12 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         var el = $('.home-main-left > .area-con:nth-child(2) > .story-list-box > .story-item').toArray();
         for (var i = 0; i < el.length; i++) {
             var e = el[i];
-            novels.forEach((v) => {
-                updateItems.push(createMangaTile({
-                    id: $('a', e).first().attr('href'),
-                    image: v.img_url,
-                    title: createIconText({ text: v.title }),
-                    subtitleText: createIconText({ text: 'Chapter ' + v.newest_chapters[0].chapter_index }),
-                }));
-            });
+            updateItems.push(createMangaTile({
+                id: $('a', e).first().attr('href'),
+                image: novels[i].img_url,
+                title: createIconText({ text: novels[i].title }),
+                subtitleText: createIconText({ text: 'Chapter ' + novels[i].newest_chapters[0].chapter_index }),
+            }));
         }
         newUpdated.items = updateItems;
         sectionCallback(newUpdated);
