@@ -701,8 +701,6 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
-        let featured = createHomeSection({ id: 'featured', title: 'Tiêu điểm', type: paperback_extensions_common_1.HomeSectionType.featured });
         let hot = createHomeSection({
             id: 'hot',
             title: "Truyện Đề Xuất",
@@ -723,105 +721,30 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
         sectionCallback(newAdded);
         let url = '';
         let request = createRequestObject({
-            url: 'https://goctruyentranh.com/trang-chu',
+            url: 'https://goctruyentranh.com/api/comic/search/view?p=1',
             method: "GET",
         });
-        let hotItems = [];
         let data = await this.requestManager.schedule(request, 1);
-        let $ = this.cheerio.load(data.data);
-        for (let obj of $('.card-item ', '.list-comic > .new-content:nth-child(5)').toArray()) {
-            let title = (_a = $(obj).attr('title')) !== null && _a !== void 0 ? _a : "";
-            let subtitle = 'Chương ' + $('.chapter > a:nth-child(2)', obj).text().trim();
-            const image = (_b = $(`a > img`, obj).attr('data-original')) !== null && _b !== void 0 ? _b : "";
-            let id = (_c = 'https://goctruyentranh.com' + $(`a`, obj).attr("href")) !== null && _c !== void 0 ? _c : title;
-            hotItems.push(createMangaTile({
-                id: id,
-                image: image !== null && image !== void 0 ? image : "",
-                title: createIconText({
-                    text: title,
-                }),
-                subtitleText: createIconText({
-                    text: subtitle,
-                }),
-            }));
-        }
-        hot.items = hotItems;
+        let json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
+        hot.items = GocTruyenTranhParser_1.parseViewMore(json);
         sectionCallback(hot);
         url = '';
         request = createRequestObject({
-            url: 'https://goctruyentranh.com/trang-chu',
+            url: 'https://goctruyentranh.com/api/comic/search/recent?p=1',
             method: "GET",
         });
-        let featuredItems = [];
         data = await this.requestManager.schedule(request, 1);
-        $ = this.cheerio.load(data.data);
-        for (let obj of $('.background-banner ', '#slideshow').toArray()) {
-            const image = (_d = $(`a > img`, obj).attr('src')) !== null && _d !== void 0 ? _d : "";
-            let id = (_e = 'https://goctruyentranh.com' + $(`a`, obj).attr("href")) !== null && _e !== void 0 ? _e : "";
-            featuredItems.push(createMangaTile({
-                id: id,
-                image: image !== null && image !== void 0 ? image : "",
-                title: createIconText({
-                    text: '',
-                }),
-                subtitleText: createIconText({
-                    text: '',
-                }),
-            }));
-        }
-        featured.items = featuredItems;
-        sectionCallback(featured);
-        url = '';
-        request = createRequestObject({
-            url: 'https://goctruyentranh.com/trang-chu',
-            method: "GET",
-        });
-        let newUpdatedItems = [];
-        data = await this.requestManager.schedule(request, 1);
-        $ = this.cheerio.load(data.data);
-        for (let obj of $('.card-item ', '.list-comic > .new-content:nth-child(2)').toArray()) {
-            let title = (_f = $(obj).attr('title')) !== null && _f !== void 0 ? _f : "";
-            let subtitle = 'Chương ' + $('.chapter > a:nth-child(2)', obj).text().trim();
-            const image = (_g = $(`a > img`, obj).attr('data-original')) !== null && _g !== void 0 ? _g : "";
-            let id = (_h = 'https://goctruyentranh.com' + $(`a`, obj).attr("href")) !== null && _h !== void 0 ? _h : title;
-            newUpdatedItems.push(createMangaTile({
-                id: id,
-                image: image !== null && image !== void 0 ? image : "",
-                title: createIconText({
-                    text: title,
-                }),
-                subtitleText: createIconText({
-                    text: subtitle,
-                }),
-            }));
-        }
-        newUpdated.items = newUpdatedItems;
+        json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
+        newUpdated.items = GocTruyenTranhParser_1.parseViewMore(json);
         sectionCallback(newUpdated);
         url = DOMAIN;
         request = createRequestObject({
-            url: 'https://goctruyentranh.com/trang-chu',
+            url: 'https://goctruyentranh.com/api/comic/search/new?p=1',
             method: "GET",
         });
-        let newAddItems = [];
         data = await this.requestManager.schedule(request, 1);
-        $ = this.cheerio.load(data.data);
-        for (let obj of $('.card-item ', '.list-comic > .new-content:nth-child(8)').toArray()) {
-            let title = (_j = $(obj).attr('title')) !== null && _j !== void 0 ? _j : "";
-            let subtitle = 'Chương ' + $('.chapter > a:nth-child(2)', obj).text().trim();
-            const image = (_k = $(`a > img`, obj).attr('data-original')) !== null && _k !== void 0 ? _k : "";
-            let id = (_l = 'https://goctruyentranh.com' + $(`a`, obj).attr("href")) !== null && _l !== void 0 ? _l : title;
-            newAddItems.push(createMangaTile({
-                id: id,
-                image: image !== null && image !== void 0 ? image : "",
-                title: createIconText({
-                    text: title,
-                }),
-                subtitleText: createIconText({
-                    text: subtitle,
-                }),
-            }));
-        }
-        newAdded.items = newAddItems;
+        json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
+        newAdded.items = GocTruyenTranhParser_1.parseViewMore(json);
         sectionCallback(newAdded);
     }
     async getViewMoreItems(homepageSectionId, metadata) {
