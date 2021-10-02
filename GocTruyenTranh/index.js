@@ -670,7 +670,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
             chapters.push(createChapter({
                 id: mangaId.split('::')[0] + '/chuong-' + obj.numberChapter,
                 chapNum: chapNum,
-                name: mangaId,
+                name: mangaId.split("::")[1],
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
                 time: GocTruyenTranhParser_1.convertTime(timeStr)
