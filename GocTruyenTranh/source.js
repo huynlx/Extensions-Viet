@@ -828,7 +828,7 @@ exports.GocTruyenTranh = GocTruyenTranh;
 },{"./GocTruyenTranhParser":56,"paperback-extensions-common":12}],56:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.convertTime = exports.decodeHTMLEntity = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
+exports.convertTime = exports.decodeHTMLEntity = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
 const entities = require("entities");
 exports.generateSearch = (query) => {
     var _a;
@@ -872,21 +872,6 @@ exports.parseViewMore = (json) => {
         }
     }
     return manga;
-};
-exports.isLastPage = ($) => {
-    let isLast = false;
-    const pages = [];
-    for (const page of $("a", ".pagination_wrap").toArray()) {
-        const p = Number($(page).text().trim());
-        if (isNaN(p))
-            continue;
-        pages.push(p);
-    }
-    const lastPage = Math.max(...pages);
-    const currentPage = Number($(".pagination_wrap > a.current").text().trim());
-    if (currentPage >= lastPage)
-        isLast = true;
-    return isLast;
 };
 exports.decodeHTMLEntity = (str) => {
     return entities.decodeHTML(str);
