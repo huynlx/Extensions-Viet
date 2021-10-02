@@ -730,6 +730,11 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
+        let featured = createHomeSection({
+            id: 'featured',
+            title: "Truyện Đề Cử",
+            type: paperback_extensions_common_1.HomeSectionType.featured
+        });
         let newUpdated = createHomeSection({
             id: 'new_updated',
             title: "Cập nhật mới",
@@ -791,6 +796,28 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         }
         newUpdated.items = updateItems;
         sectionCallback(newUpdated);
+        request = createRequestObject({
+            url: 'https://www.medoctruyentranh.net/',
+            method: "GET",
+        });
+        let featuredItems = [];
+        data = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(data.data);
+        var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
+        if (dt)
+            dt = JSON.parse(dt[1]);
+        var novels = dt.props.pageProps.initialState.home.list[0].items;
+        var covers = [];
+        novels.forEach((v) => {
+            featuredItems.push(createMangaTile({
+                id: 'https://m.medoctruyentranh.net/storyDetail/' + v.obj_id,
+                image: v.img_url,
+                title: createIconText({ text: v.title }),
+                subtitleText: createIconText({ text: 'Chapter ' + v.newest_chapters[0].chapter_index }),
+            }));
+        });
+        featured.items = featuredItems;
+        sectionCallback(featured);
         request = createRequestObject({
             url: 'https://www.medoctruyentranh.net/de-xuat/tac-pham-moi/20',
             method: "GET",
