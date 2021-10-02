@@ -707,7 +707,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f, _g;
+        var _a, _b, _c, _d, _e, _f, _g, _h;
         let hot = createHomeSection({
             id: 'hot',
             title: "Truyện hot trong ngày",
@@ -781,17 +781,17 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
         sectionCallback(newUpdated);
         url = DOMAIN;
         request = createRequestObject({
-            url: url,
+            url: 'https://goctruyentranh.com/trang-chu',
             method: "GET",
         });
         let newAddItems = [];
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
-        for (let obj of $('.thumb-item-flow:not(:last-child)', '.col-md-8 > .card:nth-child(2) > .card-body > .row').toArray().splice(0, 20)) {
-            let title = $(`.series-title > a`, obj).text().trim();
-            let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
-            const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
-            let id = (_g = (_f = $(`.series-title > a`, obj).attr("href")) === null || _f === void 0 ? void 0 : _f.split("/").pop()) !== null && _g !== void 0 ? _g : title;
+        for (let obj of $('.card-item ', '.list-comic > .new-content:nth-child(4)').toArray()) {
+            let title = (_f = $(obj).attr('title')) !== null && _f !== void 0 ? _f : "";
+            let subtitle = 'Chương ' + $('.chapter > a:nth-child(2)', obj).text().trim();
+            const image = (_g = $(`a > img`, obj).attr('data-original')) !== null && _g !== void 0 ? _g : "";
+            let id = (_h = $(`a`, obj).attr("href")) !== null && _h !== void 0 ? _h : title;
             newAddItems.push(createMangaTile({
                 id: id,
                 image: image !== null && image !== void 0 ? image : "",
@@ -917,7 +917,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: DOMAIN
+            referer: 'https://goctruyentranh.com/'
         };
     }
 }
