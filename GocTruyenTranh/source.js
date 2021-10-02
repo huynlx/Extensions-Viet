@@ -780,40 +780,17 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
         });
     }
     async getSearchResults(query, metadata) {
-        var _a, _b, _c, _d;
-        let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-        const search = {
-            status: "",
-            sort: "update",
-            genres: "",
-        };
+        var _a, _b, _c;
+        let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 0;
         const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
-        const category = [];
-        tags.map((value) => {
-            if (value.indexOf('.') === -1) {
-                category.push(value);
-            }
-            else {
-                switch (value.split(".")[0]) {
-                    case 'sort':
-                        search.sort = (value.split(".")[1]);
-                        break;
-                    case 'status':
-                        search.status = (value.split(".")[1]);
-                        break;
-                }
-            }
-        });
-        search.genres = (category !== null && category !== void 0 ? category : []).join(",");
         const request = createRequestObject({
-            url: `${DOMAIN}tim-kiem`,
+            url: query.title ? `https://goctruyentranh.com/api/comic/search?name=${query.title}` : `https://goctruyentranh.com/api/comic/search/category?p=${page}&value=${tags[0]}`,
             method: "GET",
-            param: encodeURI(`?q=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&status=${search.status}&sort=${search.sort}&accept_genres=${search.genres}&page=${page}`)
         });
         const data = await this.requestManager.schedule(request, 1);
-        let $ = this.cheerio.load(data.data);
-        const tiles = GocTruyenTranhParser_1.parseSearch($);
-        metadata = !GocTruyenTranhParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+        const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
+        const tiles = GocTruyenTranhParser_1.parseSearch(json);
+        metadata = { page: page + 1 };
         return createPagedResults({
             results: tiles,
             metadata
@@ -858,18 +835,17 @@ exports.generateSearch = (query) => {
     let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
     return encodeURI(keyword);
 };
-exports.parseSearch = ($) => {
-    var _a, _b;
+exports.parseSearch = (json) => {
     const mangas = [];
-    for (let obj of $('.thumb-item-flow', '.col-12 > .card:nth-child(2) > .card-body > .row').toArray()) {
-        let title = $(`.series-title > a`, obj).text().trim();
-        let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
-        const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
-        let id = (_b = (_a = $(`.series-title > a`, obj).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) !== null && _b !== void 0 ? _b : title;
+    for (let obj of json.result.data) {
+        let title = obj.name;
+        let subtitle = 'Chương ' + obj.chapterLatest[0];
+        const image = obj.photo;
+        let id = 'https://goctruyentranh.com/truyen/' + obj.nameEn + "::" + obj.id;
         mangas.push(createMangaTile({
-            id: (id),
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
-            title: createIconText({ text: title }),
+            id: id,
+            image: image !== null && image !== void 0 ? image : "",
+            title: createIconText({ text: exports.decodeHTMLEntity(title) }),
             subtitleText: createIconText({ text: subtitle }),
         }));
     }
