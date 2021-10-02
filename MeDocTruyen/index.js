@@ -984,7 +984,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
     async getSearchTags() {
         const tags = [];
         const tags5 = [];
-        const url = `https://manhuarock.net/search`;
+        const url = `https://www.medoctruyentranh.net/tim-truyen/toan-bo`;
         const request = createRequestObject({
             url: url,
             method: "GET",
