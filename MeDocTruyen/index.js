@@ -766,7 +766,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         sectionCallback(chapter);
         sectionCallback(artbook);
         let request = createRequestObject({
-            url: 'https://www.medoctruyentranh.net/de-xuat/cap-nhat-moi/2',
+            url: 'https://www.medoctruyentranh.net/',
             method: "GET",
         });
         let updateItems = [];
@@ -775,25 +775,16 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
         if (dt)
             dt = JSON.parse(dt[1]);
-        var novels = dt.props.pageProps.initialState.more.moreList.list;
+        var novels = dt.props.pageProps.initialState.home.list[1].items;
         var covers = [];
         novels.forEach((v) => {
-            covers.push({
-                image: v.coverimg,
-                title: v.title,
-                chapter: 'Chapter ' + v.chapter_num
-            });
-        });
-        var el = $('.morelistCon a').toArray();
-        for (var i = 0; i < 10; i++) {
-            var e = el[i];
             updateItems.push(createMangaTile({
-                id: $(e).attr("href"),
-                image: covers[i].image,
-                title: createIconText({ text: covers[i].title }),
-                subtitleText: createIconText({ text: covers[i].chapter }),
+                id: 'https://m.medoctruyentranh.net/storyDetail/' + v.obj_id,
+                image: v.img_url,
+                title: createIconText({ text: v.title }),
+                subtitleText: createIconText({ text: 'Chapter ' + v.newest_chapters[0].chapter_index }),
             }));
-        }
+        });
         newUpdated.items = updateItems;
         sectionCallback(newUpdated);
         request = createRequestObject({
