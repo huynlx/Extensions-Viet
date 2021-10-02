@@ -820,14 +820,16 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         if (dt)
             dt = JSON.parse(dt[1]);
         var novels = dt.props.pageProps.initialState.home.list[2].items.splice(0, 10);
-        novels.forEach((v) => {
+        var el = $('.home-main-left > .area-con:nth-child(2) > .story-list-box > .story-item').toArray();
+        for (var i = 0; i < el.length; i++) {
+            var e = el[i];
             viewItems.push(createMangaTile({
-                id: 'https://m.medoctruyentranh.net/storyDetail/' + v.obj_id,
-                image: v.img_url,
-                title: createIconText({ text: v.title }),
-                subtitleText: createIconText({ text: 'Chapter ' + v.newest_chapters[0].chapter_index }),
+                id: $('a', e).first().attr('href'),
+                image: novels[i].img_url,
+                title: createIconText({ text: novels[i].title }),
+                subtitleText: createIconText({ text: 'Chapter ' + novels[i].newest_chapters[0].chapter_index }),
             }));
-        });
+        }
         view.items = viewItems;
         sectionCallback(view);
         request = createRequestObject({
@@ -841,14 +843,16 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         if (dt)
             dt = JSON.parse(dt[1]);
         var novels = dt.props.pageProps.initialState.home.list[4].items.splice(0, 10);
-        novels.forEach((v) => {
+        var el = $('.home-main-left > .area-con:nth-child(3) > .story-list-box > .story-item').toArray();
+        for (var i = 0; i < el.length; i++) {
+            var e = el[i];
             suggestItems.push(createMangaTile({
-                id: 'https://m.medoctruyentranh.net/storyDetail/' + v.obj_id,
-                image: v.img_url,
-                title: createIconText({ text: v.title }),
-                subtitleText: createIconText({ text: 'Chapter ' + v.newest_chapters[0].chapter_index }),
+                id: $('a', e).first().attr('href'),
+                image: novels[i].img_url,
+                title: createIconText({ text: novels[i].title }),
+                subtitleText: createIconText({ text: 'Chapter ' + novels[i].newest_chapters[0].chapter_index }),
             }));
-        });
+        }
         suggest.items = suggestItems;
         sectionCallback(suggest);
         request = createRequestObject({
@@ -862,14 +866,16 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         if (dt)
             dt = JSON.parse(dt[1]);
         var novels = dt.props.pageProps.initialState.home.list[8].items.splice(0, 10);
-        novels.forEach((v) => {
+        var el = $('.home-main-left > .area-con:nth-child(4) > .story-list-box > .story-item').toArray();
+        for (var i = 0; i < el.length; i++) {
+            var e = el[i];
             chapterItems.push(createMangaTile({
-                id: 'https://m.medoctruyentranh.net/storyDetail/' + v.obj_id,
-                image: v.img_url,
-                title: createIconText({ text: v.title }),
-                subtitleText: createIconText({ text: 'Chapter ' + v.newest_chapters[0].chapter_index }),
+                id: $('a', e).first().attr('href'),
+                image: novels[i].img_url,
+                title: createIconText({ text: novels[i].title }),
+                subtitleText: createIconText({ text: 'Chapter ' + novels[i].newest_chapters[0].chapter_index }),
             }));
-        });
+        }
         chapter.items = chapterItems;
         sectionCallback(chapter);
         request = createRequestObject({
@@ -883,14 +889,16 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         if (dt)
             dt = JSON.parse(dt[1]);
         var novels = dt.props.pageProps.initialState.home.list[11].items.splice(0, 10);
-        novels.forEach((v) => {
+        var el = $('.home-main-left > .area-con:nth-child(5) > .story-list-box > .story-item').toArray();
+        for (var i = 0; i < el.length; i++) {
+            var e = el[i];
             artbookItems.push(createMangaTile({
-                id: 'https://m.medoctruyentranh.net/storyDetail/' + v.obj_id,
-                image: v.img_url,
-                title: createIconText({ text: v.title }),
-                subtitleText: createIconText({ text: 'Chapter ' + v.newest_chapters[0].chapter_index }),
+                id: $('a', e).first().attr('href'),
+                image: novels[i].img_url,
+                title: createIconText({ text: novels[i].title }),
+                subtitleText: createIconText({ text: 'Chapter ' + novels[i].newest_chapters[0].chapter_index }),
             }));
-        });
+        }
         artbook.items = artbookItems;
         sectionCallback(artbook);
     }
