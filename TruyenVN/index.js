@@ -639,7 +639,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             author: creator,
             artist: creator,
             desc: desc,
-            titles: [$('h1.name').text().trim()],
+            titles: [TruyenVNParser_1.decodeHTMLEntity($('h1.name').text().trim())],
             image: image,
             status,
             hentai: false,
@@ -934,7 +934,7 @@ exports.TruyenVN = TruyenVN;
 },{"./TruyenVNParser":56,"paperback-extensions-common":12}],56:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
+exports.decodeHTMLEntity = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
 const entities = require("entities");
 exports.generateSearch = (query) => {
     var _a;
@@ -952,7 +952,7 @@ exports.parseSearch = ($) => {
         mangas.push(createMangaTile({
             id: id,
             image,
-            title: createIconText({ text: decodeHTMLEntity(title) }),
+            title: createIconText({ text: exports.decodeHTMLEntity(title) }),
             subtitleText: createIconText({ text: subtitle }),
         }));
     }
@@ -971,7 +971,7 @@ exports.parseViewMore = ($) => {
             manga.push(createMangaTile({
                 id: id,
                 image: image,
-                title: createIconText({ text: decodeHTMLEntity(title) }),
+                title: createIconText({ text: exports.decodeHTMLEntity(title) }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
             collectedIds.push(id);
@@ -994,7 +994,7 @@ exports.isLastPage = ($) => {
         isLast = true;
     return isLast;
 };
-const decodeHTMLEntity = (str) => {
+exports.decodeHTMLEntity = (str) => {
     return entities.decodeHTML(str);
 };
 
