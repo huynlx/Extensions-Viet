@@ -742,7 +742,7 @@ class Otakusan extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d;
         let hot = createHomeSection({
             id: 'hot',
             title: "TRUYỆN HOT TRONG NGÀY",
@@ -783,8 +783,7 @@ class Otakusan extends paperback_extensions_common_1.Source {
         }
         hot.items = popular;
         sectionCallback(hot);
-        var url = 'https://otakusan.net/Manga/MangaNewest';
-        var filter = (_b = url.match(/otakusan.net\/[A-Za-z].+\/(.+)Newest/)) === null || _b === void 0 ? void 0 : _b[1];
+        var url = 'https://otakusan.net/Manga/Newest';
         request = createRequestObject({
             url: url,
             method: 'POST',
@@ -794,9 +793,9 @@ class Otakusan extends paperback_extensions_common_1.Source {
             data: {
                 "Lang": "vn",
                 "Page": '0',
-                "Type": "Include",
+                "Type": "1",
                 "Dir": "NewPostedDate",
-                "FilterCategory%5B0%5D": filter
+                "FilterCategory": 'All'
             }
         });
         data = await this.requestManager.schedule(request, 1);
@@ -806,10 +805,10 @@ class Otakusan extends paperback_extensions_common_1.Source {
         for (var i in allBook) {
             var book = allBook[i];
             newUpdatedItems.push(createMangaTile({
-                id: (_c = $(".mdl-card__title a", book).attr("href")) !== null && _c !== void 0 ? _c : "",
-                image: (_d = $(".mdl-card__title img", book).attr("src")) !== null && _d !== void 0 ? _d : "",
+                id: (_b = $(".mdl-card__title a", book).attr("href")) !== null && _b !== void 0 ? _b : "",
+                image: (_c = $(".mdl-card__title img", book).attr("src")) !== null && _c !== void 0 ? _c : "",
                 title: createIconText({ text: $(".mdl-card__title img", book).attr("title") }),
-                subtitleText: createIconText({ text: $('mdl-card__actions a', book).text().trim() }),
+                subtitleText: createIconText({ text: $('mdl-card__actions > a', book).text().trim() }),
             }));
         }
         newUpdated.items = newUpdatedItems;
@@ -830,7 +829,7 @@ class Otakusan extends paperback_extensions_common_1.Source {
             else {
                 image = image;
             }
-            let id = (_e = $('.series-title > a', manga).attr('href')) !== null && _e !== void 0 ? _e : title;
+            let id = (_d = $('.series-title > a', manga).attr('href')) !== null && _d !== void 0 ? _d : title;
             let subtitle = $(".chapter-title > a", manga).text().trim();
             viewItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
