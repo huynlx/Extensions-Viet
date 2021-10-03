@@ -700,7 +700,7 @@ class Otakusan extends paperback_extensions_common_1.Source {
             var e = el[i];
             let id = $(e).attr('href');
             let chapNum = parseFloat((_a = $(e).text().trim()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
-            let name = $(e).text().trim();
+            let name = OtakusanParser_1.decodeHTMLEntity($(e).text().trim());
             chapters.push(createChapter({
                 id,
                 chapNum: isNaN(chapNum) ? i : chapNum,
@@ -714,7 +714,7 @@ class Otakusan extends paperback_extensions_common_1.Source {
     async getChapterDetails(mangaId, chapterId) {
         var _a;
         const request = createRequestObject({
-            url: `${chapterId}`,
+            url: `https://otakusan.net${chapterId}`,
             method
         });
         let data = await this.requestManager.schedule(request, 1);
