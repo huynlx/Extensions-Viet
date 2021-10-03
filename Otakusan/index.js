@@ -674,10 +674,10 @@ class Otakusan extends paperback_extensions_common_1.Source {
         const image = $(".col-lg-3 .manga-top-img img", el).attr("src");
         return createManga({
             id: mangaId,
-            author: creator,
-            artist: creator,
+            author: OtakusanParser_1.decodeHTMLEntity(creator),
+            artist: OtakusanParser_1.decodeHTMLEntity(creator),
             desc: desc,
-            titles: [$(".manga-top-main .manga-top-info h1", el).text()],
+            titles: [OtakusanParser_1.decodeHTMLEntity($(".manga-top-main .manga-top-info h1", el).text())],
             image,
             status: statusFinal,
             hentai: false,
