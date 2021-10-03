@@ -581,33 +581,29 @@ __exportStar(require("./RawData"), exports);
 
 },{"./Chapter":14,"./ChapterDetails":13,"./Constants":15,"./DynamicUI":31,"./HomeSection":32,"./Languages":33,"./Manga":36,"./MangaTile":34,"./MangaUpdate":35,"./PagedResults":37,"./RawData":38,"./RequestHeaders":39,"./RequestInterceptor":40,"./RequestManager":41,"./RequestObject":42,"./ResponseObject":43,"./SearchField":44,"./SearchRequest":45,"./SourceInfo":46,"./SourceManga":47,"./SourceStateManager":48,"./SourceTag":49,"./TagSection":50,"./TrackedManga":52,"./TrackedMangaChapterReadAction":51,"./TrackerActionQueue":53}],55:[function(require,module,exports){
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HentaiVN = exports.HentaiVNInfo = void 0;
+exports.Otakusan = exports.OtakusanInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
-const HentaiVNParser_1 = require("./HentaiVNParser");
-const tags_json_1 = __importDefault(require("./tags.json"));
-const DOMAIN = `https://hentaivn.tv/`;
+const OtakusanParser_1 = require("./OtakusanParser");
+const DOMAIN = 'https://manhuarock.net/';
 const method = 'GET';
-exports.HentaiVNInfo = {
-    version: '2.7.0',
-    name: 'HentaiVN',
+exports.OtakusanInfo = {
+    version: '1.5.0',
+    name: 'Otakusan',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from HentaiVN',
-    websiteBaseURL: '',
-    contentRating: paperback_extensions_common_1.ContentRating.ADULT,
+    description: 'Extension that pulls manga from Otakusan',
+    websiteBaseURL: 'https://otakusan.net/',
+    contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
         {
-            text: "18+",
-            type: paperback_extensions_common_1.TagType.YELLOW
+            text: "Recommended",
+            type: paperback_extensions_common_1.TagType.BLUE
         }
     ]
 };
-class HentaiVN extends paperback_extensions_common_1.Source {
+class Otakusan extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
         this.requestManager = createRequestManager({
@@ -615,432 +611,391 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
     }
-    getMangaShareUrl(mangaId) { return `${DOMAIN}${mangaId}`; }
+    convertTime(timeAgo) {
+        var _a;
+        let time;
+        let trimmed = Number(((_a = /\d*/.exec(timeAgo)) !== null && _a !== void 0 ? _a : [])[0]);
+        trimmed = (trimmed == 0 && timeAgo.includes('a')) ? 1 : trimmed;
+        if (timeAgo.includes('giây') || timeAgo.includes('secs')) {
+            time = new Date(Date.now() - trimmed * 1000);
+        }
+        else if (timeAgo.includes('phút')) {
+            time = new Date(Date.now() - trimmed * 60000);
+        }
+        else if (timeAgo.includes('giờ')) {
+            time = new Date(Date.now() - trimmed * 3600000);
+        }
+        else if (timeAgo.includes('ngày')) {
+            time = new Date(Date.now() - trimmed * 86400000);
+        }
+        else if (timeAgo.includes('năm')) {
+            time = new Date(Date.now() - trimmed * 31556952000);
+        }
+        else {
+            if (timeAgo.includes(":")) {
+                let split = timeAgo.split(' ');
+                let H = split[0];
+                let D = split[1];
+                let fixD = D.split('/');
+                let finalD = fixD[1] + '/' + fixD[0] + '/' + new Date().getFullYear();
+                time = new Date(finalD + ' ' + H);
+            }
+            else {
+                let split = timeAgo.split('/');
+                time = new Date(split[1] + '/' + split[0] + '/' + '20' + split[2]);
+            }
+        }
+        return time;
+    }
+    getMangaShareUrl(mangaId) { return (DOMAIN + mangaId); }
     ;
     async getMangaDetails(mangaId) {
+        var _a, _b;
+        const url = DOMAIN + mangaId;
         const request = createRequestObject({
-            url: `${DOMAIN}`,
-            method,
-            param: mangaId.split("::")[0],
+            url: url,
+            method: "GET",
         });
-        const response = await this.requestManager.schedule(request, 1);
-        const $ = this.cheerio.load(response.data);
-        return HentaiVNParser_1.parseMangaDetails($, mangaId);
+        let data = await this.requestManager.schedule(request, 1);
+        let $ = this.cheerio.load(data.data);
+        let tags = [];
+        let creator = '';
+        let statusFinal = 1;
+        for (const test of $('li', '.manga-info').toArray()) {
+            switch ($('b', test).text().trim()) {
+                case "Tác giả":
+                    creator = $('a', test).text().trim();
+                    break;
+                case "Thể loại":
+                    for (const t of $('a', test).toArray()) {
+                        const genre = $(t).text().trim();
+                        const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
+                        tags.push(createTag({ label: genre, id }));
+                    }
+                    break;
+                case "Tình trạng":
+                    let status = $('a', test).text().trim();
+                    statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
+                    break;
+            }
+        }
+        let desc = $(".summary-content").text();
+        const image = (_b = $('.info-cover img').attr("src")) !== null && _b !== void 0 ? _b : "";
+        return createManga({
+            id: mangaId,
+            author: creator,
+            artist: creator,
+            desc: desc,
+            titles: [$('.manga-info h3').text().trim()],
+            image: image.includes('http') ? image : (DOMAIN + image),
+            status: statusFinal,
+            hentai: false,
+            tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
+        });
     }
     async getChapters(mangaId) {
+        var _a;
         const request = createRequestObject({
-            url: `${DOMAIN}`,
+            url: DOMAIN + mangaId,
             method,
-            param: mangaId.split("::")[0],
         });
-        const response = await this.requestManager.schedule(request, 1);
-        const $ = this.cheerio.load(response.data);
-        return HentaiVNParser_1.parseChapters($, mangaId);
+        let data = await this.requestManager.schedule(request, 1);
+        let $ = this.cheerio.load(data.data);
+        const chapters = [];
+        var i = 0;
+        for (const obj of $('.list-chapters > a').toArray().reverse()) {
+            i++;
+            let id = DOMAIN + $(obj).first().attr('href');
+            let chapNum = parseFloat((_a = $('.chapter-name', obj).first().text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
+            let name = $('.chapter-view', obj).first().text().trim();
+            let time = $('.chapter-time', obj).first().text().trim();
+            chapters.push(createChapter({
+                id,
+                chapNum: isNaN(chapNum) ? i : chapNum,
+                name,
+                mangaId: mangaId,
+                langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+                time: this.convertTime(time)
+            }));
+        }
+        return chapters;
     }
     async getChapterDetails(mangaId, chapterId) {
+        var _a;
         const request = createRequestObject({
-            url: `${DOMAIN}`,
-            method,
-            param: chapterId,
+            url: `${chapterId}`,
+            method
         });
-        const response = await this.requestManager.schedule(request, 1);
-        let $ = this.cheerio.load(response.data);
-        return HentaiVNParser_1.parseChapterDetails($, mangaId, chapterId);
+        let data = await this.requestManager.schedule(request, 1);
+        let $ = this.cheerio.load(data.data);
+        const pages = [];
+        for (let obj of $('.chapter-content img').toArray()) {
+            let link = (_a = $(obj).attr('data-original')) !== null && _a !== void 0 ? _a : "";
+            pages.push(link.replace(/\n/g, ''));
+        }
+        const chapterDetails = createChapterDetails({
+            id: chapterId,
+            mangaId: mangaId,
+            pages: pages,
+            longStrip: false
+        });
+        return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
-        const section0 = createHomeSection({ id: 'featured', title: 'Tiêu điểm', type: paperback_extensions_common_1.HomeSectionType.featured });
-        const section5 = createHomeSection({ id: 'random', title: 'Truyện ngẫu nhiên', view_more: false });
-        const section1 = createHomeSection({ id: 'recently-updated', title: 'Mới cập nhật', view_more: true });
-        const section2 = createHomeSection({ id: 'popular', title: 'Tiêu điểm', view_more: true });
-        const section3 = createHomeSection({ id: 'recently_added', title: 'Truyện mới đăng', view_more: true });
-        const sections = [section0, section5, section1, section2, section3];
+        var _a, _b, _c;
+        let hot = createHomeSection({
+            id: 'hot',
+            title: "TRUYỆN HOT TRONG NGÀY",
+            view_more: false,
+        });
+        let newUpdated = createHomeSection({
+            id: 'new_updated',
+            title: "Mới Cập Nhập",
+            view_more: true,
+        });
+        let view = createHomeSection({
+            id: 'view',
+            title: "TRUYỆN MỚI ĐĂNG",
+            view_more: false,
+        });
+        sectionCallback(hot);
+        sectionCallback(newUpdated);
+        sectionCallback(view);
         let request = createRequestObject({
-            url: `${DOMAIN}`,
-            method,
+            url: DOMAIN,
+            method: "GET",
         });
-        let response = await this.requestManager.schedule(request, 1);
-        let $ = this.cheerio.load(response.data);
-        HentaiVNParser_1.parseHomeSections($, sections, sectionCallback);
+        let popular = [];
+        let data = await this.requestManager.schedule(request, 1);
+        let $ = this.cheerio.load(data.data);
+        for (let manga of $('.owl-item', '.owl-stage').toArray()) {
+            const title = $('.series-title', manga).text().trim();
+            const id = $('.thumb-wrapper > a', manga).attr('href');
+            const image = (_a = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', manga).css('background-image')) !== null && _a !== void 0 ? _a : "";
+            const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+            const sub = $('.chapter-title > a', manga).text().trim();
+            popular.push(createMangaTile({
+                id: id,
+                image: (bg === null || bg === void 0 ? void 0 : bg.includes('http')) ? (bg) : ("https://manhuarock.net" + bg),
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: sub.replace('Chap', 'Chương') }),
+            }));
+        }
+        hot.items = popular;
+        sectionCallback(hot);
         request = createRequestObject({
-            url: DOMAIN + 'list-random.php',
-            method: 'POST',
-            headers: {
-                'content-type': 'application/x-www-form-urlencoded'
+            url: 'https://otakusan.net/Manga/MangaNewest',
+            method: "GET",
+        });
+        data = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(data.data);
+        let newUpdatedItems = [];
+        for (const element of $('.card-body > .row > .thumb-item-flow').toArray()) {
+            let title = $('.series-title > a', element).text().trim();
+            let image = $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
+            if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
+                image = 'https://manhuarock.net' + image;
             }
-        });
-        response = await this.requestManager.schedule(request, 1);
-        $ = this.cheerio.load(response.data);
-        HentaiVNParser_1.parseRandomSections($, sections, sectionCallback);
+            else {
+                image = image;
+            }
+            let id = (_b = $('.series-title > a', element).attr('href')) !== null && _b !== void 0 ? _b : title;
+            let subtitle = 'Chương ' + $(".chapter-title > a", element).text().trim();
+            newUpdatedItems.push(createMangaTile({
+                id: id !== null && id !== void 0 ? id : "",
+                image: image !== null && image !== void 0 ? image : "",
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: subtitle }),
+            }));
+        }
+        newUpdated.items = newUpdatedItems;
+        sectionCallback(newUpdated);
         request = createRequestObject({
-            url: `${DOMAIN}danh-sach.html`,
-            method,
+            url: DOMAIN,
+            method: "GET",
         });
-        response = await this.requestManager.schedule(request, 1);
-        $ = this.cheerio.load(response.data);
-        HentaiVNParser_1.parseAddedSections($, sections, sectionCallback);
-        request = createRequestObject({
-            url: `${DOMAIN}tieu-diem.html`,
-            method,
-        });
-        response = await this.requestManager.schedule(request, 1);
-        $ = this.cheerio.load(response.data);
-        HentaiVNParser_1.parsePopularSections($, sections, sectionCallback);
+        let viewItems = [];
+        data = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(data.data);
+        for (let manga of $('.thumb-item-flow:not(:last-child)', '.col-md-8 > .card:nth-child(5) .row').toArray()) {
+            let title = $('.series-title > a', manga).text().trim();
+            let image = $('.a6-ratio > .img-in-ratio', manga).attr("data-bg");
+            if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
+                image = 'https://manhuarock.net' + image;
+            }
+            else {
+                image = image;
+            }
+            let id = (_c = $('.series-title > a', manga).attr('href')) !== null && _c !== void 0 ? _c : title;
+            let subtitle = $(".chapter-title > a", manga).text().trim();
+            viewItems.push(createMangaTile({
+                id: id !== null && id !== void 0 ? id : "",
+                image: image !== null && image !== void 0 ? image : "",
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: subtitle }),
+            }));
+        }
+        view.items = viewItems;
+        sectionCallback(view);
     }
     async getViewMoreItems(homepageSectionId, metadata) {
         var _a;
         let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-        let select = 1;
-        let param = '';
         let url = '';
+        let select = 1;
         switch (homepageSectionId) {
-            case "recently-updated":
-                url = `${DOMAIN}`;
-                param = `?page=${page}`;
+            case "new_updated":
+                url = DOMAIN + `manga-list.html?listType=pagination&page=${page}&artist=&author=&group=&m_status=&name=&genre=&ungenre=&sort=last_update&sort_type=DESC`;
                 select = 1;
-                break;
-            case "recently_added":
-                url = `${DOMAIN}danh-sach.html`;
-                param = `?page=${page}`;
-                select = 2;
-                break;
-            case "popular":
-                url = `${DOMAIN}tieu-diem.html`;
-                param = `?page=${page}`;
-                select = 3;
                 break;
             default:
                 return Promise.resolve(createPagedResults({ results: [] }));
         }
         const request = createRequestObject({
             url,
-            method,
-            param
+            method
         });
-        const response = await this.requestManager.schedule(request, 1);
-        const $ = this.cheerio.load(response.data);
-        const manga = HentaiVNParser_1.parseViewMore($, select);
-        metadata = !HentaiVNParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+        let data = await this.requestManager.schedule(request, 1);
+        let $ = this.cheerio.load(data.data);
+        let manga = OtakusanParser_1.parseViewMore($);
+        metadata = !OtakusanParser_1.isLastPage($) ? { page: page + 1 } : undefined;
         return createPagedResults({
             results: manga,
             metadata,
         });
     }
     async getSearchResults(query, metadata) {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d;
         let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-        const tag = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
-        var url = '';
-        if (query.title) {
-            url = `${DOMAIN}tim-kiem-truyen.html?key=${encodeURI(query.title)}`;
-        }
-        else {
-            if (tag[0].includes('https')) {
-                url = tag[0].split('?')[0];
+        const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
+        const search = {
+            cate: '',
+            translater: "",
+            status: "",
+            sort: "views",
+            type: 'DESC'
+        };
+        tags.map((value) => {
+            switch (value.split(".")[0]) {
+                case 'cate':
+                    search.cate = (value.split(".")[1]);
+                    break;
+                case 'translater':
+                    search.translater = (value.split(".")[1]);
+                    break;
+                case 'status':
+                    search.status = (value.split(".")[1]);
+                    break;
+                case 'sort':
+                    search.sort = (value.split(".")[1]);
+                    break;
+                case 'type':
+                    search.type = (value.split(".")[1]);
+                    break;
             }
-            else {
-                url = `${DOMAIN}${tag[0]}?`;
-            }
-        }
-        var request = createRequestObject({
-            url,
-            method
         });
-        if (query.title) {
-            request = createRequestObject({
-                url,
-                method,
-                param: `&page=${page}`
-            });
-        }
-        else {
-            if (tag[0].includes('https')) {
-                request = createRequestObject({
-                    url,
-                    method: 'POST',
-                    headers: {
-                        'content-type': 'application/x-www-form-urlencoded'
-                    },
-                    data: {
-                        'idviewtop': '1'
-                    }
-                });
-            }
-            else {
-                request = createRequestObject({
-                    url,
-                    method,
-                    param: `&page=${page}`
-                });
-            }
-        }
-        var manga = [];
-        const response = await this.requestManager.schedule(request, 1);
-        const $ = this.cheerio.load(response.data);
-        if (query.title) {
-            manga = HentaiVNParser_1.parseSearch($);
-        }
-        else {
-            if (tag[0].includes('https')) {
-                for (let obj of $('li').toArray()) {
-                    const id = (_e = (_d = $('.view-top-1 > a', obj).attr('href')) === null || _d === void 0 ? void 0 : _d.split('/').pop()) !== null && _e !== void 0 ? _e : "";
-                    const title = $('.view-top-1 > a', obj).text();
-                    const subtitle = $(".view-top-2", obj).text().trim();
-                    let request2 = createRequestObject({
-                        url: DOMAIN + id,
-                        method,
-                    });
-                    let response = await this.requestManager.schedule(request2, 1);
-                    let $2 = this.cheerio.load(response.data);
-                    let image = $2('.page-ava > img').attr('src');
-                    manga.push(createMangaTile({
-                        id: encodeURIComponent(id) + "::" + image,
-                        image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
-                        title: createIconText({ text: title }),
-                        subtitleText: createIconText({ text: subtitle }),
-                    }));
-                }
-            }
-            else {
-                manga = HentaiVNParser_1.parseSearch($);
-            }
-        }
-        if (query.title) {
-            metadata = !HentaiVNParser_1.isLastPage($) ? { page: page + 1 } : undefined;
-        }
-        else {
-            if (tag[0].includes('https')) {
-                metadata = undefined;
-            }
-            else {
-                metadata = !HentaiVNParser_1.isLastPage($) ? { page: page + 1 } : undefined;
-            }
-        }
+        const request = createRequestObject({
+            url: encodeURI(`${DOMAIN}manga-list.html?listType=pagination&page=${page}&group=${search.translater}&m_status=${search.status}&name=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&genre=${search.cate}&sort=${search.sort}&sort_type=${search.type}`),
+            method: "GET",
+        });
+        let data = await this.requestManager.schedule(request, 1);
+        let $ = this.cheerio.load(data.data);
+        const tiles = OtakusanParser_1.parseSearch($);
+        metadata = !OtakusanParser_1.isLastPage($) ? { page: page + 1 } : undefined;
         return createPagedResults({
-            results: manga,
+            results: tiles,
             metadata
         });
     }
     async getSearchTags() {
-        const topView = [
+        const tags = [];
+        const tags2 = [
             {
-                label: 'Top View Ngày',
-                id: DOMAIN + 'list-top.php?1'
+                id: 'sort.name',
+                label: 'A-Z'
             },
             {
-                label: 'Top View Tuần',
-                id: DOMAIN + 'list-top.php?2'
+                id: 'sort.views',
+                label: 'Lượt Xem'
             },
             {
-                label: 'Top View Tháng',
-                id: DOMAIN + 'list-top.php?3'
-            },
-            {
-                label: 'Top View All',
-                id: DOMAIN + 'list-top.php?4'
+                id: 'sort.last_update',
+                label: 'Mới Cập Nhật'
             }
         ];
+        const tagss = [
+            {
+                id: 'type.ASC',
+                label: 'ASC'
+            },
+            {
+                id: 'type.DESC',
+                label: 'DESC'
+            }
+        ];
+        const tags5 = [];
+        const tags6 = [];
+        const url = DOMAIN + `search`;
+        const request = createRequestObject({
+            url: url,
+            method: "GET",
+        });
+        let data = await this.requestManager.schedule(request, 1);
+        let $ = this.cheerio.load(data.data);
+        for (const tag of $('.navbar-nav > li.nav-item:nth-child(1) .no-gutters a.genres-item').toArray()) {
+            const label = $(tag).text().trim();
+            const id = 'cate.' + $(tag).attr('href').split('-the-loai-')[1].split('.')[0];
+            if (!id || !label)
+                continue;
+            tags.push({ id: id, label: label });
+        }
+        for (const tag of $('select#TinhTrang option').toArray()) {
+            var label = $(tag).text().trim();
+            if (label === 'Hoàn thành') {
+                label = 'Đang tiến hành';
+            }
+            else if (label === 'Đang tiến hành') {
+                label = 'Hoàn thành';
+            }
+            const id = 'status.' + $(tag).attr('value');
+            if (!id || !label)
+                continue;
+            tags5.push({ id: id, label: label });
+        }
+        for (const tag of $('.navbar-nav > li.nav-item:nth-child(2) .no-gutters a.genres-item').toArray()) {
+            const label = $(tag).text().trim();
+            const id = 'translater.' + $(tag).attr('href').split('-nhom-dich-')[1].split('.')[0];
+            ;
+            if (!id || !label)
+                continue;
+            tags6.push({ id: id, label: label });
+        }
         const tagSections = [
-            createTagSection({ id: '0', label: 'Bảng Xếp Hạng', tags: topView.map(x => createTag(x)) }),
-            createTagSection({ id: '1', label: 'Thể Loại', tags: tags_json_1.default.map(x => createTag(x)) })
+            createTagSection({ id: '1', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
+            createTagSection({ id: '3', label: 'Sắp xếp theo', tags: tags2.map(x => createTag(x)) }),
+            createTagSection({ id: '0', label: 'Kiểu sắp xếp', tags: tagss.map(x => createTag(x)) }),
+            createTagSection({ id: '4', label: 'Trạng thái', tags: tags5.map(x => createTag(x)) }),
+            createTagSection({ id: '5', label: 'Nhóm dịch', tags: tags6.map(x => createTag(x)) }),
         ];
         return tagSections;
     }
     globalRequestHeaders() {
         return {
-            referer: `${DOMAIN}` + '/'
+            referer: DOMAIN
         };
     }
 }
-exports.HentaiVN = HentaiVN;
+exports.Otakusan = Otakusan;
 
-},{"./HentaiVNParser":56,"./tags.json":57,"paperback-extensions-common":12}],56:[function(require,module,exports){
+},{"./OtakusanParser":56,"paperback-extensions-common":12}],56:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.parsePopularSections = exports.parseAddedSections = exports.parseRandomSections = exports.parseHomeSections = exports.parseChapterDetails = exports.parseChapters = exports.parseMangaDetails = void 0;
-const paperback_extensions_common_1 = require("paperback-extensions-common");
+exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.capitalizeFirstLetter = void 0;
 const entities = require("entities");
-exports.parseMangaDetails = ($, mangaId) => {
-    var _a;
-    let tags = [];
-    let creator = '';
-    let status = 1;
-    let desc = '';
-    for (const obj of $('p', '.page-info').toArray()) {
-        switch ($('span.info:first-child', obj).text().trim()) {
-            case "Thể Loại:":
-                for (const genres of $('span:not(.info)', obj).toArray()) {
-                    const genre = $('a', genres).text().trim();
-                    const id = (_a = $('a', genres).attr('href')) !== null && _a !== void 0 ? _a : genre;
-                    tags.push(createTag({ id: id, label: genre }));
-                }
-                break;
-            case "Tác giả:":
-                creator = $('span:nth-child(2) > a', obj).text();
-                break;
-            case "Tình Trạng:":
-                status = $('span:nth-child(2) > a', obj).text().toLowerCase().includes("đã hoàn thành") ? 0 : 1;
-                break;
-            case "Nội dung:":
-                desc = desc = $(obj).next().text();
-                break;
-        }
-    }
-    return createManga({
-        id: mangaId.split("::")[0],
-        author: creator,
-        artist: creator,
-        desc: desc === "" ? 'Không có mô tả' : desc,
-        titles: [$('.page-info > h1').text().trim()],
-        image: encodeURI(mangaId.split("::")[1].replace('190', '300').trim()),
-        status,
-        hentai: true,
-        tags: [createTagSection({ label: "genres", tags: tags, id: '0' })],
-    });
-};
-exports.parseChapters = ($, mangaId) => {
-    var _a;
-    const chapters = [];
-    var i = 0;
-    for (const obj of $(".listing tr").toArray().reverse()) {
-        i++;
-        const name = ($("td:first-child > a > h2", obj).text().trim());
-        const id = (_a = $('td:first-child > a', obj).attr('href').split('/').pop()) !== null && _a !== void 0 ? _a : "";
-        const time = $("td:last-child", obj).text().trim().split(/\//);
-        const finalTime = new Date([time[1], time[0], time[2]].join('/'));
-        if (id == "")
-            continue;
-        const chapterNumber = i;
-        chapters.push(createChapter({
-            id: encodeURIComponent(id),
-            chapNum: chapterNumber,
-            name,
-            mangaId: mangaId.split("::")[0],
-            langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-            time: finalTime
-        }));
-    }
-    return chapters;
-};
-exports.parseChapterDetails = ($, mangaId, chapterId) => {
-    const pages = [];
-    for (let obj of $('div#image > img').toArray()) {
-        if (!obj.attribs['src'])
-            continue;
-        let link = obj.attribs['src'];
-        pages.push(link);
-    }
-    const chapterDetails = createChapterDetails({
-        id: chapterId,
-        mangaId: mangaId.split("::")[0],
-        pages: pages,
-        longStrip: false
-    });
-    return chapterDetails;
-};
-exports.parseHomeSections = ($, sections, sectionCallback) => {
-    var _a, _b;
-    for (const section of sections)
-        sectionCallback(section);
-    let featured = [];
-    for (let manga of $('li', '.block-top').toArray()) {
-        const title = $('.box-description h2', manga).first().text();
-        const id = (_a = $('a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-        const image = $('a > div', manga).css('background');
-        const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
-        const subtitle = $(".info-detail", manga).last().text().trim();
-        if (!id || !title)
-            continue;
-        featured.push(createMangaTile({
-            id: encodeURIComponent(id) + "::" + bg,
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
-            title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: subtitle }),
-        }));
-    }
-    sections[0].items = featured;
-    sectionCallback(sections[0]);
-    let staffPick = [];
-    for (let manga of $('ul', 'ul.page-item').toArray()) {
-        const title = $('span > a > h2', manga).first().text();
-        const id = (_b = $('a', manga).attr('href')) === null || _b === void 0 ? void 0 : _b.split('/').pop();
-        const image = $('a > div', manga).css('background');
-        const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
-        const subtitle = $("a > span > b", manga).last().text().trim();
-        if (!id || !title)
-            continue;
-        staffPick.push(createMangaTile({
-            id: encodeURIComponent(id) + "::" + bg,
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
-            title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: subtitle }),
-        }));
-    }
-    sections[2].items = staffPick;
-    sectionCallback(sections[2]);
-};
-exports.parseRandomSections = ($, sections, sectionCallback) => {
-    var _a;
-    let random = [];
-    for (let manga of $('li', '.page-random').toArray()) {
-        const title = $('.des-same > a > b', manga).text();
-        const id = (_a = $('.img-same > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-        const image = $('.img-same > a > div', manga).css('background');
-        const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
-        const subtitle = $("b", manga).last().text().trim();
-        if (!id || !title)
-            continue;
-        random.push(createMangaTile({
-            id: encodeURIComponent(id) + "::" + bg,
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
-            title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: subtitle }),
-        }));
-    }
-    sections[1].items = random;
-    sectionCallback(sections[1]);
-};
-exports.parseAddedSections = ($, sections, sectionCallback) => {
-    var _a;
-    let added = [];
-    for (let manga of $('.item', '.block-item').toArray()) {
-        const title = $('.box-description > p > a', manga).text();
-        const id = (_a = $('.box-cover > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-        const image = $('.box-cover > a > img', manga).attr('data-src');
-        const subtitle = $(".box-description p:nth-child(1)", manga).text().trim();
-        const fixsub = subtitle.split('-')[1];
-        if (!id || !title)
-            continue;
-        added.push(createMangaTile({
-            id: encodeURIComponent(id) + "::" + image,
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
-            title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: fixsub.trim() }),
-        }));
-    }
-    sections[4].items = added;
-    sectionCallback(sections[4]);
-};
-exports.parsePopularSections = ($, sections, sectionCallback) => {
-    var _a;
-    let popular = [];
-    for (let manga of $('.item', '.block-item').toArray()) {
-        const title = $('.box-description > p > a', manga).text();
-        const id = (_a = $('.box-cover > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-        const image = $('.box-cover > a > img', manga).attr('data-src');
-        const subtitle = $(".box-description p:nth-child(1)", manga).text().trim();
-        const fixsub = subtitle.split('-')[1];
-        if (!id || !title)
-            continue;
-        popular.push(createMangaTile({
-            id: encodeURIComponent(id) + "::" + image,
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
-            title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: fixsub.trim() }),
-        }));
-    }
-    sections[3].items = popular;
-    sectionCallback(sections[3]);
-};
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+exports.capitalizeFirstLetter = capitalizeFirstLetter;
 exports.generateSearch = (query) => {
     var _a;
     let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
@@ -1048,66 +1003,47 @@ exports.generateSearch = (query) => {
 };
 exports.parseSearch = ($) => {
     var _a;
-    const mangas = [];
-    for (let manga of $('.item', '.block-item').toArray()) {
-        const title = $('.box-description > p > a', manga).text();
-        const id = (_a = $('.box-cover > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-        const image = $('.box-cover > a > img', manga).attr('data-src');
-        const subtitle = $(".box-description p:nth-child(1)", manga).text().trim();
-        const fixsub = subtitle.split('-')[1];
-        if (!id || !title)
-            continue;
-        mangas.push(createMangaTile({
-            id: encodeURIComponent(id) + "::" + image,
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.trim()),
+    const manga = [];
+    for (const element of $('.card-body > .row > .thumb-item-flow').toArray()) {
+        let title = $('.series-title > a', element).text().trim();
+        let image = $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
+        if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
+            image = 'https://manhuarock.net' + image;
+        }
+        else {
+            image = image;
+        }
+        let id = (_a = $('.series-title > a', element).attr('href')) !== null && _a !== void 0 ? _a : title;
+        let subtitle = 'Chương ' + $(".chapter-title > a", element).text().trim();
+        manga.push(createMangaTile({
+            id: id,
+            image: image !== null && image !== void 0 ? image : "",
             title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: fixsub.trim() }),
+            subtitleText: createIconText({ text: subtitle }),
         }));
     }
-    return mangas;
+    return manga;
 };
-exports.parseViewMore = ($, select) => {
-    var _a, _b;
+exports.parseViewMore = ($) => {
+    var _a;
     const manga = [];
-    const collectedIds = [];
-    if (select === 1) {
-        for (const obj of $(".item", "ul").toArray()) {
-            const title = $("span > a > h2", obj).text();
-            const id = (_a = $("a", obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-            const image = $("a > img", obj).attr('data-src');
-            const subtitle = $("a > span > b", obj).text().trim();
-            if (!id || !title)
-                continue;
-            if (!collectedIds.includes(id)) {
-                manga.push(createMangaTile({
-                    id: encodeURIComponent(id) + "::" + image,
-                    image: image !== null && image !== void 0 ? image : "",
-                    title: createIconText({ text: decodeHTMLEntity(title) }),
-                    subtitleText: createIconText({ text: subtitle }),
-                }));
-                collectedIds.push(id);
-            }
+    for (const element of $('.card-body > .row > .thumb-item-flow').toArray()) {
+        let title = $('.series-title > a', element).text().trim();
+        let image = $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
+        if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
+            image = 'https://manhuarock.net' + image;
         }
-    }
-    else {
-        for (let obj of $('.item', '.block-item').toArray()) {
-            const title = $('.box-description > p > a', obj).text();
-            const id = (_b = $('.box-cover > a', obj).attr('href')) === null || _b === void 0 ? void 0 : _b.split('/').pop();
-            const image = $('.box-cover > a > img', obj).attr('data-src');
-            const subtitle = $(".box-description p:nth-child(1)", obj).text().trim();
-            const fixsub = subtitle.split('-')[1];
-            if (!id || !title)
-                continue;
-            if (!collectedIds.includes(id)) {
-                manga.push(createMangaTile({
-                    id: encodeURIComponent(id) + "::" + image,
-                    image: image !== null && image !== void 0 ? image : "",
-                    title: createIconText({ text: decodeHTMLEntity(title) }),
-                    subtitleText: createIconText({ text: fixsub.trim() }),
-                }));
-            }
-            collectedIds.push(id);
+        else {
+            image = image;
         }
+        let id = (_a = $('.series-title > a', element).attr('href')) !== null && _a !== void 0 ? _a : title;
+        let subtitle = 'Chương ' + $(".chapter-title > a", element).text().trim();
+        manga.push(createMangaTile({
+            id: id,
+            image: image !== null && image !== void 0 ? image : "",
+            title: createIconText({ text: title }),
+            subtitleText: createIconText({ text: subtitle }),
+        }));
     }
     return manga;
 };
@@ -1121,7 +1057,7 @@ exports.isLastPage = ($) => {
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($("li > b").text().trim());
+    const currentPage = Number($("ul.pagination > li > a.active").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
@@ -1130,661 +1066,5 @@ const decodeHTMLEntity = (str) => {
     return entities.decodeHTML(str);
 };
 
-},{"entities":1,"paperback-extensions-common":12}],57:[function(require,module,exports){
-module.exports=[
-    {
-        "id": "/the-loai-3-3d_hentai.html",
-        "label": "3D Hentai"
-    },
-    {
-        "id": "/the-loai-5-action.html",
-        "label": "Action"
-    },
-    {
-        "id": "/the-loai-116-adult.html",
-        "label": "Adult"
-    },
-    {
-        "id": "/the-loai-203-adventure.html",
-        "label": "Adventure"
-    },
-    {
-        "id": "/the-loai-20-ahegao.html",
-        "label": "Ahegao"
-    },
-    {
-        "id": "/the-loai-21-anal.html",
-        "label": "Anal"
-    },
-    {
-        "id": "/the-loai-249-angel.html",
-        "label": "Angel"
-    },
-    {
-        "id": "/the-loai-131-anh_dong.html",
-        "label": "Ảnh động"
-    },
-    {
-        "id": "/the-loai-127-animal.html",
-        "label": "Animal"
-    },
-    {
-        "id": "/the-loai-22-animal_girl.html",
-        "label": "Animal girl"
-    },
-    {
-        "id": "/the-loai-115-artist.html",
-        "label": "Artist CG"
-    },
-    {
-        "id": "/the-loai-257-bbm.html",
-        "label": "BBM"
-    },
-    {
-        "id": "/the-loai-251-bbw.html",
-        "label": "BBW"
-    },
-    {
-        "id": "/the-loai-24-bdsm.html",
-        "label": "BDSM"
-    },
-    {
-        "id": "/the-loai-25-bestiality.html",
-        "label": "Bestiality"
-    },
-    {
-        "id": "/the-loai-133-big_ass.html",
-        "label": "Big Ass"
-    },
-    {
-        "id": "/the-loai-23-big_boobs.html",
-        "label": "Big Boobs"
-    },
-    {
-        "id": "/the-loai-32-big_penis.html",
-        "label": "Big Penis"
-    },
-    {
-        "id": "/the-loai-267-blackmail.html",
-        "label": "Blackmail"
-    },
-    {
-        "id": "/the-loai-27-bloomers.html",
-        "label": "Bloomers"
-    },
-    {
-        "id": "/the-loai-28-blowjobs.html",
-        "label": "BlowJobs"
-    },
-    {
-        "id": "/the-loai-29-body_swap.html",
-        "label": "Body Swap"
-    },
-    {
-        "id": "/the-loai-30-bodysuit.html",
-        "label": "Bodysuit"
-    },
-    {
-        "id": "/the-loai-254-bondage.html",
-        "label": "Bondage"
-    },
-    {
-        "id": "/the-loai-33-breast_sucking.html",
-        "label": "Breast Sucking"
-    },
-    {
-        "id": "/the-loai-248-boob-jobs.html",
-        "label": "BreastJobs"
-    },
-    {
-        "id": "/the-loai-31-brocon.html",
-        "label": "Brocon"
-    },
-    {
-        "id": "/the-loai-242-brother.html",
-        "label": "Brother"
-    },
-    {
-        "id": "/the-loai-241-business-suit.html",
-        "label": "Business Suit"
-    },
-    {
-        "id": "/the-loai-39-catgirls.html",
-        "label": "Catgirls"
-    },
-    {
-        "id": "/the-loai-101-che_it.html",
-        "label": "Che ít"
-    },
-    {
-        "id": "/the-loai-129-che_nhieu.html",
-        "label": "Che nhiều"
-    },
-    {
-        "id": "/the-loai-34-cheating.html",
-        "label": "Cheating"
-    },
-    {
-        "id": "/the-loai-35-chikan.html",
-        "label": "Chikan"
-    },
-    {
-        "id": "/the-loai-271-chinese-dress.html",
-        "label": "Chinese Dress"
-    },
-    {
-        "id": "/the-loai-100-co_che.html",
-        "label": "Có che"
-    },
-    {
-        "id": "/the-loai-36-comedy.html",
-        "label": "Comedy"
-    },
-    {
-        "id": "/the-loai-120-comic.html",
-        "label": "Comic"
-    },
-    {
-        "id": "/the-loai-210-condom.html",
-        "label": "Condom"
-    },
-    {
-        "id": "/the-loai-38-cosplay.html",
-        "label": "Cosplay"
-    },
-    {
-        "id": "/the-loai-2-cousin.html",
-        "label": "Cousin"
-    },
-    {
-        "id": "/the-loai-269-cunnilingus.html",
-        "label": "Cunnilingus"
-    },
-    {
-        "id": "/the-loai-40-dark_skin.html",
-        "label": "Dark Skin"
-    },
-    {
-        "id": "/the-loai-262-daughter.html",
-        "label": "Daughter"
-    },
-    {
-        "id": "/the-loai-268-deepthroat.html",
-        "label": "Deepthroat"
-    },
-    {
-        "id": "/the-loai-132-demon.html",
-        "label": "Demon"
-    },
-    {
-        "id": "/the-loai-212-demon-girl.html",
-        "label": "DemonGirl"
-    },
-    {
-        "id": "/the-loai-104-devil.html",
-        "label": "Devil"
-    },
-    {
-        "id": "/the-loai-105-devilgirl.html",
-        "label": "DevilGirl"
-    },
-    {
-        "id": "/the-loai-253-dirty.html",
-        "label": "Dirty"
-    },
-    {
-        "id": "/the-loai-41-dirty_old_man.html",
-        "label": "Dirty Old Man"
-    },
-    {
-        "id": "/the-loai-260-doggirl.html",
-        "label": "DogGirl"
-    },
-    {
-        "id": "/the-loai-42-double_penetration.html",
-        "label": "Double Penetration"
-    },
-    {
-        "id": "/the-loai-44-doujinshi.html",
-        "label": "Doujinshi"
-    },
-    {
-        "id": "/the-loai-4-drama.html",
-        "label": "Drama"
-    },
-    {
-        "id": "/the-loai-43-drug.html",
-        "label": "Drug"
-    },
-    {
-        "id": "/the-loai-45-ecchi.html",
-        "label": "Ecchi"
-    },
-    {
-        "id": "/the-loai-245-elder-sister.html",
-        "label": "Elder Sister"
-    },
-    {
-        "id": "/the-loai-125-elf.html",
-        "label": "Elf"
-    },
-    {
-        "id": "/the-loai-46-exhibitionism.html",
-        "label": "Exhibitionism"
-    },
-    {
-        "id": "/the-loai-123-fantasy.html",
-        "label": "Fantasy"
-    },
-    {
-        "id": "/the-loai-243-father.html",
-        "label": "Father"
-    },
-    {
-        "id": "/the-loai-47-femdom.html",
-        "label": "Femdom"
-    },
-    {
-        "id": "/the-loai-48-fingering.html",
-        "label": "Fingering"
-    },
-    {
-        "id": "/the-loai-108-footjob.html",
-        "label": "Footjob"
-    },
-    {
-        "id": "/the-loai-259-foxgirl.html",
-        "label": "Foxgirls"
-    },
-    {
-        "id": "/the-loai-37-full_color.html",
-        "label": "Full Color"
-    },
-    {
-        "id": "/the-loai-202-furry.html",
-        "label": "Furry"
-    },
-    {
-        "id": "/the-loai-50-futanari.html",
-        "label": "Futanari"
-    },
-    {
-        "id": "/the-loai-130-game.html",
-        "label": "Game"
-    },
-    {
-        "id": "/the-loai-51-gangbang.html",
-        "label": "GangBang"
-    },
-    {
-        "id": "/the-loai-206-garter_belts.html",
-        "label": "Garter Belts"
-    },
-    {
-        "id": "/the-loai-52-gender_bender.html",
-        "label": "Gender Bender"
-    },
-    {
-        "id": "/the-loai-106-ghost.html",
-        "label": "Ghost"
-    },
-    {
-        "id": "/the-loai-56-glasses.html",
-        "label": "Glasses"
-    },
-    {
-        "id": "/the-loai-264-gothic-lolita.html",
-        "label": "Gothic Lolita"
-    },
-    {
-        "id": "/the-loai-53-group.html",
-        "label": "Group"
-    },
-    {
-        "id": "/the-loai-55-guro.html",
-        "label": "Guro"
-    },
-    {
-        "id": "/the-loai-247-hairy.html",
-        "label": "Hairy"
-    },
-    {
-        "id": "/the-loai-57-handjob.html",
-        "label": "Handjob"
-    },
-    {
-        "id": "/the-loai-58-harem.html",
-        "label": "Harem"
-    },
-    {
-        "id": "/the-loai-102-hentaivn.html",
-        "label": "HentaiVN"
-    },
-    {
-        "id": "/the-loai-80-historical.html",
-        "label": "Historical"
-    },
-    {
-        "id": "/the-loai-122-horror.html",
-        "label": "Horror"
-    },
-    {
-        "id": "/the-loai-59-housewife.html",
-        "label": "Housewife"
-    },
-    {
-        "id": "/the-loai-60-humiliation.html",
-        "label": "Humiliation"
-    },
-    {
-        "id": "/the-loai-61-idol.html",
-        "label": "Idol"
-    },
-    {
-        "id": "/the-loai-244-imouto.html",
-        "label": "Imouto"
-    },
-    {
-        "id": "/the-loai-62-incest.html",
-        "label": "Incest"
-    },
-    {
-        "id": "/the-loai-26-insect.html",
-        "label": "Insect (Côn Trùng)"
-    },
-    {
-        "id": "/the-loai-99-khong_che.html",
-        "label": "Không che"
-    },
-    {
-        "id": "/the-loai-110-kimono.html",
-        "label": "Kimono"
-    },
-    {
-        "id": "/the-loai-265-kuudere.html",
-        "label": "Kuudere"
-    },
-    {
-        "id": "/the-loai-63-loli.html",
-        "label": "Lolicon"
-    },
-    {
-        "id": "/the-loai-64-maids.html",
-        "label": "Maids"
-    },
-    {
-        "id": "/the-loai-273-manhua.html",
-        "label": "Manhua"
-    },
-    {
-        "id": "/the-loai-114-manhwa.html",
-        "label": "Manhwa"
-    },
-    {
-        "id": "/the-loai-65-tu_suong.html",
-        "label": "Masturbation"
-    },
-    {
-        "id": "/the-loai-119-mature.html",
-        "label": "Mature"
-    },
-    {
-        "id": "/the-loai-124-miko.html",
-        "label": "Miko"
-    },
-    {
-        "id": "/the-loai-126-milf.html",
-        "label": "Milf"
-    },
-    {
-        "id": "/the-loai-121-mind_break.html",
-        "label": "Mind Break"
-    },
-    {
-        "id": "/the-loai-113-mind_control.html",
-        "label": "Mind Control"
-    },
-    {
-        "id": "/the-loai-263-mizugi.html",
-        "label": "Mizugi"
-    },
-    {
-        "id": "/the-loai-66-monster.html",
-        "label": "Monster"
-    },
-    {
-        "id": "/the-loai-67-monstergirl.html",
-        "label": "Monstergirl"
-    },
-    {
-        "id": "/the-loai-103-mother.html",
-        "label": "Mother"
-    },
-    {
-        "id": "/the-loai-205-nakadashi.html",
-        "label": "Nakadashi"
-    },
-    {
-        "id": "/the-loai-1-netori.html",
-        "label": "Netori"
-    },
-    {
-        "id": "/the-loai-201-non_hen.html",
-        "label": "Non-hen"
-    },
-    {
-        "id": "/the-loai-68-ntr.html",
-        "label": "NTR"
-    },
-    {
-        "id": "/the-loai-272-nun.html",
-        "label": "Nun"
-    },
-    {
-        "id": "/the-loai-69-nurse.html",
-        "label": "Nurse"
-    },
-    {
-        "id": "/the-loai-211-old-man.html",
-        "label": "Old Man"
-    },
-    {
-        "id": "/the-loai-71-oneshot.html",
-        "label": "Oneshot"
-    },
-    {
-        "id": "/the-loai-70-oral.html",
-        "label": "Oral"
-    },
-    {
-        "id": "/the-loai-209-osananajimi.html",
-        "label": "Osananajimi"
-    },
-    {
-        "id": "/the-loai-72-paizuri.html",
-        "label": "Paizuri"
-    },
-    {
-        "id": "/the-loai-204-pantyhose.html",
-        "label": "Pantyhose"
-    },
-    {
-        "id": "/the-loai-73-pregnant.html",
-        "label": "Pregnant"
-    },
-    {
-        "id": "/the-loai-98-rape.html",
-        "label": "Rape"
-    },
-    {
-        "id": "/the-loai-258-rimjob.html",
-        "label": "Rimjob"
-    },
-    {
-        "id": "/the-loai-117-romance.html",
-        "label": "Romance"
-    },
-    {
-        "id": "/the-loai-207-ryona.html",
-        "label": "Ryona"
-    },
-    {
-        "id": "/the-loai-134-scat.html",
-        "label": "Scat"
-    },
-    {
-        "id": "/the-loai-74-school_uniform.html",
-        "label": "School Uniform"
-    },
-    {
-        "id": "/the-loai-75-schoolgirl.html",
-        "label": "SchoolGirl"
-    },
-    {
-        "id": "/the-loai-87-series.html",
-        "label": "Series"
-    },
-    {
-        "id": "/the-loai-88-sex_toys.html",
-        "label": "Sex Toys"
-    },
-    {
-        "id": "/the-loai-246-shimapan.html",
-        "label": "Shimapan"
-    },
-    {
-        "id": "/the-loai-118-short_hentai.html",
-        "label": "Short Hentai"
-    },
-    {
-        "id": "/the-loai-77-shota.html",
-        "label": "Shota"
-    },
-    {
-        "id": "/the-loai-76-shoujo.html",
-        "label": "Shoujo"
-    },
-    {
-        "id": "/the-loai-79-siscon.html",
-        "label": "Siscon"
-    },
-    {
-        "id": "/the-loai-78-sister.html",
-        "label": "Sister"
-    },
-    {
-        "id": "/the-loai-82-slave.html",
-        "label": "Slave"
-    },
-    {
-        "id": "/the-loai-213-sleeping.html",
-        "label": "Sleeping"
-    },
-    {
-        "id": "/the-loai-84-small_boobs.html",
-        "label": "Small Boobs"
-    },
-    {
-        "id": "/the-loai-83-sports.html",
-        "label": "Sports"
-    },
-    {
-        "id": "/the-loai-81-stockings.html",
-        "label": "Stockings"
-    },
-    {
-        "id": "/the-loai-85-supernatural.html",
-        "label": "Supernatural"
-    },
-    {
-        "id": "/the-loai-250-sweating.html",
-        "label": "Sweating"
-    },
-    {
-        "id": "/the-loai-86-swimsuit.html",
-        "label": "Swimsuit"
-    },
-    {
-        "id": "/the-loai-266-tall-girls.html",
-        "label": "Tall Girl"
-    },
-    {
-        "id": "/the-loai-91-teacher.html",
-        "label": "Teacher"
-    },
-    {
-        "id": "/the-loai-89-tentacles.html",
-        "label": "Tentacles"
-    },
-    {
-        "id": "/the-loai-109-time_stop.html",
-        "label": "Time Stop"
-    },
-    {
-        "id": "/the-loai-90-tomboy.html",
-        "label": "Tomboy"
-    },
-    {
-        "id": "/the-loai-252-tracksuit.html",
-        "label": "Tracksuit"
-    },
-    {
-        "id": "/the-loai-256-transformation.html",
-        "label": "Transformation"
-    },
-    {
-        "id": "/the-loai-92-trap.html",
-        "label": "Trap"
-    },
-    {
-        "id": "/the-loai-111-tsundere.html",
-        "label": "Tsundere"
-    },
-    {
-        "id": "/the-loai-93-twins.html",
-        "label": "Twins"
-    },
-    {
-        "id": "/the-loai-261-twintails.html",
-        "label": "Twintails"
-    },
-    {
-        "id": "/the-loai-107-vampire.html",
-        "label": "Vampire"
-    },
-    {
-        "id": "/the-loai-208-vanilla.html",
-        "label": "Vanilla"
-    },
-    {
-        "id": "/the-loai-95-virgin.html",
-        "label": "Virgin"
-    },
-    {
-        "id": "/the-loai-270-webtoon.html",
-        "label": "Webtoon"
-    },
-    {
-        "id": "/the-loai-94-x_ray.html",
-        "label": "X-ray"
-    },
-    {
-        "id": "/the-loai-112-yandere.html",
-        "label": "Yandere"
-    },
-    {
-        "id": "/the-loai-96-yaoi.html",
-        "label": "Yaoi"
-    },
-    {
-        "id": "/the-loai-97-yuri.html",
-        "label": "Yuri"
-    },
-    {
-        "id": "/the-loai-128-zombie.html",
-        "label": "Zombie"
-    }
-]
-
-},{}]},{},[55])(55)
+},{"entities":1}]},{},[55])(55)
 });
