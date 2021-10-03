@@ -824,7 +824,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
         const topView = [
             {
                 label: 'Top View Ngày',
-                id: DOMAIN + 'list-top.php?0'
+                id: DOMAIN + 'list-top.php?1'
             },
             {
                 label: 'Top View Tuần',
@@ -849,6 +849,12 @@ class HentaiVN extends paperback_extensions_common_1.Source {
         return {
             referer: `${DOMAIN}` + '/'
         };
+    }
+    getCloudflareBypassRequest() {
+        return createRequestObject({
+            url: `${DOMAIN}` + '/',
+            method: 'GET',
+        });
     }
 }
 exports.HentaiVN = HentaiVN;
