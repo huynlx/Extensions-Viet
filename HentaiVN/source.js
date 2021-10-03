@@ -761,7 +761,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
                         'content-type': 'application/x-www-form-urlencoded'
                     },
                     data: {
-                        'idviewtop': '2'
+                        'idviewtop': tag[0].split('?')[1]
                     }
                 });
             }
@@ -824,7 +824,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
         const topView = [
             {
                 label: 'Top View Ngày',
-                id: DOMAIN + 'list-top.php?1'
+                id: DOMAIN + 'list-top.php?0'
             },
             {
                 label: 'Top View Tuần',
