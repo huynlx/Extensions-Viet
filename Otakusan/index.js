@@ -686,27 +686,27 @@ class Otakusan extends paperback_extensions_common_1.Source {
     }
     async getChapters(mangaId) {
         var _a;
+        const url = 'https://otakusan.net' + mangaId;
         const request = createRequestObject({
-            url: DOMAIN + mangaId,
+            url,
             method,
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         const chapters = [];
         var i = 0;
-        for (const obj of $('.list-chapters > a').toArray().reverse()) {
-            i++;
-            let id = DOMAIN + $(obj).first().attr('href');
-            let chapNum = parseFloat((_a = $('.chapter-name', obj).first().text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
-            let name = $('.chapter-view', obj).first().text().trim();
-            let time = $('.chapter-time', obj).first().text().trim();
+        var el = $("#chapter > table > tbody tr td a.thrilldown").toArray();
+        for (var i = el.length - 1; i >= 0; i--) {
+            var e = el[i];
+            let id = $(e).attr('href');
+            let chapNum = parseFloat((_a = $(e).text().trim()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
+            let name = $(e).text().trim();
             chapters.push(createChapter({
                 id,
                 chapNum: isNaN(chapNum) ? i : chapNum,
                 name,
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                time: this.convertTime(time)
             }));
         }
         return chapters;
