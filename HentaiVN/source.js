@@ -761,7 +761,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
                         'content-type': 'application/x-www-form-urlencoded'
                     },
                     data: {
-                        'idviewtop': '1'
+                        'idviewtop': '2'
                     }
                 });
             }
