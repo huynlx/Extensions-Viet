@@ -793,7 +793,7 @@ class Otakusan extends paperback_extensions_common_1.Source {
             },
             data: {
                 "Lang": "vn",
-                "Page": '1',
+                "Page": '0',
                 "Type": "Include",
                 "Dir": "NewPostedDate",
                 "FilterCategory%5B0%5D": filter
