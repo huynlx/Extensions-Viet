@@ -650,44 +650,35 @@ class Otakusan extends paperback_extensions_common_1.Source {
     getMangaShareUrl(mangaId) { return (DOMAIN + mangaId); }
     ;
     async getMangaDetails(mangaId) {
-        var _a, _b;
-        const url = DOMAIN + mangaId;
+        var _a;
+        const url = 'https://otakusan.net' + mangaId;
         const request = createRequestObject({
             url: url,
             method: "GET",
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
+        var el = $("div.row .manga-top");
         let tags = [];
         let creator = '';
         let statusFinal = 1;
-        for (const test of $('li', '.manga-info').toArray()) {
-            switch ($('b', test).text().trim()) {
-                case "Tác giả":
-                    creator = $('a', test).text().trim();
-                    break;
-                case "Thể loại":
-                    for (const t of $('a', test).toArray()) {
-                        const genre = $(t).text().trim();
-                        const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
-                        tags.push(createTag({ label: genre, id }));
-                    }
-                    break;
-                case "Tình trạng":
-                    let status = $('a', test).text().trim();
-                    statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
-                    break;
-            }
+        creator = $(".table-striped > tbody > tr:nth-child(5) > td > a", el).text().trim();
+        for (const t of $('.genres > a', el).toArray()) {
+            const genre = $(t).text().trim();
+            const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
+            tags.push(createTag({ label: genre, id }));
         }
-        let desc = $(".summary-content").text();
-        const image = (_b = $('.info-cover img').attr("src")) !== null && _b !== void 0 ? _b : "";
+        let status = $(".table-striped > tbody > tr:nth-child(6) > td", el).text().trim();
+        statusFinal = status.toLowerCase().includes("ongoing") ? 1 : 0;
+        let desc = $("p.summary", el).text();
+        const image = $(".col-lg-3 .manga-top-img img", el).attr("src");
         return createManga({
             id: mangaId,
             author: creator,
             artist: creator,
             desc: desc,
-            titles: [$('.manga-info h3').text().trim()],
-            image: image.includes('http') ? image : (DOMAIN + image),
+            titles: [$(".manga-top-main .manga-top-info h1", el).text()],
+            image,
             status: statusFinal,
             hentai: false,
             tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
@@ -758,9 +749,7 @@ class Otakusan extends paperback_extensions_common_1.Source {
             title: "TRUYỆN MỚI ĐĂNG",
             view_more: false,
         });
-        sectionCallback(hot);
         sectionCallback(newUpdated);
-        sectionCallback(view);
         let request = createRequestObject({
             url: DOMAIN,
             method: "GET",
@@ -782,7 +771,6 @@ class Otakusan extends paperback_extensions_common_1.Source {
             }));
         }
         hot.items = popular;
-        sectionCallback(hot);
         var url = 'https://otakusan.net/Manga/Newest';
         request = createRequestObject({
             url: url,
@@ -839,7 +827,6 @@ class Otakusan extends paperback_extensions_common_1.Source {
             }));
         }
         view.items = viewItems;
-        sectionCallback(view);
     }
     async getViewMoreItems(homepageSectionId, metadata) {
         var _a;
