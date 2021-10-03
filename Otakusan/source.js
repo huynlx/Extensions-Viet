@@ -585,7 +585,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Otakusan = exports.OtakusanInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const OtakusanParser_1 = require("./OtakusanParser");
-const DOMAIN = 'https://manhuarock.net/';
+const DOMAIN = 'https://otakusan.net/';
 const method = 'GET';
 exports.OtakusanInfo = {
     version: '1.5.0',
@@ -594,7 +594,7 @@ exports.OtakusanInfo = {
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from Otakusan',
-    websiteBaseURL: 'https://otakusan.net/',
+    websiteBaseURL: DOMAIN,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
         {
@@ -807,8 +807,8 @@ class Otakusan extends paperback_extensions_common_1.Source {
             newUpdatedItems.push(createMangaTile({
                 id: (_b = $(".mdl-card__title a", book).attr("href")) !== null && _b !== void 0 ? _b : "",
                 image: (_c = $(".mdl-card__title img", book).attr("src")) !== null && _c !== void 0 ? _c : "",
-                title: createIconText({ text: $(".mdl-card__title img", book).attr("title") }),
-                subtitleText: createIconText({ text: $('mdl-card__actions > a', book).text().trim() }),
+                title: createIconText({ text: OtakusanParser_1.decodeHTMLEntity($(".mdl-card__title img", book).attr("title")) }),
+                subtitleText: createIconText({ text: $('.mdl-card__actions > a', book).text().trim() }),
             }));
         }
         newUpdated.items = newUpdatedItems;
@@ -993,7 +993,7 @@ exports.Otakusan = Otakusan;
 },{"./OtakusanParser":56,"paperback-extensions-common":12}],56:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.capitalizeFirstLetter = void 0;
+exports.decodeHTMLEntity = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.capitalizeFirstLetter = void 0;
 const entities = require("entities");
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -1065,7 +1065,7 @@ exports.isLastPage = ($) => {
         isLast = true;
     return isLast;
 };
-const decodeHTMLEntity = (str) => {
+exports.decodeHTMLEntity = (str) => {
     return entities.decodeHTML(str);
 };
 
