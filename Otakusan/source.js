@@ -662,7 +662,7 @@ class Otakusan extends paperback_extensions_common_1.Source {
         let tags = [];
         let creator = '';
         let statusFinal = 1;
-        creator = $(".table-striped > tbody > tr:nth-child(5) > td > a", el).text().trim();
+        creator = $(".table-striped > tbody > tr:nth-child(5) > td > a", el).attr('title');
         for (const t of $('.genres > a', el).toArray()) {
             const genre = $(t).text().trim();
             const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
