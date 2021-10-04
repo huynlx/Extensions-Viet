@@ -682,7 +682,7 @@ class MangaXY extends paperback_extensions_common_1.Source {
             const finalH = h[0] + ':' + h[1];
             chapters.push(createChapter({
                 id: $(e).attr("href"),
-                chapNum: isNaN(parseFloat(name.split(" ")[1])) ? i : parseFloat(name.split(" ")[1]),
+                chapNum: isNaN(parseFloat(name.split(" ")[1])) ? i + 1 : parseFloat(name.split(" ")[1]),
                 name,
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
@@ -848,48 +848,26 @@ class MangaXY extends paperback_extensions_common_1.Source {
         });
     }
     async getSearchResults(query, metadata) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c;
         let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-        const search = {
-            status: "",
-            sort: "update",
-            genres: "",
-        };
         const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
-        const category = [];
-        tags.map((value) => {
-            if (value.indexOf('.') === -1) {
-                category.push(value);
-            }
-            else {
-                switch (value.split(".")[0]) {
-                    case 'sort':
-                        search.sort = (value.split(".")[1]);
-                        break;
-                    case 'status':
-                        search.status = (value.split(".")[1]);
-                        break;
-                }
-            }
-        });
-        search.genres = (category !== null && category !== void 0 ? category : []).join(",");
         const request = createRequestObject({
-            url: `${DOMAIN}tim-kiem`,
-            method: "GET",
-            param: encodeURI(`?q=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&status=${search.status}&sort=${search.sort}&accept_genres=${search.genres}&page=${page}`)
+            url: query.title ? encodeURI("https://mangaxy.com/search.php?andor=and&q=" + query.title + "&page=" + page + "&view=thumb&act=timnangcao&ajax=true") :
+                encodeURI(tags[0] + page),
+            method: "GET"
         });
         const data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         const tiles = MangaXYParser_1.parseSearch($);
-        metadata = !MangaXYParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+        metadata = tiles.length !== 0 ? { page: page + 1 } : undefined;
         return createPagedResults({
             results: tiles,
             metadata
         });
     }
     async getSearchTags() {
-        var _a, _b, _c;
-        const url = `${DOMAIN}tim-kiem`;
+        var _a;
+        const url = "https://mangaxy.com/";
         const request = createRequestObject({
             url: url,
             method: "GET",
@@ -897,33 +875,17 @@ class MangaXY extends paperback_extensions_common_1.Source {
         const response = await this.requestManager.schedule(request, 1);
         const $ = this.cheerio.load(response.data);
         const arrayTags = [];
-        const arrayTags2 = [];
-        const arrayTags3 = [];
-        for (const tag of $('div.search-gerne_item', 'div.form-group').toArray()) {
-            const label = $('.gerne-name', tag).text().trim();
-            const id = (_a = $('label', tag).attr('data-genre-id')) !== null && _a !== void 0 ? _a : label;
+        var element = $(".megalist > ul.col4 a").toArray();
+        for (var el in element) {
+            var book = element[el];
+            const label = $(book).text().trim();
+            const id = (_a = $(book).attr("href") + "page=") !== null && _a !== void 0 ? _a : label;
             if (!id || !label)
                 continue;
             arrayTags.push({ id: id, label: label });
         }
-        for (const tag of $('option', 'select#list-status').toArray()) {
-            const label = $(tag).text().trim();
-            const id = (_b = 'status.' + $(tag).attr('value')) !== null && _b !== void 0 ? _b : label;
-            if (!id || !label)
-                continue;
-            arrayTags2.push({ id: id, label: label });
-        }
-        for (const tag of $('option', 'select#list-sort').toArray()) {
-            const label = $(tag).text().trim();
-            const id = (_c = 'sort.' + $(tag).attr('value')) !== null && _c !== void 0 ? _c : label;
-            if (!id || !label)
-                continue;
-            arrayTags3.push({ id: id, label: label });
-        }
         const tagSections = [
-            createTagSection({ id: '0', label: 'Thể loại', tags: arrayTags.map(x => createTag(x)) }),
-            createTagSection({ id: '1', label: 'Tình trạng', tags: arrayTags2.map(x => createTag(x)) }),
-            createTagSection({ id: '2', label: 'Sắp xếp', tags: arrayTags3.map(x => createTag(x)) }),
+            createTagSection({ id: '0', label: 'Thể loại', tags: arrayTags.map(x => createTag(x)) })
         ];
         return tagSections;
     }
@@ -933,7 +895,7 @@ exports.MangaXY = MangaXY;
 },{"./MangaXYParser":56,"paperback-extensions-common":12}],56:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ucFirstAllWords = exports.parseManga = exports.decodeHTMLEntity = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
+exports.ucFirstAllWords = exports.parseManga = exports.decodeHTMLEntity = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
 const entities = require("entities");
 exports.generateSearch = (query) => {
     var _a;
@@ -941,18 +903,30 @@ exports.generateSearch = (query) => {
     return encodeURI(keyword);
 };
 exports.parseSearch = ($) => {
-    var _a, _b;
+    var _a, _b, _c;
+    var element = $(".thumb").toArray();
     const mangas = [];
-    for (let obj of $('.thumb-item-flow', '.col-12 > .card:nth-child(2) > .card-body > .row').toArray()) {
-        let title = $(`.series-title > a`, obj).text().trim();
-        let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
-        const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
-        let id = (_b = (_a = $(`.series-title > a`, obj).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) !== null && _b !== void 0 ? _b : title;
+    for (var el in element) {
+        var book = element[el];
+        var checkCover = $("img", book).attr("style");
+        var cover = '';
+        if ((checkCover === null || checkCover === void 0 ? void 0 : checkCover.indexOf('jpg')) != -1 || checkCover.indexOf('png') != -1 || checkCover.indexOf('jpeg') != -1 || checkCover.indexOf('webp') != -1 || checkCover.indexOf('gif') != -1)
+            cover = (_b = (_a = checkCover === null || checkCover === void 0 ? void 0 : checkCover.match(/image: url\('\/\/(.+)\'\)/)) === null || _a === void 0 ? void 0 : _a[1]) !== null && _b !== void 0 ? _b : "";
+        else
+            cover = "";
         mangas.push(createMangaTile({
-            id: encodeURIComponent(id),
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
-            title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: subtitle }),
+            id: (_c = $("a.name", book).attr("href")) !== null && _c !== void 0 ? _c : "",
+            image: "https://" + cover,
+            title: createIconText({
+                text: $("a.name", book).text().replace("T MỚI ", "").trim(),
+            }),
+            subtitleText: createIconText({
+                text: $("a.chap", book).text().replace("C MỚI ", "").trim(),
+            }),
+            badge: 10,
+            primaryText: createIconText({
+                text: 'huynh',
+            }),
         }));
     }
     return mangas;
@@ -985,21 +959,6 @@ exports.parseViewMore = ($) => {
         }));
     }
     return mangas;
-};
-exports.isLastPage = ($) => {
-    let isLast = false;
-    const pages = [];
-    for (const page of $("a", ".pagination_wrap").toArray()) {
-        const p = Number($(page).text().trim());
-        if (isNaN(p))
-            continue;
-        pages.push(p);
-    }
-    const lastPage = Math.max(...pages);
-    const currentPage = Number($(".pagination_wrap > a.current").text().trim());
-    if (currentPage >= lastPage)
-        isLast = true;
-    return isLast;
 };
 exports.decodeHTMLEntity = (str) => {
     return entities.decodeHTML(str);
