@@ -756,7 +756,7 @@ class MangaXY extends paperback_extensions_common_1.Source {
                 id,
                 image: "https://" + cover,
                 title: createIconText({
-                    text: title,
+                    text: title.includes('-') ? title.split('-')[1].trim() : title,
                 }),
                 subtitleText: createIconText({
                     text: sub,
@@ -809,10 +809,16 @@ class MangaXY extends paperback_extensions_common_1.Source {
         let url = '';
         switch (homepageSectionId) {
             case "new_updated":
-                url = `${DOMAIN}danh-sach?sort=update&page=${page}`;
+                url = `https://mangaxy.com/search.php?andor=and&van=&sort=chap&view=thumb&act=timnangcao&ajax=true&page=${page}`;
                 break;
             case "new_added":
-                url = `${DOMAIN}danh-sach?sort=new&page=${page}`;
+                url = `https://mangaxy.com/search.php?andor=and&sort=truyen&view=thumb&act=timnangcao&ajax=true&page=${page}`;
+                break;
+            case "az":
+                url = `https://mangaxy.com/search.php?andor=and&sort=ten&view=thumb&act=timnangcao&ajax=true&page=${page}`;
+                break;
+            case "hot":
+                url = `https://mangaxy.com/search.php?andor=and&sort=xem&view=thumb&act=timnangcao&ajax=true&page=${page}`;
                 break;
             default:
                 return Promise.resolve(createPagedResults({ results: [] }));
@@ -825,7 +831,7 @@ class MangaXY extends paperback_extensions_common_1.Source {
         const response = await this.requestManager.schedule(request, 1);
         const $ = this.cheerio.load(response.data);
         const manga = MangaXYParser_1.parseViewMore($);
-        metadata = !MangaXYParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+        metadata = manga.length !== 0 ? { page: page + 1 } : undefined;
         return createPagedResults({
             results: manga,
             metadata,
@@ -947,25 +953,33 @@ exports.parseSearch = ($) => {
     return mangas;
 };
 exports.parseViewMore = ($) => {
-    var _a, _b;
-    const manga = [];
-    const collectedIds = [];
-    for (let obj of $('.thumb-item-flow', '.col-md-8 > .card > .card-body > .row').toArray()) {
-        let title = $(`.series-title > a`, obj).text().trim();
-        let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
-        const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
-        let id = (_b = (_a = $(`.series-title > a`, obj).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) !== null && _b !== void 0 ? _b : title;
-        if (!collectedIds.includes(id)) {
-            manga.push(createMangaTile({
-                id: encodeURIComponent(id),
-                image: image !== null && image !== void 0 ? image : "",
-                title: createIconText({ text: exports.decodeHTMLEntity(title) }),
-                subtitleText: createIconText({ text: subtitle }),
-            }));
-            collectedIds.push(id);
-        }
+    var _a, _b, _c;
+    var element = $(".thumb").toArray();
+    const mangas = [];
+    for (var el in element) {
+        var book = element[el];
+        var checkCover = $("img", book).attr("style");
+        var cover = '';
+        if ((checkCover === null || checkCover === void 0 ? void 0 : checkCover.indexOf('jpg')) != -1 || checkCover.indexOf('png') != -1 || checkCover.indexOf('jpeg') != -1)
+            cover = (_b = (_a = checkCover === null || checkCover === void 0 ? void 0 : checkCover.match(/image: url\('\/\/(.+)\'\)/)) === null || _a === void 0 ? void 0 : _a[1]) !== null && _b !== void 0 ? _b : "";
+        else
+            cover = "";
+        mangas.push(createMangaTile({
+            id: (_c = $("a.name", book).attr("href")) !== null && _c !== void 0 ? _c : "",
+            image: "https://" + cover,
+            title: createIconText({
+                text: $("a.name", book).text().replace("T MỚI ", "").trim(),
+            }),
+            subtitleText: createIconText({
+                text: $("a.chap", book).text().replace("C MỚI ", "").trim(),
+            }),
+            badge: 10,
+            primaryText: createIconText({
+                text: 'huynh',
+            }),
+        }));
     }
-    return manga;
+    return mangas;
 };
 exports.isLastPage = ($) => {
     let isLast = false;
