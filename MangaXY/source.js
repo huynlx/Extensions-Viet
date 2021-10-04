@@ -624,7 +624,7 @@ class MangaXY extends paperback_extensions_common_1.Source {
         let $ = this.cheerio.load(data.data);
         var checkCover = $(".detail-top-right img").attr("style");
         var cover = '';
-        if (checkCover.indexOf('jpg') != -1 || checkCover.indexOf('png') != -1 || checkCover.indexOf('jpeg') != -1)
+        if ((checkCover === null || checkCover === void 0 ? void 0 : checkCover.indexOf('jpg')) != -1 || checkCover.indexOf('png') != -1 || checkCover.indexOf('jpeg') != -1 || checkCover.indexOf('webp') != -1 || checkCover.indexOf('gif') != -1)
             cover = checkCover.match(/image: url\('\/\/(.+)\'\)/)[1];
         else
             cover = "";
@@ -638,11 +638,11 @@ class MangaXY extends paperback_extensions_common_1.Source {
             const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
             tags.push(createTag({ label: MangaXYParser_1.ucFirstAllWords(genre), id }));
         }
-        var loop = $(".manga-info ul li").toArray();
+        var loop = $(".manga-info ul li a").toArray();
         for (var el in loop) {
             let x = loop[el];
-            if ($(x).text().includes("Dịch: ")) {
-                status = $('a', $(x).next()).text().toLowerCase().includes("đang") ? 1 : 0;
+            if ($(x).text().includes("Đang tiến hành") || $(x).text().includes("Đã hoàn thành")) {
+                status = $(x).text().toLowerCase().includes('đang') ? 1 : 0;
                 break;
             }
             else {
