@@ -707,7 +707,7 @@ class MangaXY extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
-        var _a, _b;
+        var _a;
         let newUpdated = createHomeSection({
             id: 'new_updated',
             title: "Chap mới",
@@ -786,7 +786,7 @@ class MangaXY extends paperback_extensions_common_1.Source {
         }
         newAdded.items = newAddItems;
         sectionCallback(newAdded);
-        url = 'https://mangaxy.com/search.php?andor=and&sort=xem&view=thumb&act=timnangcao&ajax=true&page=1';
+        url = 'https://mangaxy.com/search.php?andor=and&sort=truyen&view=thumb&act=timnangcao&ajax=true&page=1';
         request = createRequestObject({
             url: DOMAIN,
             method: "GET",
@@ -799,12 +799,12 @@ class MangaXY extends paperback_extensions_common_1.Source {
             var book = element[el];
             var checkCover = $("img", book).attr("style");
             var cover = '';
-            if ((checkCover === null || checkCover === void 0 ? void 0 : checkCover.indexOf('jpg')) != -1 || (checkCover === null || checkCover === void 0 ? void 0 : checkCover.indexOf('png')) != -1 || (checkCover === null || checkCover === void 0 ? void 0 : checkCover.indexOf('jpeg')) != -1)
-                cover = (_a = checkCover === null || checkCover === void 0 ? void 0 : checkCover.match(/image: url\('\/\/(.+)\'\)/)) === null || _a === void 0 ? void 0 : _a[1];
+            if (checkCover.indexOf('jpg') != -1 || checkCover.indexOf('png') != -1 || checkCover.indexOf('jpeg') != -1)
+                cover = checkCover.match(/image: url\('\/\/(.+)\'\)/)[1];
             else
                 cover = "";
             hotItems.push(createMangaTile({
-                id: (_b = $("a.name", book).attr("href")) === null || _b === void 0 ? void 0 : _b.replace("https://mangaxy.com", ""),
+                id: (_a = $("a.name", book).attr("href")) === null || _a === void 0 ? void 0 : _a.replace("https://mangaxy.com", ""),
                 image: "https://" + cover,
                 title: ({
                     text: $("a.name", book).text().replace("T MỚI ", "").trim(),
