@@ -588,7 +588,7 @@ const MangaXYParser_1 = require("./MangaXYParser");
 const DOMAIN = 'https://mangaxy.com/';
 const method = 'GET';
 exports.MangaXYInfo = {
-    version: '2.0.0',
+    version: '1.0.0',
     name: 'MangaXY',
     icon: 'icon.png',
     author: 'Huynhzip3',
