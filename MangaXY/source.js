@@ -631,7 +631,7 @@ class MangaXY extends paperback_extensions_common_1.Source {
         let tags = [];
         let creator = '';
         let status = 1;
-        let desc = $(".manga-info p");
+        let desc = $(".manga-info p").text();
         creator = $(".created-by a").text();
         for (const t of $('.top-comics-type > a').toArray()) {
             const genre = $(t).text().trim();
@@ -654,25 +654,24 @@ class MangaXY extends paperback_extensions_common_1.Source {
     }
     async getChapters(mangaId) {
         const request = createRequestObject({
-            url: `${DOMAIN}truyen-tranh/${mangaId}`,
+            url: `${mangaId}`,
             method,
         });
         const response = await this.requestManager.schedule(request, 1);
         const $ = this.cheerio.load(response.data);
+        var el = $("#ChapList a").toArray();
         const chapters = [];
-        var i = 0;
-        for (const obj of $(".list-chapters.at-series > a").toArray().reverse()) {
-            var chapNum = parseFloat($('li > .chapter-name', obj).text().trim().split(' ')[1]);
-            i++;
-            const timeStr = $('li > .chapter-time', obj).text().trim().split(/\//);
-            const time = new Date([timeStr[1], timeStr[0], timeStr[2]].join('/'));
+        for (var i = el.length - 1; i >= 0; i--) {
+            var e = el[i];
+            const name = $(".episode-title", e).text().trim();
+            const timeStr = $('.episode-date > time', e).text().attr('datetime');
             chapters.push(createChapter({
-                id: $(obj).first().attr('href'),
-                chapNum: isNaN(chapNum) ? i : chapNum,
-                name: $('li > .chapter-name', obj).text(),
+                id: $(".episode-item", e).attr("href"),
+                chapNum: parseFloat(name.split(" ")[1]),
+                name,
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                time
+                time: new Date(timeStr)
             }));
         }
         return chapters;
