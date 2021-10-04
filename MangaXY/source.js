@@ -653,7 +653,6 @@ class MangaXY extends paperback_extensions_common_1.Source {
         });
     }
     async getChapters(mangaId) {
-        var _a;
         const request = createRequestObject({
             url: `${mangaId}`,
             method,
@@ -665,7 +664,7 @@ class MangaXY extends paperback_extensions_common_1.Source {
         for (var i = el.length - 1; i >= 0; i--) {
             var e = el[i];
             const name = $(".episode-title", e).text().trim();
-            const timeStr = (_a = ($('.episode-date > time', e).attr('datetime'))) !== null && _a !== void 0 ? _a : "";
+            const timeStr = '2021-09-07 09:01:27';
             chapters.push(createChapter({
                 id: $(e).attr("href"),
                 chapNum: parseFloat(name.split(" ")[1]),
@@ -689,7 +688,7 @@ class MangaXY extends paperback_extensions_common_1.Source {
             if (!obj.attribs['src'])
                 continue;
             let link = obj.attribs['src'];
-            pages.push(link);
+            pages.push(encodeURI(link));
         }
         const chapterDetails = createChapterDetails({
             id: chapterId,
