@@ -748,7 +748,7 @@ class MangaXY extends paperback_extensions_common_1.Source {
         $ = this.cheerio.load(data.data);
         newAdded.items = MangaXYParser_1.parseManga($);
         sectionCallback(newAdded);
-        url = 'https://mangaxy.com/search.php?andor=and&sort=truyen&view=thumb&act=timnangcao&ajax=true&page=1';
+        url = 'https://mangaxy.com/search.php?andor=and&sort=xem&view=thumb&act=timnangcao&ajax=true&page=1';
         request = createRequestObject({
             url,
             method: "GET",
@@ -757,6 +757,15 @@ class MangaXY extends paperback_extensions_common_1.Source {
         $ = this.cheerio.load(data.data);
         hot.items = MangaXYParser_1.parseManga($);
         sectionCallback(hot);
+        url = 'https://mangaxy.com/search.php?andor=and&sort=ten&view=thumb&act=timnangcao&ajax=true&page=1';
+        request = createRequestObject({
+            url,
+            method: "GET",
+        });
+        data = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(data.data);
+        az.items = MangaXYParser_1.parseManga($);
+        sectionCallback(az);
     }
     async getViewMoreItems(homepageSectionId, metadata) {
         var _a;
