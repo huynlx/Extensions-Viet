@@ -760,8 +760,7 @@ class MangaXY extends paperback_extensions_common_1.Source {
                 }),
                 subtitleText: createIconText({
                     text: sub,
-                }),
-                badge: 10
+                })
             }));
         }
         featured.items = featuredItems;
@@ -1006,6 +1005,10 @@ exports.parseManga = ($) => {
             }),
             subtitleText: createIconText({
                 text: $("a.chap", book).text().replace("C MỚI ", "").trim(),
+            }),
+            badge: 10,
+            primaryText: createIconText({
+                text: 'huynh',
             }),
         }));
     }
