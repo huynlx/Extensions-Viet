@@ -664,7 +664,7 @@ class MangaXY extends paperback_extensions_common_1.Source {
         for (var i = el.length - 1; i >= 0; i--) {
             var e = el[i];
             const name = $(".episode-title", e).text().trim();
-            const timeStr = $('.episode-date > time', e).text().attr('datetime');
+            const timeStr = $('.episode-date > time', e).attr('datetime');
             chapters.push(createChapter({
                 id: $(".episode-item", e).attr("href"),
                 chapNum: parseFloat(name.split(" ")[1]),
@@ -684,11 +684,11 @@ class MangaXY extends paperback_extensions_common_1.Source {
         const response = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(response.data);
         const pages = [];
-        for (let obj of $('#chapter-content > img').toArray()) {
-            if (!obj.attribs['data-src'])
+        for (let obj of $('.page-chapter img').toArray()) {
+            if (!obj.attribs['src'])
                 continue;
-            let link = obj.attribs['data-src'];
-            pages.push(encodeURI(link));
+            let link = obj.attribs['src'];
+            pages.push(link);
         }
         const chapterDetails = createChapterDetails({
             id: chapterId,
