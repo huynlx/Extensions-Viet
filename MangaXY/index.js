@@ -582,19 +582,19 @@ __exportStar(require("./RawData"), exports);
 },{"./Chapter":14,"./ChapterDetails":13,"./Constants":15,"./DynamicUI":31,"./HomeSection":32,"./Languages":33,"./Manga":36,"./MangaTile":34,"./MangaUpdate":35,"./PagedResults":37,"./RawData":38,"./RequestHeaders":39,"./RequestInterceptor":40,"./RequestManager":41,"./RequestObject":42,"./ResponseObject":43,"./SearchField":44,"./SearchRequest":45,"./SourceInfo":46,"./SourceManga":47,"./SourceStateManager":48,"./SourceTag":49,"./TagSection":50,"./TrackedManga":52,"./TrackedMangaChapterReadAction":51,"./TrackerActionQueue":53}],55:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Otakusan = exports.OtakusanInfo = void 0;
+exports.MangaXY = exports.MangaXYInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
-const OtakusanParser_1 = require("./OtakusanParser");
-const DOMAIN = 'https://otakusan.net/';
+const MangaXYParser_1 = require("./MangaXYParser");
+const DOMAIN = 'https://mangaxy.com/';
 const method = 'GET';
-exports.OtakusanInfo = {
-    version: '1.5.0',
-    name: 'Otakusan',
+exports.MangaXYInfo = {
+    version: '2.0.0',
+    name: 'MangaXY',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from Otakusan',
-    websiteBaseURL: DOMAIN,
+    description: 'Extension that pulls manga from MangaXY',
+    websiteBaseURL: `https://truyentranhlh.net/`,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
         {
@@ -603,7 +603,7 @@ exports.OtakusanInfo = {
         }
     ]
 };
-class Otakusan extends paperback_extensions_common_1.Source {
+class MangaXY extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
         this.requestManager = createRequestManager({
@@ -611,118 +611,92 @@ class Otakusan extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
     }
-    convertTime(timeAgo) {
-        var _a;
-        let time;
-        let trimmed = Number(((_a = /\d*/.exec(timeAgo)) !== null && _a !== void 0 ? _a : [])[0]);
-        trimmed = (trimmed == 0 && timeAgo.includes('a')) ? 1 : trimmed;
-        if (timeAgo.includes('giây') || timeAgo.includes('secs')) {
-            time = new Date(Date.now() - trimmed * 1000);
-        }
-        else if (timeAgo.includes('phút')) {
-            time = new Date(Date.now() - trimmed * 60000);
-        }
-        else if (timeAgo.includes('giờ')) {
-            time = new Date(Date.now() - trimmed * 3600000);
-        }
-        else if (timeAgo.includes('ngày')) {
-            time = new Date(Date.now() - trimmed * 86400000);
-        }
-        else if (timeAgo.includes('năm')) {
-            time = new Date(Date.now() - trimmed * 31556952000);
-        }
-        else {
-            if (timeAgo.includes(":")) {
-                let split = timeAgo.split(' ');
-                let H = split[0];
-                let D = split[1];
-                let fixD = D.split('/');
-                let finalD = fixD[1] + '/' + fixD[0] + '/' + new Date().getFullYear();
-                time = new Date(finalD + ' ' + H);
-            }
-            else {
-                let split = timeAgo.split('/');
-                time = new Date(split[1] + '/' + split[0] + '/' + '20' + split[2]);
-            }
-        }
-        return time;
-    }
-    getMangaShareUrl(mangaId) { return (DOMAIN + mangaId); }
+    getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh/${mangaId}`; }
     ;
     async getMangaDetails(mangaId) {
         var _a;
-        const url = 'https://otakusan.net' + mangaId;
+        const url = `${DOMAIN}truyen-tranh/${mangaId}`;
         const request = createRequestObject({
             url: url,
             method: "GET",
         });
-        let data = await this.requestManager.schedule(request, 1);
+        const data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        var el = $("div.row .manga-top");
         let tags = [];
         let creator = '';
-        let statusFinal = 1;
-        creator = $(".table-striped > tbody > tr:nth-child(5) > td > a", el).attr('title');
-        for (const t of $('.genres > a', el).toArray()) {
-            const genre = $(t).text().trim();
-            const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
-            tags.push(createTag({ label: genre, id }));
+        let status = 1;
+        let desc = $('.summary-content > p').text();
+        for (const test of $('.info-item', '.series-information').toArray()) {
+            switch ($('.info-name', test).text().trim()) {
+                case 'Tác giả:':
+                    creator = $('.info-value', test).text();
+                    break;
+                case 'Thể loại:':
+                    for (const t of $('.info-value > a', test).toArray()) {
+                        const genre = $('span', t).text().trim();
+                        const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
+                        tags.push(createTag({ label: genre, id }));
+                    }
+                    break;
+                case 'Tình trạng:':
+                    status = $('.info-value > a', test).text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
+                    break;
+                default:
+                    break;
+            }
         }
-        let status = $(".table-striped > tbody > tr:nth-child(6) > td", el).text().trim();
-        statusFinal = status.toLowerCase().includes("ongoing") ? 1 : 0;
-        let desc = $("p.summary", el).text();
-        const image = $(".col-lg-3 .manga-top-img img", el).attr("src");
+        const image = $('.top-part > .row > .col-12 > .series-cover > .a6-ratio > div').css('background-image');
+        const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
         return createManga({
             id: mangaId,
-            author: OtakusanParser_1.decodeHTMLEntity(creator),
-            artist: OtakusanParser_1.decodeHTMLEntity(creator),
+            author: creator,
+            artist: creator,
             desc: desc,
-            titles: [OtakusanParser_1.decodeHTMLEntity($(".manga-top-main .manga-top-info h1", el).text())],
-            image,
-            status: statusFinal,
+            titles: [MangaXYParser_1.decodeHTMLEntity($('.series-name > a').text().trim())],
+            image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
+            status,
             hentai: false,
             tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
         });
     }
     async getChapters(mangaId) {
-        var _a;
-        const url = 'https://otakusan.net' + mangaId;
         const request = createRequestObject({
-            url,
+            url: `${DOMAIN}truyen-tranh/${mangaId}`,
             method,
         });
-        let data = await this.requestManager.schedule(request, 1);
-        let $ = this.cheerio.load(data.data);
+        const response = await this.requestManager.schedule(request, 1);
+        const $ = this.cheerio.load(response.data);
         const chapters = [];
         var i = 0;
-        var el = $("#chapter > table > tbody tr td a.thrilldown").toArray();
-        for (var i = el.length - 1; i >= 0; i--) {
-            var e = el[i];
-            let id = $(e).attr('href');
-            let chapNum = parseFloat((_a = $(e).text().trim()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
-            let name = OtakusanParser_1.decodeHTMLEntity($(e).text().trim());
+        for (const obj of $(".list-chapters.at-series > a").toArray().reverse()) {
+            var chapNum = parseFloat($('li > .chapter-name', obj).text().trim().split(' ')[1]);
+            i++;
+            const timeStr = $('li > .chapter-time', obj).text().trim().split(/\//);
+            const time = new Date([timeStr[1], timeStr[0], timeStr[2]].join('/'));
             chapters.push(createChapter({
-                id,
+                id: $(obj).first().attr('href'),
                 chapNum: isNaN(chapNum) ? i : chapNum,
-                name,
+                name: $('li > .chapter-name', obj).text(),
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
+                time
             }));
         }
         return chapters;
     }
     async getChapterDetails(mangaId, chapterId) {
-        var _a;
         const request = createRequestObject({
-            url: `https://otakusan.net${chapterId}`,
+            url: `${chapterId}`,
             method
         });
-        let data = await this.requestManager.schedule(request, 1);
-        let $ = this.cheerio.load(data.data);
+        const response = await this.requestManager.schedule(request, 1);
+        let $ = this.cheerio.load(response.data);
         const pages = [];
-        for (let obj of $('.chapter-content img').toArray()) {
-            let link = (_a = $(obj).attr('data-original')) !== null && _a !== void 0 ? _a : "";
-            pages.push(link.replace(/\n/g, ''));
+        for (let obj of $('#chapter-content > img').toArray()) {
+            if (!obj.attribs['data-src'])
+                continue;
+            let link = obj.attribs['data-src'];
+            pages.push(encodeURI(link));
         }
         const chapterDetails = createChapterDetails({
             id: chapterId,
@@ -734,121 +708,132 @@ class Otakusan extends paperback_extensions_common_1.Source {
     }
     async getHomePageSections(sectionCallback) {
         var _a, _b, _c, _d;
-        let hot = createHomeSection({
-            id: 'hot',
-            title: "TRUYỆN HOT TRONG NGÀY",
-            view_more: false,
-        });
         let newUpdated = createHomeSection({
             id: 'new_updated',
-            title: "Mới Cập Nhập",
+            title: "Chap mới",
             view_more: true,
         });
-        let view = createHomeSection({
-            id: 'view',
-            title: "TRUYỆN MỚI ĐĂNG",
+        let newAdded = createHomeSection({
+            id: 'new_added',
+            title: "Truyện mới",
+            view_more: true,
+        });
+        let hot = createHomeSection({
+            id: 'hot',
+            title: "Xem nhiều",
             view_more: false,
         });
         sectionCallback(newUpdated);
+        sectionCallback(newAdded);
+        sectionCallback(hot);
+        let url = 'https://mangaxy.com/search.php?andor=and&sort=xem&view=thumb&act=timnangcao&ajax=true&page=';
         let request = createRequestObject({
             url: DOMAIN,
             method: "GET",
         });
-        let popular = [];
+        let hotItems = [];
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        for (let manga of $('.owl-item', '.owl-stage').toArray()) {
-            const title = $('.series-title', manga).text().trim();
-            const id = $('.thumb-wrapper > a', manga).attr('href');
-            const image = (_a = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', manga).css('background-image')) !== null && _a !== void 0 ? _a : "";
-            const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
-            const sub = $('.chapter-title > a', manga).text().trim();
-            popular.push(createMangaTile({
+        for (let obj of $('.owl-item', '.owl-stage').toArray()) {
+            let title = $(`.series-title > a`, obj).text().trim();
+            let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
+            const image = $(`.a6-ratio > div.img-in-ratio`, obj).css('background-image');
+            const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
+            let id = (_b = (_a = $(`.series-title > a`, obj).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) !== null && _b !== void 0 ? _b : title;
+            hotItems.push(createMangaTile({
                 id: id,
-                image: (bg === null || bg === void 0 ? void 0 : bg.includes('http')) ? (bg) : ("https://manhuarock.net" + bg),
-                title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: sub.replace('Chap', 'Chương') }),
+                image: bg !== null && bg !== void 0 ? bg : "",
+                title: createIconText({
+                    text: title,
+                }),
+                subtitleText: createIconText({
+                    text: subtitle,
+                }),
             }));
         }
-        hot.items = popular;
-        var url = 'https://otakusan.net/Manga/Newest';
+        hot.items = hotItems;
+        sectionCallback(hot);
+        url = 'https://mangaxy.com/search.php?andor=and&van=&sort=chap&view=thumb&act=timnangcao&ajax=true&page=1';
         request = createRequestObject({
-            url: url,
-            method: 'POST',
-            headers: {
-                'content-type': 'application/x-www-form-urlencoded'
-            },
-            data: {
-                "Lang": "vn",
-                "Page": '0',
-                "Type": "1",
-                "Dir": "NewPostedDate",
-                "FilterCategory": 'All'
-            }
+            url,
+            method: "GET",
         });
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
-        var allBook = $('.picture-card').toArray();
+        var element = $(".thumb").toArray();
         let newUpdatedItems = [];
-        for (var i in allBook) {
-            var book = allBook[i];
+        for (var el in element) {
+            var book = element[el];
+            var checkCover = $("img", book).attr("style");
+            var cover = '';
+            if (checkCover.indexOf('jpg') != -1 || checkCover.indexOf('png') != -1 || checkCover.indexOf('jpeg') != -1)
+                cover = checkCover.match(/image: url\('\/\/(.+)\'\)/)[1];
+            else
+                cover = "i.imgur.com/FbaKQ0k.jpg";
             newUpdatedItems.push(createMangaTile({
-                id: (_b = $(".mdl-card__title a", book).attr("href")) !== null && _b !== void 0 ? _b : "",
-                image: (_c = $(".mdl-card__title img", book).attr("src")) !== null && _c !== void 0 ? _c : "",
-                title: createIconText({ text: OtakusanParser_1.decodeHTMLEntity($(".mdl-card__title img", book).attr("title")) }),
-                subtitleText: createIconText({ text: $('.mdl-card__actions > a', book).text().trim() }),
+                id: $("a.name", book).attr("href").replace("https://mangaxy.com", ""),
+                image: "https://" + cover,
+                title: createIconText({
+                    text: $("a.name", book).text().replace("T MỚI ", "").trim(),
+                }),
+                subtitleText: createIconText({
+                    text: $("a.chap", book).text().replace("C MỚI ", "").trim(),
+                }),
             }));
         }
         newUpdated.items = newUpdatedItems;
         sectionCallback(newUpdated);
+        url = 'https://mangaxy.com/search.php?andor=and&sort=truyen&view=thumb&act=timnangcao&ajax=true&page=1';
         request = createRequestObject({
-            url: DOMAIN,
+            url: url,
             method: "GET",
         });
-        let viewItems = [];
+        let newAddItems = [];
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
-        for (let manga of $('.thumb-item-flow:not(:last-child)', '.col-md-8 > .card:nth-child(5) .row').toArray()) {
-            let title = $('.series-title > a', manga).text().trim();
-            let image = $('.a6-ratio > .img-in-ratio', manga).attr("data-bg");
-            if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
-                image = 'https://manhuarock.net' + image;
-            }
-            else {
-                image = image;
-            }
-            let id = (_d = $('.series-title > a', manga).attr('href')) !== null && _d !== void 0 ? _d : title;
-            let subtitle = $(".chapter-title > a", manga).text().trim();
-            viewItems.push(createMangaTile({
-                id: id !== null && id !== void 0 ? id : "",
+        for (let obj of $('.thumb-item-flow:not(:last-child)', '.col-md-8 > .card:nth-child(2) > .card-body > .row').toArray().splice(0, 20)) {
+            let title = $(`.series-title > a`, obj).text().trim();
+            let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
+            const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
+            let id = (_d = (_c = $(`.series-title > a`, obj).attr("href")) === null || _c === void 0 ? void 0 : _c.split("/").pop()) !== null && _d !== void 0 ? _d : title;
+            newAddItems.push(createMangaTile({
+                id: id,
                 image: image !== null && image !== void 0 ? image : "",
-                title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: subtitle }),
+                title: createIconText({
+                    text: title,
+                }),
+                subtitleText: createIconText({
+                    text: subtitle,
+                }),
             }));
         }
-        view.items = viewItems;
+        newAdded.items = newAddItems;
+        sectionCallback(newAdded);
     }
     async getViewMoreItems(homepageSectionId, metadata) {
         var _a;
         let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
+        let param = '';
         let url = '';
-        let select = 1;
         switch (homepageSectionId) {
             case "new_updated":
-                url = DOMAIN + `manga-list.html?listType=pagination&page=${page}&artist=&author=&group=&m_status=&name=&genre=&ungenre=&sort=last_update&sort_type=DESC`;
-                select = 1;
+                url = `${DOMAIN}danh-sach?sort=update&page=${page}`;
+                break;
+            case "new_added":
+                url = `${DOMAIN}danh-sach?sort=new&page=${page}`;
                 break;
             default:
                 return Promise.resolve(createPagedResults({ results: [] }));
         }
         const request = createRequestObject({
             url,
-            method
+            method,
+            param
         });
-        let data = await this.requestManager.schedule(request, 1);
-        let $ = this.cheerio.load(data.data);
-        let manga = OtakusanParser_1.parseViewMore($);
-        metadata = !OtakusanParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+        const response = await this.requestManager.schedule(request, 1);
+        const $ = this.cheerio.load(response.data);
+        const manga = MangaXYParser_1.parseViewMore($);
+        metadata = !MangaXYParser_1.isLastPage($) ? { page: page + 1 } : undefined;
         return createPagedResults({
             results: manga,
             metadata,
@@ -857,115 +842,80 @@ class Otakusan extends paperback_extensions_common_1.Source {
     async getSearchResults(query, metadata) {
         var _a, _b, _c, _d;
         let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-        const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
         const search = {
-            cate: '',
-            translater: "",
             status: "",
-            sort: "views",
-            type: 'DESC'
+            sort: "update",
+            genres: "",
         };
+        const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
+        const category = [];
         tags.map((value) => {
-            switch (value.split(".")[0]) {
-                case 'cate':
-                    search.cate = (value.split(".")[1]);
-                    break;
-                case 'translater':
-                    search.translater = (value.split(".")[1]);
-                    break;
-                case 'status':
-                    search.status = (value.split(".")[1]);
-                    break;
-                case 'sort':
-                    search.sort = (value.split(".")[1]);
-                    break;
-                case 'type':
-                    search.type = (value.split(".")[1]);
-                    break;
+            if (value.indexOf('.') === -1) {
+                category.push(value);
+            }
+            else {
+                switch (value.split(".")[0]) {
+                    case 'sort':
+                        search.sort = (value.split(".")[1]);
+                        break;
+                    case 'status':
+                        search.status = (value.split(".")[1]);
+                        break;
+                }
             }
         });
+        search.genres = (category !== null && category !== void 0 ? category : []).join(",");
         const request = createRequestObject({
-            url: encodeURI(`${DOMAIN}manga-list.html?listType=pagination&page=${page}&group=${search.translater}&m_status=${search.status}&name=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&genre=${search.cate}&sort=${search.sort}&sort_type=${search.type}`),
+            url: `${DOMAIN}tim-kiem`,
             method: "GET",
+            param: encodeURI(`?q=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&status=${search.status}&sort=${search.sort}&accept_genres=${search.genres}&page=${page}`)
         });
-        let data = await this.requestManager.schedule(request, 1);
+        const data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        const tiles = OtakusanParser_1.parseSearch($);
-        metadata = !OtakusanParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+        const tiles = MangaXYParser_1.parseSearch($);
+        metadata = !MangaXYParser_1.isLastPage($) ? { page: page + 1 } : undefined;
         return createPagedResults({
             results: tiles,
             metadata
         });
     }
     async getSearchTags() {
-        const tags = [];
-        const tags2 = [
-            {
-                id: 'sort.name',
-                label: 'A-Z'
-            },
-            {
-                id: 'sort.views',
-                label: 'Lượt Xem'
-            },
-            {
-                id: 'sort.last_update',
-                label: 'Mới Cập Nhật'
-            }
-        ];
-        const tagss = [
-            {
-                id: 'type.ASC',
-                label: 'ASC'
-            },
-            {
-                id: 'type.DESC',
-                label: 'DESC'
-            }
-        ];
-        const tags5 = [];
-        const tags6 = [];
-        const url = DOMAIN + `search`;
+        var _a, _b, _c;
+        const url = `${DOMAIN}tim-kiem`;
         const request = createRequestObject({
             url: url,
             method: "GET",
         });
-        let data = await this.requestManager.schedule(request, 1);
-        let $ = this.cheerio.load(data.data);
-        for (const tag of $('.navbar-nav > li.nav-item:nth-child(1) .no-gutters a.genres-item').toArray()) {
-            const label = $(tag).text().trim();
-            const id = 'cate.' + $(tag).attr('href').split('-the-loai-')[1].split('.')[0];
+        const response = await this.requestManager.schedule(request, 1);
+        const $ = this.cheerio.load(response.data);
+        const arrayTags = [];
+        const arrayTags2 = [];
+        const arrayTags3 = [];
+        for (const tag of $('div.search-gerne_item', 'div.form-group').toArray()) {
+            const label = $('.gerne-name', tag).text().trim();
+            const id = (_a = $('label', tag).attr('data-genre-id')) !== null && _a !== void 0 ? _a : label;
             if (!id || !label)
                 continue;
-            tags.push({ id: id, label: label });
+            arrayTags.push({ id: id, label: label });
         }
-        for (const tag of $('select#TinhTrang option').toArray()) {
-            var label = $(tag).text().trim();
-            if (label === 'Hoàn thành') {
-                label = 'Đang tiến hành';
-            }
-            else if (label === 'Đang tiến hành') {
-                label = 'Hoàn thành';
-            }
-            const id = 'status.' + $(tag).attr('value');
-            if (!id || !label)
-                continue;
-            tags5.push({ id: id, label: label });
-        }
-        for (const tag of $('.navbar-nav > li.nav-item:nth-child(2) .no-gutters a.genres-item').toArray()) {
+        for (const tag of $('option', 'select#list-status').toArray()) {
             const label = $(tag).text().trim();
-            const id = 'translater.' + $(tag).attr('href').split('-nhom-dich-')[1].split('.')[0];
-            ;
+            const id = (_b = 'status.' + $(tag).attr('value')) !== null && _b !== void 0 ? _b : label;
             if (!id || !label)
                 continue;
-            tags6.push({ id: id, label: label });
+            arrayTags2.push({ id: id, label: label });
+        }
+        for (const tag of $('option', 'select#list-sort').toArray()) {
+            const label = $(tag).text().trim();
+            const id = (_c = 'sort.' + $(tag).attr('value')) !== null && _c !== void 0 ? _c : label;
+            if (!id || !label)
+                continue;
+            arrayTags3.push({ id: id, label: label });
         }
         const tagSections = [
-            createTagSection({ id: '1', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
-            createTagSection({ id: '3', label: 'Sắp xếp theo', tags: tags2.map(x => createTag(x)) }),
-            createTagSection({ id: '0', label: 'Kiểu sắp xếp', tags: tagss.map(x => createTag(x)) }),
-            createTagSection({ id: '4', label: 'Trạng thái', tags: tags5.map(x => createTag(x)) }),
-            createTagSection({ id: '5', label: 'Nhóm dịch', tags: tags6.map(x => createTag(x)) }),
+            createTagSection({ id: '0', label: 'Thể loại', tags: arrayTags.map(x => createTag(x)) }),
+            createTagSection({ id: '1', label: 'Tình trạng', tags: arrayTags2.map(x => createTag(x)) }),
+            createTagSection({ id: '2', label: 'Sắp xếp', tags: arrayTags3.map(x => createTag(x)) }),
         ];
         return tagSections;
     }
@@ -975,79 +925,67 @@ class Otakusan extends paperback_extensions_common_1.Source {
         };
     }
 }
-exports.Otakusan = Otakusan;
+exports.MangaXY = MangaXY;
 
-},{"./OtakusanParser":56,"paperback-extensions-common":12}],56:[function(require,module,exports){
+},{"./MangaXYParser":56,"paperback-extensions-common":12}],56:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.decodeHTMLEntity = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.capitalizeFirstLetter = void 0;
+exports.decodeHTMLEntity = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
 const entities = require("entities");
-function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-exports.capitalizeFirstLetter = capitalizeFirstLetter;
 exports.generateSearch = (query) => {
     var _a;
     let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
     return encodeURI(keyword);
 };
 exports.parseSearch = ($) => {
-    var _a;
-    const manga = [];
-    for (const element of $('.card-body > .row > .thumb-item-flow').toArray()) {
-        let title = $('.series-title > a', element).text().trim();
-        let image = $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
-        if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
-            image = 'https://manhuarock.net' + image;
-        }
-        else {
-            image = image;
-        }
-        let id = (_a = $('.series-title > a', element).attr('href')) !== null && _a !== void 0 ? _a : title;
-        let subtitle = 'Chương ' + $(".chapter-title > a", element).text().trim();
-        manga.push(createMangaTile({
-            id: id,
-            image: image !== null && image !== void 0 ? image : "",
+    var _a, _b;
+    const mangas = [];
+    for (let obj of $('.thumb-item-flow', '.col-12 > .card:nth-child(2) > .card-body > .row').toArray()) {
+        let title = $(`.series-title > a`, obj).text().trim();
+        let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
+        const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
+        let id = (_b = (_a = $(`.series-title > a`, obj).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) !== null && _b !== void 0 ? _b : title;
+        mangas.push(createMangaTile({
+            id: encodeURIComponent(id),
+            image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
             title: createIconText({ text: title }),
             subtitleText: createIconText({ text: subtitle }),
         }));
     }
-    return manga;
+    return mangas;
 };
 exports.parseViewMore = ($) => {
-    var _a;
+    var _a, _b;
     const manga = [];
-    for (const element of $('.card-body > .row > .thumb-item-flow').toArray()) {
-        let title = $('.series-title > a', element).text().trim();
-        let image = $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
-        if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
-            image = 'https://manhuarock.net' + image;
+    const collectedIds = [];
+    for (let obj of $('.thumb-item-flow', '.col-md-8 > .card > .card-body > .row').toArray()) {
+        let title = $(`.series-title > a`, obj).text().trim();
+        let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
+        const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
+        let id = (_b = (_a = $(`.series-title > a`, obj).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) !== null && _b !== void 0 ? _b : title;
+        if (!collectedIds.includes(id)) {
+            manga.push(createMangaTile({
+                id: encodeURIComponent(id),
+                image: image !== null && image !== void 0 ? image : "",
+                title: createIconText({ text: exports.decodeHTMLEntity(title) }),
+                subtitleText: createIconText({ text: subtitle }),
+            }));
+            collectedIds.push(id);
         }
-        else {
-            image = image;
-        }
-        let id = (_a = $('.series-title > a', element).attr('href')) !== null && _a !== void 0 ? _a : title;
-        let subtitle = 'Chương ' + $(".chapter-title > a", element).text().trim();
-        manga.push(createMangaTile({
-            id: id,
-            image: image !== null && image !== void 0 ? image : "",
-            title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: subtitle }),
-        }));
     }
     return manga;
 };
 exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
-    for (const page of $("li", "ul.pagination").toArray()) {
-        const p = Number($('a', page).text().trim());
+    for (const page of $("a", ".pagination_wrap").toArray()) {
+        const p = Number($(page).text().trim());
         if (isNaN(p))
             continue;
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($("ul.pagination > li > a.active").text().trim());
+    const currentPage = Number($(".pagination_wrap > a.current").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
