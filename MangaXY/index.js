@@ -664,7 +664,7 @@ class MangaXY extends paperback_extensions_common_1.Source {
         for (var i = el.length - 1; i >= 0; i--) {
             var e = el[i];
             const name = $(".episode-title", e).text().trim();
-            const timeStr = '2021-09-07 09:01:27';
+            const timeStr = '2021-09-07 09:01';
             chapters.push(createChapter({
                 id: $(e).attr("href"),
                 chapNum: parseFloat(name.split(" ")[1]),
