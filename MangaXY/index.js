@@ -607,8 +607,8 @@ class MangaXY extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
         this.requestManager = createRequestManager({
-            requestsPerSecond: 5,
-            requestTimeout: 20000
+            requestsPerSecond: 3,
+            requestTimeout: 15000
         });
     }
     getMangaShareUrl(mangaId) { return `${mangaId}`; }
@@ -916,11 +916,6 @@ class MangaXY extends paperback_extensions_common_1.Source {
             createTagSection({ id: '2', label: 'Sắp xếp', tags: arrayTags3.map(x => createTag(x)) }),
         ];
         return tagSections;
-    }
-    globalRequestHeaders() {
-        return {
-            referer: DOMAIN
-        };
     }
 }
 exports.MangaXY = MangaXY;
