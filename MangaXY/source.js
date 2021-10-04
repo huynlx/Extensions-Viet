@@ -611,49 +611,42 @@ class MangaXY extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
     }
-    getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh/${mangaId}`; }
+    getMangaShareUrl(mangaId) { return `${mangaId}`; }
     ;
     async getMangaDetails(mangaId) {
         var _a;
-        const url = `${DOMAIN}truyen-tranh/${mangaId}`;
+        const url = `${mangaId}`;
         const request = createRequestObject({
             url: url,
             method: "GET",
         });
         const data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
+        var checkCover = $(".detail-top-right img").attr("style");
+        var cover = '';
+        if (checkCover.indexOf('jpg') != -1 || checkCover.indexOf('png') != -1 || checkCover.indexOf('jpeg') != -1)
+            cover = checkCover.match(/image: url\('\/\/(.+)\'\)/)[1];
+        else
+            cover = "i.imgur.com/FbaKQ0k.jpg";
         let tags = [];
         let creator = '';
         let status = 1;
-        let desc = $('.summary-content > p').text();
-        for (const test of $('.info-item', '.series-information').toArray()) {
-            switch ($('.info-name', test).text().trim()) {
-                case 'Tác giả:':
-                    creator = $('.info-value', test).text();
-                    break;
-                case 'Thể loại:':
-                    for (const t of $('.info-value > a', test).toArray()) {
-                        const genre = $('span', t).text().trim();
-                        const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
-                        tags.push(createTag({ label: genre, id }));
-                    }
-                    break;
-                case 'Tình trạng:':
-                    status = $('.info-value > a', test).text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
-                    break;
-                default:
-                    break;
-            }
+        let desc = $(".manga-info p");
+        creator = $(".created-by a").text();
+        for (const t of $('.top-comics-type > a', test).toArray()) {
+            const genre = $(t).text().trim();
+            const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
+            tags.push(createTag({ label: MangaXYParser_1.ucFirstAllWords(genre), id }));
         }
-        const image = $('.top-part > .row > .col-12 > .series-cover > .a6-ratio > div').css('background-image');
-        const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
+        status = $(".manga-info ul li:nth-child(3)").text().toLowerCase().includes("đang") ? 1 : 0;
+        const image = "https://" + cover;
         return createManga({
             id: mangaId,
             author: creator,
             artist: creator,
             desc: desc,
-            titles: [MangaXYParser_1.decodeHTMLEntity($('.series-name > a').text().trim())],
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
+            titles: [MangaXYParser_1.decodeHTMLEntity($("h1.comics-title").text())],
+            image,
             status,
             hentai: false,
             tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
@@ -720,12 +713,12 @@ class MangaXY extends paperback_extensions_common_1.Source {
         let hot = createHomeSection({
             id: 'hot',
             title: "Xem nhiều",
-            view_more: false,
+            view_more: true,
         });
         let az = createHomeSection({
             id: 'az',
             title: "A-Z",
-            view_more: false,
+            view_more: true,
         });
         sectionCallback(newUpdated);
         sectionCallback(newAdded);
@@ -888,7 +881,7 @@ exports.MangaXY = MangaXY;
 },{"./MangaXYParser":56,"paperback-extensions-common":12}],56:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseManga = exports.decodeHTMLEntity = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
+exports.ucFirstAllWords = exports.parseManga = exports.decodeHTMLEntity = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
 const entities = require("entities");
 exports.generateSearch = (query) => {
     var _a;
@@ -953,7 +946,7 @@ exports.decodeHTMLEntity = (str) => {
 };
 exports.parseManga = ($) => {
     var _a, _b, _c, _d;
-    var element = $(".thumb").toArray();
+    var element = $(".thumb").toArray().splice(0, 20);
     const mangas = [];
     for (var el in element) {
         var book = element[el];
@@ -976,6 +969,15 @@ exports.parseManga = ($) => {
     }
     return mangas;
 };
+function ucFirstAllWords(str) {
+    var pieces = str.split(" ");
+    for (var i = 0; i < pieces.length; i++) {
+        var j = pieces[i].charAt(0).toUpperCase();
+        pieces[i] = j + pieces[i].substr(1);
+    }
+    return pieces.join(" ");
+}
+exports.ucFirstAllWords = ucFirstAllWords;
 
 },{"entities":1}]},{},[55])(55)
 });
