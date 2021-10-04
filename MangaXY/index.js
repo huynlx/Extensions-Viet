@@ -707,6 +707,7 @@ class MangaXY extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
+        var _a, _b;
         let newUpdated = createHomeSection({
             id: 'new_updated',
             title: "Chap mới",
@@ -799,16 +800,16 @@ class MangaXY extends paperback_extensions_common_1.Source {
             var checkCover = $("img", book).attr("style");
             var cover = '';
             if ((checkCover === null || checkCover === void 0 ? void 0 : checkCover.indexOf('jpg')) != -1 || (checkCover === null || checkCover === void 0 ? void 0 : checkCover.indexOf('png')) != -1 || (checkCover === null || checkCover === void 0 ? void 0 : checkCover.indexOf('jpeg')) != -1)
-                cover = checkCover.match(/image: url\('\/\/(.+)\'\)/)[1];
+                cover = (_a = checkCover === null || checkCover === void 0 ? void 0 : checkCover.match(/image: url\('\/\/(.+)\'\)/)) === null || _a === void 0 ? void 0 : _a[1];
             else
                 cover = "";
             hotItems.push(createMangaTile({
-                id: $("a.name", book).attr("href").replace("https://mangaxy.com", ""),
+                id: (_b = $("a.name", book).attr("href")) === null || _b === void 0 ? void 0 : _b.replace("https://mangaxy.com", ""),
                 image: "https://" + cover,
-                title: createIconText({
+                title: ({
                     text: $("a.name", book).text().replace("T MỚI ", "").trim(),
                 }),
-                subtitleText: createIconText({
+                subtitleText: ({
                     text: $("a.chap", book).text().replace("C MỚI ", "").trim(),
                 }),
             }));
