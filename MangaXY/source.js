@@ -749,7 +749,7 @@ class MangaXY extends paperback_extensions_common_1.Source {
                 cover = (_b = (_a = checkCover === null || checkCover === void 0 ? void 0 : checkCover.match(/image: url\('\/\/(.+)\'\)/)) === null || _a === void 0 ? void 0 : _a[1]) !== null && _b !== void 0 ? _b : "";
             else
                 cover = "";
-            var title = $(".thumb", obj).attr('title');
+            var title = $(".name", obj).text().split(']')[1].trim();
             var id = $(".thumb", obj).attr('href');
             var sub = $(".chap", obj).text();
             featuredItems.push(createMangaTile({
