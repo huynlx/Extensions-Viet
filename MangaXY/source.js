@@ -594,7 +594,7 @@ exports.MangaXYInfo = {
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from MangaXY',
-    websiteBaseURL: `https://truyentranhlh.net/`,
+    websiteBaseURL: DOMAIN,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
         {
@@ -725,43 +725,13 @@ class MangaXY extends paperback_extensions_common_1.Source {
         sectionCallback(newUpdated);
         sectionCallback(newAdded);
         sectionCallback(hot);
-        let url = 'https://mangaxy.com/search.php?andor=and&sort=xem&view=thumb&act=timnangcao&ajax=true&page=1';
+        let url = 'https://mangaxy.com/search.php?andor=and&van=&sort=chap&view=thumb&act=timnangcao&ajax=true&page=1';
         let request = createRequestObject({
-            url: DOMAIN,
-            method: "GET",
-        });
-        let hotItems = [];
-        let data = await this.requestManager.schedule(request, 1);
-        let $ = this.cheerio.load(data.data);
-        var element = $(".thumb").toArray();
-        for (var el in element) {
-            var book = element[el];
-            var checkCover = $("img", book).attr("style");
-            var cover = '';
-            if (checkCover.indexOf('jpg') != -1 || checkCover.indexOf('png') != -1 || checkCover.indexOf('jpeg') != -1)
-                cover = checkCover.match(/image: url\('\/\/(.+)\'\)/)[1];
-            else
-                cover = "";
-            hotItems.push(createMangaTile({
-                id: $("a.name", book).attr("href").replace("https://mangaxy.com", ""),
-                image: "https://" + cover,
-                title: createIconText({
-                    text: $("a.name", book).text().replace("T MỚI ", "").trim(),
-                }),
-                subtitleText: createIconText({
-                    text: $("a.chap", book).text().replace("C MỚI ", "").trim(),
-                }),
-            }));
-        }
-        hot.items = hotItems;
-        sectionCallback(hot);
-        url = 'https://mangaxy.com/search.php?andor=and&van=&sort=chap&view=thumb&act=timnangcao&ajax=true&page=1';
-        request = createRequestObject({
             url,
             method: "GET",
         });
-        data = await this.requestManager.schedule(request, 1);
-        $ = this.cheerio.load(data.data);
+        let data = await this.requestManager.schedule(request, 1);
+        let $ = this.cheerio.load(data.data);
         var element = $(".thumb").toArray();
         let newUpdatedItems = [];
         for (var el in element) {
@@ -785,36 +755,6 @@ class MangaXY extends paperback_extensions_common_1.Source {
         }
         newUpdated.items = newUpdatedItems;
         sectionCallback(newUpdated);
-        url = 'https://mangaxy.com/search.php?andor=and&sort=truyen&view=thumb&act=timnangcao&ajax=true&page=1';
-        request = createRequestObject({
-            url: url,
-            method: "GET",
-        });
-        let newAddItems = [];
-        data = await this.requestManager.schedule(request, 1);
-        $ = this.cheerio.load(data.data);
-        var element = $(".thumb").toArray();
-        for (var el in element) {
-            var book = element[el];
-            var checkCover = $("img", book).attr("style");
-            var cover = '';
-            if (checkCover.indexOf('jpg') != -1 || checkCover.indexOf('png') != -1 || checkCover.indexOf('jpeg') != -1)
-                cover = checkCover.match(/image: url\('\/\/(.+)\'\)/)[1];
-            else
-                cover = "";
-            newAddItems.push(createMangaTile({
-                id: $("a.name", book).attr("href").replace("https://mangaxy.com", ""),
-                image: "https://" + cover,
-                title: createIconText({
-                    text: $("a.name", book).text().replace("T MỚI ", "").trim(),
-                }),
-                subtitleText: createIconText({
-                    text: $("a.chap", book).text().replace("C MỚI ", "").trim(),
-                }),
-            }));
-        }
-        newAdded.items = newAddItems;
-        sectionCallback(newAdded);
     }
     async getViewMoreItems(homepageSectionId, metadata) {
         var _a;
