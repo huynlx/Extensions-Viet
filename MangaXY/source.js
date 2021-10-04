@@ -682,7 +682,7 @@ class MangaXY extends paperback_extensions_common_1.Source {
             const finalH = h[0] + ':' + h[1];
             chapters.push(createChapter({
                 id: $(e).attr("href"),
-                chapNum: parseFloat(name.split(" ")[1]),
+                chapNum: isNaN(parseFloat(name.split(" ")[1])) ? i : parseFloat(name.split(" ")[1]),
                 name,
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
