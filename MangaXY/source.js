@@ -653,6 +653,7 @@ class MangaXY extends paperback_extensions_common_1.Source {
         });
     }
     async getChapters(mangaId) {
+        var _a, _b;
         const request = createRequestObject({
             url: `${mangaId}`,
             method,
@@ -664,14 +665,18 @@ class MangaXY extends paperback_extensions_common_1.Source {
         for (var i = el.length - 1; i >= 0; i--) {
             var e = el[i];
             const name = $(".episode-title", e).text().trim();
-            const timeStr = '2021-09-07 09:01';
+            const timeStr = (_b = ((_a = $('.episode-date > time', e).attr('datetime')) === null || _a === void 0 ? void 0 : _a.split(" "))) !== null && _b !== void 0 ? _b : "";
+            const day = timeStr[0].split('-');
+            const h = timeStr[1].split(":");
+            const finalDay = day[1] + '/' + day[2] + '/' + day[0];
+            const finalH = h[0] + ':' + h[1];
             chapters.push(createChapter({
                 id: $(e).attr("href"),
                 chapNum: parseFloat(name.split(" ")[1]),
                 name,
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                time: new Date(timeStr)
+                time: new Date(finalDay + ' ' + finalH)
             }));
         }
         return chapters;
