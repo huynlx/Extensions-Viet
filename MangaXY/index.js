@@ -693,7 +693,7 @@ class MangaXY extends paperback_extensions_common_1.Source {
             if (!obj.attribs['src'])
                 continue;
             let link = obj.attribs['src'];
-            pages.push(encodeURI(link));
+            pages.push(encodeURI(link.trim()));
         }
         const chapterDetails = createChapterDetails({
             id: chapterId,
@@ -704,6 +704,12 @@ class MangaXY extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
+        var _a, _b;
+        let featured = createHomeSection({
+            id: 'featured',
+            title: "Truyện Đề Cử",
+            type: paperback_extensions_common_1.HomeSectionType.featured
+        });
         let newUpdated = createHomeSection({
             id: 'new_updated',
             title: "Chap mới",
@@ -728,13 +734,45 @@ class MangaXY extends paperback_extensions_common_1.Source {
         sectionCallback(newAdded);
         sectionCallback(hot);
         sectionCallback(az);
-        let url = 'https://mangaxy.com/search.php?andor=and&van=&sort=chap&view=thumb&act=timnangcao&ajax=true&page=1';
+        let url = 'https://mangaxy.com/';
         let request = createRequestObject({
             url,
             method: "GET",
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
+        var featuredItems = [];
+        for (const obj of $('.item', '#mangaXYThucHien').toArray()) {
+            var checkCover = $(".thumb", obj).attr("style");
+            var cover = '';
+            if ((checkCover === null || checkCover === void 0 ? void 0 : checkCover.indexOf('jpg')) != -1 || checkCover.indexOf('png') != -1 || checkCover.indexOf('jpeg') != -1)
+                cover = (_b = (_a = checkCover === null || checkCover === void 0 ? void 0 : checkCover.match(/image: url\('\/\/(.+)\'\)/)) === null || _a === void 0 ? void 0 : _a[1]) !== null && _b !== void 0 ? _b : "";
+            else
+                cover = "";
+            var title = $(".thumb", obj).attr('title');
+            var id = $(".thumb", obj).attr('href');
+            var sub = $(".chap", obj).text();
+            featuredItems.push(createMangaTile({
+                id,
+                image: "https://" + cover,
+                title: createIconText({
+                    text: title,
+                }),
+                subtitleText: createIconText({
+                    text: sub,
+                }),
+                badge: 10
+            }));
+        }
+        featured.items = featuredItems;
+        sectionCallback(featured);
+        url = 'https://mangaxy.com/search.php?andor=and&van=&sort=chap&view=thumb&act=timnangcao&ajax=true&page=1';
+        request = createRequestObject({
+            url,
+            method: "GET",
+        });
+        data = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(data.data);
         newUpdated.items = MangaXYParser_1.parseManga($);
         sectionCallback(newUpdated);
         url = 'https://mangaxy.com/search.php?andor=and&sort=truyen&view=thumb&act=timnangcao&ajax=true&page=1';
