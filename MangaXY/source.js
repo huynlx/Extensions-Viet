@@ -955,7 +955,7 @@ exports.parseViewMore = ($) => {
         var book = element[el];
         var checkCover = $("img", book).attr("style");
         var cover = '';
-        if ((checkCover === null || checkCover === void 0 ? void 0 : checkCover.indexOf('jpg')) != -1 || checkCover.indexOf('png') != -1 || checkCover.indexOf('jpeg') != -1)
+        if ((checkCover === null || checkCover === void 0 ? void 0 : checkCover.indexOf('jpg')) != -1 || checkCover.indexOf('png') != -1 || checkCover.indexOf('jpeg') != -1 || checkCover.indexOf('webp') != -1 || checkCover.indexOf('gif') != -1)
             cover = (_b = (_a = checkCover === null || checkCover === void 0 ? void 0 : checkCover.match(/image: url\('\/\/(.+)\'\)/)) === null || _a === void 0 ? void 0 : _a[1]) !== null && _b !== void 0 ? _b : "";
         else
             cover = "";
@@ -1002,7 +1002,7 @@ exports.parseManga = ($) => {
         var book = element[el];
         var checkCover = $("img", book).attr("style");
         var cover = '';
-        if ((checkCover === null || checkCover === void 0 ? void 0 : checkCover.indexOf('jpg')) != -1 || checkCover.indexOf('png') != -1 || checkCover.indexOf('jpeg') != -1)
+        if ((checkCover === null || checkCover === void 0 ? void 0 : checkCover.indexOf('jpg')) != -1 || checkCover.indexOf('png') != -1 || checkCover.indexOf('jpeg') != -1 || checkCover.indexOf('webp') != -1 || checkCover.indexOf('gif') != -1)
             cover = (_b = (_a = checkCover === null || checkCover === void 0 ? void 0 : checkCover.match(/image: url\('\/\/(.+)\'\)/)) === null || _a === void 0 ? void 0 : _a[1]) !== null && _b !== void 0 ? _b : "";
         else
             cover = "";
