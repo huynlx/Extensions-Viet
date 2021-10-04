@@ -798,7 +798,7 @@ class MangaXY extends paperback_extensions_common_1.Source {
             var book = element[el];
             var checkCover = $("img", book).attr("style");
             var cover = '';
-            if (checkCover.indexOf('jpg') != -1 || checkCover.indexOf('png') != -1 || checkCover.indexOf('jpeg') != -1)
+            if ((checkCover === null || checkCover === void 0 ? void 0 : checkCover.indexOf('jpg')) != -1 || (checkCover === null || checkCover === void 0 ? void 0 : checkCover.indexOf('png')) != -1 || (checkCover === null || checkCover === void 0 ? void 0 : checkCover.indexOf('jpeg')) != -1)
                 cover = checkCover.match(/image: url\('\/\/(.+)\'\)/)[1];
             else
                 cover = "";
