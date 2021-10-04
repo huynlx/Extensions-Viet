@@ -707,7 +707,6 @@ class MangaXY extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d;
         let newUpdated = createHomeSection({
             id: 'new_updated',
             title: "Chap mới",
@@ -734,20 +733,23 @@ class MangaXY extends paperback_extensions_common_1.Source {
         let hotItems = [];
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        for (let obj of $('.owl-item', '.owl-stage').toArray()) {
-            let title = $(`.series-title > a`, obj).text().trim();
-            let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
-            const image = $(`.a6-ratio > div.img-in-ratio`, obj).css('background-image');
-            const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
-            let id = (_b = (_a = $(`.series-title > a`, obj).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) !== null && _b !== void 0 ? _b : title;
+        var element = $(".thumb").toArray();
+        for (var el in element) {
+            var book = element[el];
+            var checkCover = $("img", book).attr("style");
+            var cover = '';
+            if (checkCover.indexOf('jpg') != -1 || checkCover.indexOf('png') != -1 || checkCover.indexOf('jpeg') != -1)
+                cover = checkCover.match(/image: url\('\/\/(.+)\'\)/)[1];
+            else
+                cover = "";
             hotItems.push(createMangaTile({
-                id: id,
-                image: bg !== null && bg !== void 0 ? bg : "",
+                id: $("a.name", book).attr("href").replace("https://mangaxy.com", ""),
+                image: "https://" + cover,
                 title: createIconText({
-                    text: title,
+                    text: $("a.name", book).text().replace("T MỚI ", "").trim(),
                 }),
                 subtitleText: createIconText({
-                    text: subtitle,
+                    text: $("a.chap", book).text().replace("C MỚI ", "").trim(),
                 }),
             }));
         }
@@ -769,7 +771,7 @@ class MangaXY extends paperback_extensions_common_1.Source {
             if (checkCover.indexOf('jpg') != -1 || checkCover.indexOf('png') != -1 || checkCover.indexOf('jpeg') != -1)
                 cover = checkCover.match(/image: url\('\/\/(.+)\'\)/)[1];
             else
-                cover = "i.imgur.com/FbaKQ0k.jpg";
+                cover = "";
             newUpdatedItems.push(createMangaTile({
                 id: $("a.name", book).attr("href").replace("https://mangaxy.com", ""),
                 image: "https://" + cover,
@@ -791,19 +793,23 @@ class MangaXY extends paperback_extensions_common_1.Source {
         let newAddItems = [];
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
-        for (let obj of $('.thumb-item-flow:not(:last-child)', '.col-md-8 > .card:nth-child(2) > .card-body > .row').toArray().splice(0, 20)) {
-            let title = $(`.series-title > a`, obj).text().trim();
-            let subtitle = $(`.thumb-detail > div > a`, obj).text().trim();
-            const image = $(`.a6-ratio > div.img-in-ratio`, obj).attr('data-bg');
-            let id = (_d = (_c = $(`.series-title > a`, obj).attr("href")) === null || _c === void 0 ? void 0 : _c.split("/").pop()) !== null && _d !== void 0 ? _d : title;
+        var element = $(".thumb").toArray();
+        for (var el in element) {
+            var book = element[el];
+            var checkCover = $("img", book).attr("style");
+            var cover = '';
+            if (checkCover.indexOf('jpg') != -1 || checkCover.indexOf('png') != -1 || checkCover.indexOf('jpeg') != -1)
+                cover = checkCover.match(/image: url\('\/\/(.+)\'\)/)[1];
+            else
+                cover = "";
             newAddItems.push(createMangaTile({
-                id: id,
-                image: image !== null && image !== void 0 ? image : "",
+                id: $("a.name", book).attr("href").replace("https://mangaxy.com", ""),
+                image: "https://" + cover,
                 title: createIconText({
-                    text: title,
+                    text: $("a.name", book).text().replace("T MỚI ", "").trim(),
                 }),
                 subtitleText: createIconText({
-                    text: subtitle,
+                    text: $("a.chap", book).text().replace("C MỚI ", "").trim(),
                 }),
             }));
         }
