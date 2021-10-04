@@ -917,11 +917,6 @@ class MangaXY extends paperback_extensions_common_1.Source {
         ];
         return tagSections;
     }
-    globalRequestHeaders() {
-        return {
-            referer: DOMAIN
-        };
-    }
 }
 exports.MangaXY = MangaXY;
 
