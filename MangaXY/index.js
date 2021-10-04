@@ -755,6 +755,36 @@ class MangaXY extends paperback_extensions_common_1.Source {
         }
         newUpdated.items = newUpdatedItems;
         sectionCallback(newUpdated);
+        url = 'https://mangaxy.com/search.php?andor=and&sort=truyen&view=thumb&act=timnangcao&ajax=true&page=1';
+        request = createRequestObject({
+            url: url,
+            method: "GET",
+        });
+        let newAddItems = [];
+        data = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(data.data);
+        element = $(".thumb").toArray();
+        for (var el in element) {
+            var book = element[el];
+            var checkCover = $("img", book).attr("style");
+            var cover = '';
+            if (checkCover.indexOf('jpg') != -1 || checkCover.indexOf('png') != -1 || checkCover.indexOf('jpeg') != -1)
+                cover = checkCover.match(/image: url\('\/\/(.+)\'\)/)[1];
+            else
+                cover = "";
+            newAddItems.push(createMangaTile({
+                id: $("a.name", book).attr("href").replace("https://mangaxy.com", ""),
+                image: "https://" + cover,
+                title: createIconText({
+                    text: $("a.name", book).text().replace("T MỚI ", "").trim(),
+                }),
+                subtitleText: createIconText({
+                    text: $("a.chap", book).text().replace("C MỚI ", "").trim(),
+                }),
+            }));
+        }
+        newAdded.items = newAddItems;
+        sectionCallback(newAdded);
     }
     async getViewMoreItems(homepageSectionId, metadata) {
         var _a;
