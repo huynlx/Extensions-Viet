@@ -627,13 +627,13 @@ class MangaXY extends paperback_extensions_common_1.Source {
         if (checkCover.indexOf('jpg') != -1 || checkCover.indexOf('png') != -1 || checkCover.indexOf('jpeg') != -1)
             cover = checkCover.match(/image: url\('\/\/(.+)\'\)/)[1];
         else
-            cover = "i.imgur.com/FbaKQ0k.jpg";
+            cover = "";
         let tags = [];
         let creator = '';
         let status = 1;
         let desc = $(".manga-info p");
         creator = $(".created-by a").text();
-        for (const t of $('.top-comics-type > a', test).toArray()) {
+        for (const t of $('.top-comics-type > a').toArray()) {
             const genre = $(t).text().trim();
             const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
             tags.push(createTag({ label: MangaXYParser_1.ucFirstAllWords(genre), id }));
