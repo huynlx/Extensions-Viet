@@ -725,7 +725,7 @@ class MangaXY extends paperback_extensions_common_1.Source {
         sectionCallback(newUpdated);
         sectionCallback(newAdded);
         sectionCallback(hot);
-        let url = 'https://mangaxy.com/search.php?andor=and&sort=xem&view=thumb&act=timnangcao&ajax=true&page=';
+        let url = 'https://mangaxy.com/search.php?andor=and&sort=xem&view=thumb&act=timnangcao&ajax=true&page=1';
         let request = createRequestObject({
             url: DOMAIN,
             method: "GET",
