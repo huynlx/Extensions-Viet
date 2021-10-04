@@ -945,7 +945,7 @@ exports.decodeHTMLEntity = (str) => {
     return entities.decodeHTML(str);
 };
 exports.parseManga = ($) => {
-    var _a, _b, _c, _d;
+    var _a, _b, _c;
     var element = $(".thumb").toArray().splice(0, 20);
     const mangas = [];
     for (var el in element) {
@@ -957,7 +957,7 @@ exports.parseManga = ($) => {
         else
             cover = "";
         mangas.push(createMangaTile({
-            id: (_d = (_c = $("a.name", book).attr("href")) === null || _c === void 0 ? void 0 : _c.replace("https://mangaxy.com", "")) !== null && _d !== void 0 ? _d : "",
+            id: (_c = $("a.name", book).attr("href")) !== null && _c !== void 0 ? _c : "",
             image: "https://" + cover,
             title: createIconText({
                 text: $("a.name", book).text().replace("T MỚI ", "").trim(),
