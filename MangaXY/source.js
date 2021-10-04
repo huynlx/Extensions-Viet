@@ -730,6 +730,7 @@ class MangaXY extends paperback_extensions_common_1.Source {
         sectionCallback(newUpdated);
         sectionCallback(newAdded);
         sectionCallback(hot);
+        sectionCallback(az);
         let url = 'https://mangaxy.com/search.php?andor=and&van=&sort=chap&view=thumb&act=timnangcao&ajax=true&page=1';
         let request = createRequestObject({
             url,
@@ -954,7 +955,7 @@ exports.parseManga = ($) => {
     var _a, _b, _c, _d;
     var element = $(".thumb").toArray();
     const mangas = [];
-    for (var el in element.splice(0, 20)) {
+    for (var el in element) {
         var book = element[el];
         var checkCover = $("img", book).attr("style");
         var cover = '';
