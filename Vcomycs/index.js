@@ -7522,7 +7522,12 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c, _d, _e, _f, _g;
+        let featured = createHomeSection({
+            id: 'featured',
+            title: "Truyện Đề Cử",
+            type: paperback_extensions_common_1.HomeSectionType.featured
+        });
         let newUpdated = createHomeSection({
             id: 'new_updated',
             title: "Mới cập nhật",
@@ -7600,6 +7605,25 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         }
         view.items = viewItems;
         sectionCallback(view);
+        request = createRequestObject({
+            url: 'https://vcomycs.com/',
+            method: "GET",
+        });
+        let featuredItems = [];
+        data = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(data.data);
+        for (const element of $('a', '.slider-container > .item').toArray()) {
+            let title = '';
+            let image = (_g = $('img', element).attr('src')) !== null && _g !== void 0 ? _g : "";
+            let id = $(element).first().attr('href');
+            featuredItems.push(createMangaTile({
+                id: id !== null && id !== void 0 ? id : "",
+                image: image,
+                title: createIconText({ text: title }),
+            }));
+        }
+        featured.items = featuredItems;
+        sectionCallback(featured);
     }
     async getViewMoreItems(homepageSectionId, metadata) {
         var _a;
