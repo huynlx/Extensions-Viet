@@ -7431,10 +7431,13 @@ class Vcomycs extends paperback_extensions_common_1.Source {
             url = 'https://vcomycs.com/wp-admin/admin-ajax.php';
             request = createRequestObject({
                 url,
-                method: 'POST',
+                method: 'post',
                 data: {
                     "action": "searchtax",
                     "keyword": encodeURI(query.title)
+                },
+                headers: {
+                    'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
                 }
             });
         }
