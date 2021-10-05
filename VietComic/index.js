@@ -3338,7 +3338,7 @@ class VietComic extends paperback_extensions_common_1.Source {
         for (var i = 0; i < el.length; i++) {
             var e = el[i];
             let title = $("h3 a", e).first().text();
-            let subtitle = $("a", e).last().text();
+            let subtitle = $("a:nth-of-type(2)", e).last().text();
             const image = (_a = $("img", e).first().attr("src")) !== null && _a !== void 0 ? _a : "";
             let id = $("h3 a", e).first().attr("href");
             hotItems.push(createMangaTile({
