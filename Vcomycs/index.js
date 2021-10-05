@@ -654,7 +654,7 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         const chapters = [];
         var title = $(".info-title").text();
         var el = $("tbody td a").toArray();
-        for (var i = el.size() - 1; i >= 0; i--) {
+        for (var i = el.length - 1; i >= 0; i--) {
             var e = el[1];
             let id = $(e).attr("href");
             let chapNum = Number(title + " - " + $("span", e)[0].text().match(/Chap.+/)[0].split(" ")[1]);
