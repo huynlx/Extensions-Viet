@@ -9861,7 +9861,7 @@ class Vcomycs extends paperback_extensions_common_1.Source {
             id: mangaId,
             author: $(creator[1]).text().trim(),
             artist: $(creator[1]).text().trim(),
-            desc: desc === '' ? 'Đang cập nhật…' : desc,
+            desc: desc === '' ? 'Đang cập nhật…' : VcomycsParser_1.decodeHTMLEntity(desc),
             titles: [$(".info-title").text()],
             image: image,
             status: statusFinal,
@@ -9887,7 +9887,7 @@ class Vcomycs extends paperback_extensions_common_1.Source {
             chapters.push(createChapter({
                 id,
                 chapNum: chapNum,
-                name: name,
+                name: VcomycsParser_1.decodeHTMLEntity(name),
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
             }));
@@ -10097,7 +10097,7 @@ exports.Vcomycs = Vcomycs;
 },{"./VcomycsParser":119,"paperback-extensions-common":44}],119:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.decryptImages = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.capitalizeFirstLetter = void 0;
+exports.decodeHTMLEntity = exports.decryptImages = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.capitalizeFirstLetter = void 0;
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
@@ -10187,6 +10187,12 @@ exports.decryptImages = ($, tis) => {
     }
     return pages;
 };
+function decodeHTMLEntity(str) {
+    return str.replace(/&#(\d+);/g, function (dec) {
+        return String.fromCharCode(dec);
+    });
+}
+exports.decodeHTMLEntity = decodeHTMLEntity;
 
 },{"crypto-js":13}]},{},[118])(118)
 });
