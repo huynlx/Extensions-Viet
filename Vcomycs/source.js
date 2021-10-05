@@ -653,14 +653,14 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         let $ = this.cheerio.load(data.data);
         const chapters = [];
         var el = $("tbody td a").toArray();
-        for (var i = el.length - 1; i >= 0; i--) {
-            var e = el[1];
+        for (var i in el) {
+            var e = el[i];
             let id = $(e).attr("href");
-            let chapNum = Number($($("span", e).toArray()).text().match(/Chap.+/)[0].split(" ")[1]);
-            let name = $($("span", e).toArray()).text().trim();
+            let chapNum = Number($(e).text().trim().match(/Chap.+/)[0].split(" ")[1]);
+            let name = $(e).text().trim();
             chapters.push(createChapter({
                 id,
-                chapNum: isNaN(chapNum) ? i : chapNum,
+                chapNum: chapNum,
                 name: name,
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
@@ -706,8 +706,6 @@ class Vcomycs extends paperback_extensions_common_1.Source {
             title: "Xem nhiều",
             view_more: true,
         });
-        sectionCallback(newUpdated);
-        sectionCallback(hot);
         sectionCallback(view);
         let request = createRequestObject({
             url: 'https://vcomycs.com/page/',
@@ -729,7 +727,6 @@ class Vcomycs extends paperback_extensions_common_1.Source {
             }));
         }
         newUpdated.items = newUpdatedItems;
-        sectionCallback(newUpdated);
         request = createRequestObject({
             url: 'https://vlogtruyen.net/the-loai/dang-hot',
             method: "GET",
@@ -750,7 +747,6 @@ class Vcomycs extends paperback_extensions_common_1.Source {
             }));
         }
         hot.items = hotItems;
-        sectionCallback(hot);
         request = createRequestObject({
             url: 'https://vcomycs.com/nhieu-xem-nhat/',
             method: "GET",
