@@ -7522,7 +7522,7 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e, _f;
         let newUpdated = createHomeSection({
             id: 'new_updated',
             title: "Mới cập nhật",
@@ -7530,55 +7530,55 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         });
         let hot = createHomeSection({
             id: 'hot',
-            title: "Đang hot",
-            view_more: true,
+            title: "Hot nhất",
+            view_more: false,
         });
         let view = createHomeSection({
             id: 'view',
             title: "Xem nhiều",
-            view_more: true,
+            view_more: false,
         });
+        sectionCallback(hot);
         sectionCallback(view);
         let request = createRequestObject({
-            url: 'https://vcomycs.com/page/',
+            url: 'https://vcomycs.com/',
             method: "GET",
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         let newUpdatedItems = [];
-        for (const element of $('.commic-hover', '#ul-content-pho-bien').toArray().splice(0, 20)) {
-            let title = $('.title-commic-tab', element).text().trim();
-            let image = (_a = $('.image-commic-tab > img', element).attr('data-src')) !== null && _a !== void 0 ? _a : "";
-            let id = $('a', element).first().attr('href');
-            let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
+        for (const element of $('.comic-item', '.col-md-9 > .comic-list ').toArray().splice(0, 20)) {
+            let title = $('.comic-title', element).text().trim();
+            let image = (_a = $('.img-thumbnail', element).attr('data-thumb')) !== null && _a !== void 0 ? _a : "";
+            let id = $('.comic-img > a', element).first().attr('href');
+            let subtitle = $(`.comic-chapter`, element).text().trim();
             newUpdatedItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: image !== null && image !== void 0 ? image : "",
+                image: (_b = image.replace('150x150', '300x404')) !== null && _b !== void 0 ? _b : "",
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
         }
         newUpdated.items = newUpdatedItems;
         request = createRequestObject({
-            url: 'https://vlogtruyen.net/the-loai/dang-hot',
+            url: 'https://vcomycs.com/truyen-hot-nhat/',
             method: "GET",
         });
         let hotItems = [];
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
-        for (const element of $('.commic-hover', '#ul-content-pho-bien').toArray().splice(0, 20)) {
-            let title = $('.title-commic-tab', element).text().trim();
-            let image = (_b = $('.image-commic-tab > img', element).attr('data-src')) !== null && _b !== void 0 ? _b : "";
-            let id = $('a', element).first().attr('href');
-            let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
+        for (const element of $('li', 'ul.most-views').toArray()) {
+            let title = $('.super-title > a', element).text().trim();
+            let image = (_c = $('.list-left-img', element).attr('src')) !== null && _c !== void 0 ? _c : "";
+            let id = $('.super-title > a', element).first().attr('href');
             hotItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: image !== null && image !== void 0 ? image : "",
+                image: (_d = image.replace('150x150', '300x404')) !== null && _d !== void 0 ? _d : "",
                 title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: subtitle }),
             }));
         }
         hot.items = hotItems;
+        sectionCallback(hot);
         request = createRequestObject({
             url: 'https://vcomycs.com/nhieu-xem-nhat/',
             method: "GET",
@@ -7588,11 +7588,11 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         $ = this.cheerio.load(data.data);
         for (const element of $('li', 'ul.most-views').toArray()) {
             let title = $('.super-title > a', element).text().trim();
-            let image = (_c = $('.list-left-img', element).attr('src')) !== null && _c !== void 0 ? _c : "";
+            let image = (_e = $('.list-left-img', element).attr('src')) !== null && _e !== void 0 ? _e : "";
             let id = $('.super-title > a', element).first().attr('href');
             viewItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: (_d = image.replace('150x150', '300x404')) !== null && _d !== void 0 ? _d : "",
+                image: (_f = image.replace('150x150', '300x404')) !== null && _f !== void 0 ? _f : "",
                 title: createIconText({ text: title }),
             }));
         }
@@ -7872,7 +7872,6 @@ exports.decryptImages = ($, tis) => {
         var decrypted = CryptoJS.AES.decrypt(encrypted, key, {
             iv: iv
         });
-        console.log(decrypted);
         return decrypted.toString(CryptoJS.enc.Utf8);
     }
     var chapterHTML = CryptoJSAesDecrypt('EhwuFp' + 'SJkhMV' + 'uUPzrw', htmlContent);
