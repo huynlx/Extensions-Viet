@@ -641,7 +641,7 @@ class VietComic extends paperback_extensions_common_1.Source {
         let tags = [];
         let creator = '';
         let status = 1;
-        let desc = $(".manga-info-content").text();
+        let desc = $(".manga-info-content").html();
         for (const tt of $('.manga-info-text > li').toArray()) {
             if ($(tt).text().includes('Tình Trạng')) {
                 status = $(tt).text().split(":")[1].includes("Đang") ? 1 : 0;
@@ -684,7 +684,7 @@ class VietComic extends paperback_extensions_common_1.Source {
             var e = el[i];
             chapters.push(createChapter({
                 id: $(e).attr("href"),
-                chapNum: i,
+                chapNum: i + 1,
                 name: $(e).text().trim(),
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
@@ -712,7 +712,7 @@ class VietComic extends paperback_extensions_common_1.Source {
             id: chapterId,
             mangaId: mangaId,
             pages: pages,
-            longStrip: false
+            longStrip: true
         });
         return chapterDetails;
     }
