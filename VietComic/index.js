@@ -3303,12 +3303,11 @@ class VietComic extends paperback_extensions_common_1.Source {
             id: chapterId,
             mangaId: mangaId,
             pages: pages,
-            longStrip: true
+            longStrip: false
         });
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
-        var _a, _b, _c;
         let hot = createHomeSection({
             id: 'hot',
             title: "Truyện HOT",
@@ -3331,82 +3330,25 @@ class VietComic extends paperback_extensions_common_1.Source {
             url: 'https://vietcomic.net/truyen-tranh-hay?type=hot',
             method: "GET",
         });
-        let hotItems = [];
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        let el = $(".leftCol .list-truyen-item-wrap");
-        for (var i = 0; i < el.length; i++) {
-            var e = el[i];
-            let title = $("h3 a", e).first().text();
-            let subtitle = $("a:nth-of-type(2)", e).last().text();
-            const image = (_a = $("img", e).first().attr("src")) !== null && _a !== void 0 ? _a : "";
-            let id = $("h3 a", e).first().attr("href");
-            hotItems.push(createMangaTile({
-                id: id !== null && id !== void 0 ? id : title,
-                image,
-                title: createIconText({
-                    text: title,
-                }),
-                subtitleText: createIconText({
-                    text: subtitle,
-                }),
-            }));
-        }
-        hot.items = hotItems;
+        hot.items = VietComicParser_1.parseManga($);
         sectionCallback(hot);
         request = createRequestObject({
             url: 'https://vietcomic.net/truyen-tranh-hay?type=truyenmoi',
             method: "GET",
         });
-        let newUpdatedItems = [];
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
-        el = $(".leftCol .list-truyen-item-wrap");
-        for (var i = 0; i < el.length; i++) {
-            var e = el[i];
-            let title = $("h3 a", e).first().text();
-            let subtitle = $("a:nth-of-type(2)", e).last().text();
-            const image = (_b = $("img", e).first().attr("src")) !== null && _b !== void 0 ? _b : "";
-            let id = $("h3 a", e).first().attr("href");
-            newUpdatedItems.push(createMangaTile({
-                id: id !== null && id !== void 0 ? id : title,
-                image,
-                title: createIconText({
-                    text: title,
-                }),
-                subtitleText: createIconText({
-                    text: subtitle,
-                }),
-            }));
-        }
-        newUpdated.items = newUpdatedItems;
+        newUpdated.items = VietComicParser_1.parseManga($);
         sectionCallback(newUpdated);
         request = createRequestObject({
             url: 'https://vietcomic.net/truyen-tranh-hay?type=sieu-pham',
             method: "GET",
         });
-        let newAddItems = [];
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
-        el = $(".leftCol .list-truyen-item-wrap");
-        for (var i = 0; i < el.length; i++) {
-            var e = el[i];
-            let title = $("h3 a", e).first().text();
-            let subtitle = $("a:nth-of-type(2)", e).last().text();
-            const image = (_c = $("img", e).first().attr("src")) !== null && _c !== void 0 ? _c : "";
-            let id = $("h3 a", e).first().attr("href");
-            newAddItems.push(createMangaTile({
-                id: id !== null && id !== void 0 ? id : title,
-                image,
-                title: createIconText({
-                    text: title,
-                }),
-                subtitleText: createIconText({
-                    text: subtitle,
-                }),
-            }));
-        }
-        newAdded.items = newAddItems;
+        newAdded.items = VietComicParser_1.parseManga($);
         sectionCallback(newAdded);
     }
     async getViewMoreItems(homepageSectionId, metadata) {
@@ -3416,13 +3358,13 @@ class VietComic extends paperback_extensions_common_1.Source {
         let url = '';
         switch (homepageSectionId) {
             case "hot":
-                url = `${DOMAIN}danh-sach-truyen.html?status=0&sort=views&page=${page}`;
+                url = `https://vietcomic.net/truyen-tranh-hay?type=hot&page=${page}`;
                 break;
             case "new_updated":
-                url = `${DOMAIN}danh-sach-truyen.html?page=${page}`;
+                url = `https://vietcomic.net/truyen-tranh-hay?type=truyenmoi&page=${page}`;
                 break;
             case "new_added":
-                url = `${DOMAIN}danh-sach-truyen.html?status=0&sort=id&page=${page}`;
+                url = `https://vietcomic.net/truyen-tranh-hay?type=sieu-pham&page=${page}`;
                 break;
             default:
                 return Promise.resolve(createPagedResults({ results: [] }));
@@ -3736,7 +3678,7 @@ exports.VietComic = VietComic;
 },{"./VietComicParser":91,"paperback-extensions-common":16}],91:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
+exports.parseManga = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
 const entities = require("entities");
 exports.generateSearch = (query) => {
     var _a;
@@ -3762,42 +3704,67 @@ exports.parseSearch = ($) => {
 };
 exports.parseViewMore = ($) => {
     var _a;
-    const manga = [];
-    const collectedIds = [];
-    for (let obj of $('li', 'ul#danhsachtruyen').toArray()) {
-        let title = $(`.info-bottom > a`, obj).text().trim();
-        let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
-        var image = $('a', obj).first().attr('data-src');
-        let id = (_a = $(`.info-bottom > a`, obj).attr("href")) !== null && _a !== void 0 ? _a : title;
-        if (!collectedIds.includes(id)) {
-            manga.push(createMangaTile({
-                id: encodeURIComponent(id),
-                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://saytruyen.net/' + image)),
-                title: createIconText({ text: decodeHTMLEntity(title) }),
-                subtitleText: createIconText({ text: subtitle }),
-            }));
-            collectedIds.push(id);
-        }
+    let mangas = [];
+    let el = $(".leftCol .list-truyen-item-wrap");
+    for (var i = 0; i < el.length; i++) {
+        var e = el[i];
+        let title = $("h3 a", e).first().text();
+        let subtitle = $("a:nth-of-type(2)", e).last().text();
+        const image = (_a = $("img", e).first().attr("src")) !== null && _a !== void 0 ? _a : "";
+        let id = $("h3 a", e).first().attr("href");
+        mangas.push(createMangaTile({
+            id: id !== null && id !== void 0 ? id : title,
+            image,
+            title: createIconText({
+                text: title,
+            }),
+            subtitleText: createIconText({
+                text: subtitle,
+            }),
+        }));
     }
-    return manga;
+    return mangas;
 };
 exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
-    for (const page of $("a", "ul.pager > li").toArray()) {
+    for (const page of $("a", ".phan-trang").toArray()) {
         const p = Number($(page).text().trim());
         if (isNaN(p))
             continue;
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($("ul.pager > li.active > a").text().trim());
+    const currentPage = Number($(".phan-trang > a.pageselect").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
 };
 const decodeHTMLEntity = (str) => {
     return entities.decodeHTML(str);
+};
+exports.parseManga = ($) => {
+    var _a;
+    let mangas = [];
+    let el = $(".leftCol .list-truyen-item-wrap");
+    for (var i = 0; i < el.length; i++) {
+        var e = el[i];
+        let title = $("h3 a", e).first().text();
+        let subtitle = $("a:nth-of-type(2)", e).last().text();
+        const image = (_a = $("img", e).first().attr("src")) !== null && _a !== void 0 ? _a : "";
+        let id = $("h3 a", e).first().attr("href");
+        mangas.push(createMangaTile({
+            id: id !== null && id !== void 0 ? id : title,
+            image,
+            title: createIconText({
+                text: title,
+            }),
+            subtitleText: createIconText({
+                text: subtitle,
+            }),
+        }));
+    }
+    return mangas;
 };
 
 },{"entities":3}]},{},[90])(90)
