@@ -10046,16 +10046,15 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         var tiles = [];
         if (query.title) {
             const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
-            for (var i in json) {
-                var book = json[i];
-                let listItems = [];
+            let listItems = [];
+            for (const el of json) {
                 listItems.push(createMangaTile({
-                    id: book.link,
-                    image: book.img,
-                    title: createIconText({ text: book.title }),
+                    id: el.link,
+                    image: el.img,
+                    title: createIconText({ text: el.title }),
                 }));
-                tiles = listItems;
             }
+            tiles = listItems;
         }
         else {
             let $ = this.cheerio.load(data.data);
