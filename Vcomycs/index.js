@@ -7662,7 +7662,7 @@ class Vcomycs extends paperback_extensions_common_1.Source {
                 let listItems = [];
                 listItems.push(createMangaTile({
                     id: book.link,
-                    image: book.img.replace('150x150', '300x404'),
+                    image: book.img,
                     title: createIconText({ text: book.title }),
                 }));
                 tiles = listItems;
