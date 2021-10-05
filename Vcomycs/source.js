@@ -645,7 +645,6 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         });
     }
     async getChapters(mangaId) {
-        var _a;
         const request = createRequestObject({
             url: `${mangaId}`,
             method,
@@ -653,13 +652,14 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         const chapters = [];
-        var i = 0;
-        for (const obj of $('.ul-list-chaper-detail-commic > li').toArray().reverse()) {
-            i++;
-            let id = $('a', obj).first().attr('href');
-            let chapNum = Number((_a = $('a', obj).first().attr('title')) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
-            let name = $('a', obj).first().attr('title');
-            let time = $('span:nth-child(4)', obj).text().trim().split('-');
+        var title = $(".info-title").text();
+        var el = $("tbody td a").toArray();
+        for (var i = el.size() - 1; i >= 0; i--) {
+            var e = el[1];
+            let id = $(e).attr("href");
+            let chapNum = Number(title + " - " + $("span", e)[0].text().match(/Chap.+/)[0].split(" ")[1]);
+            let name = title + " - " + $("span", e)[0].text();
+            let time = $('tr > td.hidden-xs.hidden-sm', e).text().trim().split('/');
             chapters.push(createChapter({
                 id,
                 chapNum: isNaN(chapNum) ? i : chapNum,
