@@ -7660,11 +7660,13 @@ class Vcomycs extends paperback_extensions_common_1.Source {
             const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
             for (var i in json) {
                 var book = json[i];
-                tiles.push({
+                let listItems = [];
+                listItems.push({
                     id: book.link,
                     image: book.img.replace('150x150', '300x404'),
                     title: createIconText({ text: book.title }),
                 });
+                tiles = listItems;
             }
         }
         else {
@@ -7725,16 +7727,14 @@ exports.generateSearch = (query) => {
 exports.parseSearch = ($) => {
     var _a, _b;
     const manga = [];
-    for (const element of $('.comic-item', '.col-md-9 > .comic-list ').toArray()) {
-        let title = $('.comic-title', element).text().trim();
-        let image = (_a = $('.img-thumbnail', element).attr('data-thumb')) !== null && _a !== void 0 ? _a : "";
-        let id = $('.comic-img > a', element).first().attr('href');
-        let subtitle = $(`.comic-chapter`, element).text().trim();
+    for (const element of $('li', '#archive-list-table').toArray()) {
+        let title = $('.super-title a', element).text().trim();
+        let image = (_a = $('.vip-thumbnail', element).attr('src')) !== null && _a !== void 0 ? _a : "";
+        let id = $('.super-title > a', element).first().attr('href');
         manga.push(createMangaTile({
             id: id !== null && id !== void 0 ? id : "",
             image: (_b = image.replace('150x150', '300x404')) !== null && _b !== void 0 ? _b : "",
             title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: subtitle }),
         }));
     }
     return manga;
