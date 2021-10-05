@@ -3232,7 +3232,7 @@ class VietComic extends paperback_extensions_common_1.Source {
         let tags = [];
         let creator = '';
         let status = 1;
-        let desc = $(".manga-info-content").html();
+        let desc = $(".manga-info-content").text();
         for (const tt of $('.manga-info-text > li').toArray()) {
             if ($(tt).text().includes('Tình Trạng')) {
                 status = $(tt).text().split(":")[1].includes("Đang") ? 1 : 0;
@@ -3308,6 +3308,12 @@ class VietComic extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
+        var _a, _b;
+        let featured = createHomeSection({
+            id: 'featured',
+            title: "Truyện Đề Cử",
+            type: paperback_extensions_common_1.HomeSectionType.featured
+        });
         let hot = createHomeSection({
             id: 'hot',
             title: "Truyện HOT",
@@ -3350,6 +3356,27 @@ class VietComic extends paperback_extensions_common_1.Source {
         $ = this.cheerio.load(data.data);
         newAdded.items = VietComicParser_1.parseManga($);
         sectionCallback(newAdded);
+        request = createRequestObject({
+            url: 'https://vietcomic.net/',
+            method: "GET",
+        });
+        data = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(data.data);
+        const featuredItems = [];
+        for (const x of $('.slide .item').toArray()) {
+            featuredItems.push(createMangaTile({
+                id: (_a = $('.slide-caption > h3 > a', x).attr("href")) !== null && _a !== void 0 ? _a : "",
+                image: (_b = $('img', x).attr("src")) !== null && _b !== void 0 ? _b : "",
+                title: createIconText({
+                    text: $('.slide-caption > h3 > a', x).text(),
+                }),
+                subtitleText: createIconText({
+                    text: $('.slide-caption > a', x).text(),
+                }),
+            }));
+        }
+        featured.items = featuredItems;
+        sectionCallback(featured);
     }
     async getViewMoreItems(homepageSectionId, metadata) {
         var _a;
