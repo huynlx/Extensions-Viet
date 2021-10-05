@@ -10047,7 +10047,7 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         if (query.title) {
             const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
             let listItems = [];
-            for (const el of json) {
+            for (const el of json.data) {
                 listItems.push(createMangaTile({
                     id: el.link,
                     image: el.img,
