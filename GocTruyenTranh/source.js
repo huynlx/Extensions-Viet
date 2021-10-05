@@ -650,7 +650,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
             artist: creator,
             desc: desc,
             titles: [GocTruyenTranhParser_1.decodeHTMLEntity($('.detail-section .title > h1').text().trim())],
-            image,
+            image: encodeURI(image),
             status,
             hentai: false,
             tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
