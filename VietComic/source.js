@@ -700,8 +700,10 @@ class VietComic extends paperback_extensions_common_1.Source {
         });
         const regex = /data = '(.+)'/g;
         const response = await this.requestManager.schedule(request, 1);
-        const arr = regex.exec(response.data);
+        let $ = this.cheerio.load(response.data);
+        const arr = regex.exec($.html());
         const images = (_a = arr === null || arr === void 0 ? void 0 : arr[1].split('|')) !== null && _a !== void 0 ? _a : [];
+        console.log(images);
         const pages = [];
         for (var i = 0; i < images.length; i++) {
             pages.push(images[i]);
@@ -734,7 +736,6 @@ class VietComic extends paperback_extensions_common_1.Source {
         sectionCallback(hot);
         sectionCallback(newUpdated);
         sectionCallback(newAdded);
-        let url = '';
         let request = createRequestObject({
             url: 'https://vietcomic.net/truyen-tranh-hay?type=hot',
             method: "GET",
@@ -762,7 +763,6 @@ class VietComic extends paperback_extensions_common_1.Source {
         }
         hot.items = hotItems;
         sectionCallback(hot);
-        url = '';
         request = createRequestObject({
             url: 'https://vietcomic.net/truyen-tranh-hay?type=truyenmoi',
             method: "GET",
@@ -790,7 +790,6 @@ class VietComic extends paperback_extensions_common_1.Source {
         }
         newUpdated.items = newUpdatedItems;
         sectionCallback(newUpdated);
-        url = DOMAIN;
         request = createRequestObject({
             url: 'https://vietcomic.net/truyen-tranh-hay?type=sieu-pham',
             method: "GET",
@@ -1139,11 +1138,6 @@ class VietComic extends paperback_extensions_common_1.Source {
             createTagSection({ id: '2', label: 'Xếp Theo', tags: tags2.map(x => createTag(x)) }),
         ];
         return tagSections;
-    }
-    globalRequestHeaders() {
-        return {
-            referer: DOMAIN
-        };
     }
 }
 exports.VietComic = VietComic;
