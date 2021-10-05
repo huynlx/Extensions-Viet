@@ -7512,40 +7512,11 @@ class Vcomycs extends paperback_extensions_common_1.Source {
             method
         });
         let data = await this.requestManager.schedule(request, 1);
-        var CryptoJS = require('crypto-js');
         let $ = this.cheerio.load(data.data);
-        const pages = [];
-        var htmlContent = $.html().match(/htmlContent="(.+)".+text-center post-credit">/)[1].replace(/\\\\/g, '').replace(/\\\"/g, '"');
-        function CryptoJSAesDecrypt(passphrase, encrypted_json_string) {
-            var obj_json = JSON.parse(encrypted_json_string);
-            var encrypted = obj_json.ciphertext;
-            var salt = CryptoJS.enc.Hex.parse(obj_json.salt);
-            var iv = CryptoJS.enc.Hex.parse(obj_json.iv);
-            var key = CryptoJS.PBKDF2(passphrase, salt, {
-                hasher: CryptoJS.algo.SHA512,
-                keySize: 64 / 8,
-                iterations: 999
-            });
-            var decrypted = CryptoJS.AES.decrypt(encrypted, key, {
-                iv: iv
-            });
-            console.log(decrypted);
-            return decrypted.toString(CryptoJS.enc.Utf8);
-        }
-        var chapterHTML = CryptoJSAesDecrypt('EhwuFp' + 'SJkhMV' + 'uUPzrw', htmlContent);
-        chapterHTML = chapterHTML.replace(/EhwuFp/g, '.');
-        chapterHTML = chapterHTML.replace(/SJkhMV/g, ':');
-        chapterHTML = chapterHTML.replace(/uUPzrw/g, '/');
-        const $2 = this.cheerio.load(chapterHTML);
-        var cc = $2('img').toArray();
-        for (var el in cc) {
-            var e = cc[el];
-            pages.push($2(e).attr('data-ehwufp'));
-        }
         const chapterDetails = createChapterDetails({
             id: chapterId,
             mangaId: mangaId,
-            pages: pages,
+            pages: VcomycsParser_1.decryptImages($, this),
             longStrip: false
         });
         return chapterDetails;
@@ -7786,10 +7757,10 @@ class Vcomycs extends paperback_extensions_common_1.Source {
 }
 exports.Vcomycs = Vcomycs;
 
-},{"./VcomycsParser":92,"crypto-js":11,"paperback-extensions-common":48}],92:[function(require,module,exports){
+},{"./VcomycsParser":92,"paperback-extensions-common":48}],92:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.capitalizeFirstLetter = void 0;
+exports.decryptImages = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.capitalizeFirstLetter = void 0;
 const entities = require("entities");
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -7884,6 +7855,38 @@ exports.isLastPage = ($) => {
 const decodeHTMLEntity = (str) => {
     return entities.decodeHTML(str);
 };
+exports.decryptImages = ($, tis) => {
+    var CryptoJS = require('crypto-js');
+    const pages = [];
+    var htmlContent = $.html().match(/htmlContent="(.+)".+text-center post-credit">/)[1].replace(/\\\\/g, '').replace(/\\\"/g, '"');
+    function CryptoJSAesDecrypt(passphrase, encrypted_json_string) {
+        var obj_json = JSON.parse(encrypted_json_string);
+        var encrypted = obj_json.ciphertext;
+        var salt = CryptoJS.enc.Hex.parse(obj_json.salt);
+        var iv = CryptoJS.enc.Hex.parse(obj_json.iv);
+        var key = CryptoJS.PBKDF2(passphrase, salt, {
+            hasher: CryptoJS.algo.SHA512,
+            keySize: 64 / 8,
+            iterations: 999
+        });
+        var decrypted = CryptoJS.AES.decrypt(encrypted, key, {
+            iv: iv
+        });
+        console.log(decrypted);
+        return decrypted.toString(CryptoJS.enc.Utf8);
+    }
+    var chapterHTML = CryptoJSAesDecrypt('EhwuFp' + 'SJkhMV' + 'uUPzrw', htmlContent);
+    chapterHTML = chapterHTML.replace(/EhwuFp/g, '.');
+    chapterHTML = chapterHTML.replace(/SJkhMV/g, ':');
+    chapterHTML = chapterHTML.replace(/uUPzrw/g, '/');
+    const $2 = tis.cheerio.load(chapterHTML);
+    var cc = $2('img').toArray();
+    for (var el in cc) {
+        var e = cc[el];
+        pages.push($2(e).attr('data-ehwufp'));
+    }
+    return pages;
+};
 
-},{"entities":37}]},{},[91])(91)
+},{"crypto-js":11,"entities":37}]},{},[91])(91)
 });
