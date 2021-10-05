@@ -3350,7 +3350,7 @@ class VietComic extends paperback_extensions_common_1.Source {
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        hot.items = VietComicParser_1.parseManga($);
+        az.items = VietComicParser_1.parseManga($);
         sectionCallback(az);
         request = createRequestObject({
             url: 'https://vietcomic.net/truyen-tranh-hay?type=truyenhay',
@@ -3358,7 +3358,7 @@ class VietComic extends paperback_extensions_common_1.Source {
         });
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
-        hot.items = VietComicParser_1.parseManga($);
+        view.items = VietComicParser_1.parseManga($);
         sectionCallback(view);
         request = createRequestObject({
             url: 'https://vietcomic.net/truyen-tranh-hay?type=hot',
