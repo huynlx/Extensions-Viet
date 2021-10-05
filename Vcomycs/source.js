@@ -7522,12 +7522,7 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f, _g;
-        let featured = createHomeSection({
-            id: 'featured',
-            title: "Truyện Đề Cử",
-            type: paperback_extensions_common_1.HomeSectionType.featured
-        });
+        var _a, _b, _c, _d, _e, _f;
         let newUpdated = createHomeSection({
             id: 'new_updated',
             title: "Mới cập nhật",
@@ -7605,25 +7600,6 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         }
         view.items = viewItems;
         sectionCallback(view);
-        request = createRequestObject({
-            url: 'https://vcomycs.com/',
-            method: "GET",
-        });
-        let featuredItems = [];
-        data = await this.requestManager.schedule(request, 1);
-        $ = this.cheerio.load(data.data);
-        for (const element of $('a', '.slider-container > .item').toArray()) {
-            let title = '';
-            let image = (_g = $('img', element).attr('src')) !== null && _g !== void 0 ? _g : "";
-            let id = $(element).first().attr('href');
-            featuredItems.push(createMangaTile({
-                id: id !== null && id !== void 0 ? id : "",
-                image: image,
-                title: createIconText({ text: title }),
-            }));
-        }
-        featured.items = featuredItems;
-        sectionCallback(featured);
     }
     async getViewMoreItems(homepageSectionId, metadata) {
         var _a;
@@ -7655,42 +7631,47 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         var _a, _b, _c;
         let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
         const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
-        const search = {
-            cate: '',
-            translator: "",
-            writer: "",
-            status: "Trạng+thái",
-            sort: "moi-nhat"
-        };
-        tags.map((value) => {
-            switch (value.split(".")[0]) {
-                case 'cate':
-                    search.cate = (value.split(".")[1]);
-                    break;
-                case 'translator':
-                    search.translator = (value.split(".")[1]);
-                    break;
-                case 'writer':
-                    search.writer = (value.split(".")[1]);
-                    break;
-                case 'status':
-                    search.status = (value.split(".")[1]);
-                    break;
-                case 'sort':
-                    search.sort = (value.split(".")[1]);
-                    break;
-            }
-        });
-        const request = createRequestObject({
-            url: query.title ? encodeURI(`https://vlogtruyen.net/tim-kiem?q=${query.title}&page=${page}`) :
-                (tags[0].includes('http') ? (tags[0] + `?page=${page}`) :
-                    encodeURI(`https://vlogtruyen.net/the-loai/huynh?cate=${search.cate}&translator=${search.translator}&writer=${search.writer}&status=${search.status}&sort=${search.sort}&page=${page}`)),
-            method: "GET",
-        });
+        var url = '';
+        var request = '';
+        if (query.title) {
+            url = 'https://vcomycs.com/wp-admin/admin-ajax.php';
+            request = createRequestObject({
+                url,
+                method: 'POST',
+                headers: {
+                    "content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                },
+                data: {
+                    "action": "searchtax",
+                    "keyword": encodeURI(query.title)
+                }
+            });
+        }
+        else {
+            url = tags[0];
+            request = createRequestObject({
+                url,
+                method: "GET",
+            });
+        }
         let data = await this.requestManager.schedule(request, 1);
-        let $ = this.cheerio.load(data.data);
-        const tiles = VcomycsParser_1.parseSearch($, query, tags);
-        metadata = !VcomycsParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+        var tiles = [];
+        if (query.title) {
+            const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
+            for (var i in json) {
+                var book = json[i];
+                tiles.push({
+                    id: book.link,
+                    image: book.img.replace('150x150', '300x404'),
+                    title: createIconText({ text: book.title }),
+                });
+            }
+        }
+        else {
+            let $ = this.cheerio.load(data.data);
+            tiles = VcomycsParser_1.parseSearch($);
+        }
+        metadata = undefined;
         return createPagedResults({
             results: tiles,
             metadata
@@ -7698,72 +7679,24 @@ class Vcomycs extends paperback_extensions_common_1.Source {
     }
     async getSearchTags() {
         const tags = [];
-        const tags2 = [
-            {
-                id: 'https://vlogtruyen.net/bang-xep-hang/top-tuan',
-                label: 'Top tuần'
-            },
-            {
-                id: 'https://vlogtruyen.net/bang-xep-hang/top-thang',
-                label: 'Top tháng'
-            },
-            {
-                id: 'https://vlogtruyen.net/bang-xep-hang/top-nam',
-                label: 'Top năm'
-            }
-        ];
-        const tags3 = [];
-        const tags4 = [];
-        const tags5 = [];
-        const tags6 = [];
-        const url = `https://vlogtruyen.net/the-loai/dang-hot`;
+        const url = `https://vcomycs.com/so-do-trang/`;
         const request = createRequestObject({
             url: url,
             method: "GET",
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        for (const tag of $('select[name="cate"] > option:not(:first-child)').toArray()) {
-            const label = $(tag).text().trim();
-            const id = 'cate.' + $(tag).attr('value');
+        var genres = $(".tags a").toArray();
+        for (var i in genres) {
+            var genre = genres[i];
+            const label = $(genre).text().trim();
+            const id = $(genre).attr('href');
             if (!id || !label)
                 continue;
             tags.push({ id: id, label: label });
         }
-        for (const tag of $('select[name="translator"] > option:not(:first-child)').toArray()) {
-            const label = $(tag).text().trim();
-            const id = 'translator.' + $(tag).attr('value');
-            if (!id || !label)
-                continue;
-            tags3.push({ id: id, label: label });
-        }
-        for (const tag of $('select[name="writer"] > option:not(:first-child)').toArray()) {
-            const label = $(tag).text().trim();
-            const id = 'writer.' + $(tag).attr('value');
-            if (!id || !label)
-                continue;
-            tags4.push({ id: id, label: label });
-        }
-        for (const tag of $('select[name="status"] > option:not(:first-child)').toArray()) {
-            const label = $(tag).text().trim();
-            const id = 'status.' + $(tag).attr('value');
-            if (!id || !label)
-                continue;
-            tags5.push({ id: id, label: label });
-        }
-        for (const tag of $('select[name="sort"] > option').toArray()) {
-            const label = $(tag).text().trim();
-            const id = 'sort.' + $(tag).attr('value');
-            if (!id || !label)
-                continue;
-            tags6.push({ id: id, label: label });
-        }
-        const tagSections = [createTagSection({ id: '0', label: 'Bảng xếp hạng', tags: tags2.map(x => createTag(x)) }),
+        const tagSections = [
             createTagSection({ id: '1', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
-            createTagSection({ id: '2', label: 'Nhóm dịch', tags: tags3.map(x => createTag(x)) }),
-            createTagSection({ id: '3', label: 'Tác giả', tags: tags4.map(x => createTag(x)) }),
-            createTagSection({ id: '4', label: 'Trạng thái', tags: tags5.map(x => createTag(x)) }),
-            createTagSection({ id: '5', label: 'Sắp xếp', tags: tags6.map(x => createTag(x)) }),
         ];
         return tagSections;
     }
@@ -7789,59 +7722,27 @@ exports.generateSearch = (query) => {
     let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
     return encodeURI(keyword);
 };
-exports.parseSearch = ($, query, tags) => {
-    var _a, _b, _c, _d, _e, _f;
+exports.parseSearch = ($) => {
+    var _a, _b;
     const manga = [];
-    if (!query.title) {
-        if (tags[0].includes('http')) {
-            for (const element of $('.commic-hover', '#content-column').toArray()) {
-                let title = $('.title-commic-tab', element).text().trim();
-                let image = (_a = $('.image-commic-tab > img', element).attr('data-src')) !== null && _a !== void 0 ? _a : "";
-                let id = (_b = $('a', element).first().attr('href')) !== null && _b !== void 0 ? _b : title;
-                let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
-                manga.push(createMangaTile({
-                    id: id,
-                    image: image !== null && image !== void 0 ? image : "",
-                    title: createIconText({ text: title }),
-                    subtitleText: createIconText({ text: subtitle }),
-                }));
-            }
-        }
-        else {
-            for (const element of $('.commic-hover', '#ul-content-pho-bien').toArray()) {
-                let title = $('.title-commic-tab', element).text().trim();
-                let image = (_c = $('.image-commic-tab > img', element).attr('data-src')) !== null && _c !== void 0 ? _c : "";
-                let id = (_d = $('a', element).first().attr('href')) !== null && _d !== void 0 ? _d : title;
-                let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
-                manga.push(createMangaTile({
-                    id: id,
-                    image: image !== null && image !== void 0 ? image : "",
-                    title: createIconText({ text: title }),
-                    subtitleText: createIconText({ text: subtitle }),
-                }));
-            }
-        }
-    }
-    else {
-        for (const element of $('.commic-hover', '#content-column').toArray()) {
-            let title = $('.title-commic-tab', element).text().trim();
-            let image = (_e = $('.image-commic-tab > img', element).attr('data-src')) !== null && _e !== void 0 ? _e : "";
-            let id = (_f = $('a', element).first().attr('href')) !== null && _f !== void 0 ? _f : title;
-            let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
-            manga.push(createMangaTile({
-                id: id,
-                image: image !== null && image !== void 0 ? image : "",
-                title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: subtitle }),
-            }));
-        }
+    for (const element of $('.comic-item', '.col-md-9 > .comic-list ').toArray()) {
+        let title = $('.comic-title', element).text().trim();
+        let image = (_a = $('.img-thumbnail', element).attr('data-thumb')) !== null && _a !== void 0 ? _a : "";
+        let id = $('.comic-img > a', element).first().attr('href');
+        let subtitle = $(`.comic-chapter`, element).text().trim();
+        manga.push(createMangaTile({
+            id: id !== null && id !== void 0 ? id : "",
+            image: (_b = image.replace('150x150', '300x404')) !== null && _b !== void 0 ? _b : "",
+            title: createIconText({ text: title }),
+            subtitleText: createIconText({ text: subtitle }),
+        }));
     }
     return manga;
 };
 exports.parseViewMore = ($) => {
     var _a, _b;
     const manga = [];
-    for (const element of $('.comic-item', '.col-md-9 > .comic-list ').toArray().splice(0, 20)) {
+    for (const element of $('.comic-item', '.col-md-9 > .comic-list ').toArray()) {
         let title = $('.comic-title', element).text().trim();
         let image = (_a = $('.img-thumbnail', element).attr('data-thumb')) !== null && _a !== void 0 ? _a : "";
         let id = $('.comic-img > a', element).first().attr('href');
