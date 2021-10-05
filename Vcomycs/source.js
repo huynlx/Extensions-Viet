@@ -622,7 +622,7 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         let tags = [];
-        let creator = $(".comic-intro-text span")[1].text();
+        let creator = $(".comic-intro-text span").toArray()[1].text();
         let status = $(".comic-intro-text .comic-stt").text();
         let statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
         let desc = $(".text-justify p").text();
