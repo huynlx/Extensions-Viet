@@ -7270,7 +7270,7 @@ class Vcomycs extends paperback_extensions_common_1.Source {
             id: mangaId,
             author: $(creator[1]).text().trim(),
             artist: $(creator[1]).text().trim(),
-            desc: desc !== null && desc !== void 0 ? desc : 'Đang cập nhật…',
+            desc: desc === '' ? 'Đang cập nhật…' : desc,
             titles: [$(".info-title").text()],
             image: image,
             status: statusFinal,
