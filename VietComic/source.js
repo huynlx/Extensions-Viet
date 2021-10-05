@@ -641,7 +641,7 @@ class VietComic extends paperback_extensions_common_1.Source {
         let tags = [];
         let creator = '';
         let status = 1;
-        let desc = $(".manga-info-content").html();
+        let desc = $(".manga-info-content").text();
         for (const tt of $('.manga-info-text > li').toArray()) {
             if ($(tt).text().includes('Tình Trạng')) {
                 status = $(tt).text().split(":")[1].includes("Đang") ? 1 : 0;
@@ -677,15 +677,15 @@ class VietComic extends paperback_extensions_common_1.Source {
         });
         const response = await this.requestManager.schedule(request, 1);
         const $ = this.cheerio.load(response.data);
+        var el = $(".chapter-list span:nth-child(1) > a").toArray();
         const chapters = [];
         var i = 0;
-        for (const obj of $("#list-chapter > li.chap-item").toArray().reverse()) {
-            var chapNum = parseFloat($('a', obj).text().trim().split(' ')[1]);
-            i++;
+        for (var i = el.length - 1; i >= 0; i--) {
+            var e = el[i];
             chapters.push(createChapter({
-                id: $('a', obj).first().attr('href'),
-                chapNum: isNaN(chapNum) ? i : chapNum,
-                name: $('span', obj).text().trim(),
+                id: $(e).attr("href"),
+                chapNum: i,
+                name: $(e).text().trim(),
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
             }));
@@ -693,19 +693,19 @@ class VietComic extends paperback_extensions_common_1.Source {
         return chapters;
     }
     async getChapterDetails(mangaId, chapterId) {
+        var _a;
         const request = createRequestObject({
-            url: `${DOMAIN}${chapterId}`,
+            url: `${chapterId}`,
             method
         });
+        const regex = /data = '(.+)'/g;
         const response = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(response.data);
+        const arr = regex.exec($.html());
+        const images = (_a = arr === null || arr === void 0 ? void 0 : arr[1].split('|')) !== null && _a !== void 0 ? _a : [];
         const pages = [];
-        for (let obj of $('#lst_content > img').toArray()) {
-            if (!obj.attribs['src'])
-                continue;
-            let link = obj.attribs['src'].includes('http') ?
-                (obj.attribs['src']).trim() : (DOMAIN + obj.attribs['src']).trim();
-            pages.push(link);
+        for (var i = 0; i < images.length; i++) {
+            pages.push(images[i]);
         }
         const chapterDetails = createChapterDetails({
             id: chapterId,
