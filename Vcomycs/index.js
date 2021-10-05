@@ -622,7 +622,7 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         let tags = [];
-        let creator = $(".comic-intro-text span").toArray()[1].text();
+        let creator = $(".comic-intro-text span").toArray();
         let status = $(".comic-intro-text .comic-stt").text();
         let statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
         let desc = $(".text-justify p").text();
@@ -634,8 +634,8 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         const image = (_b = $(".img-thumbnail").attr("src")) !== null && _b !== void 0 ? _b : "";
         return createManga({
             id: mangaId,
-            author: creator,
-            artist: creator,
+            author: $(creator[1]).text().trim(),
+            artist: $(creator[1]).text().trim(),
             desc: desc,
             titles: [$(".info-title").text()],
             image: image,
