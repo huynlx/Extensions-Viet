@@ -9861,7 +9861,7 @@ class Vcomycs extends paperback_extensions_common_1.Source {
             id: mangaId,
             author: $(creator[1]).text().trim(),
             artist: $(creator[1]).text().trim(),
-            desc: desc,
+            desc: desc !== null && desc !== void 0 ? desc : 'Đang cập nhật…',
             titles: [$(".info-title").text()],
             image: image,
             status: statusFinal,
@@ -10036,9 +10036,9 @@ class Vcomycs extends paperback_extensions_common_1.Source {
                 method: "GET",
             });
         }
-        console.log('cc chapter 1');
+        console.log('cc 1');
         let data = await this.requestManager.schedule(request, 1);
-        console.log('cc chapter 2');
+        console.log('cc 2');
         var tiles = [];
         if (query.title) {
             const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
