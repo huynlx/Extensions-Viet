@@ -7448,10 +7448,7 @@ class Vcomycs extends paperback_extensions_common_1.Source {
                 method: "GET",
             });
         }
-        console.log('cc 1');
         let data = await this.requestManager.schedule(request, 1);
-        console.log('cc 2');
-        console.log(data);
         var tiles = [];
         if (query.title) {
             const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
@@ -7459,7 +7456,7 @@ class Vcomycs extends paperback_extensions_common_1.Source {
             for (const el of json.data) {
                 listItems.push(createMangaTile({
                     id: el.link,
-                    image: el.img,
+                    image: el.img.replace('150x150', '300x404'),
                     title: createIconText({ text: el.title }),
                 }));
             }
