@@ -3268,7 +3268,7 @@ class VietComic extends paperback_extensions_common_1.Source {
         });
         const response = await this.requestManager.schedule(request, 1);
         const $ = this.cheerio.load(response.data);
-        var el = $(".chapter-list span:nth-child(1) > a").toArray();
+        var el = $(".chapter-list span:nth-child(1) > a").toArray().reverse();
         const chapters = [];
         var i = 0;
         for (var i = el.length - 1; i >= 0; i--) {
@@ -3291,8 +3291,7 @@ class VietComic extends paperback_extensions_common_1.Source {
         });
         const regex = /data = '(.+)'/g;
         const response = await this.requestManager.schedule(request, 1);
-        let $ = this.cheerio.load(response.data);
-        const arr = regex.exec($.html());
+        const arr = regex.exec(response.data);
         const images = (_a = arr === null || arr === void 0 ? void 0 : arr[1].split('|')) !== null && _a !== void 0 ? _a : [];
         const pages = [];
         for (var i = 0; i < images.length; i++) {
@@ -3366,7 +3365,7 @@ class VietComic extends paperback_extensions_common_1.Source {
         for (var i = 0; i < el.length; i++) {
             var e = el[i];
             let title = $("h3 a", e).first().text();
-            let subtitle = $("a", e).last().text();
+            let subtitle = $("a:nth-of-type(2)", e).last().text();
             const image = (_b = $("img", e).first().attr("src")) !== null && _b !== void 0 ? _b : "";
             let id = $("h3 a", e).first().attr("href");
             newUpdatedItems.push(createMangaTile({
@@ -3394,7 +3393,7 @@ class VietComic extends paperback_extensions_common_1.Source {
         for (var i = 0; i < el.length; i++) {
             var e = el[i];
             let title = $("h3 a", e).first().text();
-            let subtitle = $("a", e).last().text();
+            let subtitle = $("a:nth-of-type(2)", e).last().text();
             const image = (_c = $("img", e).first().attr("src")) !== null && _c !== void 0 ? _c : "";
             let id = $("h3 a", e).first().attr("href");
             newAddItems.push(createMangaTile({
