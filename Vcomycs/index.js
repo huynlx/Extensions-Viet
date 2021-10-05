@@ -7673,7 +7673,7 @@ class Vcomycs extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             tiles = VcomycsParser_1.parseSearch($);
         }
-        metadata = { page: page + 1 };
+        metadata = undefined;
         return createPagedResults({
             results: tiles,
             metadata
