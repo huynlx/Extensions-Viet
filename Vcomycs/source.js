@@ -7643,7 +7643,7 @@ class Vcomycs extends paperback_extensions_common_1.Source {
                 },
                 data: {
                     "action": "searchtax",
-                    "keyword": encodeURI(query.title)
+                    "keyword": 'anh'
                 }
             });
         }
