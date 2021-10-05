@@ -652,21 +652,18 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         const chapters = [];
-        var title = $(".info-title").text();
         var el = $("tbody td a").toArray();
         for (var i = el.length - 1; i >= 0; i--) {
             var e = el[1];
             let id = $(e).attr("href");
-            let chapNum = Number($($("span", e).toArray()[0]).text().match(/Chap.+/)[0].split(" ")[1]);
-            let name = $($("span", e).toArray()[0]).text();
-            let time = $('tr > td.hidden-xs.hidden-sm', e).text().trim().split('/');
+            let chapNum = Number($($("span", e).toArray()).text().match(/Chap.+/)[0].split(" ")[1]);
+            let name = $($("span", e).toArray()).text().trim();
             chapters.push(createChapter({
                 id,
                 chapNum: isNaN(chapNum) ? i : chapNum,
-                name,
+                name: name,
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                time: new Date(time[1] + '/' + time[0] + '/' + time[2])
             }));
         }
         return chapters;
