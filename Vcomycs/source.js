@@ -7661,11 +7661,11 @@ class Vcomycs extends paperback_extensions_common_1.Source {
             for (var i in json) {
                 var book = json[i];
                 let listItems = [];
-                listItems.push({
+                listItems.push(createMangaTile({
                     id: book.link,
                     image: book.img.replace('150x150', '300x404'),
                     title: createIconText({ text: book.title }),
-                });
+                }));
                 tiles = listItems;
             }
         }
@@ -7725,15 +7725,17 @@ exports.generateSearch = (query) => {
     return encodeURI(keyword);
 };
 exports.parseSearch = ($) => {
-    var _a, _b;
+    var _a;
     const manga = [];
     for (const element of $('li', '#archive-list-table').toArray()) {
         let title = $('.super-title a', element).text().trim();
-        let image = (_a = $('.vip-thumbnail', element).attr('src')) !== null && _a !== void 0 ? _a : "";
+        let image = (_a = $('img', element).attr('src')) !== null && _a !== void 0 ? _a : "";
         let id = $('.super-title > a', element).first().attr('href');
+        if (!id)
+            continue;
         manga.push(createMangaTile({
             id: id !== null && id !== void 0 ? id : "",
-            image: (_b = image.replace('150x150', '300x404')) !== null && _b !== void 0 ? _b : "",
+            image: image.replace('150x150', '300x404'),
             title: createIconText({ text: title }),
         }));
     }
