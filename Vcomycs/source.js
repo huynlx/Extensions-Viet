@@ -7538,6 +7538,7 @@ class Vcomycs extends paperback_extensions_common_1.Source {
             title: "Xem nhiều",
             view_more: false,
         });
+        sectionCallback(newUpdated);
         sectionCallback(hot);
         sectionCallback(view);
         let request = createRequestObject({
@@ -7560,6 +7561,7 @@ class Vcomycs extends paperback_extensions_common_1.Source {
             }));
         }
         newUpdated.items = newUpdatedItems;
+        sectionCallback(newUpdated);
         request = createRequestObject({
             url: 'https://vcomycs.com/truyen-hot-nhat/',
             method: "GET",
@@ -7606,16 +7608,8 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         let select = 1;
         switch (homepageSectionId) {
             case "new_updated":
-                url = `https://vlogtruyen.net/the-loai/moi-cap-nhap?page=${page}`;
+                url = `https://vcomycs.com/page/${page}/`;
                 select = 1;
-                break;
-            case "hot":
-                url = `https://vlogtruyen.net/the-loai/dang-hot?page=${page}`;
-                select = 2;
-                break;
-            case "view":
-                url = `https://vlogtruyen.net/de-nghi/pho-bien/xem-nhieu?page=${page}`;
-                select = 3;
                 break;
             default:
                 return Promise.resolve(createPagedResults({ results: [] }));
@@ -7627,7 +7621,7 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         let manga = VcomycsParser_1.parseViewMore($);
-        metadata = !VcomycsParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+        metadata = { page: page + 1 };
         return createPagedResults({
             results: manga,
             metadata,
@@ -7823,14 +7817,14 @@ exports.parseSearch = ($, query, tags) => {
 exports.parseViewMore = ($) => {
     var _a, _b;
     const manga = [];
-    for (const element of $('.commic-hover', '#ul-content-pho-bien').toArray()) {
-        let title = $('.title-commic-tab', element).text().trim();
-        let image = (_a = $('.image-commic-tab > img', element).attr('data-src')) !== null && _a !== void 0 ? _a : "";
-        let id = (_b = $('a', element).first().attr('href')) !== null && _b !== void 0 ? _b : title;
-        let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
+    for (const element of $('.comic-item', '.col-md-9 > .comic-list ').toArray().splice(0, 20)) {
+        let title = $('.comic-title', element).text().trim();
+        let image = (_a = $('.img-thumbnail', element).attr('data-thumb')) !== null && _a !== void 0 ? _a : "";
+        let id = $('.comic-img > a', element).first().attr('href');
+        let subtitle = $(`.comic-chapter`, element).text().trim();
         manga.push(createMangaTile({
-            id: id,
-            image: image !== null && image !== void 0 ? image : "",
+            id: id !== null && id !== void 0 ? id : "",
+            image: (_b = image.replace('150x150', '300x404')) !== null && _b !== void 0 ? _b : "",
             title: createIconText({ text: title }),
             subtitleText: createIconText({ text: subtitle }),
         }));
