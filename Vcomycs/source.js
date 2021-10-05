@@ -7366,7 +7366,7 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         let hotItems = [];
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
-        for (const element of $('li', 'ul.most-views').toArray()) {
+        for (const element of $('li', '.col-md-9 .comic-list-page ul.most-views').toArray()) {
             let title = $('.super-title > a', element).text().trim();
             let image = (_c = $('.list-left-img', element).attr('src')) !== null && _c !== void 0 ? _c : "";
             let id = $('.super-title > a', element).first().attr('href');
@@ -7385,7 +7385,7 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         let viewItems = [];
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
-        for (const element of $('li', 'ul.most-views').toArray()) {
+        for (const element of $('li', '.col-md-9 .comic-list-page ul.most-views').toArray()) {
             let title = $('.super-title > a', element).text().trim();
             let image = (_e = $('.list-left-img', element).attr('src')) !== null && _e !== void 0 ? _e : "";
             let id = $('.super-title > a', element).first().attr('href');
