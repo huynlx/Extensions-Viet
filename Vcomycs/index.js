@@ -7688,7 +7688,7 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        var genres = $($(".tags a").toArray()[0]);
+        var genres = $('a', $(".tags").toArray()[0]).toArray();
         for (var i in genres) {
             var genre = genres[i];
             const label = $(genre).text().trim();
