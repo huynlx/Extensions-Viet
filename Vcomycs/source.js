@@ -7628,9 +7628,8 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         });
     }
     async getSearchResults(query, metadata) {
-        var _a, _b, _c;
-        let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-        const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
+        var _a, _b;
+        const tags = (_b = (_a = query.includedTags) === null || _a === void 0 ? void 0 : _a.map(tag => tag.id)) !== null && _b !== void 0 ? _b : [];
         var url = '';
         var request = '';
         if (query.title) {
@@ -7639,7 +7638,7 @@ class Vcomycs extends paperback_extensions_common_1.Source {
                 url,
                 method: 'POST',
                 headers: {
-                    "content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                    "content-type": "multipart/form-data"
                 },
                 data: {
                     "action": "searchtax",
@@ -7673,7 +7672,7 @@ class Vcomycs extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             tiles = VcomycsParser_1.parseSearch($);
         }
-        metadata = { page: page + 1 };
+        metadata = undefined;
         return createPagedResults({
             results: tiles,
             metadata
