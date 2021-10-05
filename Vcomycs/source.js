@@ -7434,10 +7434,10 @@ class Vcomycs extends paperback_extensions_common_1.Source {
                 method: 'post',
                 data: {
                     "action": "searchtax",
-                    "keyword": encodeURI(query.title)
+                    "keyword": query.title
                 },
                 headers: {
-                    'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                    'content-type': 'application/x-www-form-urlencoded'
                 }
             });
         }
@@ -7451,6 +7451,7 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         console.log('cc 1');
         let data = await this.requestManager.schedule(request, 1);
         console.log('cc 2');
+        console.log(data);
         var tiles = [];
         if (query.title) {
             const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
