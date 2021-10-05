@@ -3422,7 +3422,7 @@ class VietComic extends paperback_extensions_common_1.Source {
                 url = `https://vietcomic.net/truyen-tranh-hay?type=sieu-pham&page=${page}`;
                 break;
             case "az":
-                url = `https://vietcomic.net/truyen-tranh-hay&page=${page}`;
+                url = `https://vietcomic.net/truyen-tranh-hay?type=az&page=${page}`;
                 break;
             case "view":
                 url = `https://vietcomic.net/truyen-tranh-hay?type=truyenhay&page=${page}`;
