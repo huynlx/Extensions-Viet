@@ -3201,7 +3201,7 @@ exports.VietComicInfo = {
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from VietComic',
-    websiteBaseURL: `https://saytruyen.net/`,
+    websiteBaseURL: DOMAIN,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
         {
@@ -3218,11 +3218,11 @@ class VietComic extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
     }
-    getMangaShareUrl(mangaId) { return `${DOMAIN}${mangaId}`; }
+    getMangaShareUrl(mangaId) { return `${mangaId}`; }
     ;
     async getMangaDetails(mangaId) {
         var _a;
-        const url = `${DOMAIN}${mangaId}`;
+        const url = `${mangaId}`;
         const request = createRequestObject({
             url: url,
             method: "GET",
@@ -3232,22 +3232,30 @@ class VietComic extends paperback_extensions_common_1.Source {
         let tags = [];
         let creator = '';
         let status = 1;
-        let desc = $('.detail-content > p').text();
-        for (const t of $('.list01.li03 > a.genner-block').toArray()) {
-            const genre = $(t).text().trim();
-            const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
-            tags.push(createTag({ label: genre, id }));
+        let desc = $(".manga-info-content").html();
+        for (const tt of $('.manga-info-text > li').toArray()) {
+            if ($(tt).text().includes('Tình Trạng')) {
+                status = $(tt).text().split(":")[1].includes("Đang") ? 1 : 0;
+            }
+            else if ($(tt).text().includes('Tác Giả')) {
+                creator = $(tt).text().split(":")[1].trim();
+            }
+            else if ($(tt).text().includes('Thể Loại')) {
+                for (const t of $('a', tt).toArray()) {
+                    const genre = $(t).text().trim();
+                    const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
+                    tags.push(createTag({ label: genre, id }));
+                }
+            }
         }
-        creator = $('.list-info > li:nth-child(1)').text().split(":")[1].trim();
-        status = $('.list-info > li:nth-child(2) > b').text().toLowerCase().includes("đang") ? 1 : 0;
-        const image = $('.wrap-content-image > img').attr('src');
+        const image = $(".manga-info-pic img").first().attr('src');
         return createManga({
             id: mangaId,
             author: creator,
             artist: creator,
-            desc: desc,
-            titles: [$('.wrap-content-info > h1').text().trim()],
-            image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://saytruyen.net/' + image)),
+            desc: desc !== null && desc !== void 0 ? desc : "đéo có des rồi",
+            titles: [$(".manga-info-text h1").first().text()],
+            image: image !== null && image !== void 0 ? image : "",
             status,
             hentai: false,
             tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
@@ -3255,7 +3263,7 @@ class VietComic extends paperback_extensions_common_1.Source {
     }
     async getChapters(mangaId) {
         const request = createRequestObject({
-            url: `${DOMAIN}${mangaId}`,
+            url: `${mangaId}`,
             method,
         });
         const response = await this.requestManager.schedule(request, 1);
@@ -3326,14 +3334,16 @@ class VietComic extends paperback_extensions_common_1.Source {
         let hotItems = [];
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        for (let obj of $('li', '#main-content > .wrap-content-part:nth-child(4) > .body-content-part > ul').toArray()) {
-            let title = $(`.info-bottom > a`, obj).text().trim();
-            let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
-            const image = $(`a > img`, obj).attr('src');
-            let id = (_a = $(`.info-bottom > a`, obj).attr("href")) !== null && _a !== void 0 ? _a : title;
+        let el = $(".leftCol .list-truyen-item-wrap");
+        for (var i = 0; i < el.length; i++) {
+            var e = el[i];
+            let title = $("h3 a", e).first().text();
+            let subtitle = $("a", e).last().text();
+            const image = (_a = $("img", e).first().attr("src")) !== null && _a !== void 0 ? _a : "";
+            let id = $("h3 a", e).first().attr("href");
             hotItems.push(createMangaTile({
-                id: id,
-                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://saytruyen.net/' + image)),
+                id: id !== null && id !== void 0 ? id : title,
+                image,
                 title: createIconText({
                     text: title,
                 }),
@@ -3352,11 +3362,11 @@ class VietComic extends paperback_extensions_common_1.Source {
         let newUpdatedItems = [];
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
-        const el = $(".leftCol .list-truyen-item-wrap");
+        el = $(".leftCol .list-truyen-item-wrap");
         for (var i = 0; i < el.length; i++) {
             var e = el[i];
             let title = $("h3 a", e).first().text();
-            let subtitle = $(".lastChapter", e).text();
+            let subtitle = $("a", e).last().text();
             const image = (_b = $("img", e).first().attr("src")) !== null && _b !== void 0 ? _b : "";
             let id = $("h3 a", e).first().attr("href");
             newUpdatedItems.push(createMangaTile({
@@ -3380,14 +3390,16 @@ class VietComic extends paperback_extensions_common_1.Source {
         let newAddItems = [];
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
-        for (let obj of $('li', '#main-content > .wrap-content-part:nth-child(7) > .body-content-part > ul').toArray()) {
-            let title = $(`.info-bottom > a`, obj).text().trim();
-            let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
-            const image = $(`a > img`, obj).attr('data-src');
-            let id = (_c = $(`.info-bottom > a`, obj).attr("href")) !== null && _c !== void 0 ? _c : title;
+        el = $(".leftCol .list-truyen-item-wrap");
+        for (var i = 0; i < el.length; i++) {
+            var e = el[i];
+            let title = $("h3 a", e).first().text();
+            let subtitle = $("a", e).last().text();
+            const image = (_c = $("img", e).first().attr("src")) !== null && _c !== void 0 ? _c : "";
+            let id = $("h3 a", e).first().attr("href");
             newAddItems.push(createMangaTile({
-                id: id,
-                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://saytruyen.net/' + image)),
+                id: id !== null && id !== void 0 ? id : title,
+                image,
                 title: createIconText({
                     text: title,
                 }),
