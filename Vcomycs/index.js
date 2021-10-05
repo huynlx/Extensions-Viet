@@ -622,22 +622,22 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         let tags = [];
-        let creator = $('.top-detail-manga-content > .drawer:nth-child(5) a').text().trim();
-        let status = $('.manga-status > p').text().trim();
+        let creator = $(".comic-intro-text span")[1].text();
+        let status = $(".comic-intro-text .comic-stt").text();
         let statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
-        let desc = $(".desc-commic-detail").text().trim();
-        for (const t of $('.categories-list-detail-commic > li > a').toArray()) {
+        let desc = $(".text-justify p").text();
+        for (const t of $(".comic-info .tags > a").toArray()) {
             const genre = $(t).text().trim();
             const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
             tags.push(createTag({ label: genre, id }));
         }
-        const image = (_b = $('.image-commic-detail img').attr('data-src')) !== null && _b !== void 0 ? _b : "";
+        const image = (_b = $(".img-thumbnail").attr("src")) !== null && _b !== void 0 ? _b : "";
         return createManga({
             id: mangaId,
             author: creator,
             artist: creator,
             desc: desc,
-            titles: [$('.title-commic-detail').text().trim()],
+            titles: [$(".info-title").text()],
             image: image,
             status: statusFinal,
             hentai: false,
@@ -693,7 +693,7 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         let newUpdated = createHomeSection({
             id: 'new_updated',
             title: "Mới cập nhật",
@@ -767,7 +767,7 @@ class Vcomycs extends paperback_extensions_common_1.Source {
             let id = $('.super-title > a', element).first().attr('href');
             viewItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: image !== null && image !== void 0 ? image : "",
+                image: (_d = image.replace('150x150', '300x404')) !== null && _d !== void 0 ? _d : "",
                 title: createIconText({ text: title }),
             }));
         }
