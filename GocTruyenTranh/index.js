@@ -784,7 +784,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
         let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 0;
         const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
         const request = createRequestObject({
-            url: query.title ? `https://goctruyentranh.com/api/comic/search?name=${query.title}` : `https://goctruyentranh.com/api/comic/search/category?p=${page}&value=${tags[0]}`,
+            url: query.title ? encodeURI(`https://goctruyentranh.com/api/comic/search?name=${query.title}`) : `https://goctruyentranh.com/api/comic/search/category?p=${page}&value=${tags[0]}`,
             method: "GET",
         });
         const data = await this.requestManager.schedule(request, 1);
@@ -836,7 +836,7 @@ exports.generateSearch = (query) => {
     return encodeURI(keyword);
 };
 exports.parseSearch = (json) => {
-    var _a;
+    var _a, _b;
     const mangas = [];
     const array = (_a = json.result.data) !== null && _a !== void 0 ? _a : json.result;
     for (let obj of array) {
@@ -846,7 +846,7 @@ exports.parseSearch = (json) => {
         let id = 'https://goctruyentranh.com/truyen/' + obj.nameEn + "::" + obj.id;
         mangas.push(createMangaTile({
             id: id,
-            image: image !== null && image !== void 0 ? image : "",
+            image: (_b = encodeURI(image)) !== null && _b !== void 0 ? _b : "",
             title: createIconText({ text: exports.decodeHTMLEntity(title) }),
             subtitleText: createIconText({ text: subtitle }),
         }));
@@ -854,6 +854,7 @@ exports.parseSearch = (json) => {
     return mangas;
 };
 exports.parseViewMore = (json) => {
+    var _a;
     const manga = [];
     const collectedIds = [];
     for (let obj of json.result.data) {
@@ -864,7 +865,7 @@ exports.parseViewMore = (json) => {
         if (!collectedIds.includes(id)) {
             manga.push(createMangaTile({
                 id: id,
-                image: image !== null && image !== void 0 ? image : "",
+                image: (_a = encodeURI(image)) !== null && _a !== void 0 ? _a : "",
                 title: createIconText({ text: exports.decodeHTMLEntity(title) }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
