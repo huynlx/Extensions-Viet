@@ -3314,14 +3314,19 @@ class VietComic extends paperback_extensions_common_1.Source {
             title: "Truyện Đề Cử",
             type: paperback_extensions_common_1.HomeSectionType.featured
         });
+        let az = createHomeSection({
+            id: 'az',
+            title: "A-Z",
+            view_more: true,
+        });
+        let view = createHomeSection({
+            id: 'view',
+            title: "Lượt xem",
+            view_more: true,
+        });
         let hot = createHomeSection({
             id: 'hot',
             title: "Truyện HOT",
-            view_more: true,
-        });
-        let newUpdated = createHomeSection({
-            id: 'new_updated',
-            title: "Truyện mới cập nhật",
             view_more: true,
         });
         let newAdded = createHomeSection({
@@ -3329,25 +3334,40 @@ class VietComic extends paperback_extensions_common_1.Source {
             title: "Siêu phẩm",
             view_more: true,
         });
+        let newUpdated = createHomeSection({
+            id: 'new_updated',
+            title: "Mới",
+            view_more: true,
+        });
+        sectionCallback(az);
+        sectionCallback(view);
         sectionCallback(hot);
-        sectionCallback(newUpdated);
         sectionCallback(newAdded);
+        sectionCallback(newUpdated);
         let request = createRequestObject({
-            url: 'https://vietcomic.net/truyen-tranh-hay?type=hot',
+            url: 'https://vietcomic.net/truyen-tranh-hay',
             method: "GET",
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         hot.items = VietComicParser_1.parseManga($);
-        sectionCallback(hot);
+        sectionCallback(az);
         request = createRequestObject({
-            url: 'https://vietcomic.net/truyen-tranh-hay?type=truyenmoi',
+            url: 'https://vietcomic.net/truyen-tranh-hay?type=truyenhay',
             method: "GET",
         });
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
-        newUpdated.items = VietComicParser_1.parseManga($);
-        sectionCallback(newUpdated);
+        hot.items = VietComicParser_1.parseManga($);
+        sectionCallback(view);
+        request = createRequestObject({
+            url: 'https://vietcomic.net/truyen-tranh-hay?type=hot',
+            method: "GET",
+        });
+        data = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(data.data);
+        hot.items = VietComicParser_1.parseManga($);
+        sectionCallback(hot);
         request = createRequestObject({
             url: 'https://vietcomic.net/truyen-tranh-hay?type=sieu-pham',
             method: "GET",
@@ -3357,13 +3377,21 @@ class VietComic extends paperback_extensions_common_1.Source {
         newAdded.items = VietComicParser_1.parseManga($);
         sectionCallback(newAdded);
         request = createRequestObject({
+            url: 'https://vietcomic.net/truyen-tranh-hay?type=truyenmoi',
+            method: "GET",
+        });
+        data = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(data.data);
+        newUpdated.items = VietComicParser_1.parseManga($);
+        sectionCallback(newUpdated);
+        request = createRequestObject({
             url: 'https://vietcomic.net/',
             method: "GET",
         });
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
         const featuredItems = [];
-        for (const x of $('.slide .item').toArray()) {
+        for (const x of $('.slide .item').toArray().splice(0, 10)) {
             featuredItems.push(createMangaTile({
                 id: (_a = $('.slide-caption > h3 > a', x).attr("href")) !== null && _a !== void 0 ? _a : "",
                 image: (_b = $('img', x).attr("src")) !== null && _b !== void 0 ? _b : "",
@@ -3392,6 +3420,12 @@ class VietComic extends paperback_extensions_common_1.Source {
                 break;
             case "new_added":
                 url = `https://vietcomic.net/truyen-tranh-hay?type=sieu-pham&page=${page}`;
+                break;
+            case "az":
+                url = `https://vietcomic.net/truyen-tranh-hay&page=${page}`;
+                break;
+            case "view":
+                url = `https://vietcomic.net/truyen-tranh-hay?type=truyenhay&page=${page}`;
                 break;
             default:
                 return Promise.resolve(createPagedResults({ results: [] }));
