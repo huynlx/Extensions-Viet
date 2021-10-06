@@ -865,9 +865,9 @@ class VietComic extends paperback_extensions_common_1.Source {
         });
         const data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        let json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
         let tiles = [];
         if (query.title) {
+            let json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
             const items = [];
             for (const x of json) {
                 items.push(createMangaTile({
