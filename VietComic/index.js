@@ -3367,7 +3367,7 @@ exports.parseManga = ($) => {
     var _a;
     let mangas = [];
     let el = $(".leftCol .list-truyen-item-wrap");
-    for (var i = 0; i < el.length; i++) {
+    for (var i = 0; i < 20; i++) {
         var e = el[i];
         let title = $("h3 a", e).first().text();
         let subtitle = $("a:nth-of-type(2)", e).last().text();
