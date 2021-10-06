@@ -3455,7 +3455,6 @@ class VietComic extends paperback_extensions_common_1.Source {
             param: encodeURI(`&page=${page}`)
         });
         const data = await this.requestManager.schedule(request, 1);
-        let $ = this.cheerio.load(data.data);
         let tiles = [];
         if (query.title) {
             let json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
@@ -3475,9 +3474,16 @@ class VietComic extends paperback_extensions_common_1.Source {
             tiles = items;
         }
         else {
+            let $ = this.cheerio.load(data.data);
             tiles = VietComicParser_1.parseSearch($);
         }
-        metadata = !VietComicParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+        if (query.title) {
+            metadata = undefined;
+        }
+        else {
+            let $ = this.cheerio.load(data.data);
+            metadata = !VietComicParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+        }
         return createPagedResults({
             results: tiles,
             metadata
