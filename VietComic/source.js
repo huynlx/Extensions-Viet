@@ -871,7 +871,7 @@ class VietComic extends paperback_extensions_common_1.Source {
             const items = [];
             for (const x of json) {
                 items.push(createMangaTile({
-                    id: VietComicParser_1.change_alias(x.name) + "-" + x.id,
+                    id: x.id,
                     image: 'https://vietcomic.net' + x.image,
                     title: createIconText({
                         text: x.name,
