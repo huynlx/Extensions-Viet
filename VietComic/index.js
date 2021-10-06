@@ -3445,38 +3445,38 @@ class VietComic extends paperback_extensions_common_1.Source {
         });
     }
     async getSearchResults(query, metadata) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c;
         let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
         const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
-        const search = {
-            genres: '',
-            status: "0",
-            sort: "last_update",
-            name: (_d = query.title) !== null && _d !== void 0 ? _d : ''
-        };
-        tags.map((value) => {
-            if (value.indexOf('.') === -1) {
-                search.genres = value;
-            }
-            else {
-                switch (value.split(".")[0]) {
-                    case 'sort':
-                        search.sort = (value.split(".")[1]);
-                        break;
-                    case 'status':
-                        search.status = (value.split(".")[1]);
-                        break;
-                }
-            }
-        });
         const request = createRequestObject({
-            url: (tags[0] === 'all' ? (DOMAIN + 'danh-sach-truyen.html?') : encodeURI(`${DOMAIN}danh-sach-truyen.html?status=${search.status}&name=${search.name}&genre=${search.genres}&sort=${search.sort}`)),
+            url: query.title ? encodeURI(`https://vietcomic.net/home/getjsonsearchstory?searchword=${query.title}&search_style=tentruyen`) :
+                tags[0],
             method: "GET",
             param: encodeURI(`&page=${page}`)
         });
         const data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        const tiles = VietComicParser_1.parseSearch($);
+        let json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
+        let tiles = [];
+        if (query.title) {
+            const items = [];
+            for (const x of json) {
+                items.push(createMangaTile({
+                    id: VietComicParser_1.change_alias(x.name) + "-" + x.id,
+                    image: 'https://vietcomic.net' + x.image,
+                    title: createIconText({
+                        text: x.name,
+                    }),
+                    subtitleText: createIconText({
+                        text: x.lastchapter,
+                    }),
+                }));
+            }
+            tiles = items;
+        }
+        else {
+            tiles = VietComicParser_1.parseSearch($);
+        }
         metadata = !VietComicParser_1.isLastPage($) ? { page: page + 1 } : undefined;
         return createPagedResults({
             results: tiles,
@@ -3510,7 +3510,7 @@ exports.VietComic = VietComic;
 },{"./VietComicParser":91,"paperback-extensions-common":16}],91:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseManga = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
+exports.change_alias = exports.parseManga = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
 const entities = require("entities");
 exports.generateSearch = (query) => {
     var _a;
@@ -3519,17 +3519,23 @@ exports.generateSearch = (query) => {
 };
 exports.parseSearch = ($) => {
     var _a;
-    const mangas = [];
-    for (let obj of $('li', 'ul#danhsachtruyen').toArray()) {
-        let title = $(`.info-bottom > a`, obj).text().trim();
-        let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
-        var image = $('a', obj).first().attr('data-src');
-        let id = (_a = $(`.info-bottom > a`, obj).attr("href")) !== null && _a !== void 0 ? _a : title;
+    let mangas = [];
+    let el = $(".leftCol .list-truyen-item-wrap");
+    for (var i = 0; i < el.length; i++) {
+        var e = el[i];
+        let title = $("h3 a", e).first().text();
+        let subtitle = $("a:nth-of-type(2)", e).last().text();
+        const image = (_a = $("img", e).first().attr("src")) !== null && _a !== void 0 ? _a : "";
+        let id = $("h3 a", e).first().attr("href");
         mangas.push(createMangaTile({
-            id: encodeURIComponent(id),
-            image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://saytruyen.net/' + image)),
-            title: createIconText({ text: decodeHTMLEntity(title) }),
-            subtitleText: createIconText({ text: subtitle }),
+            id: id !== null && id !== void 0 ? id : title,
+            image,
+            title: createIconText({
+                text: title,
+            }),
+            subtitleText: createIconText({
+                text: subtitle,
+            }),
         }));
     }
     return mangas;
@@ -3598,6 +3604,22 @@ exports.parseManga = ($) => {
     }
     return mangas;
 };
+function change_alias(alias) {
+    var str = alias;
+    str = str.toLowerCase();
+    str = str.replace(/Ă |Ă¡|áº¡|áº£|Ă£|Ă¢|áº§|áº¥|áº­|áº©|áº«|Äƒ|áº±|áº¯|áº·|áº³|áºµ/g, "a");
+    str = str.replace(/Ă¨|Ă©|áº¹|áº»|áº½|Ăª|á»|áº¿|á»‡|á»ƒ|á»…/g, "e");
+    str = str.replace(/Ă¬|Ă­|á»‹|á»‰|Ä©/g, "i");
+    str = str.replace(/Ă²|Ă³|á»|á»|Ăµ|Ă´|á»“|á»‘|á»™|á»•|á»—|Æ¡|á»|á»›  |á»£|á»Ÿ|á»¡/g, "o");
+    str = str.replace(/Ă¹|Ăº|á»¥|á»§|Å©|Æ°|á»«|á»©|á»±|á»­|á»¯/g, "u");
+    str = str.replace(/á»³|Ă½|á»µ|á»·|á»¹/g, "y");
+    str = str.replace(/Ä‘/g, "d");
+    str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'| |\"|\&|\#|\[|\]|~|-|$|_/g, "_");
+    str = str.replace(/_+_/g, "_");
+    str = str.replace(/^\_+|\_+$/g, "");
+    return str;
+}
+exports.change_alias = change_alias;
 
 },{"entities":3}]},{},[90])(90)
 });
