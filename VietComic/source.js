@@ -634,7 +634,7 @@ class VietComic extends paperback_extensions_common_1.Source {
         });
     }
     async getSearchResults(query, metadata) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d, _e, _f, _g, _h;
         let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
         const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
         const request = createRequestObject({
@@ -650,13 +650,13 @@ class VietComic extends paperback_extensions_common_1.Source {
             const items = [];
             for (const x of json) {
                 items.push(createMangaTile({
-                    id: 'https://vietcomic.net/' + VietComicParser_1.change_alias(x.name) + "-" + x.id,
-                    image: 'https://vietcomic.net' + x.image,
+                    id: 'https://vietcomic.net/' + VietComicParser_1.change_alias((_d = x.name) !== null && _d !== void 0 ? _d : "") + "-" + ((_e = x.id) !== null && _e !== void 0 ? _e : ""),
+                    image: 'https://vietcomic.net' + ((_f = x.image) !== null && _f !== void 0 ? _f : ""),
                     title: createIconText({
-                        text: x.name,
+                        text: (_g = x.name) !== null && _g !== void 0 ? _g : "",
                     }),
                     subtitleText: createIconText({
-                        text: x.chapter_lastname,
+                        text: (_h = x.chapter_lastname) !== null && _h !== void 0 ? _h : "",
                     }),
                 }));
             }
