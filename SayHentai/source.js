@@ -761,7 +761,7 @@ class SayHentai extends paperback_extensions_common_1.Source {
         let newUpdatedItems = [];
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
-        for (let obj of $('li', '#main-content > .wrap-content-part:nth-of-type(2) > .body-content-part > ul').toArray().splice(0, 15)) {
+        for (let obj of $('li', '#main-content > .wrap-content-part:nth-of-type(3) > .body-content-part > ul').toArray().splice(0, 15)) {
             let title = $(`.info-bottom > a`, obj).text().trim();
             let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
             const image = $(`a > img`, obj).attr('src');
@@ -787,7 +787,7 @@ class SayHentai extends paperback_extensions_common_1.Source {
         let newAddItems = [];
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
-        for (let obj of $('li', '#main-content > .wrap-content-part:nth-of-type(3) > .body-content-part > ul').toArray()) {
+        for (let obj of $('li', '#main-content > .wrap-content-part:nth-of-type(5) > .body-content-part > ul').toArray()) {
             let title = $(`.info-bottom > a`, obj).text().trim();
             let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
             const image = $(`a > img`, obj).attr('src');
