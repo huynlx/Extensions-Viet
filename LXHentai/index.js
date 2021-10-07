@@ -3070,7 +3070,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
         });
         sectionCallback(newUpdated);
         let request = createRequestObject({
-            url: 'https://lxhentai.com/story/index.php?p=2',
+            url: 'https://lxhentai.com/story/index.php?hot',
             method: "GET",
         });
         let newUpdatedItems = [];
@@ -3093,6 +3093,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
                 }),
             }));
         }
+        console.log("New Updates: ");
         console.log(newUpdatedItems);
         newUpdated.items = newUpdatedItems;
         sectionCallback(newUpdated);

@@ -3288,7 +3288,7 @@ class SayTruyen extends paperback_extensions_common_1.Source {
                 continue;
             let link = obj.attribs['src'].includes('http') ?
                 (obj.attribs['src']).trim() : (DOMAIN + obj.attribs['src']).trim();
-            pages.push(link);
+            pages.push(encodeURI(link));
         }
         const chapterDetails = createChapterDetails({
             id: chapterId,
