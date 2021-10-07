@@ -3300,7 +3300,7 @@ class qManga extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d, _e, _f;
         let newUpdated = createHomeSection({
             id: 'new_updated',
             title: "Mới nhất",
@@ -3333,7 +3333,7 @@ class qManga extends paperback_extensions_common_1.Source {
             let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
             newUpdatedItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: image !== null && image !== void 0 ? image : "",
+                image: (_b = encodeURI(image)) !== null && _b !== void 0 ? _b : "",
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
@@ -3349,12 +3349,12 @@ class qManga extends paperback_extensions_common_1.Source {
         $ = this.cheerio.load(data.data);
         for (const element of $('li', '.content-tab').toArray().splice(0, 15)) {
             let title = $('.title-commic-tab', element).text().trim();
-            let image = (_b = $('.image-commic-tab img', element).attr('data-src')) !== null && _b !== void 0 ? _b : "";
+            let image = (_c = $('.image-commic-tab img', element).attr('data-src')) !== null && _c !== void 0 ? _c : "";
             let id = $('.image-commic-tab > a', element).first().attr('href');
             let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
             hotItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: image !== null && image !== void 0 ? image : "",
+                image: (_d = encodeURI(image)) !== null && _d !== void 0 ? _d : "",
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
@@ -3370,12 +3370,12 @@ class qManga extends paperback_extensions_common_1.Source {
         $ = this.cheerio.load(data.data);
         for (const element of $('li', '.content-tab').toArray().splice(0, 15)) {
             let title = $('.title-commic-tab', element).text().trim();
-            let image = (_c = $('.image-commic-tab img', element).attr('data-src')) !== null && _c !== void 0 ? _c : "";
+            let image = (_e = $('.image-commic-tab img', element).attr('data-src')) !== null && _e !== void 0 ? _e : "";
             let id = $('.image-commic-tab > a', element).first().attr('href');
             let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
             viewItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: image !== null && image !== void 0 ? image : "",
+                image: (_f = encodeURI(image)) !== null && _f !== void 0 ? _f : "",
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
@@ -3390,15 +3390,15 @@ class qManga extends paperback_extensions_common_1.Source {
         let select = 1;
         switch (homepageSectionId) {
             case "new_updated":
-                url = `https://vlogtruyen.net/the-loai/moi-cap-nhap?page=${page}`;
+                url = `https://qmanga.co/de-nghi/pho-bien/moi-nhat?page=${page}`;
                 select = 1;
                 break;
             case "hot":
-                url = `https://vlogtruyen.net/the-loai/dang-hot?page=${page}`;
+                url = `https://qmanga.co/danh-muc/noi-bat?page=${page}`;
                 select = 2;
                 break;
             case "view":
-                url = `https://vlogtruyen.net/de-nghi/pho-bien/xem-nhieu?page=${page}`;
+                url = `https://qmanga.co/danh-muc/pho-bien?page=${page}`;
                 select = 3;
                 break;
             default:
@@ -3410,7 +3410,7 @@ class qManga extends paperback_extensions_common_1.Source {
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        let manga = qMangaParser_1.parseViewMore($);
+        let manga = qMangaParser_1.parseViewMore($, select);
         metadata = !qMangaParser_1.isLastPage($) ? { page: page + 1 } : undefined;
         return createPagedResults({
             results: manga,
@@ -3604,20 +3604,36 @@ exports.parseSearch = ($, query, tags) => {
     }
     return manga;
 };
-exports.parseViewMore = ($) => {
-    var _a, _b;
+exports.parseViewMore = ($, select) => {
+    var _a, _b, _c, _d;
     const manga = [];
-    for (const element of $('.commic-hover', '#ul-content-pho-bien').toArray()) {
-        let title = $('.title-commic-tab', element).text().trim();
-        let image = (_a = $('.image-commic-tab > img', element).attr('data-src')) !== null && _a !== void 0 ? _a : "";
-        let id = (_b = $('a', element).first().attr('href')) !== null && _b !== void 0 ? _b : title;
-        let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
-        manga.push(createMangaTile({
-            id: id,
-            image: image !== null && image !== void 0 ? image : "",
-            title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: subtitle }),
-        }));
+    if (select === 1) {
+        for (const element of $('li', '.detail-bxh-ul').toArray().splice(0, 15)) {
+            let title = $('.title-commic-tab', element).text().trim();
+            let image = (_a = $('.image-commic-bxh img', element).attr('data-src')) !== null && _a !== void 0 ? _a : "";
+            let id = $('.image-commic-bxh > a', element).first().attr('href');
+            let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
+            manga.push(createMangaTile({
+                id: id !== null && id !== void 0 ? id : "",
+                image: (_b = encodeURI(image)) !== null && _b !== void 0 ? _b : "",
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: subtitle }),
+            }));
+        }
+    }
+    else {
+        for (const element of $('li', '.content-tab').toArray().splice(0, 15)) {
+            let title = $('.title-commic-tab', element).text().trim();
+            let image = (_c = $('.image-commic-tab img', element).attr('data-src')) !== null && _c !== void 0 ? _c : "";
+            let id = $('.image-commic-tab > a', element).first().attr('href');
+            let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
+            manga.push(createMangaTile({
+                id: id !== null && id !== void 0 ? id : "",
+                image: (_d = encodeURI(image)) !== null && _d !== void 0 ? _d : "",
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: subtitle }),
+            }));
+        }
     }
     return manga;
 };
