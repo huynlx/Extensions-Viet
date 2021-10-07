@@ -3194,7 +3194,7 @@ const paperback_extensions_common_1 = require("paperback-extensions-common");
 const qMangaParser_1 = require("./qMangaParser");
 const method = 'GET';
 exports.qMangaInfo = {
-    version: '2.6.0',
+    version: '2.0.0',
     name: 'qManga',
     icon: 'icon.png',
     author: 'Huynhzip3',
