@@ -654,7 +654,7 @@ class qManga extends paperback_extensions_common_1.Source {
             artist: creator,
             desc: desc,
             titles: [$('.title-commic-detail').text().trim()],
-            image: image,
+            image: encodeURI(image),
             status: statusFinal,
             hentai: false,
             tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
@@ -834,7 +834,7 @@ class qManga extends paperback_extensions_common_1.Source {
             cate: '',
             translator: "",
             writer: "",
-            status: "Trạng+thái",
+            status: "",
             sort: "moi-nhat"
         };
         tags.map((value) => {
@@ -857,9 +857,9 @@ class qManga extends paperback_extensions_common_1.Source {
             }
         });
         const request = createRequestObject({
-            url: query.title ? encodeURI(`https://vlogtruyen.net/tim-kiem?q=${query.title}&page=${page}`) :
+            url: query.title ? encodeURI(`https://qmanga.co/tim-kiem?q=${query.title}&page=${page}`) :
                 (tags[0].includes('http') ? (tags[0] + `?page=${page}`) :
-                    encodeURI(`https://vlogtruyen.net/the-loai/huynh?cate=${search.cate}&translator=${search.translator}&writer=${search.writer}&status=${search.status}&sort=${search.sort}&page=${page}`)),
+                    encodeURI(`https://qmanga.co/danh-muc/huynh?cate=${search.cate}&translator=${search.translator}&writer=${search.writer}&status=${search.status}&sort=${search.sort}&page=${page}`)),
             method: "GET",
         });
         let data = await this.requestManager.schedule(request, 1);
@@ -872,71 +872,66 @@ class qManga extends paperback_extensions_common_1.Source {
         });
     }
     async getSearchTags() {
+        var _a, _b;
         const tags = [];
         const tags2 = [
             {
-                id: 'https://vlogtruyen.net/bang-xep-hang/top-tuan',
+                id: 'https://qmanga.co/bang-xep-hang/top-ngay',
+                label: 'Top ngày'
+            },
+            {
+                id: 'https://qmanga.co/bang-xep-hang/top-tuan',
                 label: 'Top tuần'
             },
             {
-                id: 'https://vlogtruyen.net/bang-xep-hang/top-thang',
+                id: 'https://qmanga.co/bang-xep-hang/top-thang',
                 label: 'Top tháng'
-            },
-            {
-                id: 'https://vlogtruyen.net/bang-xep-hang/top-nam',
-                label: 'Top năm'
             }
         ];
-        const tags3 = [];
-        const tags4 = [];
-        const tags5 = [];
-        const tags6 = [];
-        const url = `https://vlogtruyen.net/the-loai/dang-hot`;
+        const tags5 = [
+            {
+                id: 'status.',
+                label: 'Tất cả'
+            },
+            {
+                id: 'status.1',
+                label: 'Đã hoàn thành'
+            },
+            {
+                id: 'status.2',
+                label: 'Chưa hoàn thành'
+            }
+        ];
+        const tags6 = [
+            {
+                id: 'sort.moi-nhat',
+                label: 'Mới nhất'
+            },
+            {
+                id: 'sort.dang-hot',
+                label: 'Đang hot'
+            },
+            {
+                id: 'sort.cu-nhat',
+                label: 'Cũ nhất'
+            }
+        ];
+        const url = `https://qmanga.co/`;
         const request = createRequestObject({
             url: url,
             method: "GET",
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        for (const tag of $('select[name="cate"] > option:not(:first-child)').toArray()) {
+        for (const tag of $('.menu-cate-mobile a').toArray()) {
             const label = $(tag).text().trim();
-            const id = 'cate.' + $(tag).attr('value');
+            const id = 'cate.' + ((_b = (_a = $(tag).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop()) === null || _b === void 0 ? void 0 : _b.trim());
             if (!id || !label)
                 continue;
             tags.push({ id: id, label: label });
         }
-        for (const tag of $('select[name="translator"] > option:not(:first-child)').toArray()) {
-            const label = $(tag).text().trim();
-            const id = 'translator.' + $(tag).attr('value');
-            if (!id || !label)
-                continue;
-            tags3.push({ id: id, label: label });
-        }
-        for (const tag of $('select[name="writer"] > option:not(:first-child)').toArray()) {
-            const label = $(tag).text().trim();
-            const id = 'writer.' + $(tag).attr('value');
-            if (!id || !label)
-                continue;
-            tags4.push({ id: id, label: label });
-        }
-        for (const tag of $('select[name="status"] > option:not(:first-child)').toArray()) {
-            const label = $(tag).text().trim();
-            const id = 'status.' + $(tag).attr('value');
-            if (!id || !label)
-                continue;
-            tags5.push({ id: id, label: label });
-        }
-        for (const tag of $('select[name="sort"] > option').toArray()) {
-            const label = $(tag).text().trim();
-            const id = 'sort.' + $(tag).attr('value');
-            if (!id || !label)
-                continue;
-            tags6.push({ id: id, label: label });
-        }
         const tagSections = [createTagSection({ id: '0', label: 'Bảng xếp hạng', tags: tags2.map(x => createTag(x)) }),
             createTagSection({ id: '1', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
-            createTagSection({ id: '2', label: 'Nhóm dịch', tags: tags3.map(x => createTag(x)) }),
-            createTagSection({ id: '3', label: 'Tác giả', tags: tags4.map(x => createTag(x)) }),
             createTagSection({ id: '4', label: 'Trạng thái', tags: tags5.map(x => createTag(x)) }),
             createTagSection({ id: '5', label: 'Sắp xếp', tags: tags6.map(x => createTag(x)) }),
         ];
@@ -969,28 +964,32 @@ exports.parseSearch = ($, query, tags) => {
     const manga = [];
     if (!query.title) {
         if (tags[0].includes('http')) {
-            for (const element of $('.commic-hover', '#content-column').toArray()) {
+            for (const element of $('li', '.detail-bxh-ul').toArray()) {
                 let title = $('.title-commic-tab', element).text().trim();
-                let image = (_a = $('.image-commic-tab > img', element).attr('data-src')) !== null && _a !== void 0 ? _a : "";
-                let id = (_b = $('a', element).first().attr('href')) !== null && _b !== void 0 ? _b : title;
+                let image = (_a = $('.image-commic-bxh img', element).attr('data-src')) !== null && _a !== void 0 ? _a : "";
+                let id = $('.image-commic-bxh > a', element).first().attr('href');
                 let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
+                if (title === '')
+                    continue;
                 manga.push(createMangaTile({
-                    id: id,
-                    image: image !== null && image !== void 0 ? image : "",
+                    id: id !== null && id !== void 0 ? id : "",
+                    image: (_b = encodeURI(image)) !== null && _b !== void 0 ? _b : "",
                     title: createIconText({ text: title }),
                     subtitleText: createIconText({ text: subtitle }),
                 }));
             }
         }
         else {
-            for (const element of $('.commic-hover', '#ul-content-pho-bien').toArray()) {
+            for (const element of $('li', '.content-tab').toArray()) {
                 let title = $('.title-commic-tab', element).text().trim();
-                let image = (_c = $('.image-commic-tab > img', element).attr('data-src')) !== null && _c !== void 0 ? _c : "";
-                let id = (_d = $('a', element).first().attr('href')) !== null && _d !== void 0 ? _d : title;
+                let image = (_c = $('.image-commic-tab img', element).attr('data-src')) !== null && _c !== void 0 ? _c : "";
+                let id = $('.image-commic-tab > a', element).first().attr('href');
                 let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
+                if (title === '')
+                    continue;
                 manga.push(createMangaTile({
-                    id: id,
-                    image: image !== null && image !== void 0 ? image : "",
+                    id: id !== null && id !== void 0 ? id : "",
+                    image: (_d = encodeURI(image)) !== null && _d !== void 0 ? _d : "",
                     title: createIconText({ text: title }),
                     subtitleText: createIconText({ text: subtitle }),
                 }));
@@ -998,14 +997,16 @@ exports.parseSearch = ($, query, tags) => {
         }
     }
     else {
-        for (const element of $('.commic-hover', '#content-column').toArray()) {
+        for (const element of $('li', '.detail-bxh-ul').toArray()) {
             let title = $('.title-commic-tab', element).text().trim();
-            let image = (_e = $('.image-commic-tab > img', element).attr('data-src')) !== null && _e !== void 0 ? _e : "";
-            let id = (_f = $('a', element).first().attr('href')) !== null && _f !== void 0 ? _f : title;
+            let image = (_e = $('.image-commic-bxh img', element).attr('data-src')) !== null && _e !== void 0 ? _e : "";
+            let id = $('.image-commic-bxh > a', element).first().attr('href');
             let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
+            if (title === '')
+                continue;
             manga.push(createMangaTile({
-                id: id,
-                image: image !== null && image !== void 0 ? image : "",
+                id: id !== null && id !== void 0 ? id : "",
+                image: (_f = encodeURI(image)) !== null && _f !== void 0 ? _f : "",
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
@@ -1022,6 +1023,8 @@ exports.parseViewMore = ($, select) => {
             let image = (_a = $('.image-commic-bxh img', element).attr('data-src')) !== null && _a !== void 0 ? _a : "";
             let id = $('.image-commic-bxh > a', element).first().attr('href');
             let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
+            if (title === '')
+                continue;
             manga.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
                 image: (_b = encodeURI(image)) !== null && _b !== void 0 ? _b : "",
@@ -1036,6 +1039,8 @@ exports.parseViewMore = ($, select) => {
             let image = (_c = $('.image-commic-tab img', element).attr('data-src')) !== null && _c !== void 0 ? _c : "";
             let id = $('.image-commic-tab > a', element).first().attr('href');
             let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
+            if (title === '')
+                continue;
             manga.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
                 image: (_d = encodeURI(image)) !== null && _d !== void 0 ? _d : "",
