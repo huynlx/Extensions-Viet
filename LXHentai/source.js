@@ -484,6 +484,8 @@ class LXHentai extends paperback_extensions_common_1.Source {
         let newUpdatedItems = [];
         let data = await this.requestManager.schedule(request, 1);
         console.log(data);
+        let $ = this.cheerio.load(data.data);
+        console.log($);
         newUpdated.items = newUpdatedItems;
         sectionCallback(newUpdated);
         console.log(newUpdatedItems);
