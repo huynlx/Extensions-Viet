@@ -485,7 +485,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
         sectionCallback(newUpdated);
         sectionCallback(newAdded);
         let request = createRequestObject({
-            url: 'https://lxhentai.com/story/cat.php?id=11',
+            url: 'https://lxhentai.com/story/index.php?hot',
             method: "GET",
         });
         let newUpdatedItems = [];
