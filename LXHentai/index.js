@@ -3088,7 +3088,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
         let url = '';
         switch (homepageSectionId) {
             case "new_updated":
-                url = `https://lxhentai.com/story/cat.php?id=75&p=${page}`;
+                url = `https://lxhentai.com/story/index.php?p=${page}`;
                 break;
             default:
                 return Promise.resolve(createPagedResults({ results: [] }));
