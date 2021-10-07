@@ -3232,7 +3232,12 @@ class VietComic extends paperback_extensions_common_1.Source {
         let tags = [];
         let creator = '';
         let status = 1;
-        let desc = ($(".manga-info-content").text().trim());
+        let desc = $(".manga-info-content p").clone()
+            .children()
+            .remove()
+            .end()
+            .text();
+        console.log(desc);
         for (const tt of $('.manga-info-text > li').toArray()) {
             if ($(tt).text().includes('Tình Trạng')) {
                 status = $(tt).text().split(":")[1].includes("Đang") ? 1 : 0;
@@ -3457,7 +3462,6 @@ class VietComic extends paperback_extensions_common_1.Source {
         let tiles = [];
         if (query.title) {
             let json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
-            console.log(json);
             const items = [];
             for (const x of json) {
                 items.push(createMangaTile({
