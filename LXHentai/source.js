@@ -479,7 +479,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
         });
         sectionCallback(newUpdated);
         let request = createRequestObject({
-            url: 'https://lxhentai.com/story/index.php?hot',
+            url: 'https://lxhentai.com/story/index.php',
             method: "GET",
         });
         let newUpdatedItems = [];
@@ -514,9 +514,6 @@ class LXHentai extends paperback_extensions_common_1.Source {
         switch (homepageSectionId) {
             case "new_updated":
                 url = `https://lxhentai.com/story/cat.php?id=75&p=${page}`;
-                break;
-            case "new_added":
-                url = `https://lxhentai.com/story/cat.php?id=57&p=${page}`;
                 break;
             default:
                 return Promise.resolve(createPagedResults({ results: [] }));
