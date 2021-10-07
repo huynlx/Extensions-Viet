@@ -3261,7 +3261,7 @@ class qManga extends paperback_extensions_common_1.Source {
         let $ = this.cheerio.load(data.data);
         const chapters = [];
         var i = 0;
-        for (const obj of $('.ul-list-chaper-detail-commic > li').toArray().reverse()) {
+        for (const obj of $('.ul-list-chaper-detail-commic > li').toArray()) {
             i++;
             let id = $('a', obj).first().attr('href');
             let chapNum = parseFloat((_a = $('a', obj).first().text().trim()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
