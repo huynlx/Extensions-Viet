@@ -3300,7 +3300,7 @@ class qManga extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f, _g, _h;
+        var _a, _b, _c, _d, _e, _f, _g;
         let featured = createHomeSection({
             id: 'featured',
             title: "Truyện Đề Cử",
@@ -3390,11 +3390,11 @@ class qManga extends paperback_extensions_common_1.Source {
         $ = this.cheerio.load(data.data);
         for (const element of $('a', '.top-new').toArray()) {
             let title = $('img', element).attr('title');
-            let image = (_g = $('img', element).attr('src')) !== null && _g !== void 0 ? _g : "";
+            let image = (_g = $('img', element).attr('data-src')) !== null && _g !== void 0 ? _g : $('img', element).attr('src');
             let id = $('a', element).attr('href');
             featuredItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: (_h = encodeURI(image)) !== null && _h !== void 0 ? _h : "https://qmanga.co/image/defaul-load.png",
+                image: encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png"),
                 title: createIconText({ text: title !== null && title !== void 0 ? title : "" }),
             }));
         }
