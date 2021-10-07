@@ -654,7 +654,7 @@ class qManga extends paperback_extensions_common_1.Source {
             artist: creator,
             desc: desc,
             titles: [$('.title-commic-detail').text().trim()],
-            image: decodeURI(image),
+            image: qMangaParser_1.decodeHTMLEntity(encodeURI(image)),
             status: statusFinal,
             hentai: false,
             tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
@@ -744,7 +744,7 @@ class qManga extends paperback_extensions_common_1.Source {
             let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
             newUpdatedItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png"),
+                image: qMangaParser_1.decodeHTMLEntity(encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png")),
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
@@ -764,7 +764,7 @@ class qManga extends paperback_extensions_common_1.Source {
             let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
             hotItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png"),
+                image: qMangaParser_1.decodeHTMLEntity(encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png")),
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
@@ -784,7 +784,7 @@ class qManga extends paperback_extensions_common_1.Source {
             let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
             viewItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png"),
+                image: qMangaParser_1.decodeHTMLEntity(encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png")),
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
@@ -803,7 +803,7 @@ class qManga extends paperback_extensions_common_1.Source {
             let id = $(element).attr('href');
             featuredItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png"),
+                image: qMangaParser_1.decodeHTMLEntity(encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png")),
                 title: createIconText({ text: title !== null && title !== void 0 ? title : "" }),
             }));
         }
@@ -967,7 +967,7 @@ exports.qManga = qManga;
 },{"./qMangaParser":57,"paperback-extensions-common":13}],57:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.capitalizeFirstLetter = void 0;
+exports.decodeHTMLEntity = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.capitalizeFirstLetter = void 0;
 const entities = require("entities");
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -992,7 +992,7 @@ exports.parseSearch = ($, query, tags) => {
                     continue;
                 manga.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
-                    image: encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png"),
+                    image: exports.decodeHTMLEntity(encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png")),
                     title: createIconText({ text: title }),
                     subtitleText: createIconText({ text: subtitle }),
                 }));
@@ -1008,7 +1008,7 @@ exports.parseSearch = ($, query, tags) => {
                     continue;
                 manga.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
-                    image: encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png"),
+                    image: exports.decodeHTMLEntity(encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png")),
                     title: createIconText({ text: title }),
                     subtitleText: createIconText({ text: subtitle }),
                 }));
@@ -1025,7 +1025,7 @@ exports.parseSearch = ($, query, tags) => {
                 continue;
             manga.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png"),
+                image: exports.decodeHTMLEntity(encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png")),
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
@@ -1046,7 +1046,7 @@ exports.parseViewMore = ($, select) => {
                 continue;
             manga.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png"),
+                image: exports.decodeHTMLEntity(encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png")),
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
@@ -1062,7 +1062,7 @@ exports.parseViewMore = ($, select) => {
                 continue;
             manga.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png"),
+                image: exports.decodeHTMLEntity(encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png")),
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
@@ -1085,7 +1085,7 @@ exports.isLastPage = ($) => {
         isLast = true;
     return isLast;
 };
-const decodeHTMLEntity = (str) => {
+exports.decodeHTMLEntity = (str) => {
     return entities.decodeHTML(str);
 };
 
