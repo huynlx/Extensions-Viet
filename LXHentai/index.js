@@ -3062,7 +3062,6 @@ class LXHentai extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
-        var _a;
         let newUpdated = createHomeSection({
             id: 'new_updated',
             title: "TRUYỆN MỚI CẬP NHẬT",
@@ -3070,32 +3069,16 @@ class LXHentai extends paperback_extensions_common_1.Source {
         });
         sectionCallback(newUpdated);
         let request = createRequestObject({
-            url: 'https://lxhentai.com/story/index.php',
+            url: 'https://lxhentai.com/story/index.php?hot',
             method: "GET",
         });
         let newUpdatedItems = [];
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        for (let manga of $('div.col-md-3', '.main .col-md-8 > .row').toArray()) {
-            const title = $('a', manga).last().text().trim();
-            const id = (_a = $('a', manga).last().attr('href')) !== null && _a !== void 0 ? _a : title;
-            const image = $('div', manga).first().css('background');
-            const bg = image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
-            const sub = $('a', manga).first().text().trim();
-            newUpdatedItems.push(createMangaTile({
-                id: 'https://lxhentai.com' + id,
-                image: 'https://lxhentai.com' + bg,
-                title: createIconText({
-                    text: title,
-                }),
-                subtitleText: createIconText({
-                    text: sub,
-                }),
-            }));
-        }
-        console.log(newUpdatedItems);
+        console.log($);
         newUpdated.items = newUpdatedItems;
         sectionCallback(newUpdated);
+        console.log(newUpdatedItems);
     }
     async getViewMoreItems(homepageSectionId, metadata) {
         var _a;
