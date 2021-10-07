@@ -880,7 +880,7 @@ class qManga extends paperback_extensions_common_1.Source {
         const request = createRequestObject({
             url: query.title ? encodeURI(`https://qmanga.co/tim-kiem?q=${query.title}&page=${page}`) :
                 (tags[0].includes('http') ? (tags[0] + `?page=${page}`) :
-                    encodeURI(`https://qmanga.co/danh-muc/${search.cate}&page=${page}`)),
+                    encodeURI(`https://qmanga.co/danh-muc/${search.cate}?page=${page}`)),
             method: "GET",
         });
         let data = await this.requestManager.schedule(request, 1);
