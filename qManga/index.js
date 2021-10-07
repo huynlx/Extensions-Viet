@@ -3245,7 +3245,7 @@ class qManga extends paperback_extensions_common_1.Source {
             artist: creator,
             desc: desc,
             titles: [$('.title-commic-detail').text().trim()],
-            image: encodeURI(image),
+            image: decodeURI(image),
             status: statusFinal,
             hentai: false,
             tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
@@ -3391,7 +3391,7 @@ class qManga extends paperback_extensions_common_1.Source {
         for (const element of $('a', '.top-new').toArray()) {
             let title = $('img', element).attr('title');
             let image = (_d = $('img', element).attr('data-src')) !== null && _d !== void 0 ? _d : $('img', element).attr('src');
-            let id = $('a', element).attr('href');
+            let id = $(element).attr('href');
             featuredItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
                 image: encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png"),
