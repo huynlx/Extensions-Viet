@@ -3300,7 +3300,7 @@ class qManga extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f, _g;
+        var _a, _b, _c, _d;
         let featured = createHomeSection({
             id: 'featured',
             title: "Truyện Đề Cử",
@@ -3335,7 +3335,7 @@ class qManga extends paperback_extensions_common_1.Source {
             let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
             newUpdatedItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: (_b = encodeURI(image)) !== null && _b !== void 0 ? _b : "https://qmanga.co/image/defaul-load.png",
+                image: encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png"),
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
@@ -3350,12 +3350,12 @@ class qManga extends paperback_extensions_common_1.Source {
         $ = this.cheerio.load(data.data);
         for (const element of $('li', '.content-tab').toArray().splice(0, 15)) {
             let title = $('.title-commic-tab', element).text().trim();
-            let image = (_c = $('.image-commic-tab img', element).attr('data-src')) !== null && _c !== void 0 ? _c : "";
+            let image = (_b = $('.image-commic-tab img', element).attr('data-src')) !== null && _b !== void 0 ? _b : "";
             let id = $('.image-commic-tab > a', element).first().attr('href');
             let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
             hotItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: (_d = encodeURI(image)) !== null && _d !== void 0 ? _d : "https://qmanga.co/image/defaul-load.png",
+                image: encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png"),
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
@@ -3370,12 +3370,12 @@ class qManga extends paperback_extensions_common_1.Source {
         $ = this.cheerio.load(data.data);
         for (const element of $('li', '.content-tab').toArray().splice(0, 15)) {
             let title = $('.title-commic-tab', element).text().trim();
-            let image = (_e = $('.image-commic-tab img', element).attr('data-src')) !== null && _e !== void 0 ? _e : "";
+            let image = (_c = $('.image-commic-tab img', element).attr('data-src')) !== null && _c !== void 0 ? _c : "";
             let id = $('.image-commic-tab > a', element).first().attr('href');
             let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
             viewItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: (_f = encodeURI(image)) !== null && _f !== void 0 ? _f : "https://qmanga.co/image/defaul-load.png",
+                image: encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png"),
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
@@ -3390,7 +3390,7 @@ class qManga extends paperback_extensions_common_1.Source {
         $ = this.cheerio.load(data.data);
         for (const element of $('a', '.top-new').toArray()) {
             let title = $('img', element).attr('title');
-            let image = (_g = $('img', element).attr('data-src')) !== null && _g !== void 0 ? _g : $('img', element).attr('src');
+            let image = (_d = $('img', element).attr('data-src')) !== null && _d !== void 0 ? _d : $('img', element).attr('src');
             let id = $('a', element).attr('href');
             featuredItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
@@ -3570,7 +3570,7 @@ exports.generateSearch = (query) => {
     return encodeURI(keyword);
 };
 exports.parseSearch = ($, query, tags) => {
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c;
     const manga = [];
     if (!query.title) {
         if (tags[0].includes('http')) {
@@ -3583,7 +3583,7 @@ exports.parseSearch = ($, query, tags) => {
                     continue;
                 manga.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
-                    image: (_b = encodeURI(image)) !== null && _b !== void 0 ? _b : "",
+                    image: encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png"),
                     title: createIconText({ text: title }),
                     subtitleText: createIconText({ text: subtitle }),
                 }));
@@ -3592,14 +3592,14 @@ exports.parseSearch = ($, query, tags) => {
         else {
             for (const element of $('li', '.content-tab').toArray()) {
                 let title = $('.title-commic-tab', element).text().trim();
-                let image = (_c = $('.image-commic-tab img', element).attr('data-src')) !== null && _c !== void 0 ? _c : "https://qmanga.co/image/defaul-load.png";
+                let image = (_b = $('.image-commic-tab img', element).attr('data-src')) !== null && _b !== void 0 ? _b : "https://qmanga.co/image/defaul-load.png";
                 let id = $('.image-commic-tab > a', element).first().attr('href');
                 let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
                 if (title === '')
                     continue;
                 manga.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
-                    image: (_d = encodeURI(image)) !== null && _d !== void 0 ? _d : "",
+                    image: encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png"),
                     title: createIconText({ text: title }),
                     subtitleText: createIconText({ text: subtitle }),
                 }));
@@ -3609,14 +3609,14 @@ exports.parseSearch = ($, query, tags) => {
     else {
         for (const element of $('li', '.detail-bxh-ul').toArray()) {
             let title = $('.title-commic-tab', element).text().trim();
-            let image = (_e = $('.image-commic-bxh img', element).attr('data-src')) !== null && _e !== void 0 ? _e : "";
+            let image = (_c = $('.image-commic-bxh img', element).attr('data-src')) !== null && _c !== void 0 ? _c : "";
             let id = $('.image-commic-bxh > a', element).first().attr('href');
             let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
             if (title === '')
                 continue;
             manga.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: (_f = encodeURI(image)) !== null && _f !== void 0 ? _f : "https://qmanga.co/image/defaul-load.png",
+                image: encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png"),
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
@@ -3625,7 +3625,7 @@ exports.parseSearch = ($, query, tags) => {
     return manga;
 };
 exports.parseViewMore = ($, select) => {
-    var _a, _b, _c, _d;
+    var _a, _b;
     const manga = [];
     if (select === 1) {
         for (const element of $('li', '.detail-bxh-ul').toArray()) {
@@ -3637,7 +3637,7 @@ exports.parseViewMore = ($, select) => {
                 continue;
             manga.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: (_b = encodeURI(image)) !== null && _b !== void 0 ? _b : "https://qmanga.co/image/defaul-load.png",
+                image: encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png"),
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
@@ -3646,14 +3646,14 @@ exports.parseViewMore = ($, select) => {
     else {
         for (const element of $('li', '.content-tab').toArray()) {
             let title = $('.title-commic-tab', element).text().trim();
-            let image = (_c = $('.image-commic-tab img', element).attr('data-src')) !== null && _c !== void 0 ? _c : "";
+            let image = (_b = $('.image-commic-tab img', element).attr('data-src')) !== null && _b !== void 0 ? _b : "";
             let id = $('.image-commic-tab > a', element).first().attr('href');
             let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
             if (title === '')
                 continue;
             manga.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: (_d = encodeURI(image)) !== null && _d !== void 0 ? _d : "https://qmanga.co/image/defaul-load.png",
+                image: encodeURI(image !== null && image !== void 0 ? image : "https://qmanga.co/image/defaul-load.png"),
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
