@@ -622,8 +622,8 @@ class qManga extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
         this.requestManager = createRequestManager({
-            requestsPerSecond: 5,
-            requestTimeout: 20000
+            requestsPerSecond: 0.5,
+            requestTimeout: 15000
         });
     }
     getMangaShareUrl(mangaId) { return `${mangaId}`; }
@@ -709,7 +709,12 @@ class qManga extends paperback_extensions_common_1.Source {
         return chapterDetails;
     }
     async getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c, _d, _e, _f, _g, _h;
+        let featured = createHomeSection({
+            id: 'featured',
+            title: "Truyện Đề Cử",
+            type: paperback_extensions_common_1.HomeSectionType.featured
+        });
         let newUpdated = createHomeSection({
             id: 'new_updated',
             title: "Mới nhất",
@@ -725,9 +730,6 @@ class qManga extends paperback_extensions_common_1.Source {
             title: "Phổ biến",
             view_more: true,
         });
-        sectionCallback(newUpdated);
-        sectionCallback(hot);
-        sectionCallback(view);
         let request = createRequestObject({
             url: 'https://qmanga.co/de-nghi/pho-bien/moi-nhat',
             method: "GET",
@@ -742,13 +744,12 @@ class qManga extends paperback_extensions_common_1.Source {
             let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
             newUpdatedItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: (_b = encodeURI(image)) !== null && _b !== void 0 ? _b : "",
+                image: (_b = encodeURI(image)) !== null && _b !== void 0 ? _b : "https://qmanga.co/image/defaul-load.png",
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
         }
         newUpdated.items = newUpdatedItems;
-        sectionCallback(newUpdated);
         request = createRequestObject({
             url: 'https://qmanga.co/danh-muc/noi-bat',
             method: "GET",
@@ -763,13 +764,12 @@ class qManga extends paperback_extensions_common_1.Source {
             let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
             hotItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: (_d = encodeURI(image)) !== null && _d !== void 0 ? _d : "",
+                image: (_d = encodeURI(image)) !== null && _d !== void 0 ? _d : "https://qmanga.co/image/defaul-load.png",
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
         }
         hot.items = hotItems;
-        sectionCallback(hot);
         request = createRequestObject({
             url: 'https://qmanga.co/danh-muc/pho-bien',
             method: "GET",
@@ -784,12 +784,33 @@ class qManga extends paperback_extensions_common_1.Source {
             let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
             viewItems.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: (_f = encodeURI(image)) !== null && _f !== void 0 ? _f : "",
+                image: (_f = encodeURI(image)) !== null && _f !== void 0 ? _f : "https://qmanga.co/image/defaul-load.png",
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
         }
         view.items = viewItems;
+        request = createRequestObject({
+            url: 'https://qmanga.co/',
+            method: "GET",
+        });
+        let featuredItems = [];
+        data = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(data.data);
+        for (const element of $('a', '.top-new').toArray()) {
+            let title = $('img', element).attr('title');
+            let image = (_g = $('img', element).attr('src')) !== null && _g !== void 0 ? _g : "";
+            let id = $('a', element).attr('href');
+            featuredItems.push(createMangaTile({
+                id: id !== null && id !== void 0 ? id : "",
+                image: (_h = encodeURI(image)) !== null && _h !== void 0 ? _h : "https://qmanga.co/image/defaul-load.png",
+                title: createIconText({ text: title !== null && title !== void 0 ? title : "" }),
+            }));
+        }
+        featured.items = featuredItems;
+        sectionCallback(featured);
+        sectionCallback(newUpdated);
+        sectionCallback(hot);
         sectionCallback(view);
     }
     async getViewMoreItems(homepageSectionId, metadata) {
@@ -859,7 +880,7 @@ class qManga extends paperback_extensions_common_1.Source {
         const request = createRequestObject({
             url: query.title ? encodeURI(`https://qmanga.co/tim-kiem?q=${query.title}&page=${page}`) :
                 (tags[0].includes('http') ? (tags[0] + `?page=${page}`) :
-                    encodeURI(`https://qmanga.co/danh-muc/huynh?cate=${search.cate}&translator=${search.translator}&writer=${search.writer}&status=${search.status}&sort=${search.sort}&page=${page}`)),
+                    encodeURI(`https://qmanga.co/danh-muc/${search.cate}&page=${page}`)),
             method: "GET",
         });
         let data = await this.requestManager.schedule(request, 1);
@@ -932,8 +953,6 @@ class qManga extends paperback_extensions_common_1.Source {
         }
         const tagSections = [createTagSection({ id: '0', label: 'Bảng xếp hạng', tags: tags2.map(x => createTag(x)) }),
             createTagSection({ id: '1', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
-            createTagSection({ id: '4', label: 'Trạng thái', tags: tags5.map(x => createTag(x)) }),
-            createTagSection({ id: '5', label: 'Sắp xếp', tags: tags6.map(x => createTag(x)) }),
         ];
         return tagSections;
     }
@@ -966,7 +985,7 @@ exports.parseSearch = ($, query, tags) => {
         if (tags[0].includes('http')) {
             for (const element of $('li', '.detail-bxh-ul').toArray()) {
                 let title = $('.title-commic-tab', element).text().trim();
-                let image = (_a = $('.image-commic-bxh img', element).attr('data-src')) !== null && _a !== void 0 ? _a : "";
+                let image = (_a = $('.image-commic-bxh img', element).attr('data-src')) !== null && _a !== void 0 ? _a : "https://qmanga.co/image/defaul-load.png";
                 let id = $('.image-commic-bxh > a', element).first().attr('href');
                 let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
                 if (title === '')
@@ -982,7 +1001,7 @@ exports.parseSearch = ($, query, tags) => {
         else {
             for (const element of $('li', '.content-tab').toArray()) {
                 let title = $('.title-commic-tab', element).text().trim();
-                let image = (_c = $('.image-commic-tab img', element).attr('data-src')) !== null && _c !== void 0 ? _c : "";
+                let image = (_c = $('.image-commic-tab img', element).attr('data-src')) !== null && _c !== void 0 ? _c : "https://qmanga.co/image/defaul-load.png";
                 let id = $('.image-commic-tab > a', element).first().attr('href');
                 let subtitle = $(`.chapter-commic-tab > a`, element).text().trim();
                 if (title === '')
@@ -1006,7 +1025,7 @@ exports.parseSearch = ($, query, tags) => {
                 continue;
             manga.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: (_f = encodeURI(image)) !== null && _f !== void 0 ? _f : "",
+                image: (_f = encodeURI(image)) !== null && _f !== void 0 ? _f : "https://qmanga.co/image/defaul-load.png",
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
@@ -1027,7 +1046,7 @@ exports.parseViewMore = ($, select) => {
                 continue;
             manga.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: (_b = encodeURI(image)) !== null && _b !== void 0 ? _b : "",
+                image: (_b = encodeURI(image)) !== null && _b !== void 0 ? _b : "https://qmanga.co/image/defaul-load.png",
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
@@ -1043,7 +1062,7 @@ exports.parseViewMore = ($, select) => {
                 continue;
             manga.push(createMangaTile({
                 id: id !== null && id !== void 0 ? id : "",
-                image: (_d = encodeURI(image)) !== null && _d !== void 0 ? _d : "",
+                image: (_d = encodeURI(image)) !== null && _d !== void 0 ? _d : "https://qmanga.co/image/defaul-load.png",
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
