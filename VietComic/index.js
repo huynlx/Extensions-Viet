@@ -3232,12 +3232,7 @@ class VietComic extends paperback_extensions_common_1.Source {
         let tags = [];
         let creator = '';
         let status = 1;
-        let desc = $(".manga-info-content p").clone()
-            .children()
-            .remove()
-            .end()
-            .text();
-        console.log(desc);
+        let desc = $(".manga-info-content p").text();
         for (const tt of $('.manga-info-text > li').toArray()) {
             if ($(tt).text().includes('Tình Trạng')) {
                 status = $(tt).text().split(":")[1].includes("Đang") ? 1 : 0;
