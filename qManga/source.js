@@ -638,8 +638,8 @@ class qManga extends paperback_extensions_common_1.Source {
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         let tags = [];
-        let creator = $('.top-detail-manga-content > .drawer:nth-child(5) a').text().trim();
-        let status = $('.manga-status > p').text().trim();
+        let creator = $('.writer a').text().trim();
+        let status = $('.status_commic > p').text().trim();
         let statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
         let desc = $(".desc-commic-detail").text().trim();
         for (const t of $('.categories-list-detail-commic > li > a').toArray()) {
@@ -673,9 +673,9 @@ class qManga extends paperback_extensions_common_1.Source {
         for (const obj of $('.ul-list-chaper-detail-commic > li').toArray().reverse()) {
             i++;
             let id = $('a', obj).first().attr('href');
-            let chapNum = Number((_a = $('a', obj).first().attr('title')) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
-            let name = $('a', obj).first().attr('title');
-            let time = $('span:nth-child(4)', obj).text().trim().split('-');
+            let chapNum = parseFloat((_a = $('a', obj).first().text().trim()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
+            let name = $('a', obj).first().text().trim();
+            let time = $('span', obj).first().text().trim().split('-');
             chapters.push(createChapter({
                 id,
                 chapNum: isNaN(chapNum) ? i : chapNum,
@@ -1017,7 +1017,7 @@ exports.parseViewMore = ($, select) => {
     var _a, _b, _c, _d;
     const manga = [];
     if (select === 1) {
-        for (const element of $('li', '.detail-bxh-ul').toArray().splice(0, 15)) {
+        for (const element of $('li', '.detail-bxh-ul').toArray()) {
             let title = $('.title-commic-tab', element).text().trim();
             let image = (_a = $('.image-commic-bxh img', element).attr('data-src')) !== null && _a !== void 0 ? _a : "";
             let id = $('.image-commic-bxh > a', element).first().attr('href');
@@ -1031,7 +1031,7 @@ exports.parseViewMore = ($, select) => {
         }
     }
     else {
-        for (const element of $('li', '.content-tab').toArray().splice(0, 15)) {
+        for (const element of $('li', '.content-tab').toArray()) {
             let title = $('.title-commic-tab', element).text().trim();
             let image = (_c = $('.image-commic-tab img', element).attr('data-src')) !== null && _c !== void 0 ? _c : "";
             let id = $('.image-commic-tab > a', element).first().attr('href');
