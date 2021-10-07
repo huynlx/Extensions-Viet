@@ -477,13 +477,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
             title: "TRUYỆN MỚI CẬP NHẬT",
             view_more: true,
         });
-        let newAdded = createHomeSection({
-            id: 'new_added',
-            title: "TRUYỆN MỚI ĐĂNG",
-            view_more: true,
-        });
         sectionCallback(newUpdated);
-        sectionCallback(newAdded);
         let request = createRequestObject({
             url: 'https://lxhentai.com/story/index.php?hot',
             method: "GET",
