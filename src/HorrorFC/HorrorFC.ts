@@ -9,7 +9,9 @@ import {
     SourceInfo,
     TagType,
     ContentRating,
-    MangaTile
+    MangaTile,
+    TagSection,
+    Tag
 } from "paperback-extensions-common"
 import { Parser } from './HorrorFCParser';
 
@@ -88,7 +90,19 @@ export class HorrorFC extends Source {
     }
 
     async getSearchResults(query: SearchRequest, metadata: any): Promise<PagedResults> {
-        const tiles: MangaTile[] = [];
+        const tags = query.includedTags?.map(tag => tag.id) ?? [];
+        var tiles: any = [];
+        if (query.title) {
+            tiles = []
+        } else {
+            const request = createRequestObject({
+                url: encodeURI(tags[0]),
+                method: "GET"
+            });
+            const data = await this.requestManager.schedule(request, 1);
+            let $ = this.cheerio.load(data.data);
+            tiles = this.parser.parseSearch($);
+        }
         metadata = undefined;
         return createPagedResults({
             results: tiles,
@@ -100,7 +114,7 @@ export class HorrorFC extends Source {
         let viewest: HomeSection = createHomeSection({
             id: 'viewest',
             title: "Projects",
-            view_more: true,
+            view_more: false,
         });
 
         //Load empty sections
@@ -116,7 +130,6 @@ export class HorrorFC extends Source {
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-
         viewest.items = this.parser.parsePopularSection($);
         sectionCallback(viewest);
     }
@@ -150,6 +163,19 @@ export class HorrorFC extends Source {
             results: manga,
             metadata
         });
+    }
+
+    async getSearchTags(): Promise<TagSection[]> {
+        let request = createRequestObject({
+            url: DOMAIN,
+            method: "GET",
+        });
+        let data = await this.requestManager.schedule(request, 1);
+        let $ = this.cheerio.load(data.data);
+        let count = $('a.item > span:nth-child(2)').text().trim();
+        const tags: Tag[] = [{ 'id': 'https://horrorfc.net/', 'label': 'Tất Cả (' + count + ')' }];
+        const tagSections: TagSection[] = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) })]
+        return tagSections;
     }
 
     globalRequestHeaders(): RequestHeaders { //ko có cái này ko load đc page truyện (load ảnh)

@@ -15,7 +15,7 @@ import {
     Tag,
     LanguageCode,
 } from "paperback-extensions-common"
-import { parseSearch, isLastPage, parseViewMore } from "./TruyentranhLHParser"
+import { parseSearch, isLastPage, parseViewMore, decodeHTMLEntity } from "./TruyentranhLHParser"
 
 const DOMAIN = 'https://truyentranhlh.net/'
 const method = 'GET'
@@ -56,13 +56,26 @@ export class TruyentranhLH extends Source {
         let creator = '';
         let status = 1; //completed, 1 = Ongoing
         let desc = $('.summary-content > p').text();
-        for (const t of $('.info-item:nth-child(2) > .info-value > a').toArray()) {
-            const genre = $('span', t).text().trim()
-            const id = $(t).attr('href') ?? genre
-            tags.push(createTag({ label: genre, id }));
+
+        for (const test of $('.info-item', '.series-information').toArray()) {
+            switch ($('.info-name', test).text().trim()) {
+                case 'Tác giả:':
+                    creator = $('.info-value', test).text();
+                    break;
+                case 'Thể loại:':
+                    for (const t of $('.info-value > a', test).toArray()) {
+                        const genre = $('span', t).text().trim()
+                        const id = $(t).attr('href') ?? genre
+                        tags.push(createTag({ label: genre, id }));
+                    }
+                    break;
+                case 'Tình trạng:':
+                    status = $('.info-value > a', test).text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
+                    break;
+                default:
+                    break;
+            }
         }
-        creator = $('.info-item:nth-child(3) > .info-value').text();
-        status = $('.info-item:nth-child(4) > .info-value > a').text().toLowerCase().includes("đang tiến hành") ? 1 : 0;
         const image = $('.top-part > .row > .col-12 > .series-cover > .a6-ratio > div').css('background-image');
         const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
         return createManga({
@@ -70,7 +83,7 @@ export class TruyentranhLH extends Source {
             author: creator,
             artist: creator,
             desc: desc,
-            titles: [$('.series-name > a').text().trim()],
+            titles: [decodeHTMLEntity($('.series-name > a').text().trim())],
             image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
             status,
             // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
@@ -119,7 +132,7 @@ export class TruyentranhLH extends Source {
         for (let obj of $('#chapter-content > img').toArray()) {
             if (!obj.attribs['data-src']) continue;
             let link = obj.attribs['data-src'];
-            pages.push(link);
+            pages.push(encodeURI(link));
         }
 
         const chapterDetails = createChapterDetails({

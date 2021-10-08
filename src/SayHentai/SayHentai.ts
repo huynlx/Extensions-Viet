@@ -116,7 +116,7 @@ export class SayHentai extends Source {
             if (!obj.attribs['data-src']) continue;
             let link = obj.attribs['data-src'].includes('http') ?
                 (obj.attribs['data-src']).trim() : ('https://sayhentai.net/' + obj.attribs['data-src']).trim();
-            pages.push(link);
+            pages.push(encodeURI(link));
         }
 
         const chapterDetails = createChapterDetails({
@@ -160,7 +160,7 @@ export class SayHentai extends Source {
         let hotItems: MangaTile[] = [];
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        for (let obj of $('li', '#main-content > .wrap-content-part:nth-child(1) > .body-content-part > ul').toArray()) {
+        for (let obj of $('li', '#main-content > .wrap-content-part:nth-of-type(1) > .body-content-part > ul').toArray()) {
             let title = $(`.info-bottom > a`, obj).text().trim();
             let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
             const image = $(`a > img`, obj).attr('src');
@@ -189,7 +189,7 @@ export class SayHentai extends Source {
         let newUpdatedItems: MangaTile[] = [];
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
-        for (let obj of $('li', '#main-content > .wrap-content-part:nth-child(3) > .body-content-part > ul').toArray().splice(0, 15)) {
+        for (let obj of $('li', '#main-content > .wrap-content-part:nth-of-type(3) > .body-content-part > ul').toArray().splice(0, 15)) {
             let title = $(`.info-bottom > a`, obj).text().trim();
             let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
             const image = $(`a > img`, obj).attr('src');
@@ -218,7 +218,7 @@ export class SayHentai extends Source {
         let newAddItems: MangaTile[] = [];
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
-        for (let obj of $('li', '#main-content > .wrap-content-part:nth-child(5) > .body-content-part > ul').toArray()) {
+        for (let obj of $('li', '#main-content > .wrap-content-part:nth-of-type(5) > .body-content-part > ul').toArray()) {
             let title = $(`.info-bottom > a`, obj).text().trim();
             let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
             const image = $(`a > img`, obj).attr('src');
@@ -277,9 +277,28 @@ export class SayHentai extends Source {
     async getSearchResults(query: SearchRequest, metadata: any): Promise<PagedResults> {
         let page = metadata?.page ?? 1;
         const tags = query.includedTags?.map(tag => tag.id) ?? [];
+        const search = {
+            genres: '',
+            status: "0",
+            sort: "last_update",
+            name: query.title ?? ''
+        };
+        tags.map((value) => {
+            if (value.indexOf('.') === -1) {
+                search.genres = value;
+            } else {
+                switch (value.split(".")[0]) {
+                    case 'sort':
+                        search.sort = (value.split(".")[1]);
+                        break
+                    case 'status':
+                        search.status = (value.split(".")[1]);
+                        break
+                }
+            }
+        })
         const request = createRequestObject({
-            url: query.title ? encodeURI(`https://sayhentai.net/danh-sach-truyen.html?name=${query.title}`) :
-                (tags[0] === 'all' ? 'https://sayhentai.net/danh-sach-truyen.html?' : encodeURI(`https://sayhentai.net/danh-sach-truyen.html?status=0&name=&genre=${tags[0]}&sort=last_update`)),
+            url: (tags[0] === 'all' ? 'https://sayhentai.net/danh-sach-truyen.html?' : encodeURI(`https://sayhentai.net/danh-sach-truyen.html?status=${search.status}&name=${search.name}&genre=${search.genres}&sort=${search.sort}`)),
             method: "GET",
             param: encodeURI(`&page=${page}`)
         });
@@ -507,8 +526,45 @@ export class SayHentai extends Source {
                 "label": "Xuyên Không"
             }
         ];
+        const tags1: Tag[] = [
+            {
+                "id": "status.0",
+                "label": "Tất Cả"
+            },
+            {
+                "id": "status.2",
+                "label": "Đang Tiến Hành"
+            },
+            {
+                "id": "status.1",
+                "label": "Đã Hoàn Thành"
+            }
+        ]
 
-        const tagSections: TagSection[] = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) })]
+        const tags2: Tag[] = [
+            {
+                "id": "sort.name",
+                "label": "Tên Truyện"
+            },
+            {
+                "id": "sort.views",
+                "label": "Lượt Xem"
+            },
+            {
+                "id": "sort.last_update",
+                "label": "Ngày Cập Nhật"
+            },
+            {
+                "id": "sort.id",
+                "label": "Truyện Mới"
+            }
+        ]
+
+        const tagSections: TagSection[] = [
+            createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
+            createTagSection({ id: '1', label: 'Trạng Thái', tags: tags1.map(x => createTag(x)) }),
+            createTagSection({ id: '2', label: 'Xếp Theo', tags: tags2.map(x => createTag(x)) }),
+        ]
         return tagSections;
     }
 

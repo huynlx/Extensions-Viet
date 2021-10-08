@@ -11,6 +11,7 @@ import {
     TagSection,
     HomeSectionType,
     ContentRating,
+    // MangaUpdates
 } from "paperback-extensions-common"
 import { Parser } from './NetTruyenParser';
 
@@ -82,7 +83,6 @@ export class NetTruyen extends Source {
         const data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         const pages = this.parser.parseChapterDetails($)
-
         return createChapterDetails({
             pages: pages,
             longStrip: false,
@@ -294,6 +294,18 @@ export class NetTruyen extends Source {
         const $ = this.cheerio.load(response.data);
         return this.parser.parseTags($);
     }
+
+    // async filterUpdatedManga(mangaUpdatesFoundCallback: (updates: MangaUpdates) => void, time: Date, ids: string[]): Promise<void> {
+    //     const request = createRequestObject({
+    //         url: DOMAIN,
+    //         headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    //         method: 'GET',
+    //     })
+
+    //     const response = await this.requestManager.schedule(request, 1)
+    //     const returnObject = this.parser.parseUpdatedManga(response.data, time, ids)
+    //     mangaUpdatesFoundCallback(createMangaUpdates(returnObject))
+    // }
 
     globalRequestHeaders(): RequestHeaders { //ko có cái này ko load đc page truyện (load ảnh)
         return {

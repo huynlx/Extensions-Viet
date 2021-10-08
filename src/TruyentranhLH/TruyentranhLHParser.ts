@@ -66,6 +66,6 @@ export const isLastPage = ($: CheerioStatic): boolean => {
     return isLast;
 }
 
-const decodeHTMLEntity = (str: string): string => {
+export const decodeHTMLEntity = (str: string): string => {
     return entities.decodeHTML(str);
 }

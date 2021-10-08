@@ -16,7 +16,7 @@ import {
     LanguageCode,
     HomeSectionType
 } from "paperback-extensions-common"
-import { parseSearch, isLastPage, parseViewMore } from "./BlogtruyenParser"
+import { parseSearch, isLastPage, parseViewMore, decodeHTMLEntity } from "./BlogtruyenParser"
 
 const DOMAIN = 'https://truyentranhlh.net/'
 const method = 'GET'
@@ -56,21 +56,33 @@ export class Blogtruyen extends Source {
         let tags: Tag[] = [];
         let creator = '';
         let status = 1; //completed, 1 = Ongoing
-        let desc = $('.content > p').text();
-        for (const t of $('.description > p:nth-child(3) > .category > a').toArray()) {
-            const genre = $(t).text().trim()
-            const id = $(t).attr('href') ?? genre
-            tags.push(createTag({ label: genre, id }));
+        let desc = $('.content').text();
+
+        for (const test of $('p', '.description').toArray()) {
+            switch ($(test).clone().children().remove().end().text().trim()) {
+                case 'Tác giả:':
+                    creator = decodeHTMLEntity($('a', test).text());
+                    break;
+                case 'Thể loại:':
+                    for (const t of $('.category > a', test).toArray()) {
+                        const genre = $(t).text().trim()
+                        const id = $(t).attr('href') ?? genre
+                        tags.push(createTag({ label: genre, id }));
+                    }
+                    status = $('.color-red', $(test).next()).text().toLowerCase().includes("đang") ? 1 : 0;
+                    break;
+                default:
+                    break;
+            }
         }
-        creator = $('.description > p:nth-child(1) > a').text();
-        status = $('.description > p:nth-child(4) > .color-red').text().toLowerCase().includes("đang") ? 1 : 0;
+
         const image = $('.thumbnail > img').attr('src') ?? "";
         return createManga({
             id: mangaId,
             author: creator,
             artist: creator,
             desc: desc,
-            titles: [$('.entry-title > a').text().trim()],
+            titles: [decodeHTMLEntity($('.entry-title > a').text().trim())],
             image: encodeURI(image),
             status,
             // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
@@ -102,7 +114,7 @@ export class Blogtruyen extends Source {
             chapters.push(createChapter(<Chapter>{
                 id: $('span.title > a', obj).first().attr('href'),
                 chapNum: i,
-                name: $('span.title > a', obj).text().trim(),
+                name: decodeHTMLEntity($('span.title > a', obj).text().trim()),
                 mangaId: mangaId,
                 langCode: LanguageCode.VIETNAMESE,
                 time: finalTime
@@ -144,7 +156,7 @@ export class Blogtruyen extends Source {
         });
         let hot: HomeSection = createHomeSection({
             id: 'hot',
-            title: "Top All",
+            title: "Truyện xem nhiều nhất",
             view_more: true,
         });
         let newUpdated: HomeSection = createHomeSection({
@@ -173,18 +185,17 @@ export class Blogtruyen extends Source {
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         let featuredItems: MangaTile[] = [];
-
         for (let manga of $('a', 'div#storyPinked').toArray()) {
-            const title = $('p:first-child', $(manga).next()).text().trim();
+            const title = ($('p:first-child', $(manga).next()).text().trim());
             const id = $(manga).attr('href');
             const image = $('img', manga).attr('src')?.replace('182_182', '400') ?? "";
-            const subtitle = $('p:last-child', $(manga).next()).text().trim();
+            const subtitle = ($('p:last-child', $(manga).next()).text().trim());
             if (!id || !title) continue;
             featuredItems.push(createMangaTile({
                 id: id,
                 image: encodeURI(image),
-                title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: subtitle }),
+                title: createIconText({ text: decodeHTMLEntity(title) }),
+                subtitleText: createIconText({ text: decodeHTMLEntity(subtitle) }),
             }));
         }
         featured.items = featuredItems;
@@ -208,10 +219,10 @@ export class Blogtruyen extends Source {
                 id: id,
                 image: encodeURI(image.replace('150', '200')),
                 title: createIconText({
-                    text: title,
+                    text: decodeHTMLEntity(title),
                 }),
                 subtitleText: createIconText({
-                    text: subtitle,
+                    text: (subtitle),
                 }),
             }))
         }
@@ -228,7 +239,7 @@ export class Blogtruyen extends Source {
         data = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(data.data);
         for (let obj of $('.row', '.list-mainpage .storyitem').toArray().splice(0, 20)) {
-            let title = $(`h3.title > a`, obj).text().trim();
+            let title = $(`h3.title > a`, obj).attr('title');
             let subtitle = $(`div:nth-child(2) > div:nth-child(4) > span:nth-child(1) > .color-red`, obj).text();
             const image = $(`div:nth-child(1) > a > img`, obj).attr('src');
             let id = $(`div:nth-child(1) > a`, obj).attr('href') ?? title;
@@ -237,7 +248,7 @@ export class Blogtruyen extends Source {
                 id: id,
                 image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.replace('150_150', '200')),
                 title: createIconText({
-                    text: title,
+                    text: decodeHTMLEntity(title),
                 }),
                 subtitleText: createIconText({
                     text: 'Chương ' + subtitle,
@@ -266,7 +277,7 @@ export class Blogtruyen extends Source {
                 id: id,
                 image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.replace('86_86', '200')),
                 title: createIconText({
-                    text: title,
+                    text: decodeHTMLEntity(title),
                 })
                 // subtitleText: createIconText({
                 //     text: subtitle,
@@ -349,7 +360,7 @@ export class Blogtruyen extends Source {
         const $ = this.cheerio.load(response.data);
         //the loai
         for (const tag of $('li', '.list-unstyled.row').toArray()) {
-            const label = $(tag).text().trim();
+            const label = decodeHTMLEntity($(tag).text().trim());
             const id = $(tag).attr('data-id') ?? label;
             if (!id || !label) continue;
             tags.push({ id: id, label: label });
@@ -358,7 +369,7 @@ export class Blogtruyen extends Source {
         return tagSections;
     }
 
-    globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
+    override globalRequestHeaders(): RequestHeaders {
         return {
             referer: 'https://blogtruyen.vn/'
         }

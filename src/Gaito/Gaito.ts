@@ -13,71 +13,61 @@ import {
     RequestHeaders,
     MangaTile,
     Tag,
-    LanguageCode,
-    HomeSectionType
+    LanguageCode
 } from "paperback-extensions-common"
 
-import axios from 'axios';
+import { parseSearch, parseViewMore } from "./GaitoParser"
 
-import { parseSearch, isLastPage, parseViewMore, capitalizeFirstLetter } from "./GaitoParser"
-
-const DOMAIN = 'https://www.gaito.me/truyen-hentai/'
 const method = 'GET'
 
 export const GaitoInfo: SourceInfo = {
     version: '1.0.0',
-    name: 'Gaito',
+    name: 'Gai.to',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from Gaito',
+    description: 'Extension that pulls manga from Gai.to',
     websiteBaseURL: `https://www.gaito.me/truyen-hentai/`,
     contentRating: ContentRating.ADULT,
     sourceTags: [
         {
             text: "18+",
             type: TagType.YELLOW
-        },
-        {
-            text: "Error",
-            type: TagType.RED
         }
     ]
 }
 
 export class Gaito extends Source {
-    getMangaShareUrl(mangaId: string): string { return `${mangaId}` };
+    getMangaShareUrl(mangaId: string): string { return `https://www.gaito.me/truyen-hentai/comic/${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
         requestTimeout: 20000
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
-        const url = `${mangaId}`;
+        const url = `https://api.gaito.me/manga/comics/${mangaId}`;
         const request = createRequestObject({
             url: url,
             method: "GET",
         });
         const data = await this.requestManager.schedule(request, 1);
-        let $ = this.cheerio.load(data.data);
+        const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
         let tags: Tag[] = [];
-        let creator = '';
-        let status = 1; //completed, 1 = Ongoing
-        let desc = $('.description-summary > .summary__content').text();
-        for (const t of $('.post-content > div:nth-child(8) > .summary-content a').toArray()) {
-            const genre = $(t).text().trim()
-            const id = $(t).attr('href') ?? genre
+        let creator = json.author;
+        let status = json.status; //completed, 1 = Ongoing
+        let desc = json.description;
+        for (const t of json.genres) {
+            const genre = t.name;
+            const id = t.id;
             tags.push(createTag({ label: genre, id }));
         }
-        creator = $('.info > p:nth-child(1) > span').text();
-        status = $('.post-status > div:nth-child(2) > .summary-content').text().trim().toLowerCase().includes("đang") ? 1 : 0;
-        const image = $('.tab-summary img').attr('data-src')?.replace('-193x278', '') ?? "";
+        const image = json.cover.data.dimensions.original.url;
         return createManga({
             id: mangaId,
             author: creator,
             artist: creator,
             desc: desc,
-            titles: [$('.post-title > h1').text().trim()],
+            titles: [json.title],
             image: image,
             status,
             // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
@@ -88,25 +78,22 @@ export class Gaito extends Source {
     }
     async getChapters(mangaId: string): Promise<Chapter[]> {
         const request = createRequestObject({
-            url: `${mangaId}`,
+            url: `https://api.gaito.me/manga/chapters?comicId=${mangaId}&mode=by-comic&orderBy=bySortOrderDown`,
             method,
         });
-        const response = await this.requestManager.schedule(request, 1);
-        const $ = this.cheerio.load(response.data);
+        const data = await this.requestManager.schedule(request, 1);
+        const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
         const chapters: Chapter[] = [];
-        var i = 0;
-        for (const obj of $(".listing-chapters_wrap li").toArray().reverse()) {
-            i++;
-            // const getTime = $('span', obj).text().trim().split(/\//);
-            // const fixDate = [getTime[1], getTime[0], getTime[2]].join('/');
-            // const finalTime = new Date(fixDate);
+        for (const obj of json) {
+            let id = obj.id;
+            let chapNum = Number(obj.sortOrder);
+            let name = obj.title;
             chapters.push(createChapter(<Chapter>{
-                id: $('a', obj).first().attr('href'),
-                chapNum: i,
-                name: ($('a', obj).first().text().trim()),
+                id,
+                chapNum,
+                name,
                 mangaId: mangaId,
-                langCode: LanguageCode.VIETNAMESE,
-                // time: finalTime
+                langCode: LanguageCode.VIETNAMESE
             }));
         }
 
@@ -115,16 +102,15 @@ export class Gaito extends Source {
 
     async getChapterDetails(mangaId: string, chapterId: string): Promise<ChapterDetails> {
         const request = createRequestObject({
-            url: `${chapterId}`,
+            url: `https://api.gaito.me/manga/pages?chapterId=${chapterId}&mode=by-chapter`,
             method
         });
 
-        const response = await this.requestManager.schedule(request, 1);
-        let $ = this.cheerio.load(response.data);
+        const data = await this.requestManager.schedule(request, 1);
+        const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
         const pages: string[] = [];
-        for (let obj of $('.text-left img').toArray()) {
-            if (!obj.attribs['data-src']) continue;
-            let link = obj.attribs['data-src'].trim();
+        for (let obj of json) {
+            let link = obj.image.dimensions.original.url;
             pages.push(link);
         }
 
@@ -138,159 +124,91 @@ export class Gaito extends Source {
     }
 
     async getHomePageSections(sectionCallback: (section: HomeSection) => void): Promise<void> {
-        let featured: HomeSection = createHomeSection({
-            id: 'featured',
-            title: "Gợi ý hôm nay",
-            type: HomeSectionType.featured
-        });
-        let hot: HomeSection = createHomeSection({
-            id: 'hot',
-            title: "Hot tháng",
-            view_more: false,
-        });
         let newUpdated: HomeSection = createHomeSection({
             id: 'new_updated',
-            title: "TRUYỆN MỚI CẬP NHẬT",
+            title: "Mới nhất",
             view_more: true,
         });
         let view: HomeSection = createHomeSection({
             id: 'view',
-            title: "Top view ngày",
-            view_more: false,
+            title: "Thích nhất",
+            view_more: true,
         });
 
         //Load empty sections
-        sectionCallback(hot);
         sectionCallback(newUpdated);
         sectionCallback(view);
 
         ///Get the section data
-        //Featured
-        let url = ``
-        let request = createRequestObject({
-            url: 'https://hentaicube.net/',
-            method: "GET",
-        });
-        let featuredItems: MangaTile[] = [];
-        let data = await this.requestManager.schedule(request, 1);
-        let $ = this.cheerio.load(data.data);
-        for (let obj of $('.item__wrap ', '.slider__container .slider__item').toArray()) {
-            let title = $(`.slider__content .post-title`, obj).text().trim();
-            let subtitle = $(`.slider__content .chapter-item a`, obj).text().trim();
-            const image = $('.slider__thumb a > img', obj).attr('data-src')?.replace('-110x150', '') ?? "";
-            let id = $(`.slider__thumb a`, obj).attr('href') ?? title;
-            featuredItems.push(createMangaTile({
-                id: id,
-                image: image,
-                title: createIconText({
-                    text: title,
-                }),
-                subtitleText: createIconText({
-                    text: (subtitle),
-                }),
-            }))
-        }
-        featured.items = featuredItems;
-        sectionCallback(featured);
-
-        //Hot
-        url = '';
-        request = createRequestObject({
-            url: 'https://hentaicube.net/',
-            method: "GET",
-        });
-        let hotItems: MangaTile[] = [];
-        data = await this.requestManager.schedule(request, 1);
-        $ = this.cheerio.load(data.data);
-        for (let obj of $('.popular-item-wrap', '#manga-recent-3 .widget-content').toArray()) {
-            let title = $(`.popular-content a`, obj).text().trim();
-            // let subtitle = $(`.chapter > a`, obj).text();
-            const image = $(`.popular-img > a > img`, obj).attr('data-src')?.replace('-75x106', '');
-            let id = $(`.popular-img > a`, obj).attr('href') ?? title;
-            // if (!id || !subtitle) continue;
-            hotItems.push(createMangaTile({
-                id: id,
-                image: image ?? "",
-                title: createIconText({
-                    text: title,
-                }),
-                // subtitleText: createIconText({
-                //     text: capitalizeFirstLetter(subtitle),
-                // }),
-            }))
-        }
-        hot.items = hotItems;
-        sectionCallback(hot);
 
         //New Updates
-        request = createRequestObject({
+        let request = createRequestObject({
             url: 'https://api.gaito.me/manga/comics?limit=20&offset=0&sort=latest', // get JSON not HTML
             method: "GET",
         });
         let newUpdatedItems: MangaTile[] = [];
-        data = await this.requestManager.schedule(request, 1);
-        let array = data.data;
+        let data = await this.requestManager.schedule(request, 1);
+        let json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
         var element: any = '';
-        for (element of array) {
+        const check: string[] = [];
+        for (element of json) {
             let title = element.title;
             let image = element.cover ? element.cover.dimensions.thumbnail.url : null;
             let id = element.id;
-            newUpdatedItems.push(createMangaTile({
-                id: id ?? "",
-                image: image ?? "",
-                title: createIconText({
-                    text: title ?? ""
-                })
-            }))
+            if (!check.includes(title)) {
+                newUpdatedItems.push(createMangaTile({
+                    id: id ?? "",
+                    image: image ?? "",
+                    title: createIconText({
+                        text: title ?? ""
+                    })
+                }))
+                check.push(title);
+            }
         }
         newUpdated.items = newUpdatedItems;
         sectionCallback(newUpdated);
 
         //view
-        url = DOMAIN
         request = createRequestObject({
-            url: 'https://hentaicube.net/',
+            url: 'https://api.gaito.me/manga/comics?limit=20&offset=0&sort=top-rated', // get JSON not HTML
             method: "GET",
         });
         let newAddItems: MangaTile[] = [];
         data = await this.requestManager.schedule(request, 1);
-        $ = this.cheerio.load(data.data);
-        for (let obj of $('div.popular-item-wrap', '#manga-recent-2 .widget-content').toArray()) {
-            let title = $(`.popular-content a`, obj).text().trim();
-            // let subtitle = $(`.chapter > a`, obj).text();
-            const image = $(`.popular-img > a > img`, obj).attr('data-src')?.replace('-75x106', '');
-            let id = $(`.popular-img > a`, obj).attr('href') ?? title;
-            // if (!id || !subtitle) continue;
-            newAddItems.push(createMangaTile({
-                id: id,
-                image: image ?? "",
-                title: createIconText({
-                    text: title,
-                }),
-                // subtitleText: createIconText({
-                //     text: (subtitle),
-                // }),
-            }))
+        json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
+        var element: any = '';
+        const check2: string[] = [];
+        for (element of json) {
+            let title = element.title;
+            let image = element.cover ? element.cover.dimensions.thumbnail.url : null;
+            let id = element.id;
+            if (!check2.includes(title)) {
+                newAddItems.push(createMangaTile({
+                    id: id ?? "",
+                    image: image ?? "",
+                    title: createIconText({
+                        text: title ?? ""
+                    })
+                }))
+                check2.push(title);
+            }
         }
         view.items = newAddItems;
         sectionCallback(view);
     }
 
     async getViewMoreItems(homepageSectionId: string, metadata: any): Promise<PagedResults> {
-        let page: number = metadata?.page ?? 1;
+        let page: number = metadata?.page ?? 0;
         let url = '';
         let select = 1;
         switch (homepageSectionId) {
-            case "hot":
-                url = `https://hentaicube.net/page/${page}/`;
-                select = 0;
-                break;
             case "new_updated":
-                url = `https://hentaicube.net/page/${page}/`;
+                url = `https://api.gaito.me/manga/comics?limit=20&offset=${page}&sort=latest`;
                 select = 1;
                 break;
-            case "new_added":
-                url = `https://hentaivl.com/`;
+            case "view":
+                url = `https://api.gaito.me/manga/comics?limit=20&offset=${page}&sort=top-rated`;
                 select = 2;
                 break;
             default:
@@ -302,10 +220,10 @@ export class Gaito extends Source {
             method
         });
 
-        const response = await this.requestManager.schedule(request, 1);
-        const $ = this.cheerio.load(response.data);
-        let manga = parseViewMore($, select);
-        metadata = !isLastPage($) ? { page: page + 1 } : undefined;
+        let data = await this.requestManager.schedule(request, 1);
+        let json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
+        let manga = parseViewMore(json, select);
+        metadata = { page: page + 20 };
         return createPagedResults({
             results: manga,
             metadata,
@@ -313,19 +231,18 @@ export class Gaito extends Source {
     }
 
     async getSearchResults(query: SearchRequest, metadata: any): Promise<PagedResults> {
-        let page = metadata?.page ?? 1;
+        let page = metadata?.page ?? 0;
         const tags = query.includedTags?.map(tag => tag.id) ?? [];
         const request = createRequestObject({
-            url: encodeURI(`https://hentaivl.com${tags[0] ? tags[0] : ''}`),
+            url: encodeURI(`https://api.gaito.me/manga/comics?genreId=${tags[0]}&limit=20&offset=${page}&sort=latest`),
             method: "GET",
-            param: encodeURI(`?page=${page}`)
         });
 
-        const data = await this.requestManager.schedule(request, 1);
-        let $ = this.cheerio.load(data.data);
-        const tiles = parseSearch($);
+        let data = await this.requestManager.schedule(request, 1);
+        let json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
+        const tiles = parseSearch(json)
 
-        metadata = !isLastPage($) ? { page: page + 1 } : undefined;
+        metadata = { page: page + 20 };
 
         return createPagedResults({
             results: tiles,
@@ -335,22 +252,22 @@ export class Gaito extends Source {
 
     async getSearchTags(): Promise<TagSection[]> {
         const tags: Tag[] = [];
-        const url = `https://hentaicube.net/the-loai-genres/`
+        const url = `https://api.gaito.me/ext/genres?plugin=manga`
         const request = createRequestObject({
             url: url,
             method: "GET",
         });
 
-        const response = await this.requestManager.schedule(request, 1)
-        const $ = this.cheerio.load(response.data);
+        let data = await this.requestManager.schedule(request, 1);
+        let json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
         //the loai
-        for (const tag of $('a', '.ctcleft').toArray()) {
-            const label = $(tag).text().trim();
-            const id = $(tag).attr('href') ?? label;
+        for (const tag of json) {
+            const label = tag.name;
+            const id = tag.id;
             if (!id || !label) continue;
             tags.push({ id: id, label: label });
         }
-        const tagSections: TagSection[] = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) })]
+        const tagSections: TagSection[] = [createTagSection({ id: '0', label: 'Thể Loại Hentai', tags: tags.map(x => createTag(x)) })]
         return tagSections;
     }
 

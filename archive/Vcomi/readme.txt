@@ -1,0 +1,1 @@
+cái địt con mẹ đéo hiểu sao đéo crawl đc link manga detail mà nó cứ lỗi node.parent con cặc gì ý

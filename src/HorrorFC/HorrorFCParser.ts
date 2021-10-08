@@ -5,8 +5,13 @@ import {
     MangaTile,
     Tag
 } from 'paperback-extensions-common'
+const entities = require("entities");
+
 
 export class Parser {
+    decodeHTMLEntity(str: string): string {
+        return entities.decodeHTML(str);
+    }
 
     parseMangaDetails($: any, mangaId: string): Manga {
         let tags: Tag[] = [];
@@ -16,8 +21,8 @@ export class Parser {
         }));
         return createManga({
             id: mangaId.split("::")[0],
-            desc: $('.page-header > p').text(), //đéo sửa đc cái escape character đkm như lồn
-            titles: [$('.page-title').text()],
+            desc: this.decodeHTMLEntity($('.page-header > p').text()), //đéo sửa đc cái escape character đkm như lồn
+            titles: [this.decodeHTMLEntity($('.page-title').text())],
             image: mangaId.split("::")[1],
             status: 1,
             hentai: false,
@@ -34,7 +39,7 @@ export class Parser {
             chapters.push(createChapter(<Chapter>{
                 id: $(obj).attr('href'),
                 chapNum: i,
-                name: ($(obj).text()),
+                name: this.decodeHTMLEntity($(obj).text()),
                 mangaId: mangaId.split("::")[0],
                 langCode: LanguageCode.VIETNAMESE,
             }));
@@ -54,6 +59,22 @@ export class Parser {
     parsePopularSection($: any): MangaTile[] {
         let viewestItems: MangaTile[] = [];
         for (let manga of $('li', 'ul.row').toArray().splice(0, 10)) {
+            const title = $('a', manga).attr('title');
+            const id = $('a', manga).attr('href');
+            const image = $('a > img', manga).first().attr('src');
+            if (!id || !title) continue;
+            viewestItems.push(createMangaTile({
+                id: id + "::" + image,
+                image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
+                title: createIconText({ text: title }),
+            }));
+        }
+        return viewestItems;
+    }
+
+    parseSearch($: any): MangaTile[] {
+        let viewestItems: MangaTile[] = [];
+        for (let manga of $('li', 'ul.row').toArray()) {
             const title = $('a', manga).attr('title');
             const id = $('a', manga).attr('href');
             const image = $('a > img', manga).first().attr('src');

@@ -88,13 +88,12 @@ export class Beeng extends Source {
             url: `${DOMAIN}${mangaId}`,
             method,
         });
-
+        var i = 0;
         const response = await this.requestManager.schedule(request, 1);
         const $ = this.cheerio.load(response.data);
         const chapters: Chapter[] = [];
-        var i = 0;
+        // const collectedIds: any = [];
         for (const obj of $("#scrollbar a").toArray().reverse()) {
-            i++;
             const getTime = $('span.name > span.views', obj).text().trim().split(' ');
             const time = {
                 date: getTime[0],
@@ -103,6 +102,9 @@ export class Beeng extends Source {
             const arrDate = time.date.split(/\-/);
             const fixDate = [arrDate[1], arrDate[0], arrDate[2]].join('/');
             const finalTime = new Date(fixDate + ' ' + time.time);
+            // let chapNum = $('span.name > span.titleComic', obj).text().trim().split(' ')[1]; //a:,a-b,a
+            // if (!collectedIds.includes(chapNum)) {
+            i++;
             chapters.push(createChapter(<Chapter>{
                 id: $(obj).attr('href'),
                 chapNum: i,
@@ -111,6 +113,8 @@ export class Beeng extends Source {
                 langCode: LanguageCode.VIETNAMESE,
                 time: finalTime
             }));
+            //     collectedIds.push(chapNum);
+            // }
         }
 
         return chapters;
@@ -128,7 +132,7 @@ export class Beeng extends Source {
         for (let obj of $('#lightgallery2 > img').toArray()) {
             if (!obj.attribs['src']) continue;
             let link = obj.attribs['src'];
-            pages.push(link);
+            pages.push(encodeURI(link));
         }
 
         const chapterDetails = createChapterDetails({

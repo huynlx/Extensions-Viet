@@ -1,6 +1,6 @@
 import { MangaTile, SearchRequest } from "paperback-extensions-common";
 
-const entities = require("entities"); //Import package for decoding HTML entities
+const entities = require("entities"); //Import package for decoding HTML entities (unescape string)
 
 export interface UpdatedManga {
     ids: string[];
@@ -63,7 +63,7 @@ export const parseViewMore = ($: CheerioStatic, select: Number): MangaTile[] => 
                     id: id,
                     image: encodeURI(image.replace('150', '200')),
                     title: createIconText({
-                        text: title,
+                        text: decodeHTMLEntity(title),
                     }),
                     subtitleText: createIconText({
                         text: subtitle,
@@ -91,6 +91,13 @@ export const isLastPage = ($: CheerioStatic): boolean => {
     return isLast;
 }
 
-const decodeHTMLEntity = (str: string): string => {
+export const decodeHTMLEntity = (str: string): string => {
     return entities.decodeHTML(str);
 }
+
+// decodeHTMLEntity(str: string): string { //hàm của bato.to
+//     return str.replace(/&#(\d+);/g, function (match, dec) {
+//         return String.fromCharCode(dec);
+//     })
+// }
+
