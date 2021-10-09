@@ -2509,8 +2509,13 @@ class LXHentai extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
+            let featured = createHomeSection({
+                id: 'featured',
+                title: "Truyện Đề Cử",
+                type: paperback_extensions_common_1.HomeSectionType.featured
+            });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
                 title: "Mới cập nhật",
@@ -2551,6 +2556,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
             }
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
+            //Hot
             request = createRequestObject({
                 url: 'https://lxhentai.com/story/index.php?hot',
                 method: "GET",
@@ -2578,6 +2584,34 @@ class LXHentai extends paperback_extensions_common_1.Source {
             }
             hot.items = hotItems;
             sectionCallback(hot);
+            //Featured
+            request = createRequestObject({
+                url: 'https://lxhentai.com/',
+                method: "GET",
+            });
+            let featuredItems = [];
+            data = yield this.requestManager.schedule(request, 1);
+            html = Buffer.from(createByteArray(data.rawData)).toString();
+            $ = this.cheerio.load(html);
+            for (let manga of $('.truyenHot .gridSlide > div').toArray()) {
+                const title = $('.slideName > a', manga).text().trim();
+                const id = (_c = $('.slideName > a', manga).attr('href')) !== null && _c !== void 0 ? _c : title;
+                const image = $('.itemSlide', manga).first().css('background');
+                const bg = image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
+                const sub = $('.newestChapter', manga).text().trim();
+                featuredItems.push(createMangaTile({
+                    id: 'https://lxhentai.com' + id,
+                    image: 'https://lxhentai.com' + bg,
+                    title: createIconText({
+                        text: title,
+                    }),
+                    subtitleText: createIconText({
+                        text: sub,
+                    }),
+                }));
+            }
+            featured.items = featuredItems;
+            sectionCallback(featured);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
