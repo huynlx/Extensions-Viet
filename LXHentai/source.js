@@ -2509,24 +2509,30 @@ class LXHentai extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             let newUpdated = createHomeSection({
                 id: 'new_updated',
-                title: "New Updates",
+                title: "Mới cập nhật",
+                view_more: true,
+            });
+            let hot = createHomeSection({
+                id: 'hot',
+                title: "Hot nhất",
                 view_more: true,
             });
             sectionCallback(newUpdated);
+            sectionCallback(hot);
             //New Updates
             let request = createRequestObject({
-                url: 'https://lxhentai.com/story/index.php?hot',
+                url: 'https://lxhentai.com/story/index.php',
                 method: "GET",
             });
             let newUpdatedItems = [];
             let data = yield this.requestManager.schedule(request, 1);
-            const html = Buffer.from(createByteArray(data.rawData)).toString();
+            let html = Buffer.from(createByteArray(data.rawData)).toString();
             let $ = this.cheerio.load(html);
-            for (let manga of $('div.col-md-3', '.main .col-md-8 > .row').toArray()) {
+            for (let manga of $('div.col-md-3', '.main .col-md-8 > .row').toArray().splice(0, 15)) {
                 const title = $('a', manga).last().text().trim();
                 const id = (_a = $('a', manga).last().attr('href')) !== null && _a !== void 0 ? _a : title;
                 const image = $('div', manga).first().css('background');
@@ -2543,11 +2549,35 @@ class LXHentai extends paperback_extensions_common_1.Source {
                     }),
                 }));
             }
-            // console.log("New Updates: ");
-            // console.log(newUpdatedItems);
-            // console.log(data.data);
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
+            request = createRequestObject({
+                url: 'https://lxhentai.com/story/index.php?hot',
+                method: "GET",
+            });
+            let hotItems = [];
+            data = yield this.requestManager.schedule(request, 1);
+            html = Buffer.from(createByteArray(data.rawData)).toString();
+            $ = this.cheerio.load(html);
+            for (let manga of $('div.col-md-3', '.main .col-md-8 > .row').toArray().splice(0, 15)) {
+                const title = $('a', manga).last().text().trim();
+                const id = (_b = $('a', manga).last().attr('href')) !== null && _b !== void 0 ? _b : title;
+                const image = $('div', manga).first().css('background');
+                const bg = image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
+                const sub = $('a', manga).first().text().trim();
+                hotItems.push(createMangaTile({
+                    id: 'https://lxhentai.com' + id,
+                    image: 'https://lxhentai.com' + bg,
+                    title: createIconText({
+                        text: title,
+                    }),
+                    subtitleText: createIconText({
+                        text: sub,
+                    }),
+                }));
+            }
+            hot.items = hotItems;
+            sectionCallback(hot);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
@@ -2557,12 +2587,12 @@ class LXHentai extends paperback_extensions_common_1.Source {
             let param = '';
             let url = '';
             switch (homepageSectionId) {
-                case "new_updated":
+                case "hot":
                     url = `https://lxhentai.com/story/index.php?hot&p=${page}`;
                     break;
-                // case "new_added":
-                //     url = `https://lxhentai.com/story/cat.php?id=57&p=${page}`;
-                //     break;
+                case "new_updated":
+                    url = `https://lxhentai.com/story/index.php&p=${page}`;
+                    break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
             }
