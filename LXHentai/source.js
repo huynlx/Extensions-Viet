@@ -2509,8 +2509,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
-            const list = $('#content_chap p img').toArray().length === 0 ? $('#content_chap div:not(.text-center) img').toArray()
-                : $('#content_chap p img').toArray();
+            const list = $('#content_chap img').toArray();
             for (let obj of list) {
                 let link = 'https:' + obj.attribs['src'];
                 pages.push(encodeURI(link));

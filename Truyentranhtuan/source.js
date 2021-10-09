@@ -2616,16 +2616,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Truyentranhtuan = exports.TruyentranhtuanInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const TruyentranhtuanParser_1 = require("./TruyentranhtuanParser");
-const DOMAIN = 'https://doctruyen3q.com/';
+const DOMAIN = 'http://truyentranhtuan.com/';
 const method = 'GET';
 exports.TruyentranhtuanInfo = {
-    version: '2.0.0',
+    version: '1.0.0',
     name: 'Truyentranhtuan',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from Truyentranhtuan',
-    websiteBaseURL: 'http://truyentranhtuan.com/',
+    websiteBaseURL: DOMAIN,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
         {
@@ -2705,22 +2705,22 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
             let tags = [];
             let creator = '';
             let statusFinal = 1;
-            creator = $('.info-detail-comic > .author > .detail-info').text().trim();
-            for (const t of $('.info-detail-comic > .category > .detail-info > a').toArray()) {
+            creator = $('#infor-box > div:last-child > div span[itemprop="author"] > span[itemprop="name"]').text().trim();
+            for (const t of $('#infor-box > div:last-child > div > p:nth-child(3) > a').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            let status = $('.info-detail-comic > .status > .detail-info > span').text().trim(); //completed, 1 = Ongoing
+            let status = $('#infor-box > div:last-child > div > p:last-child > a').text().trim(); //completed, 1 = Ongoing
             statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
-            let desc = $(".summary-content > p").text();
-            const image = (_b = $('.image-info img').attr("src")) !== null && _b !== void 0 ? _b : "";
+            let desc = $("#manga-summary").text();
+            const image = (_b = $('.manga-cover img').attr("src")) !== null && _b !== void 0 ? _b : "";
             return createManga({
                 id: mangaId,
                 author: creator,
                 artist: creator,
                 desc: desc,
-                titles: [$('.title-manga').text().trim()],
+                titles: [$('#infor-box > div:last-child > h1').text().trim()],
                 image,
                 status: statusFinal,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
@@ -2739,20 +2739,20 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             const chapters = [];
-            for (const obj of $('#list-chapter-dt > nav > ul > li:not(:first-child)').toArray()) {
-                let id = $('.chapters > a', obj).attr('href');
-                let chapNum = parseFloat((_a = $('.chapters > a', obj).text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
-                let name = $('.chapters > a', obj).text().trim();
-                let time = $('div:nth-child(2)', obj).text().trim();
-                // let H = time[0];
-                // let D = time[1].split('/');
+            const timeList = $('#manga-chapter .date-name').toArray();
+            const titleList = $('#manga-chapter .chapter-name').toArray();
+            for (const i in titleList) {
+                let id = $('a', titleList[i]).attr('href');
+                let chapNum = parseFloat((_a = $('a', titleList[i]).text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
+                let name = $('a', titleList[i]).text().trim();
+                let time = $(timeList[i]).text().trim().split('.');
                 chapters.push(createChapter({
                     id,
                     chapNum: chapNum,
                     name,
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: this.convertTime(time)
+                    time: new Date(time[1] + '/' + time[0] + '/' + time[2])
                 }));
             }
             return chapters;
