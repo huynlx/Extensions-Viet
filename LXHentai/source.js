@@ -2624,7 +2624,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
             const data = yield this.requestManager.schedule(request, 1);
             const html = Buffer.from(createByteArray(data.rawData)).toString();
             let $ = this.cheerio.load(html);
-            const tiles = LXHentaiParser_1.parseSearch($);
+            const tiles = LXHentaiParser_1.parseSearch($, query);
             metadata = !LXHentaiParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: tiles,
@@ -2675,11 +2675,18 @@ exports.generateSearch = (query) => {
     let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
     return encodeURI(keyword);
 };
-exports.parseSearch = ($) => {
+exports.parseSearch = ($, query) => {
     var _a;
     const manga = [];
     // const collectedIds: string[] = [];
-    for (let obj of $('div.py-2', '.col-md-8 .row').toArray()) {
+    var loop = [];
+    if (query.title) {
+        loop = $('div.py-2', '.row').toArray();
+    }
+    else {
+        loop = $('div.py-2', '.col-md-8 .row').toArray();
+    }
+    for (let obj of loop) {
         const title = $('a', obj).last().text().trim();
         const id = (_a = $('a', obj).last().attr('href')) !== null && _a !== void 0 ? _a : title;
         const image = $('div', obj).first().css('background');
