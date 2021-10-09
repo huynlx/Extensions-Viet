@@ -2397,21 +2397,21 @@ exports.LXHentai = exports.LXHentaiInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 // import axios from "axios";
 const LXHentaiParser_1 = require("./LXHentaiParser");
-const DOMAIN = 'https://truyentranhaudio.online/';
+const DOMAIN = 'https://lxhentai.com/';
 const method = 'GET';
 exports.LXHentaiInfo = {
-    version: '3.0.0',
+    version: '2.0.0',
     name: 'LXHentai',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from LXHentai',
     websiteBaseURL: `https://lxhentai.com/`,
-    contentRating: paperback_extensions_common_1.ContentRating.MATURE,
+    contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
         {
-            text: "Recommended",
-            type: paperback_extensions_common_1.TagType.BLUE
+            text: "18+",
+            type: paperback_extensions_common_1.TagType.YELLOW
         }
     ]
 };
@@ -2423,7 +2423,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
     }
-    getMangaShareUrl(mangaId) { return `${DOMAIN}/${mangaId}`; }
+    getMangaShareUrl(mangaId) { return `${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
         var _a;
@@ -2439,13 +2439,13 @@ class LXHentai extends paperback_extensions_common_1.Source {
             let status = 1; //completed, 1 = Ongoing
             let artist = '';
             let desc = $('.detail-content > p').text();
-            for (const a of $('.row mt-2 > .col-4 ').toArray()) {
+            for (const a of $('.col-md-8 > .row mt-2 > .col-4 ').toArray()) {
                 switch ($(a).text().trim()) {
                     case "Tác giả":
-                        creator = $($(a).next()).text();
+                        creator = $(a).next().text();
                         break;
                     case "Tình trạng":
-                        status = $($(a).next()).text().toLowerCase().includes("đã") ? 0 : 1;
+                        status = $(a).next().text().toLowerCase().includes("đã") ? 0 : 1;
                         break;
                     case "Thể loại":
                         for (const t of $('a', $(a).next()).toArray()) {
@@ -2455,7 +2455,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
                         }
                         break;
                     case "Thực hiện":
-                        artist = $($(a).next()).text();
+                        artist = $(a).next().text();
                         break;
                 }
             }
@@ -2468,7 +2468,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
                 image: 'https://lxhentai.com' + $('.col-md-8 > .row > .col-md-4 > img').attr('src'),
                 status: status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
-                hentai: false,
+                hentai: true,
                 tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
             });
         });
