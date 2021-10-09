@@ -2495,9 +2495,9 @@ class LXHentai extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
-            for (let obj of $('#content_chap img').toArray()) {
+            for (let obj of $('#content_chap div:not(.text-center) img').toArray()) {
                 let link = 'https:' + obj.attribs['src'];
-                pages.push(link);
+                pages.push(encodeURI(link));
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
