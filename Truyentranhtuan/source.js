@@ -2769,21 +2769,25 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             let arrayImages = $.html().match(/slides_page_path = (.*);/);
             let listImages = JSON.parse((_a = arrayImages === null || arrayImages === void 0 ? void 0 : arrayImages[1]) !== null && _a !== void 0 ? _a : "");
+            let slides_page = [];
             if (listImages.length === 0) {
                 arrayImages = $.html().match(/slides_page_url_path  = (.*);/);
                 listImages = JSON.parse((_b = arrayImages === null || arrayImages === void 0 ? void 0 : arrayImages[1]) !== null && _b !== void 0 ? _b : "");
+                slides_page = listImages;
             }
-            // sort
-            let slides_page = listImages;
-            let length_chapter = slides_page.length - 1;
-            for (let i = 0; i < length_chapter; i++)
-                for (let j = i + 1; j < slides_page.length; j++)
-                    if (slides_page[j] < slides_page[i]) {
-                        let temp = slides_page[j];
-                        slides_page[j] = slides_page[i];
-                        slides_page[i] = temp;
-                    }
-            // !sort
+            else {
+                slides_page = listImages;
+                // sort
+                let length_chapter = slides_page.length - 1;
+                for (let i = 0; i < length_chapter; i++)
+                    for (let j = i + 1; j < slides_page.length; j++)
+                        if (slides_page[j] < slides_page[i]) {
+                            let temp = slides_page[j];
+                            slides_page[j] = slides_page[i];
+                            slides_page[i] = temp;
+                        }
+                // !sort
+            }
             const pages = [];
             for (let obj of slides_page) {
                 let link = encodeURI(obj);
