@@ -2667,15 +2667,8 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                     id
                 });
             }
-            const image = (_c = $('info-cover > .thumbnail').attr('src')) !== null && _c !== void 0 ? _c : "fuck";
+            const image = (_c = $('.info-cover > .thumbnail').attr('src')) !== null && _c !== void 0 ? _c : "fuck";
             const creator = $('a', '.manga-info > li:nth-of-type(2)').text();
-            //log
-            console.log(DOMAIN + mangaId);
-            console.log('image: ' + image);
-            console.log('title: ' + $('.manga-info > h3').text());
-            console.log('creator: ' + creator);
-            console.log(genres);
-            console.log('desc: ' + desc + '/n');
             return createManga({
                 id: mangaId,
                 author: creator,
@@ -2727,7 +2720,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                 if (!obj.attribs['data-src'])
                     continue;
                 let link = obj.attribs['data-src'].trim();
-                pages.push(encodeURI(link));
+                pages.push(encodeURI(link.trim()));
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
@@ -2919,63 +2912,33 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             });
         });
     }
-    // async getSearchTags(): Promise<TagSection[]> {
-    //     const url = `${DOMAIN}tim-kiem-nang-cao.html`
-    //     const request = createRequestObject({
-    //         url: url,
-    //         method: "GET",
-    //     });
-    //     const response = await this.requestManager.schedule(request, 1)
-    //     const $ = this.cheerio.load(response.data);
-    //     const arrayTags: Tag[] = [];
-    //     const arrayTags2: Tag[] = [];
-    //     const arrayTags3: Tag[] = [];
-    //     const arrayTags4: Tag[] = [];
-    //     const arrayTags5: Tag[] = [];
-    //     //the loai
-    //     for (const tag of $('div.genre-item', 'div.col-sm-10').toArray()) {
-    //         const label = $(tag).text().trim();
-    //         const id = $('span', tag).attr('data-id') ?? label;
-    //         if (!id || !label) continue;
-    //         arrayTags.push({ id: id, label: label });
-    //     }
-    //     //quoc gia
-    //     for (const tag of $('option', 'select#country').toArray()) {
-    //         const label = $(tag).text().trim();
-    //         const id = 'country.' + $(tag).attr('value') ?? label;
-    //         if (!id || !label) continue;
-    //         arrayTags2.push({ id: id, label: label });
-    //     }
-    //     //tinh trang
-    //     for (const tag of $('option', 'select#status').toArray()) {
-    //         const label = $(tag).text().trim();
-    //         const id = 'status.' + $(tag).attr('value') ?? label;
-    //         if (!id || !label) continue;
-    //         arrayTags3.push({ id: id, label: label });
-    //     }
-    //     //so luong chuong
-    //     for (const tag of $('option', 'select#minchapter').toArray()) {
-    //         const label = $(tag).text().trim();
-    //         const id = 'minchapter.' + $(tag).attr('value') ?? label;
-    //         if (!id || !label) continue;
-    //         arrayTags4.push({ id: id, label: label });
-    //     }
-    //     //sap xep
-    //     for (const tag of $('option', 'select#sort').toArray()) {
-    //         const label = $(tag).text().trim();
-    //         const id = 'sort.' + $(tag).attr('value') ?? label;
-    //         if (!id || !label) continue;
-    //         arrayTags5.push({ id: id, label: label });
-    //     }
-    //     const tagSections: TagSection[] = [
-    //         createTagSection({ id: '0', label: 'Thể Loại Truyện', tags: arrayTags.map(x => createTag(x)) }),
-    //         createTagSection({ id: '1', label: 'Quốc Gia (Chỉ chọn 1)', tags: arrayTags2.map(x => createTag(x)) }),
-    //         createTagSection({ id: '2', label: 'Tình Trạng (Chỉ chọn 1)', tags: arrayTags3.map(x => createTag(x)) }),
-    //         createTagSection({ id: '3', label: 'Số Lượng Chương (Chỉ chọn 1)', tags: arrayTags4.map(x => createTag(x)) }),
-    //         createTagSection({ id: '4', label: 'Sắp xếp (Chỉ chọn 1)', tags: arrayTags5.map(x => createTag(x)) }),
-    //     ]
-    //     return tagSections;
-    // }
+    getSearchTags() {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            const url = `https://truyentranhaudio.com/`;
+            const request = createRequestObject({
+                url: url,
+                method: "GET",
+            });
+            const response = yield this.requestManager.schedule(request, 1);
+            const $ = this.cheerio.load(response.data);
+            const arrayTags = [];
+            //the loai
+            for (const tag of $('div:first-child ul.nav', '.megamenu').toArray()) {
+                for (const gen of $('a', tag).toArray()) {
+                    const label = $(gen).text().trim();
+                    const id = (_a = $(gen).attr('href')) !== null && _a !== void 0 ? _a : label;
+                    if (!id || !label)
+                        continue;
+                    arrayTags.push({ id: id, label: label });
+                }
+            }
+            const tagSections = [
+                createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) }),
+            ];
+            return tagSections;
+        });
+    }
     globalRequestHeaders() {
         return {
             referer: `${DOMAIN} `
