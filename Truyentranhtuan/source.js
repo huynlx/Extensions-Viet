@@ -2771,7 +2771,7 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
             let listImages = JSON.parse((_a = arrayImages === null || arrayImages === void 0 ? void 0 : arrayImages[1]) !== null && _a !== void 0 ? _a : "");
             let slides_page = [];
             if (listImages.length === 0) {
-                arrayImages = $.html().match(/slides_page_url_path  = (.*);/);
+                arrayImages = $.html().match(/slides_page_url_path = (.*);/);
                 listImages = JSON.parse((_b = arrayImages === null || arrayImages === void 0 ? void 0 : arrayImages[1]) !== null && _b !== void 0 ? _b : "");
                 slides_page = listImages;
             }
@@ -2964,9 +2964,7 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
     getSearchTags() {
         return __awaiter(this, void 0, void 0, function* () {
             const tags = [];
-            const tags2 = [];
-            const tags5 = [];
-            const url = 'https://doctruyen3q.com/tim-truyen';
+            const url = 'http://truyentranhtuan.com/danh-sach-truyen';
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -2974,33 +2972,15 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             //the loai
-            for (const tag of $('.categories-detail li:not(.active) > a').toArray()) {
+            for (const tag of $('#category-list li a').toArray()) {
                 const label = $(tag).text().trim();
-                const id = 'cate.' + $(tag).attr('href').split('/').pop();
+                const id = $(tag).attr('href');
                 if (!id || !label)
                     continue;
                 tags.push({ id: id, label: label });
             }
-            //trang thai
-            for (const tag of $('#status-comic a').toArray()) {
-                var label = $(tag).text().trim();
-                const id = 'status.' + $(tag).attr('href').split('=')[1];
-                if (!id || !label)
-                    continue;
-                tags5.push({ id: id, label: label });
-            }
-            //sap xep theo
-            for (const tag of $('.list-select > a').toArray()) {
-                var label = $(tag).text().trim();
-                const id = 'sort.' + $(tag).attr('href').split('=')[1];
-                if (!id || !label)
-                    continue;
-                tags2.push({ id: id, label: label });
-            }
             const tagSections = [
                 createTagSection({ id: '1', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
-                createTagSection({ id: '4', label: 'Trạng thái', tags: tags5.map(x => createTag(x)) }),
-                createTagSection({ id: '3', label: 'Sắp xếp theo', tags: tags2.map(x => createTag(x)) }),
             ];
             return tagSections;
         });
