@@ -3061,10 +3061,10 @@ function convertTime(timeAgo) {
         time = new Date(Date.now() - trimmed * 604800000);
     }
     else if (timeAgo.includes('tháng')) {
-        time = new Date(Date.now() - trimmed * 2629800000);
+        time = new Date(Date.now() - trimmed * 604800000 * 4);
     }
     else if (timeAgo.includes('năm')) {
-        time = new Date(Date.now() - trimmed * 31557600000);
+        time = new Date(Date.now() - trimmed * 604800000 * 4 * 12);
     }
     else {
         if (timeAgo.includes(":")) {
