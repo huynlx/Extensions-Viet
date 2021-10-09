@@ -619,11 +619,6 @@ class VietComic extends paperback_extensions_common_1.Source {
             requestsPerSecond: 5,
             requestTimeout: 20000
         });
-        // globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
-        //     return {
-        //         referer: DOMAIN
-        //     }
-        // }
     }
     getMangaShareUrl(mangaId) { return `${mangaId}`; }
     ;
@@ -715,7 +710,7 @@ class VietComic extends paperback_extensions_common_1.Source {
                 id: chapterId,
                 mangaId: mangaId,
                 pages: pages,
-                longStrip: true
+                longStrip: false
             });
             return chapterDetails;
         });
@@ -938,6 +933,11 @@ class VietComic extends paperback_extensions_common_1.Source {
             ];
             return tagSections;
         });
+    }
+    globalRequestHeaders() {
+        return {
+            referer: DOMAIN
+        };
     }
 }
 exports.VietComic = VietComic;
