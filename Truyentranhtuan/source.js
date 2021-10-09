@@ -2759,7 +2759,7 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
         });
     }
     getChapterDetails(mangaId, chapterId) {
-        var _a;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
                 url: `${chapterId}`,
@@ -2767,8 +2767,12 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
             });
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            const arrayImages = $.html().match(/slides_page_path = (.*);/);
-            const listImages = JSON.parse((_a = arrayImages === null || arrayImages === void 0 ? void 0 : arrayImages[1]) !== null && _a !== void 0 ? _a : "");
+            let arrayImages = $.html().match(/slides_page_path = (.*);/);
+            let listImages = JSON.parse((_a = arrayImages === null || arrayImages === void 0 ? void 0 : arrayImages[1]) !== null && _a !== void 0 ? _a : "");
+            if (listImages.length === 0) {
+                arrayImages = $.html().match(/slides_page_url_path  = (.*);/);
+                listImages = JSON.parse((_b = arrayImages === null || arrayImages === void 0 ? void 0 : arrayImages[1]) !== null && _b !== void 0 ? _b : "");
+            }
             // sort
             let slides_page = listImages;
             let length_chapter = slides_page.length - 1;
@@ -2896,13 +2900,7 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
                     url = `https://doctruyen3q.com/hot?page=${page}`;
                     break;
                 case "new_updated":
-                    url = `https://doctruyen3q.com/?page=${page}`;
-                    break;
-                case "boy":
-                    url = `https://doctruyen3q.com/truyen-con-trai?page=${page}`;
-                    break;
-                case "girl":
-                    url = `https://doctruyen3q.com/truyen-con-gai?page=${page}`;
+                    url = `http://truyentranhtuan.com/page/${page}/`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
@@ -2912,8 +2910,9 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
                 method
             });
             let data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
-            let manga = TruyentranhtuanParser_1.parseViewMore($, homepageSectionId);
+            let html = Buffer.from(createByteArray(data.rawData)).toString();
+            let $ = this.cheerio.load(html);
+            let manga = TruyentranhtuanParser_1.parseViewMore($);
             metadata = !TruyentranhtuanParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: manga,
@@ -3042,78 +3041,34 @@ exports.parseSearch = ($) => {
     }
     return manga;
 };
-exports.parseViewMore = ($, homepageSectionId) => {
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+exports.parseViewMore = ($) => {
+    var _a, _b;
     const manga = [];
-    if (homepageSectionId === 'hot') {
-        for (const element of $('#hot > .body > .main-left .item-manga > .item').toArray()) {
-            let title = $('.caption > h3 > a', element).text().trim();
-            let img = (_a = $('.image-item > a > img', element).attr("data-original")) !== null && _a !== void 0 ? _a : $('.image-item > a > img', element).attr('src');
-            let id = (_b = $('.caption > h3 > a', element).attr('href')) !== null && _b !== void 0 ? _b : title;
-            let subtitle = $("ul > li:first-child > a", element).text().trim();
-            manga.push(createMangaTile({
-                id: id !== null && id !== void 0 ? id : "",
-                image: img !== null && img !== void 0 ? img : "",
-                title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: subtitle }),
-            }));
-        }
-    }
-    else if (homepageSectionId === 'new_updated') {
-        for (const element of $('#home > .body > .main-left .item-manga > .item').toArray()) {
-            let title = $('.caption > h3 > a', element).text().trim();
-            let img = (_c = $('.image-item > a > img', element).attr("data-original")) !== null && _c !== void 0 ? _c : $('.image-item > a > img', element).attr('src');
-            let id = (_d = $('.caption > h3 > a', element).attr('href')) !== null && _d !== void 0 ? _d : title;
-            let subtitle = $("ul > li:first-child > a", element).text().trim();
-            manga.push(createMangaTile({
-                id: id !== null && id !== void 0 ? id : "",
-                image: img !== null && img !== void 0 ? img : "",
-                title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: subtitle }),
-            }));
-        }
-    }
-    else if (homepageSectionId === 'boy') {
-        for (const element of $('#male-comics > .body > .main-left .item-manga > .item').toArray()) {
-            let title = $('.caption > h3 > a', element).text().trim();
-            let img = (_e = $('.image-item > a > img', element).attr("data-original")) !== null && _e !== void 0 ? _e : $('.image-item > a > img', element).attr('src');
-            let id = (_f = $('.caption > h3 > a', element).attr('href')) !== null && _f !== void 0 ? _f : title;
-            let subtitle = $("ul > li:first-child > a", element).text().trim();
-            manga.push(createMangaTile({
-                id: id !== null && id !== void 0 ? id : "",
-                image: img !== null && img !== void 0 ? img : "",
-                title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: subtitle }),
-            }));
-        }
-    }
-    else {
-        for (const element of $('#female-comics > .body > .main-left .item-manga > .item').toArray()) {
-            let title = $('.caption > h3 > a', element).text().trim();
-            let img = (_g = $('.image-item > a > img', element).attr("data-original")) !== null && _g !== void 0 ? _g : $('.image-item > a > img', element).attr('src');
-            let id = (_h = $('.caption > h3 > a', element).attr('href')) !== null && _h !== void 0 ? _h : title;
-            let subtitle = $("ul > li:first-child > a", element).text().trim();
-            manga.push(createMangaTile({
-                id: id !== null && id !== void 0 ? id : "",
-                image: img !== null && img !== void 0 ? img : "",
-                title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: subtitle }),
-            }));
-        }
+    for (const element of $('#new-chapter .manga-update').toArray()) {
+        let title = $('a', element).first().text().trim();
+        let img = (_a = $('img', element).attr('src')) === null || _a === void 0 ? void 0 : _a.replace('-80x90', '');
+        let id = (_b = $('a', element).attr('href')) !== null && _b !== void 0 ? _b : title;
+        let subtitle = $('a', element).last().text().trim();
+        manga.push(createMangaTile({
+            id: id !== null && id !== void 0 ? id : "",
+            image: encodeURI(img !== null && img !== void 0 ? img : ""),
+            title: createIconText({ text: title }),
+            subtitleText: createIconText({ text: subtitle }),
+        }));
     }
     return manga;
 };
 exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
-    for (const page of $("li", "ul.pagination").toArray()) {
-        const p = Number($('a', page).text().trim());
+    for (const page of $("li", "#page-nav").toArray()) {
+        const p = Number($('span', page).text().trim());
         if (isNaN(p))
             continue;
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($("ul.pagination > li.active").text().trim());
+    const currentPage = Number($("#page-nav li.current-page").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
