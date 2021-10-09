@@ -2426,36 +2426,47 @@ class LXHentai extends paperback_extensions_common_1.Source {
     getMangaShareUrl(mangaId) { return `${DOMAIN}/${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
                 url: `${mangaId}`,
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 10);
-            let $ = this.cheerio.load(data.data); //lỗi từ dòng này
+            let $ = this.cheerio.load(data.data);
             let tags = [];
-            // let creator = [];
-            // let status = 1; //completed, 1 = Ongoing
-            // let desc = $('.story-detail-info').text();
-            // for (const t of $('a', '.list01').toArray()) {
-            //     const genre = $(t).text().trim()
-            //     const id = $(t).attr('href') ?? genre
-            //     tags.push(createTag({ label: genre, id }));
-            // }
-            // for (const c of $('a', '.txt > p:nth-of-type(1)').toArray()) {
-            //     const name = $(c).text().trim()
-            //     creator.push(name);
-            // }
-            // status = $('.txt > p:nth-of-type(2)').text().toLowerCase().includes("đang cập nhật") ? 1 : 0;
-            // const image = $('.left > img').attr('src') ?? "";
+            let creator = '';
+            let status = 1; //completed, 1 = Ongoing
+            let artist = '';
+            let desc = $('.detail-content > p').text();
+            for (const a of $('.row mt-2 > .col-4 ').toArray()) {
+                switch ($(a).text().trim()) {
+                    case "Tác giả":
+                        creator = $($(a).next()).text();
+                        break;
+                    case "Tình trạng":
+                        status = $($(a).next()).text().toLowerCase().includes("đã") ? 0 : 1;
+                        break;
+                    case "Thể loại":
+                        for (const t of $('a', $(a).next()).toArray()) {
+                            const genre = $(t).text().trim();
+                            const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
+                            tags.push(createTag({ label: genre, id }));
+                        }
+                        break;
+                    case "Thực hiện":
+                        artist = $($(a).next()).text();
+                        break;
+                }
+            }
             return createManga({
                 id: mangaId,
-                author: 'huynh',
-                artist: 'huynh',
-                desc: '',
+                author: creator,
+                artist: artist,
+                desc: desc,
                 titles: [$('h1.title-detail').text()],
                 image: 'https://lxhentai.com' + $('.col-md-8 > .row > .col-md-4 > img').attr('src'),
-                status: 1,
+                status: status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
                 tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
@@ -2474,13 +2485,16 @@ class LXHentai extends paperback_extensions_common_1.Source {
             var i = 0;
             for (const obj of $("#listChuong > ul > .row:not(:first-child) > div.col-5").toArray().reverse()) {
                 i++;
+                let time = $($(obj).next()).text().trim().split(' ');
+                let day = time[1].split('/');
+                let h = time[0];
                 chapters.push(createChapter({
                     id: 'https://lxhentai.com' + $('a', obj).attr('href'),
                     chapNum: i,
                     name: $('a', obj).text(),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: new Date('09/10/2021')
+                    time: new Date(day[1] + '/' + day[0] + '/' + day[2] + ' ' + h)
                 }));
             }
             return chapters;
