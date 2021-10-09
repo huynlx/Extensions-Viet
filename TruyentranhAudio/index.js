@@ -2727,9 +2727,8 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                 if (!obj.attribs['data-src'])
                     continue;
                 let link = obj.attribs['data-src'].trim();
-                pages.push(link);
+                pages.push(encodeURI(link));
             }
-            console.log(pages);
             const chapterDetails = createChapterDetails({
                 id: chapterId,
                 mangaId: mangaId,
@@ -2794,7 +2793,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             let newUpdatedItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let manga of $('.thumb-item-flow:not(:last-child)', '.col-lg-8.col-sm-8 > .card:nth-child(3) .row-last-update').toArray()) {
+            for (let manga of $('.thumb-item-flow:not(:last-child)', '.col-lg-8.col-sm-8 > .card:nth-child(2) .row-last-update').toArray()) {
                 const title = $('.series-title', manga).text().trim();
                 const id = (_b = $('.series-title > a', manga).attr('href')) !== null && _b !== void 0 ? _b : title;
                 const image = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', manga).attr('data-bg');
@@ -2821,7 +2820,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             let newAddItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let manga of $('.thumb-item-flow:not(:last-child)', '.col-lg-8.col-sm-8 > .card:nth-child(6) .row-last-update').toArray()) {
+            for (let manga of $('.thumb-item-flow:not(:last-child)', '.col-lg-8.col-sm-8 > .card:nth-child(5) .row-last-update').toArray()) {
                 const title = $('.series-title', manga).text().trim();
                 const id = (_c = $('.series-title > a', manga).attr('href')) !== null && _c !== void 0 ? _c : title;
                 const image = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', manga).attr('data-bg');
