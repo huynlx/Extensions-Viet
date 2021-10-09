@@ -2527,9 +2527,6 @@ class LXHentai extends paperback_extensions_common_1.Source {
             const html = Buffer.from(createByteArray(data.rawData)).toString();
             let $ = this.cheerio.load(html);
             for (let manga of $('div.col-md-3', '.main .col-md-8 > .row').toArray()) {
-                // console.log($('a', manga).last().text().trim());
-                // console.log($('div', manga).first().css('background'));
-                // console.log($('a', manga).first().text().trim()); 
                 const title = $('a', manga).last().text().trim();
                 const id = (_a = $('a', manga).last().attr('href')) !== null && _a !== void 0 ? _a : title;
                 const image = $('div', manga).first().css('background');
@@ -2561,7 +2558,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
             let url = '';
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `https://lxhentai.com/story/index.php?p=${page}`;
+                    url = `https://lxhentai.com/story/index.php?hot&p=${page}`;
                     break;
                 // case "new_added":
                 //     url = `https://lxhentai.com/story/cat.php?id=57&p=${page}`;
@@ -2575,7 +2572,8 @@ class LXHentai extends paperback_extensions_common_1.Source {
                 param
             });
             const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
+            const html = Buffer.from(createByteArray(response.rawData)).toString();
+            const $ = this.cheerio.load(html);
             const manga = LXHentaiParser_1.parseViewMore($);
             metadata = !LXHentaiParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
