@@ -2646,7 +2646,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
             //the loai
             for (const tag of $('.col-6 a', '#theloaiMob').toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_a = $(tag).attr('href')) !== null && _a !== void 0 ? _a : label;
+                const id = (_a = 'https://lxhentai.com/' + $(tag).attr('href')) !== null && _a !== void 0 ? _a : label;
                 if (!id || !label)
                     continue;
                 arrayTags.push({ id: id, label: label });
