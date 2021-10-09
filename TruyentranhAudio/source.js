@@ -2675,7 +2675,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                 artist: creator,
                 desc,
                 titles: [$('.manga-info > h3').text()],
-                image: image,
+                image: image.includes('http') ? image : 'https:' + image,
                 status,
                 hentai: false,
                 tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
