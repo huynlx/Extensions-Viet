@@ -2787,7 +2787,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             let newUpdatedItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let manga of $('.thumb-item-flow:not(:last-child)', '.col-lg-8.col-sm-8 > .card:nth-child(2) .row-last-update').toArray()) {
+            for (let manga of $('.thumb-item-flow:not(:last-child)', '.col-lg-8.col-sm-8 > .card:nth-child(2) .row-last-update').toArray().splice(0, 15)) {
                 const title = $('.series-title', manga).text().trim();
                 const id = (_b = $('.series-title > a', manga).attr('href')) !== null && _b !== void 0 ? _b : title;
                 const image = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', manga).attr('data-bg');
@@ -2914,26 +2914,109 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
         });
     }
     getSearchTags() {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://truyentranhaudio.com/`;
-            const request = createRequestObject({
-                url: url,
-                method: "GET",
-            });
-            const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
-            const arrayTags = [];
-            //the loai
-            for (const tag of $('div:not(:last-child) ul.nav', '.megamenu > li').toArray()) {
-                for (const gen of $('a', tag).toArray()) {
-                    const label = $(gen).text().trim();
-                    const id = (_a = $(gen).attr('href')) !== null && _a !== void 0 ? _a : label;
-                    if (!id || !label)
-                        continue;
-                    arrayTags.push({ id: id, label: label });
+            const arrayTags = [
+                {
+                    "id": "/danh-sach-truyen-the-loai-manhua.html",
+                    "label": "manhua"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-manhwa.html",
+                    "label": "manhwa"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-manga.html",
+                    "label": "manga"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-he-thong.html",
+                    "label": "hệ thống"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-do-thi.html",
+                    "label": "đô thị"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-trong-sinh.html",
+                    "label": "trọng sinh"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-tu-tien.html",
+                    "label": "tu tiên"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-tu-tien.html",
+                    "label": "tu tiên"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-harem.html",
+                    "label": "harem"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-xuyen-khong.html",
+                    "label": "xuyên không"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-game.html",
+                    "label": "game"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-ma-dao.html",
+                    "label": "ma đạo"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-kinh-di.html",
+                    "label": "kinh dị"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-dam-my.html",
+                    "label": "đam mỹ"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-dam-my.html",
+                    "label": "đam mỹ"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-ngon-tinh.html",
+                    "label": "ngôn tình"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-dau-tri.html",
+                    "label": "đấu trí"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-hentai.html",
+                    "label": "hentai"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-hanh-dong.html",
+                    "label": "hành động"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-phep-thuat.html",
+                    "label": "phép thuật"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-huyen-huyen.html",
+                    "label": "huyền huyễn"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-huyen-huyen.html",
+                    "label": "huyền huyễn"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-action.html",
+                    "label": "Action"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-lang-man.html",
+                    "label": "lãng mạn"
+                },
+                {
+                    "id": "/danh-sach-truyen-the-loai-hai-huoc.html",
+                    "label": "hài hước"
                 }
-            }
+            ];
             const tagSections = [
                 createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) }),
             ];
