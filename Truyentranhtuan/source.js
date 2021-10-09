@@ -2767,9 +2767,20 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
             });
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
+            const arrayImages = $.html().match(/slides_page_path = (.*);/);
+            const listImages = JSON.parse((_a = arrayImages === null || arrayImages === void 0 ? void 0 : arrayImages[1]) !== null && _a !== void 0 ? _a : "");
+            let slides_page = listImages;
+            let length_chapter = slides_page.length - 1;
+            for (let i = 0; i < length_chapter; i++)
+                for (let j = i + 1; j < slides_page.length; j++)
+                    if (slides_page[j] < slides_page[i]) {
+                        let temp = slides_page[j];
+                        slides_page[j] = slides_page[i];
+                        slides_page[i] = temp;
+                    }
             const pages = [];
-            for (let obj of $('.list-image-detail img').toArray()) {
-                let link = (_a = $(obj).attr('data-original')) !== null && _a !== void 0 ? _a : $(obj).attr('src');
+            for (let obj of slides_page) {
+                let link = encodeURI(obj);
                 pages.push(link);
             }
             const chapterDetails = createChapterDetails({
@@ -2782,7 +2793,7 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             let featured = createHomeSection({
                 id: 'featured',
@@ -2857,14 +2868,14 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
             let html = Buffer.from(createByteArray(data.rawData)).toString();
             let $ = this.cheerio.load(html);
             let newUpdatedItems = [];
-            for (const element of $('#new-chapter .manga-update').toArray().splice(0, 20)) {
+            for (const element of $('#new-chapter .manga-update').toArray().splice(0, 15)) {
                 let title = $('a', element).first().text().trim();
-                let img = $('img', element).attr('src');
-                let id = (_a = $('.manga > a', element).attr('href')) !== null && _a !== void 0 ? _a : title;
+                let img = $('img', element).attr('src').replace('-80x90', '');
+                let id = (_a = $('a', element).attr('href')) !== null && _a !== void 0 ? _a : title;
                 let subtitle = $('a', element).last().text().trim();
                 newUpdatedItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
-                    image: img !== null && img !== void 0 ? img : "",
+                    image: (_b = encodeURI(img)) !== null && _b !== void 0 ? _b : "",
                     title: createIconText({ text: title }),
                     subtitleText: createIconText({ text: subtitle }),
                 }));
