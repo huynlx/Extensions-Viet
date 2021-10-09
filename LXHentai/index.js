@@ -2439,7 +2439,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
             let status = 1; //completed, 1 = Ongoing
             let artist = '';
             let desc = $('.detail-content > p').text();
-            for (const a of $('.col-md-8 > .row mt-2 > .col-4 ').toArray()) {
+            for (const a of $('.row.mt-2 > .col-4.py-1').toArray()) {
                 switch ($(a).text().trim()) {
                     case "Tác giả":
                         creator = $(a).next().text();
@@ -2509,7 +2509,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
-            for (let obj of $('#content_chap div:not(.text-center) img').toArray()) {
+            for (let obj of $('#content_chap img').toArray()) {
                 let link = 'https:' + obj.attribs['src'];
                 pages.push(encodeURI(link));
             }
