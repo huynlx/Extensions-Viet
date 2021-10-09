@@ -707,10 +707,9 @@ class VietComic extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(response.data);
             const arr = regex.exec($.html());
             const images = (_a = arr === null || arr === void 0 ? void 0 : arr[1].split('|')) !== null && _a !== void 0 ? _a : [];
-            console.log(images);
             const pages = [];
             for (var i = 0; i < images.length; i++) {
-                pages.push(images[i]);
+                pages.push('https://proxy.duckduckgo.com/iu/?u=' + images[i]);
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
