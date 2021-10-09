@@ -2613,47 +2613,17 @@ class LXHentai extends paperback_extensions_common_1.Source {
         });
     }
     getSearchResults(query, metadata) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            const search = {
-                category: '',
-                country: "0",
-                status: "-1",
-                minchapter: "0",
-                sort: "0"
-            };
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
-            const category = [];
-            tags.map((value) => {
-                if (value.indexOf('.') === -1) {
-                    category.push(value);
-                }
-                else {
-                    switch (value.split(".")[0]) {
-                        case 'minchapter':
-                            search.minchapter = (value.split(".")[1]);
-                            break;
-                        case 'country':
-                            search.country = (value.split(".")[1]);
-                            break;
-                        case 'sort':
-                            search.sort = (value.split(".")[1]);
-                            break;
-                        case 'status':
-                            search.status = (value.split(".")[1]);
-                            break;
-                    }
-                }
-            });
-            search.category = (category !== null && category !== void 0 ? category : []).join(",");
             const request = createRequestObject({
-                url: query.title ? `${DOMAIN}tim-kiem/trang-${page}.html` : `${DOMAIN}tim-kiem-nang-cao/trang-${page}.html`,
+                url: query.title ? `https://lxhentai.com/story/search.php?key=${encodeURI(query.title)}&p=${page}` : `${tags[0]}&p=${page}`,
                 method: "GET",
-                param: encodeURI(`?q=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&category=${search.category}&country=${search.country}&status=${search.status}&minchapter=${search.minchapter}&sort=${search.sort}`)
             });
             const data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
+            const html = Buffer.from(createByteArray(data.rawData)).toString();
+            let $ = this.cheerio.load(html);
             const tiles = LXHentaiParser_1.parseSearch($);
             metadata = !LXHentaiParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
@@ -2663,9 +2633,9 @@ class LXHentai extends paperback_extensions_common_1.Source {
         });
     }
     getSearchTags() {
-        var _a, _b, _c, _d, _e;
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `${DOMAIN}tim-kiem-nang-cao.html`;
+            const url = `https://lxhentai.com/#`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -2673,56 +2643,16 @@ class LXHentai extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const arrayTags = [];
-            const arrayTags2 = [];
-            const arrayTags3 = [];
-            const arrayTags4 = [];
-            const arrayTags5 = [];
             //the loai
-            for (const tag of $('div.genre-item', 'div.col-sm-10').toArray()) {
+            for (const tag of $('.col-6 a', '#theloaiMob').toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_a = $('span', tag).attr('data-id')) !== null && _a !== void 0 ? _a : label;
+                const id = (_a = $(tag).attr('href')) !== null && _a !== void 0 ? _a : label;
                 if (!id || !label)
                     continue;
                 arrayTags.push({ id: id, label: label });
             }
-            //quoc gia
-            for (const tag of $('option', 'select#country').toArray()) {
-                const label = $(tag).text().trim();
-                const id = (_b = 'country.' + $(tag).attr('value')) !== null && _b !== void 0 ? _b : label;
-                if (!id || !label)
-                    continue;
-                arrayTags2.push({ id: id, label: label });
-            }
-            //tinh trang
-            for (const tag of $('option', 'select#status').toArray()) {
-                const label = $(tag).text().trim();
-                const id = (_c = 'status.' + $(tag).attr('value')) !== null && _c !== void 0 ? _c : label;
-                if (!id || !label)
-                    continue;
-                arrayTags3.push({ id: id, label: label });
-            }
-            //so luong chuong
-            for (const tag of $('option', 'select#minchapter').toArray()) {
-                const label = $(tag).text().trim();
-                const id = (_d = 'minchapter.' + $(tag).attr('value')) !== null && _d !== void 0 ? _d : label;
-                if (!id || !label)
-                    continue;
-                arrayTags4.push({ id: id, label: label });
-            }
-            //sap xep
-            for (const tag of $('option', 'select#sort').toArray()) {
-                const label = $(tag).text().trim();
-                const id = (_e = 'sort.' + $(tag).attr('value')) !== null && _e !== void 0 ? _e : label;
-                if (!id || !label)
-                    continue;
-                arrayTags5.push({ id: id, label: label });
-            }
             const tagSections = [
-                createTagSection({ id: '0', label: 'Thể Loại Truyện', tags: arrayTags.map(x => createTag(x)) }),
-                createTagSection({ id: '1', label: 'Quốc Gia (Chỉ chọn 1)', tags: arrayTags2.map(x => createTag(x)) }),
-                createTagSection({ id: '2', label: 'Tình Trạng (Chỉ chọn 1)', tags: arrayTags3.map(x => createTag(x)) }),
-                createTagSection({ id: '3', label: 'Số Lượng Chương (Chỉ chọn 1)', tags: arrayTags4.map(x => createTag(x)) }),
-                createTagSection({ id: '4', label: 'Sắp xếp (Chỉ chọn 1)', tags: arrayTags5.map(x => createTag(x)) }),
+                createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) }),
             ];
             return tagSections;
         });
@@ -2746,23 +2676,28 @@ exports.generateSearch = (query) => {
     return encodeURI(keyword);
 };
 exports.parseSearch = ($) => {
-    var _a, _b, _c;
-    const mangas = [];
-    for (let manga of $('li', '.list-stories').toArray()) {
-        let title = $(`h3.title-book > a`, manga).text().trim();
-        let subtitle = $(`.episode-book > a`, manga).text().trim();
-        let image = (_a = $(`a > img`, manga).attr("src")) !== null && _a !== void 0 ? _a : "";
-        let id = (_c = (_b = $(`a`, manga).attr("href")) === null || _b === void 0 ? void 0 : _b.split("/").pop()) !== null && _c !== void 0 ? _c : title;
-        if (!id || !title)
-            continue;
-        mangas.push(createMangaTile({
-            id: encodeURIComponent(id),
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
-            title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: subtitle }),
+    var _a;
+    const manga = [];
+    // const collectedIds: string[] = [];
+    for (let obj of $('div.py-2', '.row').toArray()) {
+        const title = $('a', obj).last().text().trim();
+        const id = (_a = $('a', obj).last().attr('href')) !== null && _a !== void 0 ? _a : title;
+        const image = $('div', obj).first().css('background');
+        const bg = image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
+        const sub = $('a', obj).first().text().trim();
+        // if (!id || !subtitle) continue;
+        manga.push(createMangaTile({
+            id: 'https://lxhentai.com' + id,
+            image: 'https://lxhentai.com' + bg,
+            title: createIconText({
+                text: title,
+            }),
+            subtitleText: createIconText({
+                text: sub,
+            }),
         }));
     }
-    return mangas;
+    return manga; //cái này trả về rỗng thì ko cộng dồn nữa
 };
 exports.parseViewMore = ($) => {
     var _a;
