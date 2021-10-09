@@ -2719,8 +2719,8 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
                 id: mangaId,
                 author: creator,
                 artist: creator,
-                desc: desc,
-                titles: [$('#infor-box > div:last-child > h1').text().trim()],
+                desc: TruyentranhtuanParser_1.decodeHTMLEntity(desc),
+                titles: [$('#infor-box h1[itemprop="name"]').text().trim()],
                 image,
                 status: statusFinal,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
@@ -2743,7 +2743,7 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
             const titleList = $('#manga-chapter .chapter-name').toArray();
             for (const i in titleList) {
                 let id = $('a', titleList[i]).attr('href');
-                let chapNum = parseFloat((_a = $('a', titleList[i]).text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
+                let chapNum = parseFloat((_a = $('a', titleList[i]).text()) === null || _a === void 0 ? void 0 : _a.split(' ').pop());
                 let name = $('a', titleList[i]).text().trim();
                 let time = $(timeList[i]).text().trim().split('.');
                 chapters.push(createChapter({
@@ -2769,6 +2769,7 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             const arrayImages = $.html().match(/slides_page_path = (.*);/);
             const listImages = JSON.parse((_a = arrayImages === null || arrayImages === void 0 ? void 0 : arrayImages[1]) !== null && _a !== void 0 ? _a : "");
+            // sort
             let slides_page = listImages;
             let length_chapter = slides_page.length - 1;
             for (let i = 0; i < length_chapter; i++)
@@ -2778,6 +2779,7 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
                         slides_page[j] = slides_page[i];
                         slides_page[i] = temp;
                     }
+            // !sort
             const pages = [];
             for (let obj of slides_page) {
                 let link = encodeURI(obj);
@@ -3012,7 +3014,7 @@ exports.Truyentranhtuan = Truyentranhtuan;
 },{"./TruyentranhtuanParser":59,"buffer":2,"paperback-extensions-common":15}],59:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.capitalizeFirstLetter = void 0;
+exports.decodeHTMLEntity = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.capitalizeFirstLetter = void 0;
 const entities = require("entities"); //Import package for decoding HTML entities
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -3116,7 +3118,7 @@ exports.isLastPage = ($) => {
         isLast = true;
     return isLast;
 };
-const decodeHTMLEntity = (str) => {
+exports.decodeHTMLEntity = (str) => {
     return entities.decodeHTML(str);
 };
 
