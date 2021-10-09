@@ -2702,7 +2702,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                     name: $('a', obj).attr('title'),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: TruyentranhAudioParser_1.convertTime($('.chapter-time').text().trim())
+                    time: TruyentranhAudioParser_1.convertTime($('.chapter-time', obj).text().trim())
                 }));
             }
             return chapters;
@@ -2925,7 +2925,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             const arrayTags = [];
             //the loai
-            for (const tag of $('div ul.nav', '.megamenu').toArray()) {
+            for (const tag of $('div:not(:last-child) ul.nav', '.megamenu > li').toArray()) {
                 for (const gen of $('a', tag).toArray()) {
                     const label = $(gen).text().trim();
                     const id = (_a = $(gen).attr('href')) !== null && _a !== void 0 ? _a : label;
