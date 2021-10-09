@@ -2705,13 +2705,13 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
             let tags = [];
             let creator = '';
             let statusFinal = 1;
-            creator = $('#infor-box > div:last-child > div span[itemprop="author"] > span[itemprop="name"]').text().trim();
-            for (const t of $('#infor-box > div:last-child > div > p:nth-child(3) > a').toArray()) {
+            creator = $('#infor-box span[itemprop="author"] > span[itemprop="name"]').text().trim();
+            for (const t of $('p:nth-of-type(3) > a', $('#infor-box h1[itemprop="name"]').next()).toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            let status = $('#infor-box > div:last-child > div > p:last-child > a').text().trim(); //completed, 1 = Ongoing
+            let status = $('p:nth-of-type(4) > a', $('#infor-box h1[itemprop="name"]').next()).text().trim(); //completed, 1 = Ongoing
             statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
             let desc = $("#manga-summary").text();
             const image = (_b = $('.manga-cover img').attr("src")) !== null && _b !== void 0 ? _b : "";
