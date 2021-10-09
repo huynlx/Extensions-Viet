@@ -2869,7 +2869,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: query.title ? `https://truyentranhaudio.com/danh-sach-truyen.html?name=${query.title}&page=${page}` : `https://truyentranhaudio.com/${tags[0]}?page=${page}`,
+                url: query.title ? encodeURI(`https://truyentranhaudio.com/danh-sach-truyen.html?name=${query.title}&page=${page}`) : `https://truyentranhaudio.com/${tags[0]}?page=${page}`,
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
@@ -3037,10 +3037,10 @@ function convertTime(timeAgo) {
         time = new Date(Date.now() - trimmed * 86400000 * 7);
     }
     else if (timeAgo.includes('tháng')) {
-        time = new Date(Date.now() - trimmed * 86400000 * 7 * 4.34812141);
+        time = new Date(Date.now() - trimmed * 86400000 * 7 * 4);
     }
     else if (timeAgo.includes('năm')) {
-        time = new Date(Date.now() - trimmed * 86400000 * 7 * 4.34812141 * 12);
+        time = new Date(Date.now() - trimmed * 86400000 * 7 * 4 * 12);
     }
     else {
         if (timeAgo.includes(":")) {
