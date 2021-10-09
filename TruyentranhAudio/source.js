@@ -3061,7 +3061,7 @@ function convertTime(timeAgo) {
         time = new Date(Date.now() - trimmed * 86400000 * 7);
     }
     else if (timeAgo.includes('tháng')) {
-        time = new Date(Date.now() - trimmed * 86400000 * 7 * 4);
+        time = new Date(Date.now() - trimmed * 86400000 * 30);
     }
     else if (timeAgo.includes('năm')) {
         time = new Date(Date.now() - trimmed * 31556952000);
