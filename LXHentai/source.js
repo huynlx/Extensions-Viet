@@ -2679,7 +2679,7 @@ exports.parseSearch = ($) => {
     var _a;
     const manga = [];
     // const collectedIds: string[] = [];
-    for (let obj of $('div.py-2', '.row').toArray()) {
+    for (let obj of $('div.py-2', '.col-md-8 .row').toArray()) {
         const title = $('a', obj).last().text().trim();
         const id = (_a = $('a', obj).last().attr('href')) !== null && _a !== void 0 ? _a : title;
         const image = $('div', obj).first().css('background');
