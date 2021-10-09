@@ -3058,13 +3058,13 @@ function convertTime(timeAgo) {
         time = new Date(Date.now() - trimmed * 86400000);
     }
     else if (timeAgo.includes('tuần')) {
-        time = new Date(Date.now() - trimmed * 86400000 * 7);
+        time = new Date(Date.now() - trimmed * 604800000);
     }
     else if (timeAgo.includes('tháng')) {
-        time = new Date(Date.now() - trimmed * 86400000 * 30);
+        time = new Date(Date.now() - trimmed * 2629800000);
     }
     else if (timeAgo.includes('năm')) {
-        time = new Date(Date.now() - trimmed * 31556952000);
+        time = new Date(Date.now() - trimmed * 31557600000);
     }
     else {
         if (timeAgo.includes(":")) {
