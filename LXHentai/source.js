@@ -2591,7 +2591,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
                     url = `https://lxhentai.com/story/index.php?hot&p=${page}`;
                     break;
                 case "new_updated":
-                    url = `https://lxhentai.com/story/index.php&p=${page}`;
+                    url = `https://lxhentai.com/story/index.php?p=${page}`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
