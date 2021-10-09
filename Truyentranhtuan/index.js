@@ -2857,11 +2857,11 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
             let html = Buffer.from(createByteArray(data.rawData)).toString();
             let $ = this.cheerio.load(html);
             let newUpdatedItems = [];
-            for (const element of $('#new-chapter .manga-focus').toArray().splice(0, 20)) {
-                let title = $('.manga > a', element).text().trim();
-                let img = "";
+            for (const element of $('#new-chapter .manga-update').toArray().splice(0, 20)) {
+                let title = $('a', element).first().text().trim();
+                let img = $('img', element).attr('src');
                 let id = (_a = $('.manga > a', element).attr('href')) !== null && _a !== void 0 ? _a : title;
-                let subtitle = $(".chapter > a", element).text().trim();
+                let subtitle = $('a', element).last().text().trim();
                 newUpdatedItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
                     image: img !== null && img !== void 0 ? img : "",
