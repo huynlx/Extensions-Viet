@@ -2742,7 +2742,7 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
                 let time = $(timeList[i]).text().trim().split('.');
                 chapters.push(createChapter({
                     id,
-                    chapNum: isNaN(chapNum) ? i : chapNum,
+                    chapNum: isNaN(chapNum) ? Number(i) : chapNum,
                     name,
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
