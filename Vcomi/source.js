@@ -2653,7 +2653,7 @@ class Vcomi extends paperback_extensions_common_1.Source {
         let time;
         let trimmed = Number(((_a = /\d*/.exec(timeAgo)) !== null && _a !== void 0 ? _a : [])[0]);
         trimmed = (trimmed == 0 && timeAgo.includes('a')) ? 1 : trimmed;
-        if (timeAgo.includes('giây') || timeAgo.includes('secs')) {
+        if (timeAgo.includes('giây')) {
             time = new Date(Date.now() - trimmed * 1000); // => mili giây (1000 ms = 1s)
         }
         else if (timeAgo.includes('phút')) {
@@ -2665,8 +2665,14 @@ class Vcomi extends paperback_extensions_common_1.Source {
         else if (timeAgo.includes('ngày')) {
             time = new Date(Date.now() - trimmed * 86400000);
         }
+        else if (timeAgo.includes('tuần')) {
+            time = new Date(Date.now() - trimmed * 86400000 * 7);
+        }
+        else if (timeAgo.includes('tháng')) {
+            time = new Date(Date.now() - trimmed * 86400000 * 7 * 4);
+        }
         else if (timeAgo.includes('năm')) {
-            time = new Date(Date.now() - trimmed * 31556952000);
+            time = new Date(Date.now() - trimmed * 86400000 * 7 * 4 * 12);
         }
         else {
             if (timeAgo.includes(":")) {
