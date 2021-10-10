@@ -2715,7 +2715,7 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
                 artist: creator,
                 desc: TruyentranhtuanParser_1.decodeHTMLEntity(desc),
                 titles: [TruyentranhtuanParser_1.decodeHTMLEntity($('#infor-box h1[itemprop="name"]').text().trim())],
-                image,
+                image: encodeURI(image),
                 status: statusFinal,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
@@ -2735,7 +2735,7 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
             const chapters = [];
             const timeList = $('#manga-chapter .date-name').toArray();
             const titleList = $('#manga-chapter .chapter-name').toArray();
-            for (const i in titleList) {
+            for (const i in titleList.reverse()) {
                 let id = $('a', titleList[i]).attr('href');
                 let chapNum = parseFloat((_a = $('a', titleList[i]).text()) === null || _a === void 0 ? void 0 : _a.split(' ').pop());
                 let name = $('a', titleList[i]).text().trim();
