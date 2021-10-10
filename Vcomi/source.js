@@ -2865,21 +2865,6 @@ class Vcomi extends paperback_extensions_common_1.Source {
             hot.items = popular;
             sectionCallback(hot);
             //New Updates
-            // let request = createRequestObject({
-            //     url: 'https://www.medoctruyentranh.net/de-xuat/cap-nhat-moi/2',
-            //     method: "GET",
-            // });
-            // let htm = await this.requestManager.schedule(request, 1);
-            // if (htm) {
-            //     var data = htm.data.match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
-            //     if (data) data = JSON.parse(data[1]);
-            //     var novels = data.props.pageProps.initialState.more.moreList.list;
-            //     var covers: any = [];
-            //     novels.forEach((v: any) => {
-            //         covers.push(v.coverimg)
-            //     })
-            //     return covers
-            // }
             request = createRequestObject({
                 url: DOMAIN + 'manga-list.html?listType=pagination&page=1&artist=&author=&group=&m_status=&name=&genre=&ungenre=&sort=last_update&sort_type=DESC',
                 method: "GET",
@@ -2915,7 +2900,7 @@ class Vcomi extends paperback_extensions_common_1.Source {
             let viewItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let manga of $('.thumb-item-flow:not(:last-child)', '.col-md-8 > .card:nth-child(5) .row').toArray()) {
+            for (let manga of $('.thumb-item-flow:not(:last-child)', '.col-md-8 > .card:nth-child(3) .row').toArray()) {
                 let title = $('.series-title > a', manga).text().trim();
                 let image = $('.a6-ratio > .img-in-ratio', manga).attr("data-bg");
                 if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
