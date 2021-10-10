@@ -2725,14 +2725,25 @@ class Vcomi extends paperback_extensions_common_1.Source {
                 }
             }
             let desc = $(".summary-content").text();
-            const image = (_b = $('.info-cover img').attr("src")) !== null && _b !== void 0 ? _b : "";
+            let image = (_b = $('.info-cover img').attr("src")) !== null && _b !== void 0 ? _b : "";
+            if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
+                if (image === null || image === void 0 ? void 0 : image.startsWith('//')) {
+                    image = 'https:' + image;
+                }
+                else {
+                    image = 'https://vcomi.co/' + image;
+                }
+            }
+            else {
+                image = image;
+            }
             return createManga({
                 id: mangaId,
                 author: creator,
                 artist: creator,
                 desc: desc,
                 titles: [$('.manga-info h3').text().trim()],
-                image: image.includes('http') ? encodeURI(image) : encodeURI('https:' + image),
+                image: encodeURI(image),
                 status: statusFinal,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
@@ -3095,7 +3106,12 @@ exports.parseSearch = ($) => {
         let title = $('.series-title > a', element).text().trim();
         let image = $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
         if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
-            image = 'https:' + image;
+            if (image === null || image === void 0 ? void 0 : image.startsWith('//')) {
+                image = 'https:' + image;
+            }
+            else {
+                image = 'https://vcomi.co/' + image;
+            }
         }
         else {
             image = image;
@@ -3118,7 +3134,12 @@ exports.parseViewMore = ($) => {
         let title = $('.series-title > a', element).text().trim();
         let image = $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
         if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
-            image = 'https:' + image;
+            if (image === null || image === void 0 ? void 0 : image.startsWith('//')) {
+                image = 'https:' + image;
+            }
+            else {
+                image = 'https://vcomi.co/' + image;
+            }
         }
         else {
             image = image;
