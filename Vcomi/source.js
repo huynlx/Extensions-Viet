@@ -2794,8 +2794,19 @@ class Vcomi extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             const pages = [];
             for (let obj of $('.chapter-content img').toArray()) {
-                let link = (_a = $(obj).attr('data-original').replace(/\n/g, '')) !== null && _a !== void 0 ? _a : "";
-                pages.push(encodeURI('https://vcomi.co/' + link));
+                let image = (_a = $(obj).attr('data-original').replace(/\n/g, '')) !== null && _a !== void 0 ? _a : "";
+                if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
+                    if (image === null || image === void 0 ? void 0 : image.startsWith('//')) {
+                        image = 'https:' + image;
+                    }
+                    else {
+                        image = 'https://vcomi.co/' + image;
+                    }
+                }
+                else {
+                    image = image;
+                }
+                pages.push(encodeURI(image));
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
