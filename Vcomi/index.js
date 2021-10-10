@@ -2777,8 +2777,8 @@ class Vcomi extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             const pages = [];
             for (let obj of $('.chapter-content img').toArray()) {
-                let link = (_a = $(obj).attr('data-original')) !== null && _a !== void 0 ? _a : "";
-                pages.push(link.replace(/\n/g, ''));
+                let link = (_a = $(obj).attr('data-original').replace(/\n/g, '')) !== null && _a !== void 0 ? _a : "";
+                pages.push(encodeURI('https://vcomi.co/' + link));
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
