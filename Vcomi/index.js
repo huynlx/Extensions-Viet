@@ -2818,7 +2818,7 @@ class Vcomi extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
@@ -2852,12 +2852,22 @@ class Vcomi extends paperback_extensions_common_1.Source {
                 const title = $('.series-title', manga).text().trim();
                 const id = $('.thumb-wrapper > a', manga).attr('href');
                 const image = (_a = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', manga).css('background-image')) !== null && _a !== void 0 ? _a : "";
-                const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+                let bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
                 const sub = $('.chapter-title > a', manga).text().trim();
-                // if (!id || !title) continue;
+                if (!(bg === null || bg === void 0 ? void 0 : bg.includes('http'))) {
+                    if (bg === null || bg === void 0 ? void 0 : bg.startsWith('//')) {
+                        bg = 'https:' + bg;
+                    }
+                    else {
+                        bg = 'https://vcomi.co/' + bg;
+                    }
+                }
+                else {
+                    bg = bg;
+                }
                 popular.push(createMangaTile({
                     id: id,
-                    image: (bg === null || bg === void 0 ? void 0 : bg.includes('http')) ? (bg) : ("https://vcomi.co" + bg),
+                    image: encodeURI(bg),
                     title: createIconText({ text: title }),
                     subtitleText: createIconText({ text: sub.replace('Chap', 'Chương') }),
                 }));
@@ -2876,7 +2886,12 @@ class Vcomi extends paperback_extensions_common_1.Source {
                 let title = $('.series-title > a', element).text().trim();
                 let image = $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
                 if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
-                    image = 'https://vcomi.co' + image;
+                    if (image === null || image === void 0 ? void 0 : image.startsWith('//')) {
+                        image = 'https:' + image;
+                    }
+                    else {
+                        image = 'https://vcomi.co/' + image;
+                    }
                 }
                 else {
                     image = image;
@@ -2885,7 +2900,7 @@ class Vcomi extends paperback_extensions_common_1.Source {
                 let subtitle = 'Chương ' + $(".chapter-title > a", element).text().trim();
                 newUpdatedItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
-                    image: image !== null && image !== void 0 ? image : "",
+                    image: (_c = encodeURI(image)) !== null && _c !== void 0 ? _c : "",
                     title: createIconText({ text: title }),
                     subtitleText: createIconText({ text: subtitle }),
                 }));
@@ -2904,16 +2919,21 @@ class Vcomi extends paperback_extensions_common_1.Source {
                 let title = $('.series-title > a', manga).text().trim();
                 let image = $('.a6-ratio > .img-in-ratio', manga).attr("data-bg");
                 if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
-                    image = 'https://vcomi.co' + image;
+                    if (image === null || image === void 0 ? void 0 : image.startsWith('//')) {
+                        image = 'https:' + image;
+                    }
+                    else {
+                        image = 'https://vcomi.co/' + image;
+                    }
                 }
                 else {
                     image = image;
                 }
-                let id = (_c = $('.series-title > a', manga).attr('href')) !== null && _c !== void 0 ? _c : title;
+                let id = (_d = $('.series-title > a', manga).attr('href')) !== null && _d !== void 0 ? _d : title;
                 let subtitle = $(".chapter-title > a", manga).text().trim();
                 viewItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
-                    image: image !== null && image !== void 0 ? image : "",
+                    image: (_e = encodeURI(image)) !== null && _e !== void 0 ? _e : "",
                     title: createIconText({ text: title }),
                     subtitleText: createIconText({ text: subtitle }),
                 }));
