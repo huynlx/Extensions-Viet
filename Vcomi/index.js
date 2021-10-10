@@ -2732,7 +2732,7 @@ class Vcomi extends paperback_extensions_common_1.Source {
                 artist: creator,
                 desc: desc,
                 titles: [$('.manga-info h3').text().trim()],
-                image: image.includes('http') ? encodeURI(image) : encodeURI(DOMAIN + image),
+                image: image.includes('http') ? encodeURI(image) : encodeURI('https:' + image),
                 status: statusFinal,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
@@ -3095,7 +3095,7 @@ exports.parseSearch = ($) => {
         let title = $('.series-title > a', element).text().trim();
         let image = $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
         if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
-            image = 'https://vcomi.co' + image;
+            image = 'https:' + image;
         }
         else {
             image = image;
@@ -3118,7 +3118,7 @@ exports.parseViewMore = ($) => {
         let title = $('.series-title > a', element).text().trim();
         let image = $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
         if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
-            image = 'https://vcomi.co' + image;
+            image = 'https:' + image;
         }
         else {
             image = image;
