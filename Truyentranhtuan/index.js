@@ -2642,48 +2642,6 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
     }
-    convertTime(timeAgo) {
-        var _a;
-        let time;
-        let trimmed = Number(((_a = /\d*/.exec(timeAgo)) !== null && _a !== void 0 ? _a : [])[0]);
-        trimmed = (trimmed == 0 && timeAgo.includes('a')) ? 1 : trimmed;
-        if (timeAgo.includes('giây') || timeAgo.includes('secs')) {
-            time = new Date(Date.now() - trimmed * 1000); // => mili giây (1000 ms = 1s)
-        }
-        else if (timeAgo.includes('phút')) {
-            time = new Date(Date.now() - trimmed * 60000);
-        }
-        else if (timeAgo.includes('giờ')) {
-            time = new Date(Date.now() - trimmed * 3600000);
-        }
-        else if (timeAgo.includes('ngày')) {
-            time = new Date(Date.now() - trimmed * 86400000);
-        }
-        else if (timeAgo.includes('tuần')) {
-            time = new Date(Date.now() - trimmed * 86400000 * 7);
-        }
-        else if (timeAgo.includes('tháng')) {
-            time = new Date(Date.now() - trimmed * 86400000 * 7 * 4);
-        }
-        else if (timeAgo.includes('năm')) {
-            time = new Date(Date.now() - trimmed * 31556952000);
-        }
-        else {
-            if (timeAgo.includes(":")) {
-                let split = timeAgo.split(' ');
-                let H = split[0]; //vd => 21:08
-                let D = split[1]; //vd => 25/08 
-                let fixD = D.split('/');
-                let finalD = fixD[1] + '/' + fixD[0] + '/' + new Date().getFullYear();
-                time = new Date(finalD + ' ' + H);
-            }
-            else {
-                let split = timeAgo.split('-'); //vd => 05/12/18
-                time = new Date(split[1] + '/' + split[0] + '/' + split[2]);
-            }
-        }
-        return time;
-    }
     getMangaShareUrl(mangaId) { return mangaId; }
     ;
     getMangaDetails(mangaId) {
@@ -2742,7 +2700,7 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
                 let time = $(timeList[i]).text().trim().split('.');
                 chapters.push(createChapter({
                     id,
-                    chapNum: isNaN(chapNum) ? Number(i) : chapNum,
+                    chapNum: isNaN(chapNum) ? Number(i) + 1 : chapNum,
                     name,
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
@@ -2843,7 +2801,7 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
             // sectionCallback(featured);
             // Hot
             // request = createRequestObject({
-            //     url: 'https://doctruyen3q.com/hot',
+            //     url: DOMAIN,
             //     method: "GET",
             // });
             // let popular: MangaTile[] = [];
@@ -2865,7 +2823,7 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
             // sectionCallback(hot);
             //update
             let request = createRequestObject({
-                url: 'http://truyentranhtuan.com',
+                url: DOMAIN,
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
@@ -2894,9 +2852,6 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             let url = '';
             switch (homepageSectionId) {
-                case "hot":
-                    url = `https://doctruyen3q.com/hot?page=${page}`;
-                    break;
                 case "new_updated":
                     url = `http://truyentranhtuan.com/page/${page}/`;
                     break;
