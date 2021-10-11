@@ -2709,7 +2709,6 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
         });
     }
     getChapterDetails(mangaId, chapterId) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
                 url: `${DOMAIN}${chapterId}`,
@@ -2719,7 +2718,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(response.data);
             const pages = [];
             for (let obj of $('.chapter-content > img').toArray()) {
-                let link = (_a = obj.attribs['data-src'].trim()) !== null && _a !== void 0 ? _a : obj.attribs['src'].trim();
+                let link = obj.attribs['data-src'].trim();
                 pages.push(encodeURI(link.trim()));
             }
             const chapterDetails = createChapterDetails({
