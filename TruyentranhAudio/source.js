@@ -2729,7 +2729,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                         link = link;
                     }
                     else {
-                        link = "https://truyentranhaudio.online/" + link;
+                        link = DOMAIN + link;
                     }
                 }
                 pages.push(encodeURI(link));
@@ -2768,7 +2768,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             ///Get the section data
             // Hot
             let request = createRequestObject({
-                url: 'https://truyentranhaudio.com/',
+                url: DOMAIN,
                 method: "GET",
             });
             let popular = [];
@@ -2792,7 +2792,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             sectionCallback(hot);
             //New Updates
             request = createRequestObject({
-                url: 'https://truyentranhaudio.com/',
+                url: DOMAIN,
                 method: "GET",
             });
             let newUpdatedItems = [];
@@ -2819,7 +2819,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             //New Added
             request = createRequestObject({
-                url: 'https://truyentranhaudio.com/',
+                url: DOMAIN,
                 method: "GET",
             });
             let newAddItems = [];
@@ -2854,7 +2854,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             let url = '';
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `https://truyentranhaudio.com/manga-list.html?page=${page}`;
+                    url = DOMAIN + `manga-list.html?page=${page}`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
@@ -2880,7 +2880,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: query.title ? encodeURI(`https://truyentranhaudio.com/danh-sach-truyen.html?name=${query.title}&page=${page}`) : `https://truyentranhaudio.com/${tags[0]}?page=${page}`,
+                url: query.title ? encodeURI(`${DOMAIN}danh-sach-truyen.html?name=${query.title}&page=${page}`) : `${DOMAIN}${tags[0]}?page=${page}`,
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
@@ -2896,7 +2896,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
     getSearchTags() {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://truyentranhaudio.com/`;
+            const url = DOMAIN;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
