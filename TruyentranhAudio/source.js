@@ -2721,11 +2721,16 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                 if (!obj.attribs['data-src'])
                     continue;
                 let link = obj.attribs['data-src'].trim();
-                if (link.includes("http")) {
+                if (link.includes("https://blogger.googleusercontent.com")) {
                     link = "https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image/*&url=" + link;
                 }
                 else {
-                    link = "https://truyentranhaudio.online/" + link;
+                    if (link.includes('http')) {
+                        link = link;
+                    }
+                    else {
+                        link = "https://truyentranhaudio.online/" + link;
+                    }
                 }
                 pages.push(encodeURI(link));
             }
