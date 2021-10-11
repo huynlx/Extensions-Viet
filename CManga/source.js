@@ -7458,7 +7458,7 @@ class CManga extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
     }
-    getMangaShareUrl(mangaId) { return `${DOMAIN}${mangaId}`; }
+    getMangaShareUrl(mangaId) { return DOMAIN + mangaId.split("::")[0]; }
     ;
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -7503,10 +7503,9 @@ class CManga extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: 'https://cmangatop.com/tensei-kyuuketsukisan-wa-ohirune-ga-shitai-14625',
+                url: DOMAIN + mangaId.split("::")[0],
                 method,
             });
-            console.log(DOMAIN + mangaId.split("::")[0]);
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const book_id = $.html().match(/book_id.+"(.+)"/)[1];
@@ -7520,13 +7519,14 @@ class CManga extends paperback_extensions_common_1.Source {
             for (const obj of json) {
                 chapters.push(createChapter({
                     id: DOMAIN + mangaId.split("::")[1] + '/' + CMangaParser_1.change_alias(obj.chapter_name) + '/' + obj.id_chapter,
-                    chapNum: obj.chapter_num,
+                    chapNum: parseFloat(obj.chapter_num),
                     name: CMangaParser_1.titleCase(obj.chapter_name),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
                     time: new Date(obj.last_update)
                 }));
             }
+            console.log(chapters);
             return chapters;
         });
     }
