@@ -3043,7 +3043,6 @@ class Vcomi extends paperback_extensions_common_1.Source {
                 }
             ];
             const tags5 = [];
-            const tags6 = [];
             const url = DOMAIN + `search`;
             const request = createRequestObject({
                 url: url,
@@ -3073,21 +3072,11 @@ class Vcomi extends paperback_extensions_common_1.Source {
                     continue;
                 tags5.push({ id: id, label: label });
             }
-            //nhom dich
-            for (const tag of $('.navbar-nav > li.nav-item:nth-child(2) .no-gutters a.genres-item').toArray()) {
-                const label = $(tag).text().trim();
-                const id = 'translater.' + $(tag).attr('href').split('-nhom-dich-')[1].split('.')[0];
-                ;
-                if (!id || !label)
-                    continue;
-                tags6.push({ id: id, label: label });
-            }
             const tagSections = [
                 createTagSection({ id: '1', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
                 createTagSection({ id: '3', label: 'Sắp xếp theo', tags: tags2.map(x => createTag(x)) }),
                 createTagSection({ id: '0', label: 'Kiểu sắp xếp', tags: tagss.map(x => createTag(x)) }),
-                createTagSection({ id: '4', label: 'Trạng thái', tags: tags5.map(x => createTag(x)) }),
-                createTagSection({ id: '5', label: 'Nhóm dịch', tags: tags6.map(x => createTag(x)) }),
+                createTagSection({ id: '4', label: 'Trạng thái', tags: tags5.map(x => createTag(x)) })
             ];
             return tagSections;
         });
