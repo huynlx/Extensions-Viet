@@ -9636,20 +9636,21 @@ class Cmanga extends paperback_extensions_common_1.Source {
             });
             let newUpdatedItems = [];
             data = yield this.requestManager.schedule(request, 1);
-            var json = JSON.parse(CmangaParser_1.decrypt_data(data.data));
-            for (var i = 0; i < 40; i++) {
-                var item = json[i];
-                newUpdatedItems.push(createMangaTile({
-                    id: item.url + '-' + item.id_book,
-                    image: 'https://cmangatop.com/assets/tmp/book/avatar/' + item.avatar + '.jpg',
-                    title: createIconText({
-                        text: CmangaParser_1.titleCase(item.name),
-                    }),
-                    subtitleText: createIconText({
-                        text: 'Chap ' + item.last_chapter,
-                    }),
-                }));
-            }
+            var json = JSON.parse(CmangaParser_1.decrypt_data(JSON.parse(data.data)));
+            console.log(json);
+            // for (var i = 0; i < 40; i++) {
+            //     var item = json[i];
+            //     newUpdatedItems.push(createMangaTile({
+            //         id: item.url + '-' + item.id_book,
+            //         image: 'https://cmangatop.com/assets/tmp/book/avatar/' + item.avatar + '.jpg',
+            //         title: createIconText({
+            //             text: titleCase(item.name),
+            //         }),
+            //         subtitleText: createIconText({
+            //             text: 'Chap ' + item.last_chapter,
+            //         }),
+            //     }))
+            // }
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
             //New Added
