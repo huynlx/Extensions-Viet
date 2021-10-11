@@ -2691,7 +2691,7 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             const chapters = [];
-            const timeList = $('#manga-chapter .date-name').toArray();
+            const timeList = $('#manga-chapter .date-name').toArray().reverse();
             const titleList = $('#manga-chapter .chapter-name').toArray();
             for (const i in titleList.reverse()) {
                 let id = $('a', titleList[i]).attr('href');
