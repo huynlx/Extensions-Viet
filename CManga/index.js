@@ -9483,6 +9483,7 @@ class CManga extends paperback_extensions_common_1.Source {
     getMangaShareUrl(mangaId) { return `${DOMAIN}${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
                 url: DOMAIN + mangaId,
@@ -9494,17 +9495,11 @@ class CManga extends paperback_extensions_common_1.Source {
             let tags = [];
             let status = $(".status").first().text().indexOf("Đang") != -1 ? 1 : 0;
             let desc = $("#book_detail").first().text();
-            // for (const t of $('a', '.manga-info > li:nth-of-type(3)').toArray()) {
-            //     const genre = $(t).text().trim()
-            //     const id = $(t).attr('href')?.trim() ?? genre
-            //     tags.push(createTag({ label: genre, id }));
-            //     genres.push(
-            //         {
-            //             label: genre,
-            //             id
-            //         }
-            //     );
-            // }
+            for (const t of $('a', '.kind').toArray()) {
+                const genre = $(t).text().trim();
+                const id = (_b = (_a = $(t).attr('href')) === null || _a === void 0 ? void 0 : _a.trim()) !== null && _b !== void 0 ? _b : genre;
+                tags.push(createTag({ label: CMangaParser_1.titleCase(genre), id }));
+            }
             const image = $(".book_avatar img").first().attr("src");
             const creator = $(".profile a").text() || '^^!';
             return createManga({
@@ -9513,7 +9508,7 @@ class CManga extends paperback_extensions_common_1.Source {
                 artist: creator,
                 desc,
                 titles: [$("h1").text()],
-                image: image,
+                image: DOMAIN + image,
                 status,
                 hentai: false,
                 tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
@@ -9531,16 +9526,14 @@ class CManga extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(html);
             const chapters = [];
             var i = 0;
-            for (const obj of $(".list-chapters > li").toArray().reverse()) {
-                var chapNum = parseFloat($('a > .chapter-name', obj).text().split(' ')[1]);
+            for (const obj of $(".list_chapter a").toArray().reverse()) {
                 i++;
                 chapters.push(createChapter({
-                    id: $('a', obj).attr('href'),
-                    chapNum: isNaN(chapNum) ? i : chapNum,
-                    name: $('a', obj).attr('title'),
+                    id: $(obj).attr('href'),
+                    chapNum: parseFloat($(obj).text().split(' ')[1]),
+                    name: $(obj).text(),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: CMangaParser_1.convertTime($('.chapter-time', obj).text().trim())
                 }));
             }
             return chapters;
@@ -9548,30 +9541,30 @@ class CManga extends paperback_extensions_common_1.Source {
     }
     getChapterDetails(mangaId, chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
+            const url = `${DOMAIN}${chapterId}`;
+            const chapID = url.split('/').pop();
             const request = createRequestObject({
-                url: `${DOMAIN}${chapterId}`,
+                url: 'https://cmangatop.com/api/chapter_content?opt1=' + chapID,
                 method
             });
-            const response = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(response.data);
-            const pages = [];
-            for (let obj of $('.chapter-content > img').toArray()) {
-                if (!obj.attribs['data-src'])
-                    continue;
-                let link = obj.attribs['data-src'].trim();
-                if (link.includes("https://blogger.googleusercontent.com")) {
-                    link = "https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image/*&url=" + link;
-                }
-                else {
-                    if (link.includes('http')) {
-                        link = link;
-                    }
-                    else {
-                        link = DOMAIN + link;
-                    }
-                }
-                pages.push(encodeURI(link));
-            }
+            var chapter_content = JSON.parse(JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(request.data)))[0].content);
+            // const response = await this.requestManager.schedule(request, 1);
+            // let $ = this.cheerio.load(response.data);
+            const pages = chapter_content;
+            // for (let obj of $('.chapter-content > img').toArray()) {
+            //     if (!obj.attribs['data-src']) continue;
+            //     let link = obj.attribs['data-src'].trim();
+            //     if (link.includes("https://blogger.googleusercontent.com")) {
+            //         link = "https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image/*&url=" + link;
+            //     } else {
+            //         if (link.includes('http')) {
+            //             link = link;
+            //         } else {
+            //             link = DOMAIN + link;
+            //         }
+            //     }
+            //     pages.push(encodeURI(link));
+            // }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
                 mangaId: mangaId,
