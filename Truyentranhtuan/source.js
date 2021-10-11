@@ -2769,7 +2769,7 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
             });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
-                title: "Truyện mới cập nhật",
+                title: "Truyện mới",
                 view_more: true,
             });
             //Load empty sections
