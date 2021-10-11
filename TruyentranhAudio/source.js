@@ -2938,6 +2938,7 @@ exports.TruyentranhAudio = TruyentranhAudio;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.convertTime = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
 const entities = require("entities"); //Import package for decoding HTML entities
+const DOMAIN = 'https://truyentranhaudio.online/';
 exports.generateSearch = (query) => {
     var _a;
     let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
@@ -2956,7 +2957,7 @@ exports.parseSearch = ($) => {
         if (!collectedIds.includes(id)) {
             manga.push(createMangaTile({
                 id: id,
-                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? (image) : ((image === null || image === void 0 ? void 0 : image.includes('app')) ? ('https://truyentranhaudio.online/' + image) : ('https:' + image)),
+                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? (image) : ((image === null || image === void 0 ? void 0 : image.includes('app')) ? (DOMAIN + image) : ('https:' + image)),
                 title: createIconText({
                     text: title,
                 }),
@@ -2982,7 +2983,7 @@ exports.parseViewMore = ($) => {
         if (!collectedIds.includes(id)) {
             manga.push(createMangaTile({
                 id: id,
-                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? (image) : ((image === null || image === void 0 ? void 0 : image.includes('app')) ? ('https://truyentranhaudio.online/' + image) : ('https:' + image)),
+                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? (image) : ((image === null || image === void 0 ? void 0 : image.includes('app')) ? (DOMAIN + image) : ('https:' + image)),
                 title: createIconText({
                     text: title,
                 }),

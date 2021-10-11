@@ -2613,18 +2613,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TruyentranhAudio = exports.TruyentranhAudioInfo = void 0;
+exports.Vcomic = exports.TruyentranhAudioInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
-const TruyentranhAudioParser_1 = require("./TruyentranhAudioParser");
-const DOMAIN = 'https://truyentranhaudio.online/';
+const VcomicParser_1 = require("./VcomicParser");
+const DOMAIN = 'https://vcomic.net/';
 const method = 'GET';
 exports.TruyentranhAudioInfo = {
     version: '1.0.0',
-    name: 'TruyentranhAudio',
+    name: 'Vcomic',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from TruyentranhAudio',
+    description: 'Extension that pulls manga from Vcomic',
     websiteBaseURL: `${DOMAIN}`,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
@@ -2634,7 +2634,7 @@ exports.TruyentranhAudioInfo = {
         }
     ]
 };
-class TruyentranhAudio extends paperback_extensions_common_1.Source {
+class Vcomic extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
         this.requestManager = createRequestManager({
@@ -2702,7 +2702,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                     name: $('a', obj).attr('title'),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: TruyentranhAudioParser_1.convertTime($('.chapter-time', obj).text().trim())
+                    time: VcomicParser_1.convertTime($('.chapter-time', obj).text().trim())
                 }));
             }
             return chapters;
@@ -2866,8 +2866,8 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            const manga = TruyentranhAudioParser_1.parseViewMore($);
-            metadata = !TruyentranhAudioParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            const manga = VcomicParser_1.parseViewMore($);
+            metadata = !VcomicParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: manga,
                 metadata,
@@ -2885,8 +2885,8 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            const tiles = TruyentranhAudioParser_1.parseSearch($);
-            metadata = !TruyentranhAudioParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            const tiles = VcomicParser_1.parseSearch($);
+            metadata = !VcomicParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: tiles,
                 metadata
@@ -2930,15 +2930,15 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
         };
     }
 }
-exports.TruyentranhAudio = TruyentranhAudio;
+exports.Vcomic = Vcomic;
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"./TruyentranhAudioParser":59,"buffer":2,"paperback-extensions-common":15}],59:[function(require,module,exports){
+},{"./VcomicParser":59,"buffer":2,"paperback-extensions-common":15}],59:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.convertTime = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
 const entities = require("entities"); //Import package for decoding HTML entities
-const DOMAIN = 'https://truyentranhaudio.online/';
+const DOMAIN = 'https://vcomic.net/';
 exports.generateSearch = (query) => {
     var _a;
     let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
