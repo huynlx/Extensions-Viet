@@ -2613,18 +2613,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Vcomic = exports.TruyentranhAudioInfo = void 0;
+exports.TruyentranhAudio = exports.TruyentranhAudioInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const VcomicParser_1 = require("./VcomicParser");
 const DOMAIN = 'https://vcomic.net/';
 const method = 'GET';
 exports.TruyentranhAudioInfo = {
     version: '1.0.0',
-    name: 'Vcomic',
+    name: 'TruyentranhAudio',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from Vcomic',
+    description: 'Extension that pulls manga from TruyentranhAudio',
     websiteBaseURL: `${DOMAIN}`,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
@@ -2634,7 +2634,7 @@ exports.TruyentranhAudioInfo = {
         }
     ]
 };
-class Vcomic extends paperback_extensions_common_1.Source {
+class TruyentranhAudio extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
         this.requestManager = createRequestManager({
@@ -2930,7 +2930,7 @@ class Vcomic extends paperback_extensions_common_1.Source {
         };
     }
 }
-exports.Vcomic = Vcomic;
+exports.TruyentranhAudio = TruyentranhAudio;
 
 }).call(this)}).call(this,require("buffer").Buffer)
 },{"./VcomicParser":59,"buffer":2,"paperback-extensions-common":15}],59:[function(require,module,exports){
