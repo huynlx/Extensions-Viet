@@ -7503,9 +7503,10 @@ class CManga extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: DOMAIN + mangaId.split("::")[0],
+                url: 'https://cmangatop.com/tensei-kyuuketsukisan-wa-ohirune-ga-shitai-14625',
                 method,
             });
+            console.log(DOMAIN + mangaId.split("::")[0]);
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const book_id = $.html().match(/book_id.+"(.+)"/)[1];
@@ -7515,7 +7516,6 @@ class CManga extends paperback_extensions_common_1.Source {
             });
             const data2 = yield this.requestManager.schedule(request2, 1);
             var json = JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data2.data)));
-            console.log(json);
             const chapters = [];
             for (const obj of json) {
                 chapters.push(createChapter({
@@ -7527,7 +7527,6 @@ class CManga extends paperback_extensions_common_1.Source {
                     time: new Date(obj.last_update)
                 }));
             }
-            // console.log(chapters);
             return chapters;
         });
     }
@@ -7541,24 +7540,7 @@ class CManga extends paperback_extensions_common_1.Source {
             });
             const data = yield this.requestManager.schedule(request, 1);
             var chapter_content = JSON.parse(JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data)))[0].content);
-            // const response = await this.requestManager.schedule(request, 1);
-            // let $ = this.cheerio.load(response.data);
-            console.log(chapter_content);
             const pages = chapter_content;
-            // for (let obj of $('.chapter-content > img').toArray()) {
-            //     if (!obj.attribs['data-src']) continue;
-            //     let link = obj.attribs['data-src'].trim();
-            //     if (link.includes("https://blogger.googleusercontent.com")) {
-            //         link = "https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image/*&url=" + link;
-            //     } else {
-            //         if (link.includes('http')) {
-            //             link = link;
-            //         } else {
-            //             link = DOMAIN + link;
-            //         }
-            //     }
-            //     pages.push(encodeURI(link));
-            // }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
                 mangaId: mangaId,
