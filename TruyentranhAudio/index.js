@@ -2722,7 +2722,7 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                     continue;
                 let link = obj.attribs['data-src'].trim();
                 if (link.includes("http")) {
-                    link = link;
+                    link = "https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image/*&url=" + link;
                 }
                 else {
                     link = "https://truyentranhaudio.online/" + link;
