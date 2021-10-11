@@ -7454,8 +7454,8 @@ class CManga extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
         this.requestManager = createRequestManager({
-            requestsPerSecond: 5,
-            requestTimeout: 20000
+            requestsPerSecond: 2,
+            requestTimeout: 15000
         });
     }
     getMangaShareUrl(mangaId) { return DOMAIN + mangaId.split("::")[0]; }
@@ -7476,7 +7476,7 @@ class CManga extends paperback_extensions_common_1.Source {
             const data2 = yield this.requestManager.schedule(request2, 1);
             var json = JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data2.data)))[0];
             let tags = [];
-            let status = json.status.indexOf("Đang") != -1 ? 1 : 0;
+            let status = $(".status").first().text().indexOf("Đang") != -1 ? 1 : 0;
             let desc = $("#book_detail").first().text() === '' ? $("#book_more").first().text() : $("#book_detail").first().text();
             for (const t of json.tags.split(",")) {
                 if (t === '')
@@ -7486,9 +7486,9 @@ class CManga extends paperback_extensions_common_1.Source {
                 tags.push(createTag({ label: CMangaParser_1.titleCase(genre), id }));
             }
             const image = $(".book_avatar img").first().attr("src");
-            const creator = $(".profile a").text() || '^^!';
+            const creator = $(".profile a").text() || 'Unknown';
             return createManga({
-                id: mangaId,
+                id: mangaId + "::" + book_id,
                 author: creator,
                 artist: creator,
                 desc,
@@ -7502,31 +7502,35 @@ class CManga extends paperback_extensions_common_1.Source {
     }
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const request = createRequestObject({
-                url: DOMAIN + mangaId.split("::")[0],
-                method,
-            });
-            const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
-            const book_id = $.html().match(/book_id.+"(.+)"/)[1];
+            // const request = createRequestObject({
+            //     url: DOMAIN + mangaId.split("::")[0],
+            //     method,
+            // });
+            // const response = await this.requestManager.schedule(request, 1);
+            // const $ = this.cheerio.load(response.data);
+            // const book_id = $.html().match(/book_id.+"(.+)"/)[1];
             const request2 = createRequestObject({
-                url: "https://cmangatop.com/api/book_chapter?opt1=" + book_id,
+                url: "https://cmangatop.com/api/book_chapter?opt1=" + mangaId.split("::")[2],
                 method: "GET",
             });
             const data2 = yield this.requestManager.schedule(request2, 1);
             var json = JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data2.data)));
             const chapters = [];
             for (const obj of json) {
+                const time = obj.last_update.split(' ');
+                const d = time[0].split('-');
+                const t = time[1].split(':');
+                const d2 = d[1] + '/' + d[2] + '/' + d[0];
+                const t2 = t[0] + ":" + t[1];
                 chapters.push(createChapter({
                     id: DOMAIN + mangaId.split("::")[1] + '/' + CMangaParser_1.change_alias(obj.chapter_name) + '/' + obj.id_chapter,
                     chapNum: parseFloat(obj.chapter_num),
                     name: CMangaParser_1.titleCase(obj.chapter_name),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: new Date(obj.last_update)
+                    time: new Date(d2 + " " + t2)
                 }));
             }
-            console.log(chapters);
             return chapters;
         });
     }
