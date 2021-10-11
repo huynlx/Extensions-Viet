@@ -2721,7 +2721,13 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                 if (!obj.attribs['data-src'])
                     continue;
                 let link = obj.attribs['data-src'].trim();
-                pages.push(encodeURI(link.trim()));
+                if (link.includes("http")) {
+                    link = link;
+                }
+                else {
+                    link = "https://truyentranhaudio.online/" + link;
+                }
+                pages.push(encodeURI(link));
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
