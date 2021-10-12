@@ -7711,19 +7711,11 @@ class CManga extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const arrayTags = [];
-            const collectedIds = [];
             //the loai
-            for (const tag of $('div:not(:last-child) ul.nav', '.megamenu > li').toArray()) {
-                for (const gen of $('a', tag).toArray()) {
-                    const label = $(gen).text().trim();
-                    const id = (_a = $(gen).attr('href')) !== null && _a !== void 0 ? _a : label;
-                    if (!id || !label)
-                        continue;
-                    if (!collectedIds.includes(id)) {
-                        arrayTags.push({ id: id, label: label });
-                        collectedIds.push(id);
-                    }
-                }
+            for (const tag of $('.book_tags_content a').toArray()) {
+                const label = $(tag).text().trim();
+                const id = (_a = $(tag).attr('href')) !== null && _a !== void 0 ? _a : label;
+                arrayTags.push({ id: id, label: label });
             }
             const tagSections = [
                 createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) }),
