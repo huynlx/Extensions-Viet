@@ -7688,9 +7688,31 @@ class CManga extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
+            const search = {
+                status: "all",
+                num_chapter: "0",
+                sort: "new",
+                tag: ""
+            };
+            tags.map((value) => {
+                switch (value.split(".")[0]) {
+                    case 'sort':
+                        search.sort = (value.split(".")[1]);
+                        break;
+                    case 'status':
+                        search.status = (value.split(".")[1]);
+                        break;
+                    case 'num':
+                        search.num_chapter = (value.split(".")[1]);
+                        break;
+                    case 'tag':
+                        search.tag = (value.split(".")[1]);
+                        break;
+                }
+            });
             const request = createRequestObject({
                 url: query.title ? encodeURI('https://cmangatop.com/api/search?opt1=' + (query.title))
-                    : encodeURI(`https://cmangatop.com/api/list_item?page=${page}&limit=40&sort=new&type=all&tag=${tags[0]}&child=off&status=all&num_chapter=0`),
+                    : encodeURI(`https://cmangatop.com/api/list_item?page=${page}&limit=40&sort=${search.sort}&type=all&tag=${search.tag}&child=off&status=${search.status}&num_chapter=${search.num_chapter}`),
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
@@ -7714,14 +7736,53 @@ class CManga extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const arrayTags = [];
+            const arrayTags2 = [];
+            const arrayTags3 = [];
+            const arrayTags4 = [
+                {
+                    label: '100',
+                    id: 'num.100'
+                },
+                {
+                    label: '200',
+                    id: 'num.200'
+                },
+                {
+                    label: '300',
+                    id: 'num.300'
+                },
+                {
+                    label: '400',
+                    id: 'num.400'
+                },
+                {
+                    label: '500',
+                    id: 'num.500'
+                }
+            ];
             //the loai
             for (const tag of $('.book_tags_content a').toArray()) {
                 const label = $(tag).text().trim();
-                const id = label;
+                const id = 'tag.' + label;
                 arrayTags.push({ id: id, label: label });
+            }
+            //sap xep theo
+            for (const tag of $('#search_avd_sort option').toArray()) {
+                const label = $(tag).text().trim();
+                const id = 'sort.' + $(tag).attr('value');
+                arrayTags2.push({ id: id, label: label });
+            }
+            //tinh trang
+            for (const tag of $('#search_avd_status option').toArray()) {
+                const label = $(tag).text().trim();
+                const id = 'status.' + $(tag).attr('value');
+                arrayTags3.push({ id: id, label: label });
             }
             const tagSections = [
                 createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) }),
+                createTagSection({ id: '1', label: 'Sắp xếp theo', tags: arrayTags2.map(x => createTag(x)) }),
+                createTagSection({ id: '2', label: 'Tình trạng', tags: arrayTags3.map(x => createTag(x)) }),
+                createTagSection({ id: '3', label: 'Num chapter', tags: arrayTags4.map(x => createTag(x)) }),
             ];
             return tagSections;
         });
