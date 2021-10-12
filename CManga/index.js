@@ -7552,11 +7552,10 @@ class CManga extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
-                title: "TRUYỆN HOT TRONG NGÀY",
+                title: "Top ngày",
                 view_more: false,
             });
             let newUpdated = createHomeSection({
@@ -7570,34 +7569,35 @@ class CManga extends paperback_extensions_common_1.Source {
                 view_more: false,
             });
             //Load empty sections
-            // sectionCallback(hot);
+            sectionCallback(hot);
             sectionCallback(newUpdated);
             // sectionCallback(newAdded);
             ///Get the section data
             // Hot
             let request = createRequestObject({
-                url: DOMAIN,
+                url: 'https://cmangatop.com/api/top?data=book_top',
                 method: "GET",
             });
             let popular = [];
             let data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
-            for (let manga of $('.owl-item', '.owl-stage').toArray()) {
-                const title = $('.series-title', manga).text().trim();
-                const id = $('.thumb-wrapper > a', manga).attr('href');
-                const image = (_a = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', manga).css('background-image')) !== null && _a !== void 0 ? _a : "";
-                const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
-                const sub = $('.chapter-title > a', manga).text().trim();
-                // if (!id || !title) continue;
+            let json = JSON.parse(data.data);
+            for (var i of Object.keys(json.day)) {
+                var item = json[i];
+                if (!item.name)
+                    continue;
                 popular.push(createMangaTile({
-                    id: id,
-                    image: (bg === null || bg === void 0 ? void 0 : bg.includes('http')) ? (bg) : ("https:" + bg),
-                    title: createIconText({ text: title }),
-                    subtitleText: createIconText({ text: sub }),
+                    id: item.url + '-' + item.id + "::" + item.url,
+                    image: 'https://cmangatop.com/assets/tmp/book/avatar/' + item.avatar + '.jpg',
+                    title: createIconText({
+                        text: CMangaParser_1.titleCase(item.name),
+                    }),
+                    subtitleText: createIconText({
+                        text: 'Chap ' + item.chapter,
+                    }),
                 }));
             }
             hot.items = popular;
-            // sectionCallback(hot);
+            sectionCallback(hot);
             //New Updates
             request = createRequestObject({
                 url: "https://cmangatop.com/api/list_item",
@@ -7606,7 +7606,7 @@ class CManga extends paperback_extensions_common_1.Source {
             });
             let newUpdatedItems = [];
             data = yield this.requestManager.schedule(request, 1);
-            var json = JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data)));
+            json = JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data)));
             for (var i of Object.keys(json)) {
                 var item = json[i];
                 if (!item.name)
@@ -7624,32 +7624,33 @@ class CManga extends paperback_extensions_common_1.Source {
             }
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
-            //New Added
-            request = createRequestObject({
-                url: DOMAIN,
-                method: "GET",
-            });
-            let newAddItems = [];
-            data = yield this.requestManager.schedule(request, 1);
-            $ = this.cheerio.load(data.data);
-            for (let manga of $('.thumb-item-flow:not(:last-child)', '.col-lg-8.col-sm-8 > .card:nth-child(5) .row-last-update').toArray()) {
-                const title = $('.series-title', manga).text().trim();
-                const id = (_b = $('.series-title > a', manga).attr('href')) !== null && _b !== void 0 ? _b : title;
-                const image = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', manga).attr('data-bg');
-                const sub = $('a', manga).last().text().trim();
-                // if (!id || !subtitle) continue;
-                newAddItems.push(createMangaTile({
-                    id: id,
-                    image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? (image) : ("https:" + image),
-                    title: createIconText({
-                        text: title,
-                    }),
-                    subtitleText: createIconText({
-                        text: sub,
-                    }),
-                }));
-            }
-            newAdded.items = newAddItems;
+            // //New Added
+            // request = createRequestObject({
+            //     url: DOMAIN,
+            //     method: "GET",
+            // });
+            // let newAddItems: MangaTile[] = [];
+            // data = await this.requestManager.schedule(request, 1);
+            // $ = this.cheerio.load(data.data);
+            // for (let manga of $('.thumb-item-flow:not(:last-child)', '.col-lg-8.col-sm-8 > .card:nth-child(5) .row-last-update').toArray()) {
+            //     const title = $('.series-title', manga).text().trim();
+            //     const id = $('.series-title > a', manga).attr('href') ?? title;
+            //     const image = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', manga).attr('data-bg');
+            //     const sub = $('a', manga).last().text().trim();
+            //     // if (!id || !subtitle) continue;
+            //     newAddItems.push(createMangaTile({
+            //         id: id,
+            //         image: image?.includes('http') ? (image) : ("https:" + image),
+            //         title: createIconText({
+            //             text: title,
+            //         }),
+            //         subtitleText: createIconText({
+            //             text: sub,
+            //         }),
+            //     }))
+            // }
+            // newAdded.items = newAddItems;
+            // // sectionCallback(newAdded);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
