@@ -7668,7 +7668,7 @@ class CManga extends paperback_extensions_common_1.Source {
                     break;
                 case "new_added":
                     url = "https://cmangatop.com/api/list_item";
-                    param = `?page=1&limit=40&sort=new&type=all&tag=Truy%E1%BB%87n%20si%C3%AAu%20hay&child=off&status=all&num_chapter=0`;
+                    param = `?page=${page}&limit=40&sort=new&type=all&tag=Truy%E1%BB%87n%20si%C3%AAu%20hay&child=off&status=all&num_chapter=0`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
