@@ -7852,7 +7852,7 @@ exports.parseSearch = (json, search) => {
                     text: titleCase(item.name),
                 }),
                 subtitleText: createIconText({
-                    text: item.total_view + ' views',
+                    text: item.total_view.toLocaleString() + ' views',
                 }),
             }));
         }
