@@ -2915,7 +2915,7 @@ class Vcomi extends paperback_extensions_common_1.Source {
             let viewItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let manga of $('.thumb-item-flow:not(:last-child)', '.col-md-8 > .card:nth-child(3) .row').toArray()) {
+            for (let manga of $('.thumb-item-flow:not(:last-child)', '.col-md-8 > .card:nth-child(4) .row').toArray()) {
                 let title = $('.series-title > a', manga).text().trim();
                 let image = $('.a6-ratio > .img-in-ratio', manga).attr("data-bg");
                 if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
