@@ -7841,8 +7841,8 @@ exports.parseSearch = (json, search) => {
     const manga = [];
     // const collectedIds: string[] = [];
     if (search.top !== '') {
-        for (var i of Object.keys(json.day)) {
-            var item = json.day[i];
+        for (var i of Object.keys(json[search.top])) {
+            var item = json[search.top][i];
             if (!item.name)
                 continue;
             manga.push(createMangaTile({
