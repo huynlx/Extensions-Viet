@@ -7667,7 +7667,7 @@ class CManga extends paperback_extensions_common_1.Source {
                     break;
                 case "new_added":
                     url = "https://cmangatop.com/api/list_item";
-                    param = `?page=1&limit=20&sort=new&type=all&tag=Truyện%20siêu%20hay&child=off&status=all&num_chapter=0`;
+                    param = `?page=1&limit=20&sort=new&type=all&tag=Truyện siêu hay&child=off&status=all&num_chapter=0`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
