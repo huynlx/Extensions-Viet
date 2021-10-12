@@ -7694,7 +7694,8 @@ class CManga extends paperback_extensions_common_1.Source {
                 status: "all",
                 num_chapter: "0",
                 sort: "new",
-                tag: ""
+                tag: "",
+                top: ""
             };
             tags.map((value) => {
                 switch (value.split(".")[0]) {
@@ -7710,16 +7711,19 @@ class CManga extends paperback_extensions_common_1.Source {
                     case 'tag':
                         search.tag = (value.split(".")[1]);
                         break;
+                    case 'top':
+                        search.top = (value.split(".")[1]);
+                        break;
                 }
             });
             const request = createRequestObject({
                 url: query.title ? encodeURI('https://cmangatop.com/api/search?opt1=' + (query.title))
-                    : encodeURI(`https://cmangatop.com/api/list_item?page=${page}&limit=40&sort=${search.sort}&type=all&tag=${search.tag}&child=off&status=${search.status}&num_chapter=${search.num_chapter}`),
+                    : (search.top !== '' ? "https://cmangatop.com/api/top?data=book_top" : encodeURI(`https://cmangatop.com/api/list_item?page=${page}&limit=40&sort=${search.sort}&type=all&tag=${search.tag}&child=off&status=${search.status}&num_chapter=${search.num_chapter}`)),
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
-            var json = query.title ? JSON.parse(data.data) : JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data))); // object not array
-            const tiles = CMangaParser_1.parseSearch(json);
+            var json = (query.title || search.top !== "") ? JSON.parse(data.data) : JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data))); // object not array
+            const tiles = CMangaParser_1.parseSearch(json, search);
             var allPage = (json['total'] / 40);
             metadata = (page < allPage) ? { page: page + 1 } : undefined;
             return createPagedResults({
@@ -7784,6 +7788,20 @@ class CManga extends paperback_extensions_common_1.Source {
                     id: 'num.500'
                 }
             ];
+            const arrayTags5 = [
+                {
+                    label: 'Top Ngày',
+                    id: 'top.day'
+                },
+                {
+                    label: 'Top Tuần',
+                    id: 'top.week'
+                },
+                {
+                    label: 'Top Tổng',
+                    id: 'top.month'
+                }
+            ];
             //the loai
             for (const tag of $('.book_tags_content a').toArray()) {
                 const label = $(tag).text().trim();
@@ -7795,6 +7813,7 @@ class CManga extends paperback_extensions_common_1.Source {
                 createTagSection({ id: '1', label: 'Sắp xếp theo', tags: arrayTags2.map(x => createTag(x)) }),
                 createTagSection({ id: '2', label: 'Tình trạng', tags: arrayTags3.map(x => createTag(x)) }),
                 createTagSection({ id: '3', label: 'Num chapter', tags: arrayTags4.map(x => createTag(x)) }),
+                createTagSection({ id: '4', label: 'Rank', tags: arrayTags5.map(x => createTag(x)) }),
             ];
             return tagSections;
         });
@@ -7818,23 +7837,42 @@ exports.generateSearch = (query) => {
     let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
     return encodeURI(keyword);
 };
-exports.parseSearch = (json) => {
+exports.parseSearch = (json, search) => {
     const manga = [];
     // const collectedIds: string[] = [];
-    for (var i of Object.keys(json)) {
-        var item = json[i];
-        if (!item.name)
-            continue;
-        manga.push(createMangaTile({
-            id: item.url + '-' + item.id_book + "::" + item.url,
-            image: 'https://cmangatop.com/assets/tmp/book/avatar/' + item.avatar + '.jpg',
-            title: createIconText({
-                text: titleCase(item.name),
-            }),
-            subtitleText: createIconText({
-                text: 'Chap ' + item.last_chapter,
-            }),
-        }));
+    if (search.top !== '') {
+        for (var i of Object.keys(json.day)) {
+            var item = json.day[i];
+            if (!item.name)
+                continue;
+            manga.push(createMangaTile({
+                id: item.url + '-' + item.id + "::" + item.url,
+                image: 'https://cmangatop.com/assets/tmp/book/avatar/' + item.avatar + '.jpg',
+                title: createIconText({
+                    text: titleCase(item.name),
+                }),
+                subtitleText: createIconText({
+                    text: item.total_view + ' views',
+                }),
+            }));
+        }
+    }
+    else {
+        for (var i of Object.keys(json)) {
+            var item = json[i];
+            if (!item.name)
+                continue;
+            manga.push(createMangaTile({
+                id: item.url + '-' + item.id_book + "::" + item.url,
+                image: 'https://cmangatop.com/assets/tmp/book/avatar/' + item.avatar + '.jpg',
+                title: createIconText({
+                    text: titleCase(item.name),
+                }),
+                subtitleText: createIconText({
+                    text: 'Chap ' + item.last_chapter,
+                }),
+            }));
+        }
     }
     return manga;
 };
