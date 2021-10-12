@@ -7736,27 +7736,49 @@ class CManga extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const arrayTags = [];
-            const arrayTags2 = [];
-            const arrayTags3 = [];
+            const arrayTags2 = [
+                {
+                    label: 'Ngày đăng',
+                    id: 'sort.new'
+                },
+                {
+                    label: 'Lượt xem',
+                    id: 'sort.view'
+                },
+                {
+                    label: 'Lượt theo dõi',
+                    id: 'sort.follow'
+                }
+            ];
+            const arrayTags3 = [
+                {
+                    label: 'Tất cả',
+                    id: 'status.all'
+                },
+                {
+                    label: 'Hoàn thành',
+                    id: 'status.completed'
+                }
+            ];
             const arrayTags4 = [
                 {
-                    label: '100',
+                    label: '>= 100',
                     id: 'num.100'
                 },
                 {
-                    label: '200',
+                    label: '>= 200',
                     id: 'num.200'
                 },
                 {
-                    label: '300',
+                    label: '>= 300',
                     id: 'num.300'
                 },
                 {
-                    label: '400',
+                    label: '>= 400',
                     id: 'num.400'
                 },
                 {
-                    label: '500',
+                    label: '>= 500',
                     id: 'num.500'
                 }
             ];
@@ -7765,18 +7787,6 @@ class CManga extends paperback_extensions_common_1.Source {
                 const label = $(tag).text().trim();
                 const id = 'tag.' + label;
                 arrayTags.push({ id: id, label: label });
-            }
-            //sap xep theo
-            for (const tag of $('#search_avd_sort option').toArray()) {
-                const label = $(tag).text().trim();
-                const id = 'sort.' + $(tag).attr('value');
-                arrayTags2.push({ id: id, label: label });
-            }
-            //tinh trang
-            for (const tag of $('#search_avd_status option').toArray()) {
-                const label = $(tag).text().trim();
-                const id = 'status.' + $(tag).attr('value');
-                arrayTags3.push({ id: id, label: label });
             }
             const tagSections = [
                 createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) }),
