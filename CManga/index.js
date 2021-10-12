@@ -7628,12 +7628,13 @@ class CManga extends paperback_extensions_common_1.Source {
             //New Added
             request = createRequestObject({
                 url: "https://cmangatop.com/api/list_item",
-                param: "?page=1&limit=20&sort=new&type=all&tag=Truyện%20siêu%20hay&child=off&status=all&num_chapter=0",
+                param: "?page=1&limit=20&sort=new&type=all&tag=Truy%E1%BB%87n%20si%C3%AAu%20hay&child=off&status=all&num_chapter=0",
                 method: "GET",
             });
             let newAddItems = [];
             data = yield this.requestManager.schedule(request, 1);
             json = JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data)));
+            console.log(json);
             for (var i of Object.keys(json)) {
                 var item = json[i];
                 if (!item.name)
@@ -7667,7 +7668,7 @@ class CManga extends paperback_extensions_common_1.Source {
                     break;
                 case "new_added":
                     url = "https://cmangatop.com/api/list_item";
-                    param = `?page=1&limit=20&sort=new&type=all&tag=Truyện siêu hay&child=off&status=all&num_chapter=0`;
+                    param = `?page=1&limit=40&sort=new&type=all&tag=Truy%E1%BB%87n%20si%C3%AAu%20hay&child=off&status=all&num_chapter=0`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
