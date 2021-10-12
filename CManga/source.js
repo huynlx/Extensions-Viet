@@ -7607,7 +7607,7 @@ class CManga extends paperback_extensions_common_1.Source {
             let newUpdatedItems = [];
             data = yield this.requestManager.schedule(request, 1);
             var json = JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data)));
-            for (var i = 0; i < 40; i++) {
+            for (var i of Object.keys(json)) {
                 var item = json[i];
                 newUpdatedItems.push(createMangaTile({
                     id: item.url + '-' + item.id_book + "::" + item.url,
@@ -7746,7 +7746,7 @@ exports.generateSearch = (query) => {
 exports.parseSearch = (json) => {
     const manga = [];
     // const collectedIds: string[] = [];
-    for (var i = 0; i < 40; i++) {
+    for (var i of Object.keys(json)) {
         var item = json[i];
         manga.push(createMangaTile({
             id: item.url + '-' + item.id_book + "::" + item.url,
@@ -7764,7 +7764,7 @@ exports.parseSearch = (json) => {
 exports.parseViewMore = (json) => {
     const manga = [];
     // const collectedIds: string[] = [];
-    for (var i = 0; i < 40; i++) {
+    for (var i of Object.keys(json)) {
         var item = json[i];
         manga.push(createMangaTile({
             id: item.url + '-' + item.id_book + "::" + item.url,
