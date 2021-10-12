@@ -7581,8 +7581,9 @@ class CManga extends paperback_extensions_common_1.Source {
             let popular = [];
             let data = yield this.requestManager.schedule(request, 1);
             let json = JSON.parse(data.data);
+            console.log(json);
             for (var i of Object.keys(json.day)) {
-                var item = json[i];
+                var item = json.day[i];
                 if (!item.name)
                     continue;
                 popular.push(createMangaTile({
