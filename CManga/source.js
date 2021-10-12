@@ -7673,7 +7673,7 @@ class CManga extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             var json = JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data))); // object not array
             const manga = CMangaParser_1.parseViewMore(json);
-            var allPage = Math.floor(json['total'] / 40);
+            var allPage = (json['total'] / 40);
             metadata = (page < allPage) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: manga,
@@ -7694,7 +7694,7 @@ class CManga extends paperback_extensions_common_1.Source {
             const data = yield this.requestManager.schedule(request, 1);
             var json = JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data))); // object not array
             const tiles = CMangaParser_1.parseSearch(json);
-            var allPage = Math.floor(json['total'] / 40);
+            var allPage = (json['total'] / 40);
             metadata = (page < allPage) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: tiles,
