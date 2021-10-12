@@ -7475,7 +7475,7 @@ class CManga extends paperback_extensions_common_1.Source {
             // });
             // const data2 = await this.requestManager.schedule(request2, 1);
             // var json = JSON.parse(decrypt_data(JSON.parse(data2.data)))[0];
-            let tags = [];
+            // let tags: Tag[] = [];
             let status = $(".status").first().text().indexOf("Đang") != -1 ? 1 : 0;
             let desc = $("#book_detail").first().text() === '' ? $("#book_more").first().text() : $("#book_detail").first().text();
             // for (const t of json.tags.split(",")) {
@@ -7490,7 +7490,7 @@ class CManga extends paperback_extensions_common_1.Source {
                 id: mangaId + "::" + book_id,
                 author: creator,
                 artist: creator,
-                desc,
+                desc: CMangaParser_1.decodeHTMLEntity(desc),
                 titles: [CMangaParser_1.titleCase($("h1").text())],
                 image: DOMAIN + image,
                 status,
@@ -7542,11 +7542,10 @@ class CManga extends paperback_extensions_common_1.Source {
             });
             const data = yield this.requestManager.schedule(request, 1);
             var chapter_content = JSON.parse(JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data)))[0].content);
-            const pages = chapter_content;
             const chapterDetails = createChapterDetails({
                 id: chapterId,
                 mangaId: mangaId,
-                pages: pages,
+                pages: chapter_content,
                 longStrip: false
             });
             return chapterDetails;
@@ -7743,7 +7742,7 @@ exports.CManga = CManga;
 },{"./CMangaParser":92,"paperback-extensions-common":48}],92:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.change_alias = exports.titleCase = exports.decrypt_data = exports.convertTime = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
+exports.change_alias = exports.titleCase = exports.decrypt_data = exports.convertTime = exports.decodeHTMLEntity = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
 const entities = require("entities"); //Import package for decoding HTML entities
 const DOMAIN = 'https://cmangatop.com/';
 exports.generateSearch = (query) => {
@@ -7824,7 +7823,7 @@ exports.isLastPage = ($) => {
         isLast = true;
     return isLast;
 };
-const decodeHTMLEntity = (str) => {
+exports.decodeHTMLEntity = (str) => {
     return entities.decodeHTML(str);
 };
 function convertTime(timeAgo) {
