@@ -7659,9 +7659,11 @@ class CManga extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             let param = '';
             let url = '';
+            let method = "GET";
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = DOMAIN + `manga-list.html?page=${page}`;
+                    url = "https://cmangatop.com/api/list_item";
+                    param = `?page=${page}&limit=40&sort=new&type=all&tag=&child=off&status=all&num_chapter=0`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
@@ -7671,10 +7673,11 @@ class CManga extends paperback_extensions_common_1.Source {
                 method,
                 param
             });
-            const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
-            const manga = CMangaParser_1.parseViewMore($);
-            metadata = !CMangaParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            let data = yield this.requestManager.schedule(request, 1);
+            var json = JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data)));
+            const manga = CMangaParser_1.parseViewMore(json);
+            var allPage = Math.floor(json['total'] / 40);
+            metadata = (page < allPage) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: manga,
                 metadata,
@@ -7776,29 +7779,21 @@ exports.parseSearch = ($) => {
     }
     return manga;
 };
-exports.parseViewMore = ($) => {
+exports.parseViewMore = (json) => {
     const manga = [];
-    const collectedIds = [];
-    for (let obj of $('.thumb-item-flow', '.col-md-8 > .card:nth-child(2) .row-last-update').toArray()) {
-        const title = $('.series-title', obj).text().trim();
-        const id = $('.series-title > a', obj).attr('href');
-        const image = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', obj).attr('data-bg');
-        const sub = $('.chapter-title  > a', obj).text().trim();
-        if (!id || !title)
-            continue;
-        if (!collectedIds.includes(id)) {
-            manga.push(createMangaTile({
-                id: id,
-                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? (image) : ((image === null || image === void 0 ? void 0 : image.includes('app')) ? (DOMAIN + image) : ('https:' + image)),
-                title: createIconText({
-                    text: title,
-                }),
-                subtitleText: createIconText({
-                    text: "Chương " + sub,
-                }),
-            }));
-            collectedIds.push(id);
-        }
+    // const collectedIds: string[] = [];
+    for (var i = 0; i < 40; i++) {
+        var item = json[i];
+        manga.push(createMangaTile({
+            id: item.url + '-' + item.id_book + "::" + item.url,
+            image: 'https://cmangatop.com/assets/tmp/book/avatar/' + item.avatar + '.jpg',
+            title: createIconText({
+                text: titleCase(item.name),
+            }),
+            subtitleText: createIconText({
+                text: 'Chap ' + item.last_chapter,
+            }),
+        }));
     }
     return manga;
 };
