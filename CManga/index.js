@@ -7469,22 +7469,21 @@ class CManga extends paperback_extensions_common_1.Source {
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             const book_id = $.html().match(/book_id.+"(.+)"/)[1];
-            const request2 = createRequestObject({
-                url: "https://cmangatop.com/api/book_detail?opt1=" + book_id,
-                method: "GET",
-            });
-            const data2 = yield this.requestManager.schedule(request2, 1);
-            var json = JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data2.data)))[0];
+            // const request2 = createRequestObject({
+            //     url: "https://cmangatop.com/api/book_detail?opt1=" + book_id,
+            //     method: "GET",
+            // });
+            // const data2 = await this.requestManager.schedule(request2, 1);
+            // var json = JSON.parse(decrypt_data(JSON.parse(data2.data)))[0];
             let tags = [];
             let status = $(".status").first().text().indexOf("Đang") != -1 ? 1 : 0;
             let desc = $("#book_detail").first().text() === '' ? $("#book_more").first().text() : $("#book_detail").first().text();
-            for (const t of json.tags.split(",")) {
-                if (t === '')
-                    continue;
-                const genre = t;
-                const id = genre;
-                tags.push(createTag({ label: CMangaParser_1.titleCase(genre), id }));
-            }
+            // for (const t of json.tags.split(",")) {
+            //     if (t === '') continue;
+            //     const genre = t;
+            //     const id = genre;
+            //     tags.push(createTag({ label: titleCase(genre), id }));
+            // }
             const image = $(".book_avatar img").first().attr("src");
             const creator = $(".profile a").text() || 'Unknown';
             return createManga({
@@ -7492,7 +7491,7 @@ class CManga extends paperback_extensions_common_1.Source {
                 author: creator,
                 artist: creator,
                 desc,
-                titles: [CMangaParser_1.titleCase(json.name)],
+                titles: [CMangaParser_1.titleCase($("h1").text())],
                 image: DOMAIN + image,
                 status,
                 hentai: false,
@@ -7674,7 +7673,7 @@ class CManga extends paperback_extensions_common_1.Source {
                 param
             });
             let data = yield this.requestManager.schedule(request, 1);
-            var json = JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data)));
+            var json = JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data))); // object not array
             const manga = CMangaParser_1.parseViewMore(json);
             var allPage = Math.floor(json['total'] / 40);
             metadata = (page < allPage) ? { page: page + 1 } : undefined;
