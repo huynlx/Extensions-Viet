@@ -7687,13 +7687,15 @@ class CManga extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: query.title ? encodeURI(`${DOMAIN}danh-sach-truyen.html?name=${query.title}&page=${page}`) : `${DOMAIN}${tags[0]}?page=${page}`,
+                url: query.title ? encodeURI('https://cmangatop.com/api/search?opt1=' + (query.title))
+                    : encodeURI(`https://cmangatop.com/api/list_item?page=${page}&limit=40&sort=new&type=all&tag=${tags[0]}&child=off&status=all&num_chapter=0`),
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
-            const tiles = CMangaParser_1.parseSearch($);
-            metadata = !CMangaParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            var json = JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data))); // object not array
+            const tiles = CMangaParser_1.parseSearch(json);
+            var allPage = Math.floor(json['total'] / 40);
+            metadata = (page < allPage) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: tiles,
                 metadata
@@ -7701,7 +7703,6 @@ class CManga extends paperback_extensions_common_1.Source {
         });
     }
     getSearchTags() {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const url = DOMAIN;
             const request = createRequestObject({
@@ -7714,7 +7715,7 @@ class CManga extends paperback_extensions_common_1.Source {
             //the loai
             for (const tag of $('.book_tags_content a').toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_a = $(tag).attr('href')) !== null && _a !== void 0 ? _a : label;
+                const id = label;
                 arrayTags.push({ id: id, label: label });
             }
             const tagSections = [
@@ -7742,29 +7743,21 @@ exports.generateSearch = (query) => {
     let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
     return encodeURI(keyword);
 };
-exports.parseSearch = ($) => {
+exports.parseSearch = (json) => {
     const manga = [];
-    const collectedIds = [];
-    for (let obj of $('.thumb-item-flow', '.col-md-8 > .card:nth-child(2) .row-last-update').toArray()) {
-        const title = $('.series-title', obj).text().trim();
-        const id = $('.series-title > a', obj).attr('href');
-        const image = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', obj).attr('data-bg');
-        const sub = $('.chapter-title  > a', obj).text().trim();
-        if (!id || !title)
-            continue;
-        if (!collectedIds.includes(id)) {
-            manga.push(createMangaTile({
-                id: id,
-                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? (image) : ((image === null || image === void 0 ? void 0 : image.includes('app')) ? (DOMAIN + image) : ('https:' + image)),
-                title: createIconText({
-                    text: title,
-                }),
-                subtitleText: createIconText({
-                    text: "Chương " + sub,
-                }),
-            }));
-            collectedIds.push(id);
-        }
+    // const collectedIds: string[] = [];
+    for (var i = 0; i < 40; i++) {
+        var item = json[i];
+        manga.push(createMangaTile({
+            id: item.url + '-' + item.id_book + "::" + item.url,
+            image: 'https://cmangatop.com/assets/tmp/book/avatar/' + item.avatar + '.jpg',
+            title: createIconText({
+                text: titleCase(item.name),
+            }),
+            subtitleText: createIconText({
+                text: 'Chap ' + item.last_chapter,
+            }),
+        }));
     }
     return manga;
 };
