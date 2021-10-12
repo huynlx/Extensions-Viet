@@ -7609,6 +7609,8 @@ class CManga extends paperback_extensions_common_1.Source {
             var json = JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data)));
             for (var i of Object.keys(json)) {
                 var item = json[i];
+                if (!item.name)
+                    continue;
                 newUpdatedItems.push(createMangaTile({
                     id: item.url + '-' + item.id_book + "::" + item.url,
                     image: 'https://cmangatop.com/assets/tmp/book/avatar/' + item.avatar + '.jpg',
@@ -7748,6 +7750,8 @@ exports.parseSearch = (json) => {
     // const collectedIds: string[] = [];
     for (var i of Object.keys(json)) {
         var item = json[i];
+        if (!item.name)
+            continue;
         manga.push(createMangaTile({
             id: item.url + '-' + item.id_book + "::" + item.url,
             image: 'https://cmangatop.com/assets/tmp/book/avatar/' + item.avatar + '.jpg',
@@ -7766,6 +7770,8 @@ exports.parseViewMore = (json) => {
     // const collectedIds: string[] = [];
     for (var i of Object.keys(json)) {
         var item = json[i];
+        if (!item.name)
+            continue;
         manga.push(createMangaTile({
             id: item.url + '-' + item.id_book + "::" + item.url,
             image: 'https://cmangatop.com/assets/tmp/book/avatar/' + item.avatar + '.jpg',
