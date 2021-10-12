@@ -7495,7 +7495,6 @@ class CManga extends paperback_extensions_common_1.Source {
                 image: DOMAIN + image,
                 status,
                 hentai: false,
-                tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
             });
         });
     }
