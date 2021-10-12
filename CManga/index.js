@@ -7565,13 +7565,13 @@ class CManga extends paperback_extensions_common_1.Source {
             });
             let newAdded = createHomeSection({
                 id: 'new_added',
-                title: "TRUYỆN MỚI ĐĂNG",
-                view_more: false,
+                title: "VIP Truyện Siêu Hay",
+                view_more: true,
             });
             //Load empty sections
             sectionCallback(hot);
             sectionCallback(newUpdated);
-            // sectionCallback(newAdded);
+            sectionCallback(newAdded);
             ///Get the section data
             // Hot
             let request = createRequestObject({
@@ -7603,7 +7603,7 @@ class CManga extends paperback_extensions_common_1.Source {
             request = createRequestObject({
                 url: "https://cmangatop.com/api/list_item",
                 method: "GET",
-                param: '?page=1&limit=40&sort=new&type=all&tag=&child=off&status=all&num_chapter=0'
+                param: '?page=1&limit=20&sort=new&type=all&tag=&child=off&status=all&num_chapter=0'
             });
             let newUpdatedItems = [];
             data = yield this.requestManager.schedule(request, 1);
@@ -7625,33 +7625,32 @@ class CManga extends paperback_extensions_common_1.Source {
             }
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
-            // //New Added
-            // request = createRequestObject({
-            //     url: DOMAIN,
-            //     method: "GET",
-            // });
-            // let newAddItems: MangaTile[] = [];
-            // data = await this.requestManager.schedule(request, 1);
-            // $ = this.cheerio.load(data.data);
-            // for (let manga of $('.thumb-item-flow:not(:last-child)', '.col-lg-8.col-sm-8 > .card:nth-child(5) .row-last-update').toArray()) {
-            //     const title = $('.series-title', manga).text().trim();
-            //     const id = $('.series-title > a', manga).attr('href') ?? title;
-            //     const image = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', manga).attr('data-bg');
-            //     const sub = $('a', manga).last().text().trim();
-            //     // if (!id || !subtitle) continue;
-            //     newAddItems.push(createMangaTile({
-            //         id: id,
-            //         image: image?.includes('http') ? (image) : ("https:" + image),
-            //         title: createIconText({
-            //             text: title,
-            //         }),
-            //         subtitleText: createIconText({
-            //             text: sub,
-            //         }),
-            //     }))
-            // }
-            // newAdded.items = newAddItems;
-            // // sectionCallback(newAdded);
+            //New Added
+            request = createRequestObject({
+                url: "https://cmangatop.com/api/list_item",
+                param: "?page=1&limit=20&sort=new&type=all&tag=Truyện%20siêu%20hay&child=off&status=all&num_chapter=0",
+                method: "GET",
+            });
+            let newAddItems = [];
+            data = yield this.requestManager.schedule(request, 1);
+            json = JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data)));
+            for (var i of Object.keys(json)) {
+                var item = json[i];
+                if (!item.name)
+                    continue;
+                newAddItems.push(createMangaTile({
+                    id: item.url + '-' + item.id_book + "::" + item.url,
+                    image: 'https://cmangatop.com/assets/tmp/book/avatar/' + item.avatar + '.jpg',
+                    title: createIconText({
+                        text: CMangaParser_1.titleCase(item.name),
+                    }),
+                    subtitleText: createIconText({
+                        text: 'Chap ' + item.last_chapter,
+                    }),
+                }));
+            }
+            newAdded.items = newAddItems;
+            sectionCallback(newAdded);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
@@ -7665,6 +7664,10 @@ class CManga extends paperback_extensions_common_1.Source {
                 case "new_updated":
                     url = "https://cmangatop.com/api/list_item";
                     param = `?page=${page}&limit=40&sort=new&type=all&tag=&child=off&status=all&num_chapter=0`;
+                    break;
+                case "new_added":
+                    url = "https://cmangatop.com/api/list_item";
+                    param = `?page=1&limit=20&sort=new&type=all&tag=Truyện%20siêu%20hay&child=off&status=all&num_chapter=0`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
