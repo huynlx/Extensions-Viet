@@ -993,7 +993,7 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
         const id = (_b = $('a', manga).attr('href')) === null || _b === void 0 ? void 0 : _b.split('/').pop();
         const image = $('a > div', manga).css('background');
         const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
-        const subtitle = $("a > span > b", manga).last().text().trim();
+        const subtitle = $("a > b", manga).last().text().trim();
         if (!id || !title)
             continue;
         staffPick.push(createMangaTile({
