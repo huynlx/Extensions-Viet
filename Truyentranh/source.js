@@ -927,13 +927,14 @@ exports.parseSearch = ($) => {
     return manga;
 };
 exports.parseViewMore = ($) => {
+    var _a;
     const mangas = [];
     const collectedIds = [];
-    for (let manga of $('#bottomslider .list-slider-item').toArray()) {
-        const title = $('.card', manga).attr('title');
-        const id = $('.card', manga).attr('href');
+    for (let manga of $('.content .card-list > .card').toArray()) {
+        const title = $('.card-title', manga).text().trim();
+        const id = (_a = $('.card-title > a', manga).attr('href')) !== null && _a !== void 0 ? _a : title;
         const image = $('.card-img', manga).attr('src');
-        const sub = $('.card-chapter', manga).text().trim();
+        const sub = $('.list-chapter > li:first-child > a', manga).text().trim();
         if (!id || !title)
             continue;
         if (!collectedIds.includes(id)) {
