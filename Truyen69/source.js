@@ -619,6 +619,7 @@ class Truyen69 extends paperback_extensions_common_1.Source {
             requestsPerSecond: 5,
             requestTimeout: 20000
         });
+        this.Slg = '';
     }
     getMangaShareUrl(mangaId) { return `${mangaId}`; }
     ;
@@ -647,7 +648,7 @@ class Truyen69 extends paperback_extensions_common_1.Source {
                 author: creator,
                 artist: creator,
                 desc,
-                titles: [$('.title').text()],
+                titles: [$('.wrap-content-info > .title').text()],
                 image: image,
                 status,
                 hentai: true,
@@ -656,7 +657,7 @@ class Truyen69 extends paperback_extensions_common_1.Source {
         });
     }
     getChapters(mangaId) {
-        var _a, _b;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
                 url: mangaId,
@@ -665,14 +666,14 @@ class Truyen69 extends paperback_extensions_common_1.Source {
             var i = 0;
             const response = yield this.requestManager.schedule(request, 1);
             var dt = (_a = response.data.match(/Data_LstC = (.*);/)) === null || _a === void 0 ? void 0 : _a[1];
-            var Slg = (_b = response.data.match(/Slg = (.*);/)) === null || _b === void 0 ? void 0 : _b[1];
+            this.Slg = (_c = (_b = response.data.match(/Slg = (.*);/)) === null || _b === void 0 ? void 0 : _b[1]) !== null && _c !== void 0 ? _c : "";
             var json = JSON.parse(dt !== null && dt !== void 0 ? dt : "");
             const chapters = [];
             for (const obj of json) {
                 i++;
                 var chapNum = parseFloat(obj.Cn.split(' ')[1]);
                 chapters.push(createChapter({
-                    id: "https://www.truyen69.ml/" + Slg + "- chuong -" + obj.Cid + ".html" + "::" + Slg + "::" + obj.Cid,
+                    id: "https://www.truyen69.ml/" + this.Slg + "- chuong -" + obj.Cid + ".html" + "::" + obj.Cid,
                     chapNum: isNaN(chapNum) ? i : chapNum,
                     name: obj.Cn,
                     mangaId: mangaId,
@@ -692,9 +693,9 @@ class Truyen69 extends paperback_extensions_common_1.Source {
                 },
                 data: {
                     'action': 'chapterContent',
-                    'slug': 'wasurerarenai-natsu',
+                    'slug': this.Slg,
                     'loaichap': '1',
-                    'chapter': '10end'
+                    'chapter': chapterId.split('::')[1]
                 }
             });
             const response = yield this.requestManager.schedule(request, 1);
@@ -704,7 +705,7 @@ class Truyen69 extends paperback_extensions_common_1.Source {
                 if (!obj.attribs['src'])
                     continue;
                 let link = 'https://www.truyen69.ml' + obj.attribs['src'].trim();
-                pages.push(encodeURI(link));
+                pages.push(link);
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
