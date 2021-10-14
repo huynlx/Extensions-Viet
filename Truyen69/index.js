@@ -633,15 +633,15 @@ class Truyen69 extends paperback_extensions_common_1.Source {
             // let html = Buffer.from(createByteArray(data.rawData)).toString()
             let $ = this.cheerio.load(data.data);
             let tags = [];
-            let status = 1;
-            let desc = $('.detail-manga-intro').text();
-            for (const t of $('.detail-manga-category a').toArray()) {
+            let status = $('.list-info > li:nth-child(2) b').text().toLowerCase().includes('Hoàn thành') ? 0 : 1;
+            let desc = 'Không có mô tả';
+            for (const t of $('.list01.li03 > a').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_b = (_a = $(t).attr('href')) === null || _a === void 0 ? void 0 : _a.trim()) !== null && _b !== void 0 ? _b : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            const image = (_c = $('.detail-img').attr('data-image-full')) !== null && _c !== void 0 ? _c : "fuck";
-            const creator = $('.detail-banner-info ul li:nth-child(3) > a > span').text();
+            const image = (_c = 'https://www.truyen69.ml/' + $('.wrap-content-image > img').attr('src')) !== null && _c !== void 0 ? _c : "fuck";
+            const creator = $('.list-info > li:nth-child(1) a').text();
             return createManga({
                 id: mangaId,
                 author: creator,
