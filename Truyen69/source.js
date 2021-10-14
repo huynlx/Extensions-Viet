@@ -739,11 +739,13 @@ class Truyen69 extends paperback_extensions_common_1.Source {
             let newUpdatedItems = [];
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            for (let manga of $('#danhsachtruyen > .story_item').toArray()) {
-                const title = $('.fed-list-title', manga).text().trim();
-                const id = 'https://www.truyen69.ml/' + $('.fed-list-title > a', manga).attr('href');
-                const image = 'https://www.truyen69.ml/' + $('.fed-list-pics', manga).match(/image: url\("\/\/(.+)\"\)/)[1];
-                const sub = $('.fed-list-remarks', manga).text().trim();
+            var dt = $.html().match(/Data_DST = (.*);/)[1];
+            var json = JSON.parse(dt);
+            for (let manga of dt) {
+                const title = manga.manga_Name;
+                const id = 'https://www.truyen69.ml/' + manga.manga_Url;
+                const image = 'https://www.truyen69.ml/' + manga.manga_Url;
+                const sub = manga.manga_LChap;
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
