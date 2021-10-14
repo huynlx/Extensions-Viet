@@ -665,7 +665,7 @@ class Truyentranh extends paperback_extensions_common_1.Source {
             // let html = Buffer.from(createByteArray(response.rawData)).toString()
             const $ = this.cheerio.load(response.data);
             const chapters = [];
-            for (const obj of $(".scroll-content .chapter-list-item-box").toArray()) {
+            for (const obj of $(".chapter-list-item-box").toArray()) {
                 var chapNum = parseFloat($('.chapter-select > a', obj).text().split(' ')[1]);
                 var time = $('.chapter-info > time', obj).text().trim().split(',');
                 var d = time[0].split('/');
