@@ -847,7 +847,7 @@ class Truyentranh extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: query.title ? encodeURI(`${DOMAIN}danh-sach-truyen.html?name=${query.title}&page=${page}`) : `${DOMAIN}${tags[0]}?page=${page}`,
+                url: query.title ? encodeURI(`https://truyentranh.net/search?page=${page}&q=${query.title}`) : `${tags[0]}?page=${page}`,
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
@@ -901,30 +901,27 @@ exports.generateSearch = (query) => {
     return encodeURI(keyword);
 };
 exports.parseSearch = ($) => {
-    const manga = [];
+    var _a;
+    const mangas = [];
     const collectedIds = [];
-    for (let obj of $('.thumb-item-flow', '.col-md-8 > .card:nth-child(2) .row-last-update').toArray()) {
-        const title = $('.series-title', obj).text().trim();
-        const id = $('.series-title > a', obj).attr('href');
-        const image = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', obj).attr('data-bg');
-        const sub = $('.chapter-title  > a', obj).text().trim();
+    for (let manga of $('.content .card-list > .card').toArray()) {
+        const title = $('.card-title', manga).text().trim();
+        const id = (_a = $('.card-title > a', manga).attr('href')) !== null && _a !== void 0 ? _a : title;
+        const image = $('.card-img', manga).attr('src');
+        const sub = $('.list-chapter > li:first-child > a', manga).text().trim();
         if (!id || !title)
             continue;
         if (!collectedIds.includes(id)) {
-            manga.push(createMangaTile({
+            mangas.push(createMangaTile({
                 id: id,
-                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? (image) : ((image === null || image === void 0 ? void 0 : image.includes('app')) ? (DOMAIN + image) : ('https:' + image)),
-                title: createIconText({
-                    text: title,
-                }),
-                subtitleText: createIconText({
-                    text: "Chương " + sub,
-                }),
+                image: image !== null && image !== void 0 ? image : "",
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: sub }),
             }));
             collectedIds.push(id);
         }
     }
-    return manga;
+    return mangas;
 };
 exports.parseViewMore = ($) => {
     var _a;
