@@ -695,7 +695,7 @@ class Truyen69 extends paperback_extensions_common_1.Source {
                     'action': 'chapterContent',
                     'slug': this.Slg,
                     'loaichap': '1',
-                    'chapter': chapterId.split("::")[1]
+                    'chapter': `${chapterId.split("::")[1]}`
                 }
             });
             console.log((this.Slg));
