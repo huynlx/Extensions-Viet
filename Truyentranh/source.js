@@ -2798,7 +2798,7 @@ class Truyentranh extends paperback_extensions_common_1.Source {
             let newUpdatedItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let manga of $('.card-list > .card').toArray()) {
+            for (let manga of $('.content .card-list > .card').toArray()) {
                 const title = $('.card-title', manga).text().trim();
                 const id = (_b = $('.card-title > a', manga).attr('href')) !== null && _b !== void 0 ? _b : title;
                 const image = $('.card-img', manga).attr('src');
@@ -2825,7 +2825,7 @@ class Truyentranh extends paperback_extensions_common_1.Source {
             let newAddItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let manga of $('.card-list > .card').toArray()) {
+            for (let manga of $('.content .card-list > .card').toArray()) {
                 const title = $('.card-title', manga).text().trim();
                 const id = (_c = $('.card-title > a', manga).attr('href')) !== null && _c !== void 0 ? _c : title;
                 const image = $('.card-img', manga).attr('src');
