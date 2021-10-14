@@ -634,7 +634,7 @@ class Truyentranh extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             let tags = [];
             let status = 1;
-            let desc = $('.detail-manga-intro > p').text();
+            let desc = $('.detail-manga-intro').text();
             for (const t of $('.detail-manga-category a').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_b = (_a = $(t).attr('href')) === null || _a === void 0 ? void 0 : _a.trim()) !== null && _b !== void 0 ? _b : genre;
@@ -661,22 +661,24 @@ class Truyentranh extends paperback_extensions_common_1.Source {
                 url: mangaId,
                 method,
             });
+            var i = 0;
             const response = yield this.requestManager.schedule(request, 1);
             // let html = Buffer.from(createByteArray(response.rawData)).toString()
             const $ = this.cheerio.load(response.data);
             const chapters = [];
-            for (const obj of $(".chapter-list-item-box").toArray()) {
+            for (const obj of $(".chapter-list-item-box").toArray().reverse()) {
+                i++;
                 var chapNum = parseFloat($('.chapter-select > a', obj).text().split(' ')[1]);
-                var time = $('.chapter-info > time', obj).text().trim().split(',');
+                var time = $('.chapter-info > time', obj).text().trim().split(', ');
                 var d = time[0].split('/');
-                var t = time[1].trim();
+                var t = time[1];
                 chapters.push(createChapter({
                     id: $('.chapter-select > a', obj).attr('href'),
-                    chapNum: chapNum,
+                    chapNum: isNaN(chapNum) ? i : chapNum,
                     name: $('.chapter-select > a', obj).text(),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: TruyentranhParser_1.convertTime(d[1] + '/' + d[0] + '/' + d[2] + ' ' + t)
+                    time: new Date(d[1] + '/' + d[0] + '/' + d[2] + ' ' + t)
                 }));
             }
             return chapters;
@@ -816,7 +818,10 @@ class Truyentranh extends paperback_extensions_common_1.Source {
             let url = '';
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = DOMAIN + `manga-list.html?page=${page}`;
+                    url = `https://truyentranh.net/comic?page=${page}`;
+                    break;
+                case "new_added":
+                    url = `https://truyentranh.net/comic-latest?page=${page}`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
@@ -856,7 +861,6 @@ class Truyentranh extends paperback_extensions_common_1.Source {
         });
     }
     getSearchTags() {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const url = DOMAIN;
             const request = createRequestObject({
@@ -868,17 +872,8 @@ class Truyentranh extends paperback_extensions_common_1.Source {
             const arrayTags = [];
             const collectedIds = [];
             //the loai
-            for (const tag of $('div:not(:last-child) ul.nav', '.megamenu > li').toArray()) {
-                for (const gen of $('a', tag).toArray()) {
-                    const label = $(gen).text().trim();
-                    const id = (_a = $(gen).attr('href')) !== null && _a !== void 0 ? _a : label;
-                    if (!id || !label)
-                        continue;
-                    if (!collectedIds.includes(id)) {
-                        arrayTags.push({ id: id, label: label });
-                        collectedIds.push(id);
-                    }
-                }
+            for (const tag of $('.dropdown-menu > ul > li > a').toArray()) {
+                arrayTags.push({ id: $(tag).attr('href'), label: $(tag).text().trim() });
             }
             const tagSections = [
                 createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) }),
@@ -932,30 +927,26 @@ exports.parseSearch = ($) => {
     return manga;
 };
 exports.parseViewMore = ($) => {
-    const manga = [];
+    const mangas = [];
     const collectedIds = [];
-    for (let obj of $('.thumb-item-flow', '.col-md-8 > .card:nth-child(2) .row-last-update').toArray()) {
-        const title = $('.series-title', obj).text().trim();
-        const id = $('.series-title > a', obj).attr('href');
-        const image = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', obj).attr('data-bg');
-        const sub = $('.chapter-title  > a', obj).text().trim();
+    for (let manga of $('#bottomslider .list-slider-item').toArray()) {
+        const title = $('.card', manga).attr('title');
+        const id = $('.card', manga).attr('href');
+        const image = $('.card-img', manga).attr('src');
+        const sub = $('.card-chapter', manga).text().trim();
         if (!id || !title)
             continue;
         if (!collectedIds.includes(id)) {
-            manga.push(createMangaTile({
+            mangas.push(createMangaTile({
                 id: id,
-                image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? (image) : ((image === null || image === void 0 ? void 0 : image.includes('app')) ? (DOMAIN + image) : ('https:' + image)),
-                title: createIconText({
-                    text: title,
-                }),
-                subtitleText: createIconText({
-                    text: "Chương " + sub,
-                }),
+                image: image !== null && image !== void 0 ? image : "",
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: sub }),
             }));
             collectedIds.push(id);
         }
     }
-    return manga;
+    return mangas;
 };
 // export const parseTags = ($: CheerioStatic): TagSection[] => {
 //     const arrayTags: Tag[] = [];
@@ -974,14 +965,14 @@ exports.parseViewMore = ($) => {
 exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
-    for (const page of $("li", "ul.pagination").toArray()) {
-        const p = Number($('a', page).text().trim());
+    for (const page of $("li.page-item", "ul.pagination").toArray()) {
+        const p = Number($('a.page-link', page).text().trim());
         if (isNaN(p))
             continue;
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($("li > a.active").text().trim());
+    const currentPage = Number($("ul.pagination > li.page-item.active > a.page-link").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
