@@ -594,7 +594,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Truyen69 = exports.Truyen69Info = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const Truyen69Parser_1 = require("./Truyen69Parser");
-const DOMAIN = 'https://truyentranh.net/';
+const DOMAIN = 'https://www.truyen69.ml/';
 const method = 'GET';
 exports.Truyen69Info = {
     version: '1.0.0',
@@ -728,8 +728,8 @@ class Truyen69 extends paperback_extensions_common_1.Source {
             });
             //Load empty sections
             sectionCallback(newUpdated);
-            sectionCallback(newAdded);
-            sectionCallback(hot);
+            // sectionCallback(newAdded);
+            // sectionCallback(hot);
             ///Get the section data
             //New Updates
             let request = createRequestObject({
@@ -739,7 +739,7 @@ class Truyen69 extends paperback_extensions_common_1.Source {
             let newUpdatedItems = [];
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            for (let manga of $('.lst_story > .story_item').toArray()) {
+            for (let manga of $('#danhsachtruyen > .story_item').toArray()) {
                 const title = $('.fed-list-title', manga).text().trim();
                 const id = 'https://www.truyen69.ml/' + $('.fed-list-title > a', manga).attr('href');
                 const image = 'https://www.truyen69.ml/' + $('.fed-list-pics', manga).match(/image: url\("\/\/(.+)\"\)/)[1];
@@ -784,7 +784,7 @@ class Truyen69 extends paperback_extensions_common_1.Source {
                 }));
             }
             newAdded.items = newAddItems;
-            sectionCallback(newAdded);
+            // sectionCallback(newAdded);
             // Hot
             request = createRequestObject({
                 url: 'https://truyentranh.net',
@@ -807,7 +807,6 @@ class Truyen69 extends paperback_extensions_common_1.Source {
                 }));
             }
             hot.items = popular;
-            sectionCallback(hot);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
