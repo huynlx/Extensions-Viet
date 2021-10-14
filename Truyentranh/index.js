@@ -641,7 +641,7 @@ class Truyentranh extends paperback_extensions_common_1.Source {
                 tags.push(createTag({ label: genre, id }));
             }
             const image = (_c = $('.detail-img').attr('data-image-full')) !== null && _c !== void 0 ? _c : "fuck";
-            const creator = $('a', '.manga-info > li:nth-of-type(2)').text();
+            const creator = $('.detail-banner-info ul li:nth-child(3) > a > span').text();
             return createManga({
                 id: mangaId,
                 author: creator,
