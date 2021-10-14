@@ -634,7 +634,7 @@ class Truyen69 extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             let tags = [];
             let status = $('.list-info > li:nth-child(2) b').text().toLowerCase().includes('Hoàn thành') ? 0 : 1;
-            let desc = 'Không có mô tả';
+            let desc = 'Xem là biết :))';
             for (const t of $('.list01.li03 > a').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_b = (_a = $(t).attr('href')) === null || _a === void 0 ? void 0 : _a.trim()) !== null && _b !== void 0 ? _b : genre;
@@ -647,7 +647,7 @@ class Truyen69 extends paperback_extensions_common_1.Source {
                 author: creator,
                 artist: creator,
                 desc,
-                titles: [$('.detail-manga-title > h1').text()],
+                titles: [$('.title').text()],
                 image: image,
                 status,
                 hentai: true,
@@ -656,6 +656,7 @@ class Truyen69 extends paperback_extensions_common_1.Source {
         });
     }
     getChapters(mangaId) {
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
                 url: mangaId,
@@ -663,22 +664,19 @@ class Truyen69 extends paperback_extensions_common_1.Source {
             });
             var i = 0;
             const response = yield this.requestManager.schedule(request, 1);
-            // let html = Buffer.from(createByteArray(response.rawData)).toString()
-            const $ = this.cheerio.load(response.data);
+            var dt = (_a = response.data.match(/Data_LstC = (.*);/)) === null || _a === void 0 ? void 0 : _a[1];
+            var Slg = (_b = response.data.match(/Slg = (.*);/)) === null || _b === void 0 ? void 0 : _b[1];
+            var json = JSON.parse(dt !== null && dt !== void 0 ? dt : "");
             const chapters = [];
-            for (const obj of $(".chapter-list-item-box").toArray().reverse()) {
+            for (const obj of json) {
                 i++;
-                var chapNum = parseFloat($('.chapter-select > a', obj).text().split(' ')[1]);
-                var time = $('.chapter-info > time', obj).text().trim().split(', ');
-                var d = time[0].split('/');
-                var t = time[1];
+                var chapNum = parseFloat(obj.Cn.split(' ')[1]);
                 chapters.push(createChapter({
-                    id: $('.chapter-select > a', obj).attr('href'),
+                    id: "https://www.truyen69.ml/" + Slg + "- chuong -" + obj.Cid + ".html" + "::" + Slg + "::" + obj.Cid,
                     chapNum: isNaN(chapNum) ? i : chapNum,
-                    name: $('.chapter-select > a', obj).text(),
+                    name: obj.Cn,
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: new Date(d[1] + '/' + d[0] + '/' + d[2] + ' ' + t)
                 }));
             }
             return chapters;
@@ -687,16 +685,25 @@ class Truyen69 extends paperback_extensions_common_1.Source {
     getChapterDetails(mangaId, chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${chapterId}`,
-                method
+                url: 'https://www.truyen69.ml/app/manga/controllers/cont.chapterContent.php',
+                method: 'post',
+                headers: {
+                    'content-type': 'application/x-www-form-urlencoded'
+                },
+                data: {
+                    'action': 'chapterContent',
+                    'slug': chapterId.split('::')[1],
+                    'loaichap': '1',
+                    'chapter': chapterId.split('::')[2]
+                }
             });
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
-            for (let obj of $('.manga-reading-box > .page-chapter > img').toArray()) {
+            for (let obj of $('img').toArray()) {
                 if (!obj.attribs['src'])
                     continue;
-                let link = obj.attribs['src'].trim();
+                let link = 'https://www.truyen69.ml' + obj.attribs['src'].trim();
                 pages.push(encodeURI(link));
             }
             const chapterDetails = createChapterDetails({
