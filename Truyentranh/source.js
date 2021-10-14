@@ -635,7 +635,7 @@ class Truyentranh extends paperback_extensions_common_1.Source {
             let tags = [];
             let status = 1;
             let desc = $('.detail-manga-intro > p').text();
-            for (const t of $('detail-manga-category a').toArray()) {
+            for (const t of $('.detail-manga-category a').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_b = (_a = $(t).attr('href')) === null || _a === void 0 ? void 0 : _a.trim()) !== null && _b !== void 0 ? _b : genre;
                 tags.push(createTag({ label: genre, id }));
@@ -665,7 +665,7 @@ class Truyentranh extends paperback_extensions_common_1.Source {
             // let html = Buffer.from(createByteArray(response.rawData)).toString()
             const $ = this.cheerio.load(response.data);
             const chapters = [];
-            for (const obj of $(".scroll-content > .chapter-list-item-box").toArray()) {
+            for (const obj of $(".scroll-content .chapter-list-item-box").toArray()) {
                 var chapNum = parseFloat($('.chapter-select > a', obj).text().split(' ')[1]);
                 var time = $('.chapter-info > time', obj).text().trim().split(',');
                 var d = time[0].split('/');
