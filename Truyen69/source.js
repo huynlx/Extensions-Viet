@@ -660,7 +660,7 @@ class Truyen69 extends paperback_extensions_common_1.Source {
         var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: mangaId,
+                url: 'https://www.truyen69.ml/truyen-me-ke-va-nhung-nguoi-ban.html',
                 method,
             });
             var i = 0;
@@ -695,9 +695,11 @@ class Truyen69 extends paperback_extensions_common_1.Source {
                     'action': 'chapterContent',
                     'slug': 'me-ke-va-nhung-nguoi-ban',
                     'loaichap': '1',
-                    'chapter': 'chap73'
+                    'chapter': 'chap77'
                 }
             });
+            console.log((this.Slg));
+            console.log((chapterId.split("::")[1]));
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
