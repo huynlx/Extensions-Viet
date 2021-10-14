@@ -733,7 +733,7 @@ class Truyen69 extends paperback_extensions_common_1.Source {
             ///Get the section data
             // Hot
             let request = createRequestObject({
-                url: 'https://truyentranh.net',
+                url: 'https://www.truyen69.ml/danh-sach-truyen.html?status=0&sort=views',
                 method: "GET",
             });
             let popular = [];
