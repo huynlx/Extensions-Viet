@@ -693,9 +693,9 @@ class Truyen69 extends paperback_extensions_common_1.Source {
                 },
                 data: {
                     'action': 'chapterContent',
-                    'slug': this.Slg,
+                    'slug': 'me-ke-va-nhung-nguoi-ban',
                     'loaichap': '1',
-                    'chapter': chapterId.split('::')[1]
+                    'chapter': 'chap73'
                 }
             });
             const response = yield this.requestManager.schedule(request, 1);
