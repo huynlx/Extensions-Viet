@@ -2753,16 +2753,16 @@ class Truyentranh extends paperback_extensions_common_1.Source {
             });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
-                title: "TRUYỆN MỚI CẬP NHẬT",
+                title: "MỚI CẬP NHẬT",
                 view_more: true,
             });
             let newAdded = createHomeSection({
                 id: 'new_added',
-                title: "TRUYỆN MỚI ĐĂNG",
-                view_more: false,
+                title: "TÁC PHẨM MỚI",
+                view_more: true,
             });
             //Load empty sections
-            sectionCallback(hot);
+            // sectionCallback(hot);
             sectionCallback(newUpdated);
             sectionCallback(newAdded);
             ///Get the section data
@@ -2789,7 +2789,7 @@ class Truyentranh extends paperback_extensions_common_1.Source {
                 }));
             }
             hot.items = popular;
-            sectionCallback(hot);
+            // sectionCallback(hot);
             //New Updates
             request = createRequestObject({
                 url: 'https://truyentranh.net/comic',
@@ -2819,21 +2819,21 @@ class Truyentranh extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             //New Added
             request = createRequestObject({
-                url: DOMAIN,
+                url: 'https://truyentranh.net/comic-latest',
                 method: "GET",
             });
             let newAddItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let manga of $('.thumb-item-flow:not(:last-child)', '.col-lg-8.col-sm-8 > .card:nth-child(5) .row-last-update').toArray()) {
-                const title = $('.series-title', manga).text().trim();
-                const id = (_c = $('.series-title > a', manga).attr('href')) !== null && _c !== void 0 ? _c : title;
-                const image = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', manga).attr('data-bg');
-                const sub = $('a', manga).last().text().trim();
+            for (let manga of $('.card-list > .card').toArray()) {
+                const title = $('.card-title', manga).text().trim();
+                const id = (_c = $('.card-title > a', manga).attr('href')) !== null && _c !== void 0 ? _c : title;
+                const image = $('.card-img', manga).attr('src');
+                const sub = $('.list-chapter > li:first-child > a', manga).text().trim();
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
                     id: id,
-                    image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? (image) : ("https:" + image),
+                    image: image,
                     title: createIconText({
                         text: title,
                     }),
