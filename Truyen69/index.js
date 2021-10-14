@@ -701,7 +701,7 @@ class Truyen69 extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
-            for (let obj of $('img').toArray()) {
+            for (let obj of $('img:not(:first-child):not(:last-child)').toArray()) {
                 if (!obj.attribs['src'])
                     continue;
                 let link = 'https://www.truyen69.ml' + obj.attribs['src'].trim();
