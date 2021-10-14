@@ -741,7 +741,7 @@ class Truyen69 extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             var dt = $.html().match(/Data_DST = (.*);/)[1];
             var json = JSON.parse(dt);
-            for (let manga of dt) {
+            for (let manga of json) {
                 const title = manga.manga_Name;
                 const id = 'https://www.truyen69.ml/' + manga.manga_Url;
                 const image = 'https://www.truyen69.ml/' + manga.manga_Url;
