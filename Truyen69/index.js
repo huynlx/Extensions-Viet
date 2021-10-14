@@ -692,9 +692,9 @@ class Truyen69 extends paperback_extensions_common_1.Source {
                 },
                 data: {
                     'action': 'chapterContent',
-                    'slug': chapterId.split('::')[1],
+                    'slug': 'wasurerarenai-natsu',
                     'loaichap': '1',
-                    'chapter': chapterId.split('::')[2]
+                    'chapter': '10end'
                 }
             });
             const response = yield this.requestManager.schedule(request, 1);
