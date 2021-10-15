@@ -958,16 +958,11 @@ exports.parseViewMore = ($) => {
 //     return tagSections;
 // }
 exports.isLastPage = ($) => {
+    var _a;
     let isLast = false;
-    const pages = [];
-    for (const page of $("li", "#pagination-top").toArray()) {
-        const p = Number($('a.page-link', page).text().trim());
-        if (isNaN(p))
-            continue;
-        pages.push(p);
-    }
-    const lastPage = Math.max(...pages);
-    const currentPage = Number($("#pagination-top > li.active > .current").text().trim());
+    const pages = (_a = $.html().match(/setPagiNation(.*)]]>/)) === null || _a === void 0 ? void 0 : _a[1].replace('(', '').split(',');
+    const lastPage = Number(pages === null || pages === void 0 ? void 0 : pages[0]);
+    const currentPage = Number(pages === null || pages === void 0 ? void 0 : pages[1]);
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
