@@ -2676,7 +2676,7 @@ class Thienhatruyen extends paperback_extensions_common_1.Source {
                 author: !test ? $('.aboutThisComic > li:nth-child(2)').children().remove().end().text() : creator.join(', '),
                 artist: !test ? $('.aboutThisComic > li:nth-child(2)').children().remove().end().text() : creator.join(', '),
                 desc,
-                titles: [$('.detail > h1').text().trim()],
+                titles: [ThienhatruyenParser_1.decodeHTMLEntity($('.detail > h1').text().trim())],
                 image: image !== null && image !== void 0 ? image : "https://i.imgur.com/GYUxEX8.png",
                 status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
@@ -2929,7 +2929,7 @@ class Thienhatruyen extends paperback_extensions_common_1.Source {
                 }
             });
             const request = createRequestObject({
-                url: query.title ? encodeURI(`${DOMAIN}tim-kiem?q=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}`) : `${DOMAIN}danh-muc/tat-ca-truyen?cate=${search.cate}&author=${search.author}&translater=${search.translater}&complete=${search.complete}&sort=${search.sort}`,
+                url: query.title ? encodeURI(`${DOMAIN}tim-kiem?q=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}`) : `${DOMAIN}danh-muc/tat-ca-truyen?cate=${search.cate}&writer=${search.author}&translator=${search.translater}&status=${search.complete}&sort=${search.sort}`,
                 method: "GET",
                 param: `&page=${page}`
             });
@@ -3022,7 +3022,7 @@ exports.Thienhatruyen = Thienhatruyen;
 },{"./ThienhatruyenParser":59,"buffer":2,"paperback-extensions-common":15}],59:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
+exports.decodeHTMLEntity = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
 const entities = require("entities"); //Import package for decoding HTML entities
 exports.generateSearch = (query) => {
     var _a;
@@ -3042,7 +3042,7 @@ exports.parseSearch = ($) => {
         mangas.push(createMangaTile({
             id: encodeURIComponent(id),
             image: image !== null && image !== void 0 ? image : "",
-            title: createIconText({ text: decodeHTMLEntity(title) }),
+            title: createIconText({ text: exports.decodeHTMLEntity(title) }),
             subtitleText: createIconText({ text: subtitle }),
         }));
     }
@@ -3062,7 +3062,7 @@ exports.parseViewMore = ($) => {
         manga.push(createMangaTile({
             id: encodeURIComponent(id),
             image: image !== null && image !== void 0 ? image : "",
-            title: createIconText({ text: decodeHTMLEntity(title) }),
+            title: createIconText({ text: exports.decodeHTMLEntity(title) }),
             subtitleText: createIconText({ text: subtitle }),
         }));
         collectedIds.push(id);
@@ -3084,7 +3084,7 @@ exports.isLastPage = ($) => {
         isLast = true;
     return isLast;
 };
-const decodeHTMLEntity = (str) => {
+exports.decodeHTMLEntity = (str) => {
     return entities.decodeHTML(str);
 };
 
