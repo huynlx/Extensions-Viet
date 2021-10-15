@@ -616,8 +616,8 @@ class Truyen69 extends paperback_extensions_common_1.Source {
     constructor() {
         super(...arguments);
         this.requestManager = createRequestManager({
-            requestsPerSecond: 2,
-            requestTimeout: 50000
+            requestsPerSecond: 3,
+            requestTimeout: 3000
         });
         this.Slg = '';
     }
