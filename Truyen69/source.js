@@ -634,7 +634,7 @@ class Truyen69 extends paperback_extensions_common_1.Source {
             // let html = Buffer.from(createByteArray(data.rawData)).toString()
             let $ = this.cheerio.load(data.data);
             let tags = [];
-            let status = $('.list-info > li:nth-child(2) b').text().toLowerCase().includes('Hoàn thành') ? 0 : 1;
+            let status = $('.list-info > li:nth-child(2) b').text().includes('Hoàn thành') ? 0 : 1;
             let desc = 'Xem là biết :))';
             for (const t of $('.list01.li03 > a').toArray()) {
                 const genre = $(t).text().trim();
@@ -846,10 +846,11 @@ class Truyen69 extends paperback_extensions_common_1.Source {
                 param
             });
             const response = yield this.requestManager.schedule(request, 1);
+            const $ = this.cheerio.load(response.data);
             var dt = (_b = response.data.match(/Data_DST = (.*);/)) === null || _b === void 0 ? void 0 : _b[1];
             var json = dt !== '' ? JSON.parse(dt !== null && dt !== void 0 ? dt : "") : [];
             const manga = Truyen69Parser_1.parseViewMore(json);
-            metadata = json.length !== 0 ? { page: page + 1 } : undefined;
+            metadata = !Truyen69Parser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: manga,
                 metadata,
@@ -868,10 +869,11 @@ class Truyen69 extends paperback_extensions_common_1.Source {
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
+            const $ = this.cheerio.load(data.data);
             var dt = (_d = data.data.match(/Data_DST = (.*);/)) === null || _d === void 0 ? void 0 : _d[1];
             var json = dt !== '' ? JSON.parse(dt !== null && dt !== void 0 ? dt : "") : [];
             const tiles = Truyen69Parser_1.parseSearch(json);
-            metadata = json.length !== 0 ? { page: page + 1 } : undefined;
+            metadata = !Truyen69Parser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: tiles,
                 metadata
@@ -975,14 +977,14 @@ exports.parseViewMore = (json) => {
 exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
-    for (const page of $("li.page-item", "ul.pagination").toArray()) {
+    for (const page of $("li", "ul.pager").toArray()) {
         const p = Number($('a.page-link', page).text().trim());
         if (isNaN(p))
             continue;
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($("ul.pagination > li.page-item.active > a.page-link").text().trim());
+    const currentPage = Number($("ul.pager > li.active > a").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
