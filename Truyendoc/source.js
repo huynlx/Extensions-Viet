@@ -688,18 +688,22 @@ class Truyendoc extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(response.data);
             const pages = [];
             for (let obj of $('#ContentPlaceDetail_mDivMain > img').toArray()) {
-                var tester = new Image();
-                tester.onload = imageFound;
-                tester.onerror = imageNotFound;
-                tester.src = obj.attribs['data-original'].trim();
-                function imageFound() {
-                    let link = obj.attribs['data-original'].trim();
-                    pages.push(encodeURI(link));
-                }
-                function imageNotFound() {
-                    let link = obj.attribs['data-cdn'].trim();
-                    pages.push(encodeURI(link));
-                }
+                // var tester = new Image();
+                // tester.onload = imageFound;
+                // tester.onerror = imageNotFound;
+                // tester.src = obj.attribs['data-original'].trim();
+                // function imageFound() {
+                $("<img/>")
+                    .on('load', function () { pages.push(encodeURI(obj.attribs['data-original'].trim())); })
+                    .on('error', function () { pages.push(encodeURI(obj.attribs['data-cdn'].trim())); })
+                    .attr("src", obj.attribs['data-original'].trim());
+                // let link = obj.attribs['data-original'].trim();
+                // pages.push(encodeURI(link));
+                // }
+                // function imageNotFound() {
+                //     let link = obj.attribs['data-cdn'].trim();
+                //     pages.push(encodeURI(link));
+                // }
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
