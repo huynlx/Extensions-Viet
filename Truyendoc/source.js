@@ -630,7 +630,6 @@ class Truyendoc extends paperback_extensions_common_1.Source {
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
-            // let html = Buffer.from(createByteArray(data.rawData)).toString()
             let $ = this.cheerio.load(data.data);
             let tags = [];
             let status = 1;
@@ -663,7 +662,6 @@ class Truyendoc extends paperback_extensions_common_1.Source {
             });
             var i = 0;
             const response = yield this.requestManager.schedule(request, 1);
-            // let html = Buffer.from(createByteArray(response.rawData)).toString()
             const $ = this.cheerio.load(response.data);
             const chapters = [];
             for (const obj of $(".list_chapter a").toArray().reverse()) {
@@ -814,10 +812,13 @@ class Truyendoc extends paperback_extensions_common_1.Source {
             let url = '';
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `https://truyentranh.net/comic?page=${page}`;
+                    url = `http://truyendoc.info/tinh-nang/truyen-moi-nhat/${page}`;
                     break;
                 case "new_added":
-                    url = `https://truyentranh.net/comic-latest?page=${page}`;
+                    url = `http://truyendoc.info/truyen-du-bo/trang-${page}`;
+                    break;
+                case "hot":
+                    url = `http://truyendoc.info/truyen-xem-nhieu/${page}`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
@@ -843,7 +844,7 @@ class Truyendoc extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: query.title ? encodeURI(`https://truyentranh.net/search?page=${page}&q=${query.title}`) : `${tags[0]}?page=${page}`,
+                url: query.title ? encodeURI(`http://truyendoc.info/tinh-nang/tim-kiem/${query.title}/${page}`) : `${tags[0]}/${page}`,
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
@@ -868,7 +869,7 @@ class Truyendoc extends paperback_extensions_common_1.Source {
             const arrayTags = [];
             const collectedIds = [];
             //the loai
-            for (const tag of $('.dropdown-menu > ul > li > a').toArray()) {
+            for (const tag of $('.ul_submenu a').toArray()) {
                 arrayTags.push({ id: $(tag).attr('href'), label: $(tag).text().trim() });
             }
             const tagSections = [
@@ -900,11 +901,11 @@ exports.parseSearch = ($) => {
     var _a;
     const mangas = [];
     const collectedIds = [];
-    for (let manga of $('.content .card-list > .card').toArray()) {
-        const title = $('.card-title', manga).text().trim();
-        const id = (_a = $('.card-title > a', manga).attr('href')) !== null && _a !== void 0 ? _a : title;
-        const image = $('.card-img', manga).attr('src');
-        const sub = $('.list-chapter > li:first-child > a', manga).text().trim();
+    for (let manga of $('.list_comic > .left').toArray()) {
+        const title = $('h2', manga).text().trim();
+        const id = (_a = $('.thumbnail > a', manga).attr('href')) !== null && _a !== void 0 ? _a : title;
+        const image = $('.thumbnail img', manga).attr('src');
+        const sub = 'Chap ' + $('.comic_content > span:nth-of-type(3) > font:first-child', manga).text().trim();
         if (!id || !title)
             continue;
         if (!collectedIds.includes(id)) {
@@ -923,11 +924,11 @@ exports.parseViewMore = ($) => {
     var _a;
     const mangas = [];
     const collectedIds = [];
-    for (let manga of $('.content .card-list > .card').toArray()) {
-        const title = $('.card-title', manga).text().trim();
-        const id = (_a = $('.card-title > a', manga).attr('href')) !== null && _a !== void 0 ? _a : title;
-        const image = $('.card-img', manga).attr('src');
-        const sub = $('.list-chapter > li:first-child > a', manga).text().trim();
+    for (let manga of $('.list_comic > .left').toArray()) {
+        const title = $('h2', manga).text().trim();
+        const id = (_a = $('.thumbnail > a', manga).attr('href')) !== null && _a !== void 0 ? _a : title;
+        const image = $('.thumbnail img', manga).attr('src');
+        const sub = 'Chap ' + $('.comic_content > span:nth-of-type(3) > font:first-child', manga).text().trim();
         if (!id || !title)
             continue;
         if (!collectedIds.includes(id)) {
@@ -959,14 +960,14 @@ exports.parseViewMore = ($) => {
 exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
-    for (const page of $("li.page-item", "ul.pagination").toArray()) {
+    for (const page of $("li", "#pagination-top").toArray()) {
         const p = Number($('a.page-link', page).text().trim());
         if (isNaN(p))
             continue;
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($("ul.pagination > li.page-item.active > a.page-link").text().trim());
+    const currentPage = Number($("#pagination-top > li.active > .current").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
