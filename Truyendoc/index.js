@@ -681,7 +681,7 @@ class Truyendoc extends paperback_extensions_common_1.Source {
     getChapterDetails(mangaId, chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${chapterId}`,
+                url: encodeURI(`${chapterId}`),
                 method
             });
             const response = yield this.requestManager.schedule(request, 1);
