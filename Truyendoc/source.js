@@ -681,28 +681,15 @@ class Truyendoc extends paperback_extensions_common_1.Source {
     getChapterDetails(mangaId, chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: encodeURI(`${chapterId}`),
+                url: encodeURI(chapterId),
                 method
             });
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
             for (let obj of $('#ContentPlaceDetail_mDivMain > img').toArray()) {
-                // var tester = new Image();
-                // tester.onload = imageFound;
-                // tester.onerror = imageNotFound;
-                // tester.src = obj.attribs['data-original'].trim();
-                // function imageFound() {
-                var isImgLoaded = function (imgSelector) {
-                    return $(imgSelector).prop("complete") && $(imgSelector).prop("naturalWidth") !== 0;
-                };
-                let link = isImgLoaded(obj) ? obj.attribs['data-original'].trim() : obj.attribs['data-cdn'].trim();
+                let link = obj.attribs['data-original'].trim();
                 pages.push(encodeURI(link));
-                // }
-                // function imageNotFound() {
-                //     let link = obj.attribs['data-cdn'].trim();
-                //     pages.push(encodeURI(link));
-                // }
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
@@ -902,7 +889,6 @@ exports.Truyendoc = Truyendoc;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
 const entities = require("entities"); //Import package for decoding HTML entities
-const DOMAIN = 'https://truyentranhaudio.online/';
 exports.generateSearch = (query) => {
     var _a;
     let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
@@ -954,20 +940,6 @@ exports.parseViewMore = ($) => {
     }
     return mangas;
 };
-// export const parseTags = ($: CheerioStatic): TagSection[] => {
-//     const arrayTags: Tag[] = [];
-//     for (const obj of $("li", "ul").toArray()) {
-//         const label = ($("a", obj).text().trim());
-//         const id = $('a', obj).attr('href') ?? "";
-//         if (id == "") continue;
-//         arrayTags.push({
-//             id: id,
-//             label: label,
-//         });
-//     }
-//     const tagSections: TagSection[] = [createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) })];
-//     return tagSections;
-// }
 exports.isLastPage = ($) => {
     var _a;
     let isLast = false;
