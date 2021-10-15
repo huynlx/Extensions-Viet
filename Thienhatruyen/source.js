@@ -2619,7 +2619,7 @@ const ThienhatruyenParser_1 = require("./ThienhatruyenParser");
 const DOMAIN = 'https://thienhatruyen.com/';
 const method = 'GET';
 exports.ThienhatruyenInfo = {
-    version: '1.0.0',
+    version: '2.0.0',
     name: 'Thienhatruyen',
     icon: 'icon.png',
     author: 'Huynhzip3',
