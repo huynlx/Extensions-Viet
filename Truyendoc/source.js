@@ -709,21 +709,21 @@ class Truyendoc extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
-                title: "DÀNH CHO BẠN",
+                title: "Truyện Hot",
                 view_more: false,
             });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
-                title: "MỚI CẬP NHẬT",
+                title: "Truyện Tranh Mới Nhất",
                 view_more: true,
             });
             let newAdded = createHomeSection({
                 id: 'new_added',
-                title: "TÁC PHẨM MỚI",
+                title: "Truyện Tranh Full",
                 view_more: true,
             });
             //Load empty sections
@@ -760,17 +760,17 @@ class Truyendoc extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             //New Added
             request = createRequestObject({
-                url: 'https://truyentranh.net/comic-latest',
+                url: 'http://truyendoc.info/truyen-du-bo',
                 method: "GET",
             });
             let newAddItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let manga of $('.content .card-list > .card').toArray()) {
-                const title = $('.card-title', manga).text().trim();
-                const id = (_b = $('.card-title > a', manga).attr('href')) !== null && _b !== void 0 ? _b : title;
-                const image = $('.card-img', manga).attr('src');
-                const sub = $('.list-chapter > li:first-child > a', manga).text().trim();
+            for (let manga of $('.list_comic > .left').toArray()) {
+                const title = $('h2', manga).text().trim();
+                const id = (_b = $('.thumbnail > a', manga).attr('href')) !== null && _b !== void 0 ? _b : title;
+                const image = $('.thumbnail img', manga).attr('src');
+                const sub = 'Chap ' + $('.comic_content > span:nth-of-type(3) > font:first-child', manga).text().trim();
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
                     id: id,
@@ -787,17 +787,17 @@ class Truyendoc extends paperback_extensions_common_1.Source {
             sectionCallback(newAdded);
             // Hot
             request = createRequestObject({
-                url: 'https://truyentranh.net',
+                url: 'http://truyendoc.info/truyen-xem-nhieu',
                 method: "GET",
             });
             let popular = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let manga of $('#bottomslider .list-slider-item').toArray()) {
-                const title = $('.card', manga).attr('title');
-                const id = $('.card', manga).attr('href');
-                const image = $('.card-img', manga).attr('src');
-                const sub = $('.card-chapter', manga).text().trim();
+            for (let manga of $('.list_comic > .left').toArray()) {
+                const title = $('h2', manga).text().trim();
+                const id = (_c = $('.thumbnail > a', manga).attr('href')) !== null && _c !== void 0 ? _c : title;
+                const image = $('.thumbnail img', manga).attr('src');
+                const sub = 'Chap ' + $('.comic_content > span:nth-of-type(3) > font:first-child', manga).text().trim();
                 // if (!id || !title) continue;
                 popular.push(createMangaTile({
                     id: id,
