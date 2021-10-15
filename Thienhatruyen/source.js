@@ -2799,7 +2799,6 @@ class Thienhatruyen extends paperback_extensions_common_1.Source {
                 }));
             }
             hot.items = hotItems;
-            console.log(hot);
             sectionCallback(hot);
             //New Updates
             url = '';
@@ -2935,7 +2934,8 @@ class Thienhatruyen extends paperback_extensions_common_1.Source {
                 param: `&page=${page}`
             });
             const data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
+            let html = Buffer.from(createByteArray(data.rawData)).toString();
+            let $ = this.cheerio.load(html);
             const tiles = ThienhatruyenParser_1.parseSearch($);
             metadata = !ThienhatruyenParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
@@ -2953,7 +2953,8 @@ class Thienhatruyen extends paperback_extensions_common_1.Source {
                 method: "GET",
             });
             const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
+            let html = Buffer.from(createByteArray(response.rawData)).toString();
+            let $ = this.cheerio.load(html);
             const arrayTags = [];
             const arrayTags2 = [];
             // const arrayTags3: Tag[] = [];
