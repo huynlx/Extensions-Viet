@@ -2929,7 +2929,7 @@ class Thienhatruyen extends paperback_extensions_common_1.Source {
                 }
             });
             const request = createRequestObject({
-                url: query.title ? encodeURI(`${DOMAIN}tim-kiem?q=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}`) : `${DOMAIN}the-loai?cate=${search.cate}&author=${search.author}&translater=${search.translater}&complete=${search.complete}&sort=${search.sort}`,
+                url: query.title ? encodeURI(`${DOMAIN}tim-kiem?q=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}`) : `${DOMAIN}danh-muc/tat-ca-truyen?cate=${search.cate}&author=${search.author}&translater=${search.translater}&complete=${search.complete}&sort=${search.sort}`,
                 method: "GET",
                 param: `&page=${page}`
             });
@@ -2945,7 +2945,7 @@ class Thienhatruyen extends paperback_extensions_common_1.Source {
         });
     }
     getSearchTags() {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function* () {
             const url = `${DOMAIN}danh-muc/tat-ca-truyen`;
             const request = createRequestObject({
@@ -2957,7 +2957,7 @@ class Thienhatruyen extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(html);
             const arrayTags = [];
             const arrayTags2 = [];
-            // const arrayTags3: Tag[] = [];
+            const arrayTags3 = [];
             const arrayTags4 = [];
             const arrayTags5 = [];
             //the loai
@@ -2977,16 +2977,17 @@ class Thienhatruyen extends paperback_extensions_common_1.Source {
                 arrayTags2.push({ id: id, label: label });
             }
             //nhom dich
-            // for (const tag of $('option', '#formAdvance > .column-search:nth-child(3) > select').toArray()) {
-            //     const label = $(tag).text().trim();
-            //     const id = 'translater.' + $(tag).attr('value') ?? label;
-            //     if (!id || !label) continue;
-            //     arrayTags3.push({ id: id, label: label });
-            // }
+            for (const tag of $('option', '#formAdvance > .column-search:nth-child(3) > select').toArray()) {
+                const label = $(tag).text().trim();
+                const id = (_c = 'translater.' + $(tag).attr('value')) !== null && _c !== void 0 ? _c : label;
+                if (!id || !label)
+                    continue;
+                arrayTags3.push({ id: id, label: label });
+            }
             //tinh trang
             for (const tag of $('option', '#formAdvance > .column-search:nth-child(4) > select').toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_c = 'complete.' + $(tag).attr('value')) !== null && _c !== void 0 ? _c : label;
+                const id = (_d = 'complete.' + $(tag).attr('value')) !== null && _d !== void 0 ? _d : label;
                 if (!id || !label)
                     continue;
                 arrayTags4.push({ id: id, label: label });
@@ -2994,7 +2995,7 @@ class Thienhatruyen extends paperback_extensions_common_1.Source {
             //sap xep
             for (const tag of $('option', '#formAdvance > .column-search:nth-child(5) > select').toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_d = 'sort.' + $(tag).attr('value')) !== null && _d !== void 0 ? _d : label;
+                const id = (_e = 'sort.' + $(tag).attr('value')) !== null && _e !== void 0 ? _e : label;
                 if (!id || !label)
                     continue;
                 arrayTags5.push({ id: id, label: label });
@@ -3002,7 +3003,7 @@ class Thienhatruyen extends paperback_extensions_common_1.Source {
             const tagSections = [
                 createTagSection({ id: '0', label: 'Thể loại', tags: arrayTags.map(x => createTag(x)) }),
                 createTagSection({ id: '1', label: 'Tác giả', tags: arrayTags2.map(x => createTag(x)) }),
-                // createTagSection({ id: '2', label: 'Nhóm dịch', tags: arrayTags3.map(x => createTag(x)) }), //lỗi crash
+                createTagSection({ id: '2', label: 'Nhóm dịch', tags: arrayTags3.map(x => createTag(x)) }),
                 createTagSection({ id: '3', label: 'Tình trạng', tags: arrayTags4.map(x => createTag(x)) }),
                 createTagSection({ id: '4', label: 'Sắp xếp', tags: arrayTags5.map(x => createTag(x)) }),
             ];
