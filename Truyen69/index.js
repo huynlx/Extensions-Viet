@@ -704,8 +704,8 @@ class Truyen69 extends paperback_extensions_common_1.Source {
             for (let obj of $('img:not(:first-child):not(:last-child)').toArray()) {
                 if (!obj.attribs['src'])
                     continue;
-                let link = 'https://www.truyen69.ml' + obj.attribs['src'].trim();
-                pages.push(link);
+                let link = obj.attribs['src'].trim();
+                pages.push(link.includes('http') ? link : 'https://www.truyen69.ml' + link);
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
