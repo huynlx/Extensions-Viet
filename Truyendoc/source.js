@@ -626,7 +626,7 @@ class Truyendoc extends paperback_extensions_common_1.Source {
         var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: mangaId,
+                url: encodeURI(mangaId),
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
@@ -647,7 +647,7 @@ class Truyendoc extends paperback_extensions_common_1.Source {
                 artist: creator,
                 desc,
                 titles: [$('#PlaceHolderLeft_mH1_TitleComic').text()],
-                image: image,
+                image: encodeURI(image),
                 status,
                 hentai: false,
                 tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
@@ -657,7 +657,7 @@ class Truyendoc extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: mangaId,
+                url: encodeURI(mangaId),
                 method,
             });
             var i = 0;
@@ -741,7 +741,7 @@ class Truyendoc extends paperback_extensions_common_1.Source {
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
-                    image: image,
+                    image: encodeURI(image),
                     title: createIconText({
                         text: title,
                     }),
@@ -768,7 +768,7 @@ class Truyendoc extends paperback_extensions_common_1.Source {
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
                     id: id,
-                    image: image,
+                    image: encodeURI(image),
                     title: createIconText({
                         text: title,
                     }),
@@ -795,7 +795,7 @@ class Truyendoc extends paperback_extensions_common_1.Source {
                 // if (!id || !title) continue;
                 popular.push(createMangaTile({
                     id: id,
-                    image: image,
+                    image: encodeURI(image),
                     title: createIconText({ text: title }),
                     subtitleText: createIconText({ text: sub }),
                 }));
@@ -889,7 +889,7 @@ exports.Truyendoc = Truyendoc;
 },{"./TruyendocParser":56,"paperback-extensions-common":12}],56:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.convertTime = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
+exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
 const entities = require("entities"); //Import package for decoding HTML entities
 const DOMAIN = 'https://truyentranhaudio.online/';
 exports.generateSearch = (query) => {
@@ -911,7 +911,7 @@ exports.parseSearch = ($) => {
         if (!collectedIds.includes(id)) {
             mangas.push(createMangaTile({
                 id: id,
-                image: image !== null && image !== void 0 ? image : "",
+                image: encodeURI(image !== null && image !== void 0 ? image : ""),
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: sub }),
             }));
@@ -934,7 +934,7 @@ exports.parseViewMore = ($) => {
         if (!collectedIds.includes(id)) {
             mangas.push(createMangaTile({
                 id: id,
-                image: image !== null && image !== void 0 ? image : "",
+                image: encodeURI(image !== null && image !== void 0 ? image : ""),
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: sub }),
             }));
@@ -970,49 +970,6 @@ exports.isLastPage = ($) => {
 const decodeHTMLEntity = (str) => {
     return entities.decodeHTML(str);
 };
-function convertTime(timeAgo) {
-    var _a;
-    let time;
-    let trimmed = Number(((_a = /\d*/.exec(timeAgo)) !== null && _a !== void 0 ? _a : [])[0]);
-    trimmed = (trimmed == 0 && timeAgo.includes('a')) ? 1 : trimmed;
-    if (timeAgo.includes('giây')) {
-        time = new Date(Date.now() - trimmed * 1000); // => mili giây (1000 ms = 1s)
-    }
-    else if (timeAgo.includes('phút')) {
-        time = new Date(Date.now() - trimmed * 60000);
-    }
-    else if (timeAgo.includes('giờ')) {
-        time = new Date(Date.now() - trimmed * 3600000);
-    }
-    else if (timeAgo.includes('ngày')) {
-        time = new Date(Date.now() - trimmed * 86400000);
-    }
-    else if (timeAgo.includes('tuần')) {
-        time = new Date(Date.now() - trimmed * 86400000 * 7);
-    }
-    else if (timeAgo.includes('tháng')) {
-        time = new Date(Date.now() - trimmed * 86400000 * 7 * 4);
-    }
-    else if (timeAgo.includes('năm')) {
-        time = new Date(Date.now() - trimmed * 86400000 * 7 * 4 * 12);
-    }
-    else {
-        if (timeAgo.includes(":")) {
-            let split = timeAgo.split(' ');
-            let H = split[0]; //vd => 21:08
-            let D = split[1]; //vd => 25/08 
-            let fixD = D.split('/');
-            let finalD = fixD[1] + '/' + fixD[0] + '/' + new Date().getFullYear();
-            time = new Date(finalD + ' ' + H);
-        }
-        else {
-            let split = timeAgo.split('/'); //vd => 05/12/18
-            time = new Date(split[1] + '/' + split[0] + '/' + '20' + split[2]);
-        }
-    }
-    return time;
-}
-exports.convertTime = convertTime;
 
 },{"entities":1}]},{},[55])(55)
 });
