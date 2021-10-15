@@ -2888,7 +2888,8 @@ class Thienhatruyen extends paperback_extensions_common_1.Source {
                 param
             });
             const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
+            let html = Buffer.from(createByteArray(response.rawData)).toString();
+            let $ = this.cheerio.load(html);
             const manga = ThienhatruyenParser_1.parseViewMore($);
             metadata = !ThienhatruyenParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
