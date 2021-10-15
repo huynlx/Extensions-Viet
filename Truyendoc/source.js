@@ -634,20 +634,20 @@ class Truyendoc extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             let tags = [];
             let status = 1;
-            let desc = $('.detail-manga-intro').text();
-            for (const t of $('.detail-manga-category a').toArray()) {
+            let desc = $('#PlaceHolderLeft_mP_Description').text();
+            for (const t of $('#PlaceHolderLeft_mP_Kind a').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_b = (_a = $(t).attr('href')) === null || _a === void 0 ? void 0 : _a.trim()) !== null && _b !== void 0 ? _b : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            const image = (_c = $('.detail-img').attr('data-image-full')) !== null && _c !== void 0 ? _c : "fuck";
-            const creator = $('.detail-banner-info ul li:nth-child(3) > a > span').text();
+            const image = (_c = $('.manga-cover img').attr('src')) !== null && _c !== void 0 ? _c : "fuck";
+            const creator = $('#PlaceHolderLeft_mA_Actor').text().trim();
             return createManga({
                 id: mangaId,
                 author: creator,
                 artist: creator,
                 desc,
-                titles: [$('.detail-manga-title > h1').text()],
+                titles: [$('#PlaceHolderLeft_mH1_TitleComic').text()],
                 image: image,
                 status,
                 hentai: false,
@@ -666,19 +666,15 @@ class Truyendoc extends paperback_extensions_common_1.Source {
             // let html = Buffer.from(createByteArray(response.rawData)).toString()
             const $ = this.cheerio.load(response.data);
             const chapters = [];
-            for (const obj of $(".chapter-list-item-box").toArray().reverse()) {
+            for (const obj of $(".list_chapter > a").toArray().reverse()) {
                 i++;
-                var chapNum = parseFloat($('.chapter-select > a', obj).text().split(' ')[1]);
-                var time = $('.chapter-info > time', obj).text().trim().split(', ');
-                var d = time[0].split('/');
-                var t = time[1];
+                var chapNum = parseFloat($(obj).text().split(' ').pop());
                 chapters.push(createChapter({
-                    id: $('.chapter-select > a', obj).attr('href'),
+                    id: 'http://truyendoc.info' + $(obj).attr('href'),
                     chapNum: isNaN(chapNum) ? i : chapNum,
-                    name: $('.chapter-select > a', obj).text(),
+                    name: $(obj).text(),
                     mangaId: mangaId,
-                    langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: new Date(d[1] + '/' + d[0] + '/' + d[2] + ' ' + t)
+                    langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE
                 }));
             }
             return chapters;
@@ -693,10 +689,10 @@ class Truyendoc extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
-            for (let obj of $('.manga-reading-box > .page-chapter > img').toArray()) {
-                if (!obj.attribs['src'])
+            for (let obj of $('#ContentPlaceDetail_mDivMain > img').toArray()) {
+                if (!obj.attribs['data-original'])
                     continue;
-                let link = obj.attribs['src'].trim();
+                let link = obj.attribs['data-original'].trim();
                 pages.push(encodeURI(link));
             }
             const chapterDetails = createChapterDetails({
@@ -714,7 +710,7 @@ class Truyendoc extends paperback_extensions_common_1.Source {
             let hot = createHomeSection({
                 id: 'hot',
                 title: "Truyện Hot",
-                view_more: false,
+                view_more: true,
             });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
