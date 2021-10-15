@@ -693,12 +693,11 @@ class Truyendoc extends paperback_extensions_common_1.Source {
                 // tester.onerror = imageNotFound;
                 // tester.src = obj.attribs['data-original'].trim();
                 // function imageFound() {
-                $("<img/>")
-                    .on('load', function () { pages.push(encodeURI(obj.attribs['data-original'].trim())); })
-                    .on('error', function () { pages.push(encodeURI(obj.attribs['data-cdn'].trim())); })
-                    .attr("src", obj.attribs['data-original'].trim());
-                // let link = obj.attribs['data-original'].trim();
-                // pages.push(encodeURI(link));
+                var isImgLoaded = function (imgSelector) {
+                    return $(imgSelector).prop("complete") && $(imgSelector).prop("naturalWidth") !== 0;
+                };
+                let link = isImgLoaded(obj) ? obj.attribs['data-original'].trim() : obj.attribs['data-cdn'].trim();
+                pages.push(encodeURI(link));
                 // }
                 // function imageNotFound() {
                 //     let link = obj.attribs['data-cdn'].trim();
