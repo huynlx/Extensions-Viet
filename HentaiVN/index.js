@@ -1106,7 +1106,7 @@ exports.parseViewMore = ($, select) => {
             const title = $("span > a > h2", obj).text();
             const id = (_a = $("a", obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
             const image = $("a > img", obj).attr('data-src');
-            const subtitle = $("a > span > b", obj).text().trim();
+            const subtitle = $("a > b", obj).text().trim();
             if (!id || !title)
                 continue;
             if (!collectedIds.includes(id)) {

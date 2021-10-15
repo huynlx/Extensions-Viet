@@ -732,6 +732,9 @@ class qManga extends paperback_extensions_common_1.Source {
                 view_more: true,
             });
             ///Get the section data
+            sectionCallback(newUpdated);
+            sectionCallback(hot);
+            sectionCallback(view);
             //New Updates
             let request = createRequestObject({
                 url: 'https://qmanga.co/de-nghi/pho-bien/moi-nhat',
@@ -753,6 +756,7 @@ class qManga extends paperback_extensions_common_1.Source {
                 }));
             }
             newUpdated.items = newUpdatedItems;
+            sectionCallback(newUpdated);
             //hot
             request = createRequestObject({
                 url: 'https://qmanga.co/danh-muc/noi-bat',
@@ -774,6 +778,7 @@ class qManga extends paperback_extensions_common_1.Source {
                 }));
             }
             hot.items = hotItems;
+            sectionCallback(hot);
             //view
             request = createRequestObject({
                 url: 'https://qmanga.co/danh-muc/pho-bien',
@@ -795,6 +800,7 @@ class qManga extends paperback_extensions_common_1.Source {
                 }));
             }
             view.items = viewItems;
+            sectionCallback(view);
             //featured
             request = createRequestObject({
                 url: 'https://qmanga.co/',
@@ -816,9 +822,6 @@ class qManga extends paperback_extensions_common_1.Source {
             }
             featured.items = featuredItems;
             sectionCallback(featured);
-            sectionCallback(newUpdated);
-            sectionCallback(hot);
-            sectionCallback(view);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
