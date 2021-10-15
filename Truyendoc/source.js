@@ -666,7 +666,7 @@ class Truyendoc extends paperback_extensions_common_1.Source {
             // let html = Buffer.from(createByteArray(response.rawData)).toString()
             const $ = this.cheerio.load(response.data);
             const chapters = [];
-            for (const obj of $(".list_chapter > a").toArray().reverse()) {
+            for (const obj of $(".list_chapter a").toArray().reverse()) {
                 i++;
                 var chapNum = parseFloat($(obj).text().split(' ').pop());
                 chapters.push(createChapter({
