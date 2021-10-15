@@ -2653,7 +2653,8 @@ class Thienhatruyen extends paperback_extensions_common_1.Source {
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
+            let html = Buffer.from(createByteArray(data.rawData)).toString();
+            let $ = this.cheerio.load(html);
             let tags = [];
             let creator = [];
             let status = 1; //completed, 1 = Ongoing
@@ -2692,7 +2693,8 @@ class Thienhatruyen extends paperback_extensions_common_1.Source {
             });
             var i = 0;
             const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
+            let html = Buffer.from(createByteArray(response.rawData)).toString();
+            let $ = this.cheerio.load(html);
             const chapters = [];
             // const collectedIds: any = [];
             for (const obj of $("#scrollbar a").toArray().reverse()) {
@@ -2944,7 +2946,7 @@ class Thienhatruyen extends paperback_extensions_common_1.Source {
     getSearchTags() {
         var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `${DOMAIN}the-loai`;
+            const url = `${DOMAIN}danh-muc/tat-ca-truyen`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
