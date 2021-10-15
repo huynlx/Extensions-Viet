@@ -847,7 +847,7 @@ class Truyen69 extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             var dt = (_b = response.data.match(/Data_DST = (.*);/)) === null || _b === void 0 ? void 0 : _b[1];
-            var json = JSON.parse(dt !== null && dt !== void 0 ? dt : "");
+            var json = dt !== '' ? JSON.parse(dt !== null && dt !== void 0 ? dt : "") : [];
             const manga = Truyen69Parser_1.parseViewMore(json);
             metadata = json.length !== 0 ? { page: page + 1 } : undefined;
             return createPagedResults({
@@ -863,12 +863,13 @@ class Truyen69 extends paperback_extensions_common_1.Source {
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
                 url: query.title ? encodeURI(`https://www.truyen69.ml/danh-sach-truyen.html?status=0&page=${page}&name=${query.title}&genre=&sort=last_update`)
-                    : encodeURI(`https://www.truyen69.ml/danh-sach-truyen.html?status=0&page=${page}&name=&genre=${tags[0]}&sort=last_update`),
+                    : tags[0] !== 'Tất cả' ? encodeURI(`https://www.truyen69.ml/danh-sach-truyen.html?status=0&page=${page}&name=&genre=${tags[0]}&sort=last_update`)
+                        : encodeURI(`https://www.truyen69.ml/danh-sach-truyen.html?status=0&page=${page}&name=&genre=&sort=name`),
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
             var dt = (_d = data.data.match(/Data_DST = (.*);/)) === null || _d === void 0 ? void 0 : _d[1];
-            var json = JSON.parse(dt !== null && dt !== void 0 ? dt : "");
+            var json = dt !== '' ? JSON.parse(dt !== null && dt !== void 0 ? dt : "") : [];
             const tiles = Truyen69Parser_1.parseSearch(json);
             metadata = json.length !== 0 ? { page: page + 1 } : undefined;
             return createPagedResults({
