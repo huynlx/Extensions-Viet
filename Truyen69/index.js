@@ -978,7 +978,7 @@ exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
     for (const page of $("li", "ul.pager").toArray()) {
-        const p = Number($('a.page-link', page).text().trim());
+        const p = Number($('a', page).text().trim());
         if (isNaN(p))
             continue;
         pages.push(p);
