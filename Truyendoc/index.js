@@ -647,7 +647,7 @@ class Truyendoc extends paperback_extensions_common_1.Source {
                 artist: creator,
                 desc,
                 titles: [$('#PlaceHolderLeft_mH1_TitleComic').text()],
-                image: encodeURI(image),
+                image: (image),
                 status,
                 hentai: false,
                 tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
