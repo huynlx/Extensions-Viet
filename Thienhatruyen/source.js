@@ -2873,10 +2873,10 @@ class Thienhatruyen extends paperback_extensions_common_1.Source {
                     url = `${DOMAIN}danh-muc/dang-hot?page=${page}`;
                     break;
                 case "new_updated":
-                    url = `${DOMAIN}the-loai?cate=&author=&translater=&complete=&sort=lastest&page=${page}`;
+                    url = `${DOMAIN}danh-muc/moi-nhat?page=${page}`;
                     break;
                 case "view":
-                    url = `${DOMAIN}the-loai?cate=&author=&translater=&complete=&sort=view&page=${page}`;
+                    url = `${DOMAIN}danh-muc/xem-nhieu?page=${page}`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
