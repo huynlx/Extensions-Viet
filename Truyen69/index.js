@@ -857,18 +857,20 @@ class Truyen69 extends paperback_extensions_common_1.Source {
         });
     }
     getSearchResults(query, metadata) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: query.title ? encodeURI(`https://truyentranh.net/search?page=${page}&q=${query.title}`) : `${tags[0]}?page=${page}`,
+                url: query.title ? encodeURI(`https://www.truyen69.ml/danh-sach-truyen.html?status=0&page=${page}&name=${query.title}&genre=&sort=last_update`)
+                    : encodeURI(`https://www.truyen69.ml/danh-sach-truyen.html?status=0&page=${page}&name=&genre=${tags[0]}&sort=last_update`),
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
-            const tiles = Truyen69Parser_1.parseSearch($);
-            metadata = !Truyen69Parser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            var dt = (_d = data.data.match(/Data_DST = (.*);/)) === null || _d === void 0 ? void 0 : _d[1];
+            var json = JSON.parse(dt !== null && dt !== void 0 ? dt : "");
+            const tiles = Truyen69Parser_1.parseSearch(json);
+            metadata = json.length !== 0 ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: tiles,
                 metadata
@@ -887,8 +889,8 @@ class Truyen69 extends paperback_extensions_common_1.Source {
             const arrayTags = [];
             const collectedIds = [];
             //the loai
-            for (const tag of $('.dropdown-menu > ul > li > a').toArray()) {
-                arrayTags.push({ id: $(tag).attr('href'), label: $(tag).text().trim() });
+            for (const tag of $('#list_theloai > a').toArray()) {
+                arrayTags.push({ id: $(tag).text().trim(), label: $(tag).text().trim() });
             }
             const tagSections = [
                 createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) }),
@@ -915,17 +917,14 @@ exports.generateSearch = (query) => {
     let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
     return encodeURI(keyword);
 };
-exports.parseSearch = ($) => {
-    var _a;
+exports.parseSearch = (json) => {
     const mangas = [];
     const collectedIds = [];
-    for (let manga of $('.content .card-list > .card').toArray()) {
-        const title = $('.card-title', manga).text().trim();
-        const id = (_a = $('.card-title > a', manga).attr('href')) !== null && _a !== void 0 ? _a : title;
-        const image = $('.card-img', manga).attr('src');
-        const sub = $('.list-chapter > li:first-child > a', manga).text().trim();
-        if (!id || !title)
-            continue;
+    for (let manga of json) {
+        const title = manga.manga_Name;
+        const id = 'https://www.truyen69.ml' + manga.manga_Url;
+        const image = 'https://www.truyen69.ml' + manga.manga_Cover;
+        const sub = manga.manga_LChap;
         if (!collectedIds.includes(id)) {
             mangas.push(createMangaTile({
                 id: id,
