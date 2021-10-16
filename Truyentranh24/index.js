@@ -969,8 +969,16 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             let url = '';
             let select = 1;
             switch (homepageSectionId) {
+                case "hot":
+                    url = `https://truyentranh24.com/top-ngay?p=${page}`;
+                    select = 1;
+                    break;
                 case "new_updated":
-                    url = DOMAIN + `manga-list.html?listType=pagination&page=${page}&artist=&author=&group=&m_status=&name=&genre=&ungenre=&sort=last_update&sort_type=DESC`;
+                    url = `https://truyentranh24.com/chap-moi-nhat`;
+                    select = 1;
+                    break;
+                case "view":
+                    url = `https://truyentranh24.com/truyen-hot?p=${page}`;
                     select = 1;
                     break;
                 default:
@@ -991,38 +999,12 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
         });
     }
     getSearchResults(query, metadata) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
-            const search = {
-                cate: '',
-                translater: "",
-                status: "",
-                sort: "views",
-                type: 'DESC'
-            };
-            tags.map((value) => {
-                switch (value.split(".")[0]) {
-                    case 'cate':
-                        search.cate = (value.split(".")[1]);
-                        break;
-                    case 'translater':
-                        search.translater = (value.split(".")[1]);
-                        break;
-                    case 'status':
-                        search.status = (value.split(".")[1]);
-                        break;
-                    case 'sort':
-                        search.sort = (value.split(".")[1]);
-                        break;
-                    case 'type':
-                        search.type = (value.split(".")[1]);
-                        break;
-                }
-            });
             const request = createRequestObject({
-                url: encodeURI(`${DOMAIN}manga-list.html?listType=pagination&page=${page}&group=${search.translater}&m_status=${search.status}&name=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&genre=${search.cate}&sort=${search.sort}&sort_type=${search.type}`),
+                url: query.title ? encodeURI(`https://truyentranh24.com/tim-kiem/${query.title}?p=${page}`) : (`https://truyentranh24.com/` + tags[0] + `?p=${page}`),
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
@@ -1053,7 +1035,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             //the loai
             for (const tag of $('.navbar-item-sub a').toArray()) {
                 const label = $(tag).text().trim();
-                const id = 'cate.' + $(tag).attr('href');
+                const id = $(tag).attr('href');
                 if (!id || !label)
                     continue;
                 tags.push({ id: id, label: label });
@@ -1087,21 +1069,15 @@ exports.generateSearch = (query) => {
     return encodeURI(keyword);
 };
 exports.parseSearch = ($) => {
-    var _a;
+    var _a, _b;
     const manga = [];
-    for (const element of $('.card-body > .row > .thumb-item-flow').toArray()) {
-        let title = $('.series-title > a', element).text().trim();
-        let image = $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
-        if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
-            image = 'https://manhuarock.net' + image;
-        }
-        else {
-            image = image;
-        }
-        let id = (_a = $('.series-title > a', element).attr('href')) !== null && _a !== void 0 ? _a : title;
-        let subtitle = 'Chương ' + $(".chapter-title > a", element).text().trim();
+    for (const element of $('.container-lm > section:nth-child(1) > .item-medium').toArray()) {
+        let title = $('.item-title', element).text().trim();
+        let image = $('.item-thumbnail > img', element).attr("data-src");
+        let id = (_b = (_a = $('a', element).first().attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[1]) !== null && _b !== void 0 ? _b : title;
+        let subtitle = $("span.background-8", element).text().trim();
         manga.push(createMangaTile({
-            id: id,
+            id: id !== null && id !== void 0 ? id : "",
             image: image !== null && image !== void 0 ? image : "",
             title: createIconText({ text: title }),
             subtitleText: createIconText({ text: subtitle }),
@@ -1136,13 +1112,13 @@ exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
     for (const page of $("li", "ul.pagination").toArray()) {
-        const p = Number($('a', page).text().trim());
+        const p = Number($('a.page-link', page).text().trim());
         if (isNaN(p))
             continue;
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($("ul.pagination > li > a.active").text().trim());
+    const currentPage = Number($("ul.pagination > li.active > span.page-link").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
