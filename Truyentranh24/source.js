@@ -705,7 +705,6 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
                 status: statusFinal,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
-                tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
             });
         });
     }
@@ -727,7 +726,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
                 let name = obj.views + ' lượt đọc';
                 let time = obj.created_at;
                 chapters.push(createChapter({
-                    id: mangaId + '/chap-' + chapNum.toString(),
+                    id: DOMAIN + mangaId + '/chap-' + chapNum.toString(),
                     chapNum: parseFloat(chapNum),
                     name,
                     mangaId: mangaId,
@@ -735,6 +734,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
                     time: new Date(time)
                 }));
             }
+            console.log(chapters);
             return chapters;
         });
     }
