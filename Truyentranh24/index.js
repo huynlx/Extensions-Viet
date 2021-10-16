@@ -719,7 +719,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             });
             const data = yield this.requestManager.schedule(request, 1);
             const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
-            // console.log(json);
+            console.log(json);
             // let data = await this.requestManager.schedule(request, 1);
             // let $ = this.cheerio.load(data.data);
             const chapters = [];
