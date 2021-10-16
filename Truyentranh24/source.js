@@ -597,7 +597,7 @@ const Truyentranh24Parser_1 = require("./Truyentranh24Parser");
 const DOMAIN = 'https://truyentranh24.com/';
 const method = 'GET';
 exports.Truyentranh24Info = {
-    version: '2.0.0',
+    version: '1.0.0',
     name: 'Truyentranh24',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -719,6 +719,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             });
             const data = yield this.requestManager.schedule(request, 1);
             const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
+            // console.log(json);
             // let data = await this.requestManager.schedule(request, 1);
             // let $ = this.cheerio.load(data.data);
             const chapters = [];
@@ -750,6 +751,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
                     time: new Date(time)
                 }));
             }
+            console.log(chapters);
             return chapters;
         });
     }
@@ -795,9 +797,9 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
                 view_more: false,
             });
             //Load empty sections
-            sectionCallback(hot);
+            // sectionCallback(hot);
             sectionCallback(newUpdated);
-            sectionCallback(view);
+            // sectionCallback(view);
             ///Get the section data
             // Hot
             let request = createRequestObject({
@@ -822,7 +824,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
                 }));
             }
             hot.items = popular;
-            sectionCallback(hot);
+            // sectionCallback(hot);
             //New Updates
             request = createRequestObject({
                 url: DOMAIN,
@@ -872,7 +874,6 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
                 }));
             }
             view.items = viewItems;
-            sectionCallback(view);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
