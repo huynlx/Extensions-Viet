@@ -764,8 +764,13 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e, _f, _g;
         return __awaiter(this, void 0, void 0, function* () {
+            let featured = createHomeSection({
+                id: 'featured',
+                title: "Truyện Đề Cử",
+                type: paperback_extensions_common_1.HomeSectionType.featured
+            });
             let hot = createHomeSection({
                 id: 'hot',
                 title: "HOT TRONG NGÀY",
@@ -786,24 +791,60 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
                 title: "TRUYỆN MỚI",
                 view_more: false,
             });
+            let top = createHomeSection({
+                id: 'top',
+                title: "TOP TUẦN",
+                view_more: false,
+            });
+            let miss = createHomeSection({
+                id: 'miss',
+                title: "ĐỪNG BỎ LỠ",
+                view_more: false,
+            });
             //Load empty sections
+            sectionCallback(featured);
             sectionCallback(hot);
             sectionCallback(newUpdated);
             sectionCallback(view);
             sectionCallback(add);
+            sectionCallback(top);
+            sectionCallback(miss);
             ///Get the section data
-            // Hot
+            // featured
             let request = createRequestObject({
+                url: 'https://truyentranh24.com',
+                method: "GET",
+            });
+            let featuredItems = [];
+            let data = yield this.requestManager.schedule(request, 1);
+            let $ = this.cheerio.load(data.data);
+            for (const element of $('.container-lm > section:nth-child(2) > .item-big').toArray()) {
+                let title = $('.item-title', element).text().trim();
+                let image = $('.item-thumbnail > img', element).attr("data-src");
+                let id = (_a = $('a', element).first().attr('href').split('/')[1]) !== null && _a !== void 0 ? _a : title;
+                let subtitle = $(".item-description", element).text().trim();
+                // if (!id || !title) continue;
+                featuredItems.push(createMangaTile({
+                    id: id !== null && id !== void 0 ? id : "",
+                    image: image !== null && image !== void 0 ? image : "",
+                    title: createIconText({ text: title }),
+                    subtitleText: createIconText({ text: subtitle }),
+                }));
+            }
+            featured.items = featuredItems;
+            sectionCallback(featured);
+            // Hot
+            request = createRequestObject({
                 url: 'https://truyentranh24.com/top-ngay',
                 method: "GET",
             });
             let popular = [];
-            let data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
-            for (const element of $('.container-lm > section:nth-child(1) > .item-medium').toArray().splice(0, 10)) {
+            data = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(data.data);
+            for (const element of $('.container-lm > section:nth-child(1) > .item-medium').toArray().splice(0, 12)) {
                 let title = $('.item-title', element).text().trim();
                 let image = $('.item-thumbnail > img', element).attr("data-src");
-                let id = (_a = $('a', element).first().attr('href').split('/')[1]) !== null && _a !== void 0 ? _a : title;
+                let id = (_b = $('a', element).first().attr('href').split('/')[1]) !== null && _b !== void 0 ? _b : title;
                 let subtitle = $("span.background-8", element).text().trim();
                 // if (!id || !title) continue;
                 popular.push(createMangaTile({
@@ -826,7 +867,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             for (const element of $('.container-lm > section:nth-child(1) > .item-medium').toArray()) {
                 let title = $('.item-title > a', element).text().trim();
                 let image = $('.item-thumbnail > img', element).attr("data-src");
-                let id = (_b = $('.item-title > a', element).attr('href').split('/')[1]) !== null && _b !== void 0 ? _b : title;
+                let id = (_c = $('.item-title > a', element).attr('href').split('/')[1]) !== null && _c !== void 0 ? _c : title;
                 let subtitle = $("span.background-1", element).text().trim();
                 newUpdatedItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
@@ -845,10 +886,10 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             let viewItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (const element of $('.container-lm > section:nth-child(1) > .item-medium').toArray().splice(0, 10)) {
+            for (const element of $('.container-lm > section:nth-child(1) > .item-medium').toArray().splice(0, 12)) {
                 let title = $('.item-title', element).text().trim();
                 let image = $('.item-thumbnail > img', element).attr("data-src");
-                let id = (_c = $('a', element).first().attr('href').split('/')[1]) !== null && _c !== void 0 ? _c : title;
+                let id = (_d = $('a', element).first().attr('href').split('/')[1]) !== null && _d !== void 0 ? _d : title;
                 let subtitle = $("span.background-8", element).text().trim();
                 viewItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
@@ -870,7 +911,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             for (const element of $('.container-lm > section:nth-child(3) > .new > .item-large').toArray()) {
                 let title = $('.item-title', element).text().trim();
                 let image = $('.item-thumbnail > img', element).attr("data-src");
-                let id = (_d = $('a', element).first().attr('href').split('/')[1]) !== null && _d !== void 0 ? _d : title;
+                let id = (_e = $('a', element).first().attr('href').split('/')[1]) !== null && _e !== void 0 ? _e : title;
                 let subtitle = $(".item-children > a:first-child > .child-name", element).text().trim();
                 addItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
@@ -881,6 +922,50 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             }
             add.items = addItems;
             sectionCallback(add);
+            //top
+            request = createRequestObject({
+                url: 'https://truyentranh24.com/',
+                method: "GET",
+            });
+            let topItems = [];
+            data = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(data.data);
+            for (const element of $('.container-lm > section:nth-child(3) > .column-right > .item-large').toArray()) {
+                let title = $('.item-title', element).text().trim();
+                let image = $('.item-poster > img', element).attr("data-src");
+                let id = (_f = $('a', element).first().attr('href').split('/')[1]) !== null && _f !== void 0 ? _f : title;
+                let subtitle = $(".background-9", element).text().trim();
+                topItems.push(createMangaTile({
+                    id: id !== null && id !== void 0 ? id : "",
+                    image: image !== null && image !== void 0 ? image : "",
+                    title: createIconText({ text: title }),
+                    subtitleText: createIconText({ text: subtitle }),
+                }));
+            }
+            top.items = topItems;
+            sectionCallback(top);
+            //miss
+            request = createRequestObject({
+                url: 'https://truyentranh24.com/',
+                method: "GET",
+            });
+            let missItems = [];
+            data = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(data.data);
+            for (const element of $('.container-lm > section:nth-child(4) > .new > .item-medium').toArray()) {
+                let title = $('.item-title', element).text().trim();
+                let image = $('.item-thumbnail > img', element).attr("data-src");
+                let id = (_g = $('a', element).first().attr('href').split('/')[1]) !== null && _g !== void 0 ? _g : title;
+                let subtitle = $(".background-3", element).text().trim();
+                missItems.push(createMangaTile({
+                    id: id !== null && id !== void 0 ? id : "",
+                    image: image !== null && image !== void 0 ? image : "",
+                    title: createIconText({ text: title }),
+                    subtitleText: createIconText({ text: subtitle }),
+                }));
+            }
+            miss.items = missItems;
+            sectionCallback(miss);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
