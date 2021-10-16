@@ -863,7 +863,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
                 let title = $('.item-title', element).text().trim();
                 let image = $('.item-thumbnail > img', element).attr("data-src");
                 let id = (_e = $('a', element).first().attr('href').split('/')[1]) !== null && _e !== void 0 ? _e : title;
-                let subtitle = $(".item-children > a:first-child > .child-name", element).text().trim() + ' - ' + $(".item-children > a:first-child > .child-update", element).text().trim();
+                let subtitle = $(".item-children > a:first-child > .child-name", element).text().trim() + ' | ' + $(".item-children > a:first-child > .child-update", element).text().trim();
                 addItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
                     image: image !== null && image !== void 0 ? image : "",
