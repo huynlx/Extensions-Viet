@@ -5,7 +5,6 @@ Vietnamese sources for [Paperback](https://paperback.moe/)
 ```
 https://huynh12345678.github.io/Extensions-Viet/
 ```
-
 ## Sources
 
 |STT    | Name                      | Source URL                                 |
