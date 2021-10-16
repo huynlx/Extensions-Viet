@@ -620,12 +620,6 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
         this.dataId = '';
-        // override getCloudflareBypassRequest(): Request {
-        //     return createRequestObject({ //https://lxhentai.com/
-        //         url: 'https://manhuarock.net/',
-        //         method: 'GET',
-        //     }) //dit buoi lam lxhentai nua dkm, ti fix thanh medoctruyen
-        // }
     }
     convertTime(timeAgo) {
         var _a;
@@ -952,7 +946,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             let missItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (const element of $('.container-lm > section:nth-child(4) > .new > .item-medium').toArray()) {
+            for (const element of $('.container-lm > section:nth-child(4) > .item-medium').toArray()) {
                 let title = $('.item-title', element).text().trim();
                 let image = $('.item-thumbnail > img', element).attr("data-src");
                 let id = (_g = $('a', element).first().attr('href').split('/')[1]) !== null && _g !== void 0 ? _g : title;
@@ -1043,34 +1037,13 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
     }
     getSearchTags() {
         return __awaiter(this, void 0, void 0, function* () {
-            const tags = [];
-            const tags2 = [
+            const tags = [
                 {
-                    id: 'sort.name',
-                    label: 'A-Z'
-                },
-                {
-                    id: 'sort.views',
-                    label: 'Lượt Xem'
-                },
-                {
-                    id: 'sort.last_update',
-                    label: 'Mới Cập Nhật'
+                    id: "/danh-sach",
+                    label: "Danh sách"
                 }
             ];
-            const tagss = [
-                {
-                    id: 'type.ASC',
-                    label: 'ASC'
-                },
-                {
-                    id: 'type.DESC',
-                    label: 'DESC'
-                }
-            ];
-            const tags5 = [];
-            const tags6 = [];
-            const url = DOMAIN + `search`;
+            const url = DOMAIN;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -1078,42 +1051,15 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             //the loai
-            for (const tag of $('.navbar-nav > li.nav-item:nth-child(1) .no-gutters a.genres-item').toArray()) {
+            for (const tag of $('.navbar-item-sub a').toArray()) {
                 const label = $(tag).text().trim();
-                const id = 'cate.' + $(tag).attr('href').split('-the-loai-')[1].split('.')[0];
+                const id = 'cate.' + $(tag).attr('href');
                 if (!id || !label)
                     continue;
                 tags.push({ id: id, label: label });
             }
-            //trang thai
-            for (const tag of $('select#TinhTrang option').toArray()) {
-                var label = $(tag).text().trim();
-                if (label === 'Hoàn thành') {
-                    label = 'Đang tiến hành';
-                }
-                else if (label === 'Đang tiến hành') {
-                    label = 'Hoàn thành';
-                }
-                const id = 'status.' + $(tag).attr('value');
-                if (!id || !label)
-                    continue;
-                tags5.push({ id: id, label: label });
-            }
-            //nhom dich
-            for (const tag of $('.navbar-nav > li.nav-item:nth-child(2) .no-gutters a.genres-item').toArray()) {
-                const label = $(tag).text().trim();
-                const id = 'translater.' + $(tag).attr('href').split('-nhom-dich-')[1].split('.')[0];
-                ;
-                if (!id || !label)
-                    continue;
-                tags6.push({ id: id, label: label });
-            }
             const tagSections = [
                 createTagSection({ id: '1', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
-                createTagSection({ id: '3', label: 'Sắp xếp theo', tags: tags2.map(x => createTag(x)) }),
-                createTagSection({ id: '0', label: 'Kiểu sắp xếp', tags: tagss.map(x => createTag(x)) }),
-                createTagSection({ id: '4', label: 'Trạng thái', tags: tags5.map(x => createTag(x)) }),
-                createTagSection({ id: '5', label: 'Nhóm dịch', tags: tags6.map(x => createTag(x)) }),
             ];
             return tagSections;
         });
