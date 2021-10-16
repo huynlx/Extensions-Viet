@@ -674,7 +674,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
             const chapters = [];
             for (const obj of json.chapters) {
-                let chapNum = obj.name;
+                let chapNum = obj.slug.split('-')[1];
                 let name = obj.views.toLocaleString() + ' lượt đọc';
                 let time = obj.created_at.split(' ');
                 let d = time[0].split('-');
