@@ -9,7 +9,7 @@ https://huynh12345678.github.io/Extensions-Viet/
 
 |STT    | Name                      | Source URL                                 |
 | ----- | ------------------------- | ------------------------------------------ |
-|   1   | Beeng                     | [go](https://beeng.org){:target="_blank" rel="noopener"}                          |
+|   1   | Beeng                     | https://beeng.org                          |
 |   2   | Blogtruyen                | https://blogtruyen.vn                      |
 |   3   | CManga                    | https://cmangatop.com                      |
 |   4   | DocTruyen3Q               | https://doctruyen3q.com                    |
