@@ -1,1 +1,0 @@
-đéo hiểu là call api using XMLHttpRequest kiểu lồn gì với cái trang củ lồn này (lấy chapter)

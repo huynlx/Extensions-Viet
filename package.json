@@ -11,7 +11,8 @@
     "bundle": "paperback bundle",
     "serve": "paperback serve -p 8000",
     "deploy": "gh-pages -d bundles",
-    "predeploy": "paperback bundle"
+    "predeploy": "paperback bundle",
+    "deploy2": "gh-pages -d bundles"
   },
   "author": "Huynhzip3",
   "license": "MIT",
