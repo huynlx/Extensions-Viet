@@ -724,14 +724,16 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             for (const obj of json.chapters) {
                 let chapNum = obj.name;
                 let name = obj.views + ' lượt đọc';
-                let time = obj.created_at;
+                let time = obj.created_at.split(' ');
+                let d = time[0].split('-');
+                let t = time[1].split(':');
                 chapters.push(createChapter({
                     id: DOMAIN + mangaId + '/chap-' + chapNum.toString(),
                     chapNum: parseFloat(chapNum),
                     name,
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: new Date(time)
+                    time: new Date(d[1] + '/' + d[2] + '/' + d[0] + ' ' + t[0] + ':' + t[1])
                 }));
             }
             console.log(chapters);
