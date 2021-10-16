@@ -728,7 +728,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
                 let d = time[0].split('-');
                 let t = time[1].split(':');
                 chapters.push(createChapter({
-                    id: DOMAIN + mangaId + '/chap-' + chapNum.toString(),
+                    id: DOMAIN + mangaId + '/' + obj.slug,
                     chapNum: Number(chapNum),
                     name,
                     mangaId: mangaId,
@@ -800,7 +800,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             let popular = [];
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            for (const element of $('.container-lm > section:nth-child(1) > .item-medium').toArray()) {
+            for (const element of $('.container-lm > section:nth-child(1) > .item-medium').toArray().splice(0, 10)) {
                 let title = $('.item-title', element).text().trim();
                 let image = $('.item-thumbnail > img', element).attr("data-src");
                 let id = (_a = $('a', element).first().attr('href').split('/')[1]) !== null && _a !== void 0 ? _a : title;
@@ -845,7 +845,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             let viewItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (const element of $('.container-lm > section:nth-child(1) > .item-medium').toArray()) {
+            for (const element of $('.container-lm > section:nth-child(1) > .item-medium').toArray().splice(0, 10)) {
                 let title = $('.item-title', element).text().trim();
                 let image = $('.item-thumbnail > img', element).attr("data-src");
                 let id = (_c = $('a', element).first().attr('href').split('/')[1]) !== null && _c !== void 0 ? _c : title;
