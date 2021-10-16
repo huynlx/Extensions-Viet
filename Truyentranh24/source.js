@@ -619,6 +619,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             requestsPerSecond: 5,
             requestTimeout: 20000
         });
+        this.dataId = '';
         // override getCloudflareBypassRequest(): Request {
         //     return createRequestObject({ //https://lxhentai.com/
         //         url: 'https://manhuarock.net/',
@@ -684,6 +685,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             let creator = '';
             let statusFinal = 1;
             creator = $('.manga-author > span').text().trim();
+            this.dataId = $('.container').attr('data-id');
             // for (const t of $('a', test).toArray()) {
             //     const genre = $(t).text().trim();
             //     const id = $(t).attr('href') ?? genre;
@@ -710,7 +712,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: 'https://truyentranh24.com/api/mangas/100108/chapters?offset=5&limit=100',
+                url: 'https://truyentranh24.com/api/mangas/' + this.dataId + '/chapters?offset=0&limit=0',
                 method,
                 headers: {
                     'x-requested-with': 'XMLHttpRequest',
@@ -719,31 +721,13 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             });
             const data = yield this.requestManager.schedule(request, 1);
             const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
-            console.log(json);
-            // let data = await this.requestManager.schedule(request, 1);
-            // let $ = this.cheerio.load(data.data);
             const chapters = [];
-            // for (const obj of $('.chapter-list > .chapter-item').toArray().reverse()) {
-            //     let id = $('.chapter-name > a', obj).attr('href');
-            //     let chapNum = parseFloat($('.chapter-name > a', obj).text()?.split(' ')[1]);
-            //     let name = $('.chapter-views', obj).text().trim() + ' lượt đọc';
-            //     let time = this.convertTime($('.chapter-update', obj).text().trim());
-            //     chapters.push(createChapter(<Chapter>{
-            //         id,
-            //         chapNum: chapNum,
-            //         name,
-            //         mangaId: mangaId,
-            //         langCode: LanguageCode.VIETNAMESE,
-            //         time: time
-            //     }));
-            // }
             for (const obj of json.chapters) {
-                let id = obj.id;
                 let chapNum = obj.name;
                 let name = obj.views + ' lượt đọc';
                 let time = obj.created_at;
                 chapters.push(createChapter({
-                    id: id.toString(),
+                    id: mangaId + '/chap-' + chapNum.toString(),
                     chapNum: parseFloat(chapNum),
                     name,
                     mangaId: mangaId,
@@ -751,7 +735,6 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
                     time: new Date(time)
                 }));
             }
-            console.log(chapters);
             return chapters;
         });
     }
@@ -759,7 +742,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `https://truyentranh24.com${chapterId}`,
+                url: `${chapterId}`,
                 method
             });
             let data = yield this.requestManager.schedule(request, 1);
