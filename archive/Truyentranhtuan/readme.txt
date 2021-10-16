@@ -1,1 +1,0 @@
-link trang chủ thì bị lỗi node.parent còn link khác thì đéo sao

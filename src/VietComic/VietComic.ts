@@ -10,7 +10,7 @@ import {
     TagType,
     TagSection,
     ContentRating,
-    // RequestHeaders,
+    RequestHeaders,
     HomeSectionType,
     Tag,
     LanguageCode,
@@ -122,17 +122,16 @@ export class VietComic extends Source {
         let $ = this.cheerio.load(response.data);
         const arr = regex.exec($.html());
         const images = arr?.[1].split('|') ?? [];
-        console.log(images);
         const pages: string[] = [];
         for (var i = 0; i < images.length; i++) {
-            pages.push(images[i]);
+            pages.push('https://proxy.duckduckgo.com/iu/?u=' + images[i]);
         }
 
         const chapterDetails = createChapterDetails({
             id: chapterId,
             mangaId: mangaId,
             pages: pages,
-            longStrip: true
+            longStrip: false
         });
         return chapterDetails;
     }
@@ -360,9 +359,9 @@ export class VietComic extends Source {
         return tagSections;
     }
 
-    // globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
-    //     return {
-    //         referer: DOMAIN
-    //     }
-    // }
+    globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
+        return {
+            referer: DOMAIN
+        }
+    }
 }

@@ -91,7 +91,8 @@ class ManhuaRock extends paperback_extensions_common_1.Source {
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
+            let html = Buffer.from(createByteArray(data.rawData)).toString();
+            let $ = this.cheerio.load(html);
             let tags = [];
             let creator = '';
             let statusFinal = 1;
@@ -137,7 +138,8 @@ class ManhuaRock extends paperback_extensions_common_1.Source {
                 method,
             });
             let data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
+            let html = Buffer.from(createByteArray(data.rawData)).toString();
+            let $ = this.cheerio.load(html);
             const chapters = [];
             var i = 0;
             for (const obj of $('.list-chapters > a').toArray().reverse()) {

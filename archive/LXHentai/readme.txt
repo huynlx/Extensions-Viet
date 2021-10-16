@@ -1,1 +1,0 @@
-đéo crawl đc con cặc gì hết mấy link có dấu '?' như lồn đéo hiểu 

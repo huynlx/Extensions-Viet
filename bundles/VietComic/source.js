@@ -619,11 +619,6 @@ class VietComic extends paperback_extensions_common_1.Source {
             requestsPerSecond: 5,
             requestTimeout: 20000
         });
-        // globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
-        //     return {
-        //         referer: DOMAIN
-        //     }
-        // }
     }
     getMangaShareUrl(mangaId) { return `${mangaId}`; }
     ;
@@ -707,16 +702,15 @@ class VietComic extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(response.data);
             const arr = regex.exec($.html());
             const images = (_a = arr === null || arr === void 0 ? void 0 : arr[1].split('|')) !== null && _a !== void 0 ? _a : [];
-            console.log(images);
             const pages = [];
             for (var i = 0; i < images.length; i++) {
-                pages.push(images[i]);
+                pages.push('https://proxy.duckduckgo.com/iu/?u=' + images[i]);
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
                 mangaId: mangaId,
                 pages: pages,
-                longStrip: true
+                longStrip: false
             });
             return chapterDetails;
         });
@@ -939,6 +933,11 @@ class VietComic extends paperback_extensions_common_1.Source {
             ];
             return tagSections;
         });
+    }
+    globalRequestHeaders() {
+        return {
+            referer: DOMAIN
+        };
     }
 }
 exports.VietComic = VietComic;

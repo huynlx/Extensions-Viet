@@ -12,22 +12,34 @@ export const generateSearch = (query: SearchRequest): string => {
     return encodeURI(keyword);
 }
 
-export const parseSearch = ($: CheerioStatic): MangaTile[] => {
-    const mangas: MangaTile[] = [];
-    for (let manga of $('li', '.list-stories').toArray()) {
-        let title = $(`h3.title-book > a`, manga).text().trim();
-        let subtitle = $(`.episode-book > a`, manga).text().trim();
-        let image = $(`a > img`, manga).attr("src") ?? "";
-        let id = $(`a`, manga).attr("href")?.split("/").pop() ?? title;
-        if (!id || !title) continue;
-        mangas.push(createMangaTile({
-            id: encodeURIComponent(id),
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
-            title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: subtitle }),
-        }));
+export const parseSearch = ($: CheerioStatic, query: any): MangaTile[] => {
+    const manga: MangaTile[] = [];
+    // const collectedIds: string[] = [];
+    var loop = [];
+    if (query.title) {
+        loop = $('div.py-2', '.row').toArray();
+    } else {
+        loop = $('div.py-2', '.col-md-8 .row').toArray();
     }
-    return mangas;
+    for (let obj of loop) {
+        const title = $('a', obj).last().text().trim();
+        const id = $('a', obj).last().attr('href') ?? title;
+        const image = $('div', obj).first().css('background');
+        const bg = image?.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
+        const sub = $('a', obj).first().text().trim();
+        // if (!id || !subtitle) continue;
+        manga.push(createMangaTile({
+            id: 'https://lxhentai.com' + id,
+            image: 'https://lxhentai.com' + bg,
+            title: createIconText({
+                text: title,
+            }),
+            subtitleText: createIconText({
+                text: sub,
+            }),
+        }))
+    }
+    return manga; //cái này trả về rỗng thì ko cộng dồn nữa
 }
 
 export const parseViewMore = ($: CheerioStatic): MangaTile[] => {

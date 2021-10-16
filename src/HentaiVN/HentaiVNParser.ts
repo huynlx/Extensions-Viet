@@ -116,7 +116,7 @@ export const parseHomeSections = ($: CheerioStatic, sections: HomeSection[], sec
         const id = $('a', manga).attr('href')?.split('/').pop();
         const image = $('a > div', manga).css('background');
         const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
-        const subtitle = $("a > span > b", manga).last().text().trim();
+        const subtitle = $("a > b", manga).last().text().trim();
         if (!id || !title) continue;
         staffPick.push(createMangaTile({
             id: encodeURIComponent(id) + "::" + bg,
@@ -225,7 +225,7 @@ export const parseViewMore = ($: CheerioStatic, select: number): MangaTile[] => 
             const title = $("span > a > h2", obj).text();
             const id = $("a", obj).attr('href')?.split('/').pop();
             const image = $("a > img", obj).attr('data-src');
-            const subtitle = $("a > span > b", obj).text().trim();
+            const subtitle = $("a > b", obj).text().trim();
             if (!id || !title) continue;
             if (!collectedIds.includes(id)) {
                 manga.push(createMangaTile({

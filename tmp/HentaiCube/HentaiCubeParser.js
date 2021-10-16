@@ -24,7 +24,7 @@ exports.parseSearch = ($, set) => {
             if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
                 mangas.push(createMangaTile({
                     id: id,
-                    image: image,
+                    image: encodeURI(image),
                     title: createIconText({
                         text: title,
                     }),
@@ -45,7 +45,7 @@ exports.parseSearch = ($, set) => {
             if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
                 mangas.push(createMangaTile({
                     id: id,
-                    image: image.replace('-110x150', ''),
+                    image: encodeURI(image.replace('-110x150', '')),
                     title: createIconText({
                         text: title,
                     }),
@@ -72,7 +72,7 @@ exports.parseViewMore = ($, select) => {
             if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
                 manga.push(createMangaTile({
                     id: id,
-                    image: image !== null && image !== void 0 ? image : "",
+                    image: encodeURI(image),
                     title: createIconText({
                         text: title !== null && title !== void 0 ? title : "",
                     }),

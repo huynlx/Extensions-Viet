@@ -150,6 +150,9 @@ export class qManga extends Source {
         });
 
         ///Get the section data
+        sectionCallback(newUpdated);
+        sectionCallback(hot);
+        sectionCallback(view);
 
         //New Updates
         let request = createRequestObject({
@@ -172,6 +175,7 @@ export class qManga extends Source {
             }))
         }
         newUpdated.items = newUpdatedItems;
+        sectionCallback(newUpdated);
 
         //hot
         request = createRequestObject({
@@ -194,6 +198,7 @@ export class qManga extends Source {
             }))
         }
         hot.items = hotItems;
+        sectionCallback(hot);
 
         //view
         request = createRequestObject({
@@ -216,6 +221,7 @@ export class qManga extends Source {
             }))
         }
         view.items = viewItems;
+        sectionCallback(view);
 
         //featured
         request = createRequestObject({
@@ -238,11 +244,7 @@ export class qManga extends Source {
             }))
         }
         featured.items = featuredItems;
-
         sectionCallback(featured);
-        sectionCallback(newUpdated);
-        sectionCallback(hot);
-        sectionCallback(view);
     }
 
     async getViewMoreItems(homepageSectionId: string, metadata: any): Promise<PagedResults> {

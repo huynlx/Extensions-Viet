@@ -80,7 +80,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                 artist: creator,
                 desc: desc,
                 titles: [HentaiCubeParser_1.decodeHTMLEntity($('.post-title > h1').text().trim())],
-                image: image,
+                image: encodeURI(image),
                 status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: true,
@@ -127,7 +127,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                 if (!obj.attribs['data-src'])
                     continue;
                 let link = obj.attribs['data-src'].trim();
-                pages.push(link);
+                pages.push(encodeURI(link));
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
@@ -194,7 +194,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                 let id = (_c = $(`.slider__thumb a`, obj).attr('href')) !== null && _c !== void 0 ? _c : title;
                 featuredItems.push(createMangaTile({
                     id: id,
-                    image: image,
+                    image: encodeURI(image),
                     title: createIconText({
                         text: title,
                     }),
@@ -220,9 +220,9 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                 let id = (_e = $(`.popular-img > a`, obj).attr('href')) !== null && _e !== void 0 ? _e : title;
                 topItems.push(createMangaTile({
                     id: id,
-                    image: image !== null && image !== void 0 ? image : "",
+                    image: encodeURI(image),
                     title: createIconText({
-                        text: title,
+                        text: HentaiCubeParser_1.decodeHTMLEntity(title),
                     })
                 }));
             }
@@ -243,7 +243,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                 let id = (_g = $(`.popular-img > a`, obj).attr('href')) !== null && _g !== void 0 ? _g : title;
                 hotItems.push(createMangaTile({
                     id: id,
-                    image: image !== null && image !== void 0 ? image : "",
+                    image: encodeURI(image),
                     title: createIconText({
                         text: HentaiCubeParser_1.decodeHTMLEntity(title),
                     })
@@ -267,7 +267,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                 let id = (_j = $(`.c-image-hover > a`, obj).attr('href')) !== null && _j !== void 0 ? _j : title;
                 newUpdatedItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
-                    image: image !== null && image !== void 0 ? image : "",
+                    image: encodeURI(image),
                     title: createIconText({
                         text: (_k = HentaiCubeParser_1.decodeHTMLEntity(title)) !== null && _k !== void 0 ? _k : "",
                     }),
@@ -294,7 +294,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                 let id = (_m = $(`.c-image-hover > a`, obj).attr('href')) !== null && _m !== void 0 ? _m : title;
                 newAddItems.push(createMangaTile({
                     id: id,
-                    image: image !== null && image !== void 0 ? image : "",
+                    image: encodeURI(image),
                     title: createIconText({
                         text: title,
                     }),
@@ -321,7 +321,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                 let id = (_p = $(`.c-image-hover > a`, obj).attr('href')) !== null && _p !== void 0 ? _p : title;
                 newItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
-                    image: image !== null && image !== void 0 ? image : "",
+                    image: encodeURI(image),
                     title: createIconText({
                         text: title !== null && title !== void 0 ? title : "",
                     }),

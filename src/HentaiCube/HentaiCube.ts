@@ -227,7 +227,7 @@ export class HentaiCube extends Source {
                 id: id,
                 image: encodeURI(image),
                 title: createIconText({
-                    text: title,
+                    text: decodeHTMLEntity(title),
                 })
             }))
         }

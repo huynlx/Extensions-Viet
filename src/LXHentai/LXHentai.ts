@@ -14,34 +14,34 @@ import {
     MangaTile,
     Tag,
     LanguageCode,
-    // HomeSectionType
+    HomeSectionType
 } from "paperback-extensions-common"
 
 // import axios from "axios";
 import { parseSearch, isLastPage, parseViewMore } from "./LXHentaiParser"
 
-const DOMAIN = 'https://truyentranhaudio.online/'
+const DOMAIN = 'https://lxhentai.com/'
 const method = 'GET'
 
 export const LXHentaiInfo: SourceInfo = {
-    version: '3.0.0',
+    version: '2.0.0',
     name: 'LXHentai',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from LXHentai',
     websiteBaseURL: `https://lxhentai.com/`,
-    contentRating: ContentRating.MATURE,
+    contentRating: ContentRating.ADULT,
     sourceTags: [
         {
-            text: "Recommended",
-            type: TagType.BLUE
+            text: "18+",
+            type: TagType.YELLOW
         }
     ]
 }
 
 export class LXHentai extends Source {
-    getMangaShareUrl(mangaId: string): string { return `${DOMAIN}/${mangaId}` };
+    getMangaShareUrl(mangaId: string): string { return `${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
         requestTimeout: 20000
@@ -53,32 +53,42 @@ export class LXHentai extends Source {
             method: "GET",
         });
         const data = await this.requestManager.schedule(request, 10);
-        let $ = this.cheerio.load(data.data); //lỗi từ dòng này
+        let $ = this.cheerio.load(data.data);
         let tags: Tag[] = [];
-        // let creator = [];
-        // let status = 1; //completed, 1 = Ongoing
-        // let desc = $('.story-detail-info').text();
-        // for (const t of $('a', '.list01').toArray()) {
-        //     const genre = $(t).text().trim()
-        //     const id = $(t).attr('href') ?? genre
-        //     tags.push(createTag({ label: genre, id }));
-        // }
-        // for (const c of $('a', '.txt > p:nth-of-type(1)').toArray()) {
-        //     const name = $(c).text().trim()
-        //     creator.push(name);
-        // }
-        // status = $('.txt > p:nth-of-type(2)').text().toLowerCase().includes("đang cập nhật") ? 1 : 0;
-        // const image = $('.left > img').attr('src') ?? "";
+        let creator = '';
+        let status = 1; //completed, 1 = Ongoing
+        let artist = '';
+        let desc = $('.detail-content > p').text();
+        for (const a of $('.row.mt-2 > .col-4.py-1').toArray()) {
+            switch ($(a).text().trim()) {
+                case "Tác giả":
+                    creator = $(a).next().text();
+                    break;
+                case "Tình trạng":
+                    status = $(a).next().text().toLowerCase().includes("đã") ? 0 : 1;
+                    break;
+                case "Thể loại":
+                    for (const t of $('a', $(a).next()).toArray()) {
+                        const genre = $(t).text().trim()
+                        const id = $(t).attr('href') ?? genre
+                        tags.push(createTag({ label: genre, id }));
+                    }
+                    break;
+                case "Thực hiện":
+                    artist = $(a).next().text();
+                    break;
+            }
+        }
         return createManga({
             id: mangaId,
-            author: 'huynh',
-            artist: 'huynh',
-            desc: '',
+            author: creator,
+            artist: artist,
+            desc: desc,
             titles: [$('h1.title-detail').text()],
             image: 'https://lxhentai.com' + $('.col-md-8 > .row > .col-md-4 > img').attr('src'),
-            status: 1,
+            status: status,
             // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
-            hentai: false,
+            hentai: true,
             tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
         });
 
@@ -94,13 +104,16 @@ export class LXHentai extends Source {
         var i = 0;
         for (const obj of $("#listChuong > ul > .row:not(:first-child) > div.col-5").toArray().reverse()) {
             i++;
+            let time = $($(obj).next()).text().trim().split(' ');
+            let day = time[1].split('/');
+            let h = time[0];
             chapters.push(createChapter(<Chapter>{
                 id: 'https://lxhentai.com' + $('a', obj).attr('href'),
                 chapNum: i,
                 name: $('a', obj).text(),
                 mangaId: mangaId,
                 langCode: LanguageCode.VIETNAMESE,
-                time: new Date('09/10/2021')
+                time: new Date(day[1] + '/' + day[0] + '/' + day[2] + ' ' + h)
             }));
         }
 
@@ -116,9 +129,11 @@ export class LXHentai extends Source {
         const response = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(response.data);
         const pages: string[] = [];
-        for (let obj of $('#content_chap img').toArray()) {
-            let link = 'https:' + obj.attribs['src'];
-            pages.push(link);
+        const list = $('#content_chap p img').toArray().length === 0 ? $('#content_chap div:not(.text-center) img').toArray()
+            : $('#content_chap p img').toArray();
+        for (let obj of list) {
+            let link = obj.attribs['src'].includes('http') ? obj.attribs['src'] : 'https:' + obj.attribs['src'];
+            pages.push(encodeURI(link));
         }
 
         const chapterDetails = createChapterDetails({
@@ -131,29 +146,38 @@ export class LXHentai extends Source {
     }
 
     async getHomePageSections(sectionCallback: (section: HomeSection) => void): Promise<void> {
+        let featured: HomeSection = createHomeSection({
+            id: 'featured',
+            title: "Truyện Đề Cử",
+            type: HomeSectionType.featured
+        });
         let newUpdated: HomeSection = createHomeSection({
             id: 'new_updated',
-            title: "New Updates",
+            title: "Mới cập nhật",
+            view_more: true,
+        });
+        let hot: HomeSection = createHomeSection({
+            id: 'hot',
+            title: "Hot nhất",
             view_more: true,
         });
         sectionCallback(newUpdated);
+        sectionCallback(hot);
         //New Updates
         let request = createRequestObject({
-            url: 'https://lxhentai.com/story/index.php?hot',
+            url: 'https://lxhentai.com/story/index.php',
             method: "GET",
         });
         let newUpdatedItems: MangaTile[] = [];
         let data = await this.requestManager.schedule(request, 1);
-        let $ = this.cheerio.load(data.data);
-        for (let manga of $('div.col-md-3', '.main .col-md-8 > .row').toArray()) {
-            console.log($('a', manga).last().text().trim());
-            console.log($('div', manga).first().css('background'));
-            console.log($('a', manga).first().text().trim()); 
+        let html = Buffer.from(createByteArray(data.rawData)).toString()
+        let $ = this.cheerio.load(html);
+        for (let manga of $('div.col-md-3', '.main .col-md-8 > .row').toArray().splice(0, 15)) {
             const title = $('a', manga).last().text().trim();
             const id = $('a', manga).last().attr('href') ?? title;
             const image = $('div', manga).first().css('background');
             const bg = image?.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
-            const sub = $('a', manga).first().text().trim();         
+            const sub = $('a', manga).first().text().trim();
             newUpdatedItems.push(createMangaTile({
                 id: 'https://lxhentai.com' + id,
                 image: 'https://lxhentai.com' + bg,
@@ -165,12 +189,66 @@ export class LXHentai extends Source {
                 }),
             }))
         }
-        // console.log("New Updates: ");
-        // console.log(newUpdatedItems);
-        // console.log(data.data);
-
         newUpdated.items = newUpdatedItems;
         sectionCallback(newUpdated);
+
+        //Hot
+        request = createRequestObject({
+            url: 'https://lxhentai.com/story/index.php?hot',
+            method: "GET",
+        });
+        let hotItems: MangaTile[] = [];
+        data = await this.requestManager.schedule(request, 1);
+        html = Buffer.from(createByteArray(data.rawData)).toString()
+        $ = this.cheerio.load(html);
+        for (let manga of $('div.col-md-3', '.main .col-md-8 > .row').toArray().splice(0, 15)) {
+            const title = $('a', manga).last().text().trim();
+            const id = $('a', manga).last().attr('href') ?? title;
+            const image = $('div', manga).first().css('background');
+            const bg = image?.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
+            const sub = $('a', manga).first().text().trim();
+            hotItems.push(createMangaTile({
+                id: 'https://lxhentai.com' + id,
+                image: 'https://lxhentai.com' + bg,
+                title: createIconText({
+                    text: title,
+                }),
+                subtitleText: createIconText({
+                    text: sub,
+                }),
+            }))
+        }
+        hot.items = hotItems;
+        sectionCallback(hot);
+
+        //Featured
+        request = createRequestObject({
+            url: 'https://lxhentai.com/',
+            method: "GET",
+        });
+        let featuredItems: MangaTile[] = [];
+        data = await this.requestManager.schedule(request, 1);
+        html = Buffer.from(createByteArray(data.rawData)).toString()
+        $ = this.cheerio.load(html);
+        for (let manga of $('.truyenHot .gridSlide > div').toArray()) {
+            const title = $('.slideName > a', manga).text().trim();
+            const id = $('.slideName > a', manga).attr('href') ?? title;
+            const image = $('.itemSlide', manga).first().css('background');
+            const bg = image?.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
+            const sub = $('.newestChapter', manga).text().trim();
+            featuredItems.push(createMangaTile({
+                id: 'https://lxhentai.com' + id,
+                image: 'https://lxhentai.com' + bg,
+                title: createIconText({
+                    text: title,
+                }),
+                subtitleText: createIconText({
+                    text: sub,
+                }),
+            }))
+        }
+        featured.items = featuredItems;
+        sectionCallback(featured);
     }
 
     async getViewMoreItems(homepageSectionId: string, metadata: any): Promise<PagedResults> {
@@ -178,12 +256,12 @@ export class LXHentai extends Source {
         let param = '';
         let url = '';
         switch (homepageSectionId) {
+            case "hot":
+                url = `https://lxhentai.com/story/index.php?hot&p=${page}`;
+                break;
             case "new_updated":
                 url = `https://lxhentai.com/story/index.php?p=${page}`;
                 break;
-            // case "new_added":
-            //     url = `https://lxhentai.com/story/cat.php?id=57&p=${page}`;
-            //     break;
             default:
                 return Promise.resolve(createPagedResults({ results: [] }))
         }
@@ -195,7 +273,8 @@ export class LXHentai extends Source {
         });
 
         const response = await this.requestManager.schedule(request, 1);
-        const $ = this.cheerio.load(response.data);
+        const html = Buffer.from(createByteArray(response.rawData)).toString()
+        const $ = this.cheerio.load(html);
 
         const manga = parseViewMore($);
         metadata = !isLastPage($) ? { page: page + 1 } : undefined;
@@ -207,47 +286,16 @@ export class LXHentai extends Source {
 
     async getSearchResults(query: SearchRequest, metadata: any): Promise<PagedResults> {
         let page = metadata?.page ?? 1;
-
-        const search = {
-            category: '',
-            country: "0",
-            status: "-1",
-            minchapter: "0",
-            sort: "0"
-        };
-
         const tags = query.includedTags?.map(tag => tag.id) ?? [];
-        const category: string[] = [];
-        tags.map((value) => {
-            if (value.indexOf('.') === -1) {
-                category.push(value)
-            } else {
-                switch (value.split(".")[0]) {
-                    case 'minchapter':
-                        search.minchapter = (value.split(".")[1]);
-                        break
-                    case 'country':
-                        search.country = (value.split(".")[1]);
-                        break
-                    case 'sort':
-                        search.sort = (value.split(".")[1]);
-                        break
-                    case 'status':
-                        search.status = (value.split(".")[1]);
-                        break
-                }
-            }
-        })
-        search.category = (category ?? []).join(",");
         const request = createRequestObject({
-            url: query.title ? `${DOMAIN}tim-kiem/trang-${page}.html` : `${DOMAIN}tim-kiem-nang-cao/trang-${page}.html`,
+            url: query.title ? `https://lxhentai.com/story/search.php?key=${encodeURI(query.title)}&p=${page}` : `${tags[0]}&p=${page}`,
             method: "GET",
-            param: encodeURI(`?q=${query.title ?? ''}&category=${search.category}&country=${search.country}&status=${search.status}&minchapter=${search.minchapter}&sort=${search.sort}`)
         });
 
         const data = await this.requestManager.schedule(request, 1);
-        let $ = this.cheerio.load(data.data);
-        const tiles = parseSearch($);
+        const html = Buffer.from(createByteArray(data.rawData)).toString()
+        let $ = this.cheerio.load(html);
+        const tiles = parseSearch($, query);
 
         metadata = !isLastPage($) ? { page: page + 1 } : undefined;
 
@@ -258,7 +306,7 @@ export class LXHentai extends Source {
     }
 
     async getSearchTags(): Promise<TagSection[]> {
-        const url = `${DOMAIN}tim-kiem-nang-cao.html`
+        const url = `https://lxhentai.com/#`
         const request = createRequestObject({
             url: url,
             method: "GET",
@@ -267,52 +315,16 @@ export class LXHentai extends Source {
         const response = await this.requestManager.schedule(request, 1)
         const $ = this.cheerio.load(response.data);
         const arrayTags: Tag[] = [];
-        const arrayTags2: Tag[] = [];
-        const arrayTags3: Tag[] = [];
-        const arrayTags4: Tag[] = [];
-        const arrayTags5: Tag[] = [];
         //the loai
-        for (const tag of $('div.genre-item', 'div.col-sm-10').toArray()) {
+        for (const tag of $('.col-6 a', '#theloaiMob').toArray()) {
             const label = $(tag).text().trim();
-            const id = $('span', tag).attr('data-id') ?? label;
+            const id = 'https://lxhentai.com/' + $(tag).attr('href') ?? label;
             if (!id || !label) continue;
             arrayTags.push({ id: id, label: label });
         }
-        //quoc gia
-        for (const tag of $('option', 'select#country').toArray()) {
-            const label = $(tag).text().trim();
-            const id = 'country.' + $(tag).attr('value') ?? label;
-            if (!id || !label) continue;
-            arrayTags2.push({ id: id, label: label });
-        }
-        //tinh trang
-        for (const tag of $('option', 'select#status').toArray()) {
-            const label = $(tag).text().trim();
-            const id = 'status.' + $(tag).attr('value') ?? label;
-            if (!id || !label) continue;
-            arrayTags3.push({ id: id, label: label });
-        }
-        //so luong chuong
-        for (const tag of $('option', 'select#minchapter').toArray()) {
-            const label = $(tag).text().trim();
-            const id = 'minchapter.' + $(tag).attr('value') ?? label;
-            if (!id || !label) continue;
-            arrayTags4.push({ id: id, label: label });
-        }
-        //sap xep
-        for (const tag of $('option', 'select#sort').toArray()) {
-            const label = $(tag).text().trim();
-            const id = 'sort.' + $(tag).attr('value') ?? label;
-            if (!id || !label) continue;
-            arrayTags5.push({ id: id, label: label });
-        }
 
         const tagSections: TagSection[] = [
-            createTagSection({ id: '0', label: 'Thể Loại Truyện', tags: arrayTags.map(x => createTag(x)) }),
-            createTagSection({ id: '1', label: 'Quốc Gia (Chỉ chọn 1)', tags: arrayTags2.map(x => createTag(x)) }),
-            createTagSection({ id: '2', label: 'Tình Trạng (Chỉ chọn 1)', tags: arrayTags3.map(x => createTag(x)) }),
-            createTagSection({ id: '3', label: 'Số Lượng Chương (Chỉ chọn 1)', tags: arrayTags4.map(x => createTag(x)) }),
-            createTagSection({ id: '4', label: 'Sắp xếp (Chỉ chọn 1)', tags: arrayTags5.map(x => createTag(x)) }),
+            createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) }),
         ]
         return tagSections;
     }

@@ -83,7 +83,8 @@ export class ManhuaRock extends Source {
             method: "GET",
         });
         let data = await this.requestManager.schedule(request, 1);
-        let $ = this.cheerio.load(data.data);
+        let html = Buffer.from(createByteArray(data.rawData)).toString();
+        let $ = this.cheerio.load(html);
         let tags: Tag[] = [];
         let creator = '';
         let statusFinal = 1;
@@ -129,7 +130,8 @@ export class ManhuaRock extends Source {
             method,
         });
         let data = await this.requestManager.schedule(request, 1);
-        let $ = this.cheerio.load(data.data);
+        let html = Buffer.from(createByteArray(data.rawData)).toString();
+        let $ = this.cheerio.load(html);
         const chapters: Chapter[] = [];
         var i = 0;
         for (const obj of $('.list-chapters > a').toArray().reverse()) {
