@@ -744,7 +744,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
                 let time = obj.created_at;
                 chapters.push(createChapter({
                     id,
-                    chapNum: chapNum,
+                    chapNum: parseFloat(chapNum),
                     name,
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
