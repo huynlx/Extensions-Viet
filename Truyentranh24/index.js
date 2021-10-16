@@ -801,10 +801,10 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             for (const element of $('.container-lm > section:nth-child(1) > .item-medium').toArray()) {
-                let title = $('.item-title > a', element).text().trim();
+                let title = $('.item-title', element).text().trim();
                 let image = $('.item-thumbnail > img', element).attr("data-src");
-                let id = (_a = $('.item-title > a', element).attr('href').split('/')[1]) !== null && _a !== void 0 ? _a : title;
-                let subtitle = $("span.background-1", element).text().trim();
+                let id = (_a = $('a', element).first().attr('href').split('/')[1]) !== null && _a !== void 0 ? _a : title;
+                let subtitle = $("span.background-8", element).text().trim();
                 // if (!id || !title) continue;
                 popular.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
