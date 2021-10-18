@@ -620,7 +620,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
     }
-    getMangaShareUrl(mangaId) { return (DOMAIN + mangaId); }
+    getMangaShareUrl(mangaId) { return (DOMAIN + mangaId.split("::")[0]); }
     ;
     getMangaDetails(mangaId) {
         var _a;
