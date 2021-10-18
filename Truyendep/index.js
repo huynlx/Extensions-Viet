@@ -705,17 +705,16 @@ class Truyendep extends paperback_extensions_common_1.Source {
                 method
             });
             const response = yield this.requestManager.schedule(request, 1);
+            const $ = this.cheerio.load(response.data);
+            let title = TruyendepParser_1.decodeHTMLEntity($('.entry-title').text().trim()).split('chap');
+            let title1 = title[0].trim();
+            let title2 = title1 + ' chap ' + title[1].trim();
             let arrayImages = (_a = response.data.match(/var content=(.*);/)) === null || _a === void 0 ? void 0 : _a[1];
             let x = arrayImages === null || arrayImages === void 0 ? void 0 : arrayImages.replace(',]', ']');
             let listImages = JSON.parse(x !== null && x !== void 0 ? x : "");
             const pages = [];
-            for (let link of listImages) {
-                if (link.startsWith('//')) {
-                    pages.push(encodeURI("https:" + link));
-                }
-                else {
-                    pages.push(encodeURI(link));
-                }
+            for (let i in listImages) {
+                pages.push(`https://1.truyentranhmanga.com/images/${TruyendepParser_1.ChangeToSlug(title1)}/${TruyendepParser_1.ChangeToSlug(title2)}/${i}.jpg`);
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
@@ -900,7 +899,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: `https://blogtruyen.vn/`
+            referer: DOMAIN
         };
     }
 }
@@ -909,7 +908,7 @@ exports.Truyendep = Truyendep;
 },{"./TruyendepParser":56,"paperback-extensions-common":12}],56:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.convertTime = exports.decodeHTMLEntity = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
+exports.ChangeToSlug = exports.convertTime = exports.decodeHTMLEntity = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
 const entities = require("entities"); //Import package for decoding HTML entities
 const DOMAIN = 'https://truyentranhaudio.online/';
 exports.generateSearch = (query) => {
@@ -1038,6 +1037,35 @@ function convertTime(timeAgo) {
     return time;
 }
 exports.convertTime = convertTime;
+function ChangeToSlug(title) {
+    var slug;
+    //Đổi chữ hoa thành chữ thường
+    slug = title.toLowerCase();
+    //Đổi ký tự có dấu thành không dấu
+    slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a');
+    slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e');
+    slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/gi, 'i');
+    slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/gi, 'o');
+    slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, 'u');
+    slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, 'y');
+    slug = slug.replace(/đ/gi, 'd');
+    //Xóa các ký tự đặt biệt
+    slug = slug.replace(/\`|\~|\!|\@|\#|\||\$|\%|\^|\&|\*|\(|\)|\+|\=|\,|\.|\/|\?|\>|\<|\'|\"|\:|\;|_/gi, '-');
+    //Đổi khoảng trắng thành ký tự gạch ngang
+    slug = slug.replace(/ /gi, "-");
+    //Đổi nhiều ký tự gạch ngang liên tiếp thành 1 ký tự gạch ngang
+    //Phòng trường hợp người nhập vào quá nhiều ký tự trắng
+    slug = slug.replace(/\-\-\-\-\-/gi, '-');
+    slug = slug.replace(/\-\-\-\-/gi, '-');
+    slug = slug.replace(/\-\-\-/gi, '-');
+    slug = slug.replace(/\-\-/gi, '-');
+    //Xóa các ký tự gạch ngang ở đầu và cuối
+    slug = '@' + slug + '@';
+    slug = slug.replace(/\@\-|\-\@|\@/gi, '');
+    //In slug ra textbox có id “slug”
+    return slug;
+}
+exports.ChangeToSlug = ChangeToSlug;
 
 },{"entities":1}]},{},[55])(55)
 });
