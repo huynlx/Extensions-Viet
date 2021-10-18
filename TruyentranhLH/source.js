@@ -906,7 +906,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
         });
     }
     getSearchTags() {
-        var _a, _b, _c;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             const url = `${DOMAIN}tim-kiem`;
             const request = createRequestObject({
@@ -916,7 +916,24 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const arrayTags = [];
-            const arrayTags2 = [];
+            const arrayTags2 = [
+                {
+                    label: 'Tất cả',
+                    id: 'status.'
+                },
+                {
+                    label: 'Đang tiến hành',
+                    id: 'status.1'
+                },
+                {
+                    label: 'Tạm ngưng',
+                    id: 'status.2'
+                },
+                {
+                    label: 'Hoàn thành',
+                    id: 'status.3'
+                }
+            ];
             const arrayTags3 = [];
             //the loai
             for (const tag of $('div.search-gerne_item', 'div.form-group').toArray()) {
@@ -926,18 +943,10 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
                     continue;
                 arrayTags.push({ id: id, label: label });
             }
-            //tinh trang
-            for (const tag of $('option', 'select#list-status').toArray()) {
-                const label = $(tag).text().trim();
-                const id = (_b = 'status.' + $(tag).attr('value')) !== null && _b !== void 0 ? _b : label;
-                if (!id || !label)
-                    continue;
-                arrayTags2.push({ id: id, label: label });
-            }
             //sap xep
             for (const tag of $('option', 'select#list-sort').toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_c = 'sort.' + $(tag).attr('value')) !== null && _c !== void 0 ? _c : label;
+                const id = (_b = 'sort.' + $(tag).attr('value')) !== null && _b !== void 0 ? _b : label;
                 if (!id || !label)
                     continue;
                 arrayTags3.push({ id: id, label: label });
