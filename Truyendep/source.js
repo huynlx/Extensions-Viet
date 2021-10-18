@@ -714,7 +714,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
             let listImages = JSON.parse(x !== null && x !== void 0 ? x : "");
             const pages = [];
             for (let i in listImages) {
-                pages.push(`https://1.truyentranhmanga.com/images/${TruyendepParser_1.ChangeToSlug(title1)}/${TruyendepParser_1.ChangeToSlug(title2)}/${i}.jpg`);
+                pages.push(`https://1.truyentranhmanga.com/images/${TruyendepParser_1.ChangeToSlug(title1)}/${TruyendepParser_1.ChangeToSlug(title2)}/${i}.webp`);
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
