@@ -705,12 +705,17 @@ class Truyendep extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
+            let arrayImages = $.html().match(/content=(.*);/)[1];
+            let x = arrayImages.replace(',]', ']');
+            let listImages = JSON.parse(x);
             const pages = [];
-            for (let obj of $('.vung_doc img').toArray()) {
-                if (!obj.attribs['src'])
-                    continue;
-                let link = obj.attribs['src'].trim();
-                pages.push(encodeURI(link));
+            for (let link of listImages) {
+                if (link.startsWith('//')) {
+                    pages.push(encodeURI("https:" + link));
+                }
+                else {
+                    pages.push(encodeURI(link));
+                }
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
