@@ -635,7 +635,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
             let tags = [];
             let status = 1;
             let creator = '';
-            let desc = $('.detail-manga-intro').text();
+            let desc = $('.entry-content > p').text();
             for (const t of $('.detail-manga-category a').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_b = (_a = $(t).attr('href')) === null || _a === void 0 ? void 0 : _a.trim()) !== null && _b !== void 0 ? _b : genre;
@@ -644,10 +644,10 @@ class Truyendep extends paperback_extensions_common_1.Source {
             for (const x of $('.truyen_info_right > li').toArray()) {
                 switch ($('span', x).text().trim()) {
                     case "Tác Giả:":
-                        creator = $(x).not($(x).children()).text().trim();
+                        creator = $(x).clone().children().remove().end().text().trim();
                         break;
                     case "Trạng Thái :":
-                        status = $(x).not($(x).children()).text().trim().toLowerCase().includes('đang') ? 1 : 0;
+                        status = $(x).clone().children().remove().end().text().trim().toLowerCase().includes('đang') ? 1 : 0;
                         break;
                     case "Thể Loại :":
                         for (const t of $('a', x).toArray()) {
