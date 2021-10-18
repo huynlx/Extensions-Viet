@@ -728,8 +728,8 @@ class Truyendep extends paperback_extensions_common_1.Source {
             });
             //Load empty sections
             sectionCallback(newUpdated);
-            sectionCallback(newAdded);
-            sectionCallback(hot);
+            // sectionCallback(newAdded);
+            // sectionCallback(hot);
             ///Get the section data
             //New Updates
             let request = createRequestObject({
@@ -742,7 +742,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
             for (let manga of $('.wrap_update .update_item').toArray()) {
                 const title = $('a', manga).first().attr('title');
                 const id = (_a = $('a', manga).first().attr('href')) !== null && _a !== void 0 ? _a : title;
-                const image = $('.update_image img', manga).attr('src');
+                const image = $('.update_image img', manga).attr('src').replace('-61x61', '');
                 const sub = 'Chap' + $('a:nth-of-type(1)', manga).text().trim().split('chap')[1];
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
@@ -784,7 +784,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
                 }));
             }
             newAdded.items = newAddItems;
-            sectionCallback(newAdded);
+            // sectionCallback(newAdded);
             // Hot
             request = createRequestObject({
                 url: 'https://truyentranh.net',
@@ -807,7 +807,6 @@ class Truyendep extends paperback_extensions_common_1.Source {
                 }));
             }
             hot.items = popular;
-            sectionCallback(hot);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
@@ -818,7 +817,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
             let url = '';
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `https://truyentranh.net/comic?page=${page}`;
+                    url = `https://truyendep.net/moi-cap-nhat/page/${page}/`;
                     break;
                 case "new_added":
                     url = `https://truyentranh.net/comic-latest?page=${page}`;
@@ -924,14 +923,14 @@ exports.parseSearch = ($) => {
     return mangas;
 };
 exports.parseViewMore = ($) => {
-    var _a;
+    var _a, _b;
     const mangas = [];
     const collectedIds = [];
-    for (let manga of $('.content .card-list > .card').toArray()) {
-        const title = $('.card-title', manga).text().trim();
-        const id = (_a = $('.card-title > a', manga).attr('href')) !== null && _a !== void 0 ? _a : title;
-        const image = $('.card-img', manga).attr('src');
-        const sub = $('.list-chapter > li:first-child > a', manga).text().trim();
+    for (let manga of $('.wrap_update .update_item').toArray()) {
+        const title = $('a', manga).first().attr('title');
+        const id = (_a = $('a', manga).first().attr('href')) !== null && _a !== void 0 ? _a : title;
+        const image = (_b = $('.update_image img', manga).attr('src')) === null || _b === void 0 ? void 0 : _b.replace('-61x61', '');
+        const sub = 'Chap' + $('a:nth-of-type(1)', manga).text().trim().split('chap')[1];
         if (!id || !title)
             continue;
         if (!collectedIds.includes(id)) {
@@ -963,14 +962,14 @@ exports.parseViewMore = ($) => {
 exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
-    for (const page of $("li.page-item", "ul.pagination").toArray()) {
-        const p = Number($('a.page-link', page).text().trim());
+    for (const page of $("a", ".wp-pagenavi").toArray()) {
+        const p = Number($(page).text().trim());
         if (isNaN(p))
             continue;
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($("ul.pagination > li.page-item.active > a.page-link").text().trim());
+    const currentPage = Number($(".wp-pagenavi .current").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
