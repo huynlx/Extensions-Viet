@@ -679,7 +679,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
                 let d = time[0].split('-');
                 let t = time[1].split(':');
                 chapters.push(createChapter({
-                    id: DOMAIN + mangaId + '/' + obj.slug,
+                    id: DOMAIN + mangaId.split("::")[0] + '/' + obj.slug,
                     chapNum: Number(chapNum),
                     name,
                     mangaId: mangaId,
