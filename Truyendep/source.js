@@ -635,7 +635,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
             let tags = [];
             let status = 1;
             let creator = '';
-            let desc = $('.entry-content > p').text();
+            let desc = $('.entry-content').text();
             for (const t of $('.detail-manga-category a').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_b = (_a = $(t).attr('href')) === null || _a === void 0 ? void 0 : _a.trim()) !== null && _b !== void 0 ? _b : genre;
@@ -644,10 +644,10 @@ class Truyendep extends paperback_extensions_common_1.Source {
             for (const x of $('.truyen_info_right > li').toArray()) {
                 switch ($('span', x).text().trim()) {
                     case "Tác Giả:":
-                        creator = $(x).clone().children().remove().end().text().trim();
+                        creator = $('a', x).text().trim();
                         break;
                     case "Trạng Thái :":
-                        status = $(x).clone().children().remove().end().text().trim().toLowerCase().includes('đang') ? 1 : 0;
+                        status = $('a', x).text().trim().toLowerCase().includes('đang') ? 1 : 0;
                         break;
                     case "Thể Loại :":
                         for (const t of $('a', x).toArray()) {
@@ -663,7 +663,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
                 id: mangaId,
                 author: creator,
                 artist: creator,
-                desc,
+                desc: TruyendepParser_1.decodeHTMLEntity(desc),
                 titles: [$('.entry-title').text()],
                 image: image,
                 status,
@@ -904,7 +904,7 @@ exports.Truyendep = Truyendep;
 },{"./TruyendepParser":56,"paperback-extensions-common":12}],56:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.convertTime = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
+exports.convertTime = exports.decodeHTMLEntity = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
 const entities = require("entities"); //Import package for decoding HTML entities
 const DOMAIN = 'https://truyentranhaudio.online/';
 exports.generateSearch = (query) => {
@@ -987,7 +987,7 @@ exports.isLastPage = ($) => {
         isLast = true;
     return isLast;
 };
-const decodeHTMLEntity = (str) => {
+exports.decodeHTMLEntity = (str) => {
     return entities.decodeHTML(str);
 };
 function convertTime(timeAgo) {
