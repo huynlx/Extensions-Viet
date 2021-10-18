@@ -698,16 +698,16 @@ class Truyendep extends paperback_extensions_common_1.Source {
         });
     }
     getChapterDetails(mangaId, chapterId) {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `${chapterId}`,
+                url: chapterId,
                 method
             });
             const response = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(response.data);
-            let arrayImages = $.html().match(/content=(.*);/)[1];
-            let x = arrayImages.replace(',]', ']');
-            let listImages = JSON.parse(x);
+            let arrayImages = (_a = response.data.match(/content=(.*);/)) === null || _a === void 0 ? void 0 : _a[1];
+            let x = arrayImages === null || arrayImages === void 0 ? void 0 : arrayImages.replace(',]', ']');
+            let listImages = JSON.parse(x !== null && x !== void 0 ? x : "");
             const pages = [];
             for (let link of listImages) {
                 if (link.startsWith('//')) {
