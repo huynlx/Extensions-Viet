@@ -623,7 +623,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
     getMangaShareUrl(mangaId) { return `${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
                 url: mangaId,
@@ -634,20 +634,37 @@ class Truyendep extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             let tags = [];
             let status = 1;
+            let creator = '';
             let desc = $('.detail-manga-intro').text();
             for (const t of $('.detail-manga-category a').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_b = (_a = $(t).attr('href')) === null || _a === void 0 ? void 0 : _a.trim()) !== null && _b !== void 0 ? _b : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            const image = (_c = $('.detail-img').attr('data-image-full')) !== null && _c !== void 0 ? _c : "fuck";
-            const creator = $('.detail-banner-info ul li:nth-child(3) > a > span').text();
+            for (const x of $('.truyen_info_right > li').toArray()) {
+                switch ($('span', x).text().trim()) {
+                    case "Tác Giả:":
+                        creator = $(x).contents().not($(x).children()).text().trim();
+                        break;
+                    case "Trạng Thái :":
+                        status = $(x).contents().not($(x).children()).text().trim().toLowerCase().includes('đang') ? 1 : 0;
+                        break;
+                    case "Thể Loại :":
+                        for (const t of $('a', x).toArray()) {
+                            const genre = $(t).text().trim();
+                            const id = (_c = $(t).attr('href')) !== null && _c !== void 0 ? _c : genre;
+                            tags.push(createTag({ label: genre, id }));
+                        }
+                        break;
+                }
+            }
+            const image = (_d = $('.truyen_info_left img').attr('src').replace('-162x250', '')) !== null && _d !== void 0 ? _d : "fuck";
             return createManga({
                 id: mangaId,
                 author: creator,
                 artist: creator,
                 desc,
-                titles: [$('.detail-manga-title > h1').text()],
+                titles: [$('.entry-title').text()],
                 image: image,
                 status,
                 hentai: false,
@@ -661,24 +678,20 @@ class Truyendep extends paperback_extensions_common_1.Source {
                 url: mangaId,
                 method,
             });
-            var i = 0;
             const response = yield this.requestManager.schedule(request, 1);
             // let html = Buffer.from(createByteArray(response.rawData)).toString()
             const $ = this.cheerio.load(response.data);
             const chapters = [];
-            for (const obj of $(".chapter-list-item-box").toArray().reverse()) {
-                i++;
-                var chapNum = parseFloat($('.chapter-select > a', obj).text().split(' ')[1]);
-                var time = $('.chapter-info > time', obj).text().trim().split(', ');
-                var d = time[0].split('/');
-                var t = time[1];
+            for (const obj of $(".chapter-list .row").toArray()) {
+                var chapNum = parseFloat($('span:first-child > a', obj).text().split(' ').pop());
+                var time = $('span:last-child', obj).text().trim().split('-');
                 chapters.push(createChapter({
-                    id: $('.chapter-select > a', obj).attr('href'),
-                    chapNum: isNaN(chapNum) ? i : chapNum,
+                    id: $('span:first-child > a', obj).attr('href'),
+                    chapNum: chapNum,
                     name: $('.chapter-select > a', obj).text(),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: new Date(d[1] + '/' + d[0] + '/' + d[2] + ' ' + t)
+                    time: new Date(time[1] + '/' + time[0] + '/' + time[2])
                 }));
             }
             return chapters;
@@ -693,7 +706,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
-            for (let obj of $('.manga-reading-box > .page-chapter > img').toArray()) {
+            for (let obj of $('.vung_doc img').toArray()) {
                 if (!obj.attribs['src'])
                     continue;
                 let link = obj.attribs['src'].trim();
@@ -743,7 +756,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
                 const title = $('a', manga).first().attr('title');
                 const id = (_a = $('a', manga).first().attr('href')) !== null && _a !== void 0 ? _a : title;
                 const image = $('.update_image img', manga).attr('src').replace('-61x61', '');
-                const sub = 'Chap' + $('a:nth-of-type(1)', manga).text().trim().split('chap')[1];
+                const sub = 'Chap' + $('a:nth-of-type(1)', manga).text().trim().split('chap')[1] + ' | ' + $('.nowrap > em').text().trim();
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
@@ -930,7 +943,7 @@ exports.parseViewMore = ($) => {
         const title = $('a', manga).first().attr('title');
         const id = (_a = $('a', manga).first().attr('href')) !== null && _a !== void 0 ? _a : title;
         const image = (_b = $('.update_image img', manga).attr('src')) === null || _b === void 0 ? void 0 : _b.replace('-61x61', '');
-        const sub = 'Chap' + $('a:nth-of-type(1)', manga).text().trim().split('chap')[1];
+        const sub = 'Chap' + $('a:nth-of-type(1)', manga).text().trim().split('chap')[1] + ' | ' + $('.nowrap > em').text().trim();
         if (!id || !title)
             continue;
         if (!collectedIds.includes(id)) {
