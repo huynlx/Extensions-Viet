@@ -619,7 +619,6 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             requestsPerSecond: 5,
             requestTimeout: 20000
         });
-        this.dataId = '';
     }
     getMangaShareUrl(mangaId) { return (DOMAIN + mangaId); }
     ;
@@ -633,11 +632,11 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             });
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            let tags = [];
+            // let tags: Tag[] = [];
             let creator = '';
             let statusFinal = 1;
             creator = $('.manga-author > span').text().trim();
-            this.dataId = $('.container').attr('data-id');
+            let dataId = $('.container').attr('data-id');
             // for (const t of $('a', test).toArray()) {
             //     const genre = $(t).text().trim();
             //     const id = $(t).attr('href') ?? genre;
@@ -648,7 +647,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             let desc = $(".manga-content").text();
             const image = (_a = $('.manga-thumbnail > img').attr("data-src")) !== null && _a !== void 0 ? _a : "";
             return createManga({
-                id: mangaId,
+                id: mangaId + "::" + dataId,
                 author: creator,
                 artist: creator,
                 desc: desc,
@@ -663,7 +662,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: 'https://truyentranh24.com/api/mangas/' + this.dataId + '/chapters?offset=0&limit=0',
+                url: 'https://truyentranh24.com/api/mangas/' + mangaId.split("::")[1] + '/chapters?offset=0&limit=0',
                 method,
                 headers: {
                     'x-requested-with': 'XMLHttpRequest',
