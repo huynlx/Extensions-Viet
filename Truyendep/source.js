@@ -705,7 +705,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
                 method
             });
             const response = yield this.requestManager.schedule(request, 1);
-            let arrayImages = (_a = response.data.match(/content=(.*);/)) === null || _a === void 0 ? void 0 : _a[1];
+            let arrayImages = (_a = response.data.match(/var content=(.*);/)) === null || _a === void 0 ? void 0 : _a[1];
             let x = arrayImages === null || arrayImages === void 0 ? void 0 : arrayImages.replace(',]', ']');
             let listImages = JSON.parse(x !== null && x !== void 0 ? x : "");
             const pages = [];
