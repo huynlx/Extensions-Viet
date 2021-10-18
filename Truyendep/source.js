@@ -635,7 +635,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
             let tags = [];
             let status = 1;
             let creator = '';
-            let desc = $('.entry-content').text();
+            let desc = $('.entry-content p').text();
             for (const t of $('.detail-manga-category a').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_b = (_a = $(t).attr('href')) === null || _a === void 0 ? void 0 : _a.trim()) !== null && _b !== void 0 ? _b : genre;
@@ -664,7 +664,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
                 author: creator,
                 artist: creator,
                 desc: TruyendepParser_1.decodeHTMLEntity(desc),
-                titles: [$('.entry-title').text()],
+                titles: [TruyendepParser_1.decodeHTMLEntity($('.entry-title').text())],
                 image: image,
                 status,
                 hentai: false,
@@ -688,7 +688,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
                 chapters.push(createChapter({
                     id: $('span:first-child > a', obj).attr('href'),
                     chapNum: chapNum,
-                    name: $('.chapter-select > a', obj).text(),
+                    name: '',
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
                     time: new Date(time[1] + '/' + time[0] + '/' + time[2])
@@ -895,7 +895,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
     }
     globalRequestHeaders() {
         return {
-            referer: `${DOMAIN}`
+            referer: `https://blogtruyen.vn/`
         };
     }
 }
