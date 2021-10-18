@@ -644,7 +644,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
             for (const x of $('.truyen_info_right > li').toArray()) {
                 switch ($('span', x).text().trim()) {
                     case "Tác Giả:":
-                        creator = $('a', x).text().trim();
+                        creator = $('a', x).text().trim() ? $('a', x).text().trim() : $(x).clone().children().remove().end().text().trim();
                         break;
                     case "Trạng Thái :":
                         status = $('a', x).text().trim().toLowerCase().includes('đang') ? 1 : 0;
