@@ -733,7 +733,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
-                title: "HOT UPDATE",
+                title: "HOT",
                 view_more: true,
             });
             let newUpdated = createHomeSection({
@@ -899,7 +899,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            const manga = TruyendepParser_1.parseViewMore($);
+            const manga = TruyendepParser_1.parseViewMore($, homepageSectionId);
             metadata = !TruyendepParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: manga,
@@ -989,25 +989,46 @@ exports.parseSearch = ($) => {
     }
     return mangas;
 };
-exports.parseViewMore = ($) => {
-    var _a, _b;
+exports.parseViewMore = ($, homepageSectionId) => {
+    var _a, _b, _c, _d, _e;
     const mangas = [];
     const collectedIds = [];
-    for (let manga of $('.wrap_update .update_item').toArray()) {
-        const title = $('a', manga).first().attr('title');
-        const id = (_a = $('a', manga).first().attr('href')) !== null && _a !== void 0 ? _a : title;
-        const image = (_b = $('.update_image img', manga).attr('src')) === null || _b === void 0 ? void 0 : _b.replace('-61x61', '');
-        const sub = 'Chap' + $('a:nth-of-type(1)', manga).text().trim().split('chap')[1];
-        if (!id || !title)
-            continue;
-        if (!collectedIds.includes(id)) {
+    if (homepageSectionId === 'new_updated') {
+        for (let manga of $('.wrap_update .update_item').toArray()) {
+            const title = $('a', manga).first().attr('title');
+            const id = (_a = $('a', manga).first().attr('href')) !== null && _a !== void 0 ? _a : title;
+            const image = (_b = $('.update_image img', manga).attr('src')) === null || _b === void 0 ? void 0 : _b.replace('-61x61', '');
+            const sub = 'Chap' + $('a:nth-of-type(1)', manga).text().trim().split('chap')[1];
+            if (!id || !title)
+                continue;
+            if (!collectedIds.includes(id)) {
+                mangas.push(createMangaTile({
+                    id: id,
+                    image: image !== null && image !== void 0 ? image : "",
+                    title: createIconText({ text: exports.decodeHTMLEntity(title) }),
+                    subtitleText: createIconText({ text: sub }),
+                }));
+                collectedIds.push(id);
+            }
+        }
+    }
+    else {
+        for (let manga of $('.wrap_update .update_item').toArray()) {
+            const title = (_c = $('h3.nowrap a', manga).attr('title')) !== null && _c !== void 0 ? _c : "";
+            const id = (_d = $('h3.nowrap a', manga).attr('href')) !== null && _d !== void 0 ? _d : title;
+            const image = (_e = $('a img', manga).attr('src')) === null || _e === void 0 ? void 0 : _e.split('-');
+            const ext = image === null || image === void 0 ? void 0 : image.splice(-1)[0].split('.')[1];
+            const sub = 'Chap' + $('a', manga).last().text().trim().split('chap')[1];
             mangas.push(createMangaTile({
                 id: id,
-                image: image !== null && image !== void 0 ? image : "",
-                title: createIconText({ text: exports.decodeHTMLEntity(title) }),
-                subtitleText: createIconText({ text: sub }),
+                image: (image === null || image === void 0 ? void 0 : image.join('-')) + '.' + ext,
+                title: createIconText({
+                    text: exports.decodeHTMLEntity(title),
+                }),
+                subtitleText: createIconText({
+                    text: sub,
+                }),
             }));
-            collectedIds.push(id);
         }
     }
     return mangas;
