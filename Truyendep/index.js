@@ -1003,7 +1003,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
             const arrayTags = [];
             const collectedIds = [];
             //the loai
-            for (const tag of $('.dropdown-menu > ul > li > a').toArray()) {
+            for (const tag of $('.theloai a').toArray()) {
                 arrayTags.push({ id: $(tag).attr('href'), label: $(tag).text().trim() });
             }
             const tagSections = [
