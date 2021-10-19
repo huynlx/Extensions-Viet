@@ -789,12 +789,13 @@ class Truyendep extends paperback_extensions_common_1.Source {
             for (let manga of $('.wrap_update .update_item').toArray()) {
                 const title = $('h3.nowrap a', manga).attr('title');
                 const id = (_b = $('h3.nowrap a', manga).attr('href')) !== null && _b !== void 0 ? _b : title;
-                const image = $('a img', manga).attr('src').split('-').splice(-1).join('-') + '.jpg';
+                const image = $('a img', manga).attr('src').split('-');
+                const ext = image.splice(-1)[0].split('.')[1];
                 const sub = 'Chap' + $('a', manga).last().text().trim().split('chap')[1];
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
                     id: id,
-                    image: image,
+                    image: image.join('-') + ext,
                     title: createIconText({
                         text: TruyendepParser_1.decodeHTMLEntity(title),
                     }),
@@ -816,12 +817,13 @@ class Truyendep extends paperback_extensions_common_1.Source {
             for (let manga of $('.wrap_update .update_item').toArray()) {
                 const title = $('h3.nowrap a', manga).attr('title');
                 const id = (_c = $('h3.nowrap a', manga).attr('href')) !== null && _c !== void 0 ? _c : title;
-                const image = $('a img', manga).attr('src').split('-').splice(-1).join('-') + '.jpg';
+                const image = $('a img', manga).attr('src').split('-');
+                const ext = image.splice(-1)[0].split('.')[1];
                 const sub = 'Chap' + $('a', manga).last().text().trim().split('chap')[1];
                 // if (!id || !title) continue;
                 popular.push(createMangaTile({
                     id: id,
-                    image: image,
+                    image: image.join('-') + ext,
                     title: createIconText({
                         text: TruyendepParser_1.decodeHTMLEntity(title),
                     }),
