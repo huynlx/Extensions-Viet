@@ -1016,13 +1016,36 @@ class Truyendep extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: query.title ? encodeURI(`https://truyendep.net/page/${page}/?s=${query.title}`) : `${tags[0]}/page/${page}/`,
+                url: query.title ? encodeURI(`https://truyendep.net/wp-content/themes/manga/list-manga-front.js?nocache=1634580614`) : `${tags[0]}/page/${page}/`,
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
-            const tiles = TruyendepParser_1.parseSearch($);
-            metadata = !TruyendepParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            let tiles = [];
+            if (query.title) {
+                var json = JSON.parse(data.data).filter(function (el) {
+                    var _a, _b;
+                    return (el.label.toLowerCase() + "::" + TruyendepParser_1.ChangeToSlug(el.label)).includes((_b = (_a = query.title) === null || _a === void 0 ? void 0 : _a.toLowerCase()) !== null && _b !== void 0 ? _b : "");
+                });
+                for (let manga of json) {
+                    const title = manga.label;
+                    const id = manga.link;
+                    const image = manga.img.split('-');
+                    const ext = image === null || image === void 0 ? void 0 : image.splice(-1)[0].split('.')[1];
+                    tiles.push(createMangaTile({
+                        id: id,
+                        image: (image === null || image === void 0 ? void 0 : image.join('-')) + '.' + ext,
+                        title: createIconText({
+                            text: TruyendepParser_1.decodeHTMLEntity(title),
+                        })
+                    }));
+                }
+                metadata = undefined;
+            }
+            else {
+                let $ = this.cheerio.load(data.data);
+                tiles = TruyendepParser_1.parseSearch($);
+                metadata = !TruyendepParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            }
             return createPagedResults({
                 results: tiles,
                 metadata
@@ -1061,7 +1084,7 @@ exports.Truyendep = Truyendep;
 },{"./TruyendepParser":56,"paperback-extensions-common":12}],56:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.decodeHTMLEntity = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
+exports.ChangeToSlug = exports.decodeHTMLEntity = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
 const entities = require("entities"); //Import package for decoding HTML entities
 exports.generateSearch = (query) => {
     var _a;
@@ -1147,6 +1170,21 @@ exports.isLastPage = ($) => {
 exports.decodeHTMLEntity = (str) => {
     return entities.decodeHTML(str);
 };
+function ChangeToSlug(title) {
+    var title, slug;
+    //Đổi chữ hoa thành chữ thường
+    slug = title.toLowerCase();
+    //Đổi ký tự có dấu thành không dấu
+    slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a');
+    slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e');
+    slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/gi, 'i');
+    slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/gi, 'o');
+    slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, 'u');
+    slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, 'y');
+    slug = slug.replace(/đ/gi, 'd');
+    return slug;
+}
+exports.ChangeToSlug = ChangeToSlug;
 
 },{"entities":1}]},{},[55])(55)
 });
