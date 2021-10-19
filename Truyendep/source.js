@@ -690,7 +690,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
                 var time = $('span:last-child', obj).text().trim().split('-');
                 chapters.push(createChapter({
                     id: $('span:first-child > a', obj).attr('href'),
-                    chapNum: chapNum,
+                    chapNum: isNaN(chapNum) ? i : chapNum,
                     name: '',
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
@@ -708,10 +708,6 @@ class Truyendep extends paperback_extensions_common_1.Source {
                 method
             });
             const response = yield this.requestManager.schedule(request, 1);
-            // const $ = this.cheerio.load(response.data);
-            // let title = decodeHTMLEntity($('.entry-title').text().trim()).split('chap');
-            // let title1 = title[0].trim();
-            // let title2 = title1 + ' chap ' + title[1].trim();
             let arrayImages = (_a = response.data.match(/var content=(.*);/)) === null || _a === void 0 ? void 0 : _a[1];
             let x = arrayImages === null || arrayImages === void 0 ? void 0 : arrayImages.replace(',]', ']');
             let listImages = JSON.parse(x !== null && x !== void 0 ? x : "");
@@ -729,8 +725,13 @@ class Truyendep extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function* () {
+            let featured = createHomeSection({
+                id: 'featured',
+                title: "Truyện Đề Cử",
+                type: paperback_extensions_common_1.HomeSectionType.featured
+            });
             let hot = createHomeSection({
                 id: 'hot',
                 title: "HOT",
@@ -752,22 +753,48 @@ class Truyendep extends paperback_extensions_common_1.Source {
                 view_more: true,
             });
             //Load empty sections
+            sectionCallback(featured);
             sectionCallback(newUpdated);
             sectionCallback(newAdded);
             sectionCallback(hot);
             sectionCallback(view);
             ///Get the section data
-            //New Updates
+            //featured
             let request = createRequestObject({
+                url: 'https://truyendep.net/',
+                method: "GET",
+            });
+            let featuredItems = [];
+            let data = yield this.requestManager.schedule(request, 1);
+            let $ = this.cheerio.load(data.data);
+            for (let manga of $('.top_thang li').toArray()) {
+                const title = $('a', manga).last().text().trim();
+                const id = (_a = $('h3.nowrap a', manga).attr('href')) !== null && _a !== void 0 ? _a : title;
+                const image = $('a:first-child img', manga).attr('src').split('-');
+                const ext = image.splice(-1)[0].split('.')[1];
+                // const sub = 'Chap' + $('a', manga).last().text().trim().split('chap')[1];
+                // if (!id || !subtitle) continue;
+                featuredItems.push(createMangaTile({
+                    id: id,
+                    image: image.join('-') + '.' + ext,
+                    title: createIconText({
+                        text: TruyendepParser_1.decodeHTMLEntity(title),
+                    }),
+                }));
+            }
+            featured.items = featuredItems;
+            sectionCallback(featured);
+            //New Updates
+            request = createRequestObject({
                 url: 'https://truyendep.net/moi-cap-nhat/',
                 method: "GET",
             });
             let newUpdatedItems = [];
-            let data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
+            data = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(data.data);
             for (let manga of $('.wrap_update .update_item').toArray()) {
                 const title = $('a', manga).first().attr('title');
-                const id = (_a = $('a', manga).first().attr('href')) !== null && _a !== void 0 ? _a : title;
+                const id = (_b = $('a', manga).first().attr('href')) !== null && _b !== void 0 ? _b : title;
                 const image = $('.update_image img', manga).attr('src').replace('-61x61', '');
                 const sub = 'Chap' + $('a:nth-of-type(1)', manga).text().trim().split('chap')[1];
                 // if (!id || !subtitle) continue;
@@ -794,7 +821,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
             $ = this.cheerio.load(data.data);
             for (let manga of $('.wrap_update .update_item').toArray()) {
                 const title = $('h3.nowrap a', manga).attr('title');
-                const id = (_b = $('h3.nowrap a', manga).attr('href')) !== null && _b !== void 0 ? _b : title;
+                const id = (_c = $('h3.nowrap a', manga).attr('href')) !== null && _c !== void 0 ? _c : title;
                 const image = $('a img', manga).attr('src').split('-');
                 const ext = image.splice(-1)[0].split('.')[1];
                 const sub = 'Chap' + $('a', manga).last().text().trim().split('chap')[1];
@@ -822,7 +849,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
             $ = this.cheerio.load(data.data);
             for (let manga of $('.wrap_update .update_item').toArray()) {
                 const title = $('h3.nowrap a', manga).attr('title');
-                const id = (_c = $('h3.nowrap a', manga).attr('href')) !== null && _c !== void 0 ? _c : title;
+                const id = (_d = $('h3.nowrap a', manga).attr('href')) !== null && _d !== void 0 ? _d : title;
                 const image = $('a img', manga).attr('src').split('-');
                 const ext = image.splice(-1)[0].split('.')[1];
                 const sub = 'Chap' + $('a', manga).last().text().trim().split('chap')[1];
@@ -850,7 +877,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
             $ = this.cheerio.load(data.data);
             for (let manga of $('.wrap_update .update_item').toArray()) {
                 const title = $('h3.nowrap a', manga).attr('title');
-                const id = (_d = $('h3.nowrap a', manga).attr('href')) !== null && _d !== void 0 ? _d : title;
+                const id = (_e = $('h3.nowrap a', manga).attr('href')) !== null && _e !== void 0 ? _e : title;
                 const image = $('a img', manga).attr('src').split('-');
                 const ext = image.splice(-1)[0].split('.')[1];
                 const sub = 'Chap' + $('a', manga).last().text().trim().split('chap')[1];
@@ -963,7 +990,7 @@ exports.Truyendep = Truyendep;
 },{"./TruyendepParser":56,"paperback-extensions-common":12}],56:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ChangeToSlug = exports.convertTime = exports.decodeHTMLEntity = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
+exports.convertTime = exports.decodeHTMLEntity = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
 const entities = require("entities"); //Import package for decoding HTML entities
 const DOMAIN = 'https://truyentranhaudio.online/';
 exports.generateSearch = (query) => {
@@ -1107,41 +1134,6 @@ function convertTime(timeAgo) {
     return time;
 }
 exports.convertTime = convertTime;
-function ChangeToSlug(title) {
-    var slug;
-    //Đổi chữ hoa thành chữ thường
-    slug = title.toLowerCase();
-    //Đổi ký tự có dấu thành không dấu
-    slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a');
-    slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e');
-    slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/gi, 'i');
-    slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/gi, 'o');
-    slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, 'u');
-    slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, 'y');
-    slug = slug.replace(/đ/gi, 'd');
-    //Xóa các ký tự đặt biệt
-    slug = slug.replace(/\`|\~|\!|\@|\#|\||\$|\%|\^|\&|\*|\(|\)|\+|\=|\,|\.|\/|\?|\>|\<|\'|\"|\:|\;|_/gi, '-');
-    //Đổi khoảng trắng thành ký tự gạch ngang
-    slug = slug.replace(/ /gi, "-");
-    //Phòng trường hợp người nhập vào quá nhiều ký tự trắng
-    slug = slug.replace(/\-\-\-\-\-/gi, '-');
-    slug = slug.replace(/\-\-\-\-/gi, '-');
-    slug = slug.replace(/\-\-\-/gi, '-');
-    slug = slug.replace(/\-\-/gi, '-');
-    //Xóa các ký tự gạch ngang ở đầu và cuối
-    slug = '@' + slug + '@';
-    slug = slug.replace(/\@\-|\-\@|\@/gi, '');
-    //Đổi nhiều ký tự gạch ngang liên tiếp thành 1 ký tự gạch ngang
-    slug = slug.replace('-–-', '-');
-    slug = slug.replace('-–-', '-');
-    slug = slug.replace('-–-', '-');
-    slug = slug.replace('-–-', '-');
-    slug = slug.replace('-–-', '-');
-    slug = slug.replace('-–-', '-');
-    //In slug ra textbox có id “slug”
-    return slug;
-}
-exports.ChangeToSlug = ChangeToSlug;
 
 },{"entities":1}]},{},[55])(55)
 });
