@@ -1045,8 +1045,8 @@ class Truyendep extends paperback_extensions_common_1.Source {
             else {
                 let $ = this.cheerio.load(data.data);
                 if (tags[0].includes('tieudiem')) {
-                    for (let manga of $('.wrap-focus a').toArray()) {
-                        const title = (_d = $('img', manga).attr('alt')) !== null && _d !== void 0 ? _d : "";
+                    for (let manga of $('.feature_topxem a').toArray()) {
+                        const title = (_d = $('img', manga).attr('title')) !== null && _d !== void 0 ? _d : "";
                         const id = (_e = $(manga).attr('href')) !== null && _e !== void 0 ? _e : title;
                         const image = (_f = $('img', manga).attr('src')) === null || _f === void 0 ? void 0 : _f.split('-');
                         const ext = image === null || image === void 0 ? void 0 : image.splice(-1)[0].split('.')[1];
