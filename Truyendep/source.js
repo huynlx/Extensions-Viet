@@ -997,24 +997,18 @@ exports.parseSearch = ($) => {
 exports.parseViewMore = ($, select) => {
     var _a, _b, _c, _d, _e;
     const mangas = [];
-    const collectedIds = [];
     if (select === 1) {
         for (let manga of $('.wrap_update .update_item').toArray()) {
             const title = $('a', manga).first().attr('title');
             const id = (_a = $('a', manga).first().attr('href')) !== null && _a !== void 0 ? _a : title;
             const image = (_b = $('.update_image img', manga).attr('src')) === null || _b === void 0 ? void 0 : _b.replace('-61x61', '');
             const sub = 'Chap' + $('a:nth-of-type(1)', manga).text().trim().split('chap')[1];
-            if (!id || !title)
-                continue;
-            if (!collectedIds.includes(id)) {
-                mangas.push(createMangaTile({
-                    id: id,
-                    image: image !== null && image !== void 0 ? image : "",
-                    title: createIconText({ text: exports.decodeHTMLEntity(title) }),
-                    subtitleText: createIconText({ text: sub }),
-                }));
-                collectedIds.push(id);
-            }
+            mangas.push(createMangaTile({
+                id: id !== null && id !== void 0 ? id : "",
+                image: image !== null && image !== void 0 ? image : "",
+                title: createIconText({ text: exports.decodeHTMLEntity(title !== null && title !== void 0 ? title : "") }),
+                subtitleText: createIconText({ text: sub }),
+            }));
         }
     }
     else {
@@ -1024,21 +1018,16 @@ exports.parseViewMore = ($, select) => {
             const image = (_e = $('a img', manga).attr('src')) === null || _e === void 0 ? void 0 : _e.split('-');
             const ext = image === null || image === void 0 ? void 0 : image.splice(-1)[0].split('.')[1];
             const sub = 'Chap' + $('a', manga).last().text().trim().split('chap')[1];
-            if (!id || !title)
-                continue;
-            if (!collectedIds.includes(id)) {
-                mangas.push(createMangaTile({
-                    id: id,
-                    image: (image === null || image === void 0 ? void 0 : image.join('-')) + '.' + ext,
-                    title: createIconText({
-                        text: exports.decodeHTMLEntity(title),
-                    }),
-                    subtitleText: createIconText({
-                        text: sub,
-                    }),
-                }));
-                collectedIds.push(id);
-            }
+            mangas.push(createMangaTile({
+                id: id,
+                image: (image === null || image === void 0 ? void 0 : image.join('-')) + '.' + ext,
+                title: createIconText({
+                    text: exports.decodeHTMLEntity(title),
+                }),
+                subtitleText: createIconText({
+                    text: sub,
+                }),
+            }));
         }
     }
     return mangas;
