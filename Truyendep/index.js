@@ -708,16 +708,16 @@ class Truyendep extends paperback_extensions_common_1.Source {
                 method
             });
             const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
-            let title = TruyendepParser_1.decodeHTMLEntity($('.entry-title').text().trim()).split('chap');
-            let title1 = title[0].trim();
-            let title2 = title1 + ' chap ' + title[1].trim();
+            // const $ = this.cheerio.load(response.data);
+            // let title = decodeHTMLEntity($('.entry-title').text().trim()).split('chap');
+            // let title1 = title[0].trim();
+            // let title2 = title1 + ' chap ' + title[1].trim();
             let arrayImages = (_a = response.data.match(/var content=(.*);/)) === null || _a === void 0 ? void 0 : _a[1];
             let x = arrayImages === null || arrayImages === void 0 ? void 0 : arrayImages.replace(',]', ']');
             let listImages = JSON.parse(x !== null && x !== void 0 ? x : "");
             const pages = [];
             for (let i in listImages) {
-                pages.push(`https://1.truyentranhmanga.com/images/${TruyendepParser_1.ChangeToSlug(title1)}/${TruyendepParser_1.ChangeToSlug(title2)}/${i}.${listImages[i].includes('webp') ? 'webp' : 'jpg'}`);
+                pages.push(`https://1.truyentranhmanga.com/images/${mangaId.split('/')[3]}/${chapterId.split('/')[3]}/${i}.${listImages[i].includes('webp') ? 'webp' : 'jpg'}`);
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
