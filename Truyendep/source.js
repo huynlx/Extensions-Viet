@@ -729,7 +729,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
@@ -763,13 +763,13 @@ class Truyendep extends paperback_extensions_common_1.Source {
                 const title = $('a', manga).first().attr('title');
                 const id = (_a = $('a', manga).first().attr('href')) !== null && _a !== void 0 ? _a : title;
                 const image = $('.update_image img', manga).attr('src').replace('-61x61', '');
-                const sub = 'Chap' + $('a:nth-of-type(1)', manga).text().trim().split('chap')[1] + ' | ' + $('.nowrap > em').text().trim();
+                const sub = 'Chap' + $('a:nth-of-type(1)', manga).text().trim().split('chap')[1];
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
                     image: image,
                     title: createIconText({
-                        text: title,
+                        text: TruyendepParser_1.decodeHTMLEntity(title),
                     }),
                     subtitleText: createIconText({
                         text: sub,
@@ -807,17 +807,17 @@ class Truyendep extends paperback_extensions_common_1.Source {
             // sectionCallback(newAdded);
             // Hot
             request = createRequestObject({
-                url: 'https://truyentranh.net',
+                url: 'https://truyendep.net/hot/',
                 method: "GET",
             });
             let popular = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
             for (let manga of $('#bottomslider .list-slider-item').toArray()) {
-                const title = $('.card', manga).attr('title');
-                const id = $('.card', manga).attr('href');
-                const image = $('.card-img', manga).attr('src');
-                const sub = $('.card-chapter', manga).text().trim();
+                const title = $('h3.nowrap a', manga).attr('title');
+                const id = (_c = $('h3.nowrap a', manga).attr('href')) !== null && _c !== void 0 ? _c : title;
+                const image = $('a img', manga).attr('src').replace('-87x130', '');
+                const sub = 'Chap' + $('a', manga).last().text().trim().split('chap')[1];
                 // if (!id || !title) continue;
                 popular.push(createMangaTile({
                     id: id,
@@ -827,6 +827,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
                 }));
             }
             hot.items = popular;
+            sectionCallback(hot);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
@@ -950,14 +951,14 @@ exports.parseViewMore = ($) => {
         const title = $('a', manga).first().attr('title');
         const id = (_a = $('a', manga).first().attr('href')) !== null && _a !== void 0 ? _a : title;
         const image = (_b = $('.update_image img', manga).attr('src')) === null || _b === void 0 ? void 0 : _b.replace('-61x61', '');
-        const sub = 'Chap' + $('a:nth-of-type(1)', manga).text().trim().split('chap')[1] + ' | ' + $('.nowrap > em').text().trim();
+        const sub = 'Chap' + $('a:nth-of-type(1)', manga).text().trim().split('chap')[1];
         if (!id || !title)
             continue;
         if (!collectedIds.includes(id)) {
             mangas.push(createMangaTile({
                 id: id,
                 image: image !== null && image !== void 0 ? image : "",
-                title: createIconText({ text: title }),
+                title: createIconText({ text: exports.decodeHTMLEntity(title) }),
                 subtitleText: createIconText({ text: sub }),
             }));
             collectedIds.push(id);
