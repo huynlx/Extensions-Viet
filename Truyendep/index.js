@@ -795,7 +795,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
                     id: id,
-                    image: image.join('-') + ext,
+                    image: image.join('-') + '.' + ext,
                     title: createIconText({
                         text: TruyendepParser_1.decodeHTMLEntity(title),
                     }),
@@ -823,7 +823,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
                 // if (!id || !title) continue;
                 popular.push(createMangaTile({
                     id: id,
-                    image: image.join('-') + ext,
+                    image: image.join('-') + '.' + ext,
                     title: createIconText({
                         text: TruyendepParser_1.decodeHTMLEntity(title),
                     }),
