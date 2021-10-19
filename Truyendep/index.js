@@ -1011,7 +1011,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
         });
     }
     getSearchResults(query, metadata) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d, _e, _f;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
@@ -1043,8 +1043,26 @@ class Truyendep extends paperback_extensions_common_1.Source {
             }
             else {
                 let $ = this.cheerio.load(data.data);
-                tiles = TruyendepParser_1.parseSearch($);
-                metadata = !TruyendepParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+                if (tags[0].includes('tieudiem')) {
+                    for (let manga of $('.wrap-focus a').toArray()) {
+                        const title = (_d = $('img', manga).attr('alt')) !== null && _d !== void 0 ? _d : "";
+                        const id = (_e = $(manga).attr('href')) !== null && _e !== void 0 ? _e : title;
+                        const image = (_f = $('img', manga).attr('src')) === null || _f === void 0 ? void 0 : _f.split('-');
+                        const ext = image === null || image === void 0 ? void 0 : image.splice(-1)[0].split('.')[1];
+                        tiles.push(createMangaTile({
+                            id: id,
+                            image: (image === null || image === void 0 ? void 0 : image.join('-')) + '.' + ext,
+                            title: createIconText({
+                                text: TruyendepParser_1.decodeHTMLEntity(title),
+                            })
+                        }));
+                    }
+                    metadata = undefined;
+                }
+                else {
+                    tiles = TruyendepParser_1.parseSearch($);
+                    metadata = !TruyendepParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+                }
             }
             return createPagedResults({
                 results: tiles,
@@ -1061,7 +1079,10 @@ class Truyendep extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            const arrayTags = [];
+            const arrayTags = [{
+                    label: 'Tiêu điểm',
+                    id: 'tieudiem::https://truyendep.net/'
+                }];
             const collectedIds = [];
             //the loai
             for (const tag of $('.theloai a').toArray()) {
