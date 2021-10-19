@@ -683,13 +683,14 @@ class Truyendep extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             const chapters = [];
             var i = 0;
-            for (const obj of $(".chapter-list .row").toArray()) {
+            for (const obj of $(".chapter-list .row").toArray().reverse()) {
                 i++;
-                var chapNum = parseFloat($('span:first-child > a', obj).text().split(' ').pop());
+                var y = $('span:first-child > a', obj).text();
+                var chapNum = parseFloat(y.includes('chap') ? y.split('chap')[1].split(' ')[1] : y.split('Chương')[1].split(' ')[1]);
                 var time = $('span:last-child', obj).text().trim().split('-');
                 chapters.push(createChapter({
                     id: $('span:first-child > a', obj).attr('href'),
-                    chapNum: isNaN(chapNum) ? i : chapNum,
+                    chapNum: chapNum,
                     name: '',
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
@@ -715,7 +716,6 @@ class Truyendep extends paperback_extensions_common_1.Source {
             let x = arrayImages === null || arrayImages === void 0 ? void 0 : arrayImages.replace(',]', ']');
             let listImages = JSON.parse(x !== null && x !== void 0 ? x : "");
             const pages = [];
-            console.log(listImages);
             for (let i in listImages) {
                 pages.push(`https://1.truyentranhmanga.com/images/${TruyendepParser_1.ChangeToSlug(title1)}/${TruyendepParser_1.ChangeToSlug(title2)}/${i}.${listImages[i].includes('webp') ? 'webp' : 'jpg'}`);
             }
