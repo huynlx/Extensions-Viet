@@ -1133,6 +1133,11 @@ function ChangeToSlug(title) {
     slug = slug.replace(/\@\-|\-\@|\@/gi, '');
     //Đổi nhiều ký tự gạch ngang liên tiếp thành 1 ký tự gạch ngang
     slug = slug.replace('-–-', '-');
+    slug = slug.replace('-–-', '-');
+    slug = slug.replace('-–-', '-');
+    slug = slug.replace('-–-', '-');
+    slug = slug.replace('-–-', '-');
+    slug = slug.replace('-–-', '-');
     //In slug ra textbox có id “slug”
     return slug;
 }
