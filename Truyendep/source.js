@@ -686,7 +686,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
             for (const obj of $(".chapter-list .row").toArray().reverse()) {
                 i++;
                 var y = $('span:first-child > a', obj).text();
-                var chapNum = parseFloat(y.includes('chap') ? y.split('chap')[1].split(' ')[1] : y.split('Chương')[1].split(' ')[1]);
+                var chapNum = parseFloat(y.includes('chap') ? y.split('chap')[1].split(' ')[1] : (y.includes('Chap') ? y.split('Chap')[1].split(' ')[1] : y.split('Chương')[1].split(' ')[1]));
                 var time = $('span:last-child', obj).text().trim().split('-');
                 chapters.push(createChapter({
                     id: $('span:first-child > a', obj).attr('href'),
