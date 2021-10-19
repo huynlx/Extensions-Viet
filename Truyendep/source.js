@@ -725,12 +725,17 @@ class Truyendep extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d, _e, _f;
         return __awaiter(this, void 0, void 0, function* () {
             let featured = createHomeSection({
                 id: 'featured',
                 title: "Truyện Đề Cử",
                 type: paperback_extensions_common_1.HomeSectionType.featured
+            });
+            let highlight = createHomeSection({
+                id: 'highlight',
+                title: "TRUYỆN NỔI BẬT",
+                view_more: false,
             });
             let hot = createHomeSection({
                 id: 'hot',
@@ -754,6 +759,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
             });
             //Load empty sections
             sectionCallback(featured);
+            sectionCallback(highlight);
             sectionCallback(newUpdated);
             sectionCallback(newAdded);
             sectionCallback(hot);
@@ -769,7 +775,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             for (let manga of $('.top_thang li').toArray()) {
                 const title = $('a', manga).last().text().trim();
-                const id = (_a = $('h3.nowrap a', manga).attr('href')) !== null && _a !== void 0 ? _a : title;
+                const id = (_a = $('a', manga).first().attr('href')) !== null && _a !== void 0 ? _a : title;
                 const image = $('a:first-child img', manga).attr('src').split('-');
                 const ext = image.splice(-1)[0].split('.')[1];
                 // const sub = 'Chap' + $('a', manga).last().text().trim().split('chap')[1];
@@ -784,6 +790,33 @@ class Truyendep extends paperback_extensions_common_1.Source {
             }
             featured.items = featuredItems;
             sectionCallback(featured);
+            //highlight
+            request = createRequestObject({
+                url: 'https://truyendep.net',
+                method: "GET",
+            });
+            let highlightItems = [];
+            data = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(data.data);
+            for (let manga of $('.popular-manga li').toArray()) {
+                const title = $('a', manga).first().attr('title');
+                const id = (_b = $('a', manga).first().attr('href')) !== null && _b !== void 0 ? _b : title;
+                const image = $('a:first-child img', manga).attr('src').replace('-61x61', '');
+                const sub = $('i', manga).text().split(":")[1].trim();
+                // if (!id || !subtitle) continue;
+                highlightItems.push(createMangaTile({
+                    id: id,
+                    image: image,
+                    title: createIconText({
+                        text: TruyendepParser_1.decodeHTMLEntity(title),
+                    }),
+                    subtitleText: createIconText({
+                        text: sub,
+                    }),
+                }));
+            }
+            highlight.items = highlightItems;
+            sectionCallback(highlight);
             //New Updates
             request = createRequestObject({
                 url: 'https://truyendep.net/moi-cap-nhat/',
@@ -794,7 +827,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
             $ = this.cheerio.load(data.data);
             for (let manga of $('.wrap_update .update_item').toArray()) {
                 const title = $('a', manga).first().attr('title');
-                const id = (_b = $('a', manga).first().attr('href')) !== null && _b !== void 0 ? _b : title;
+                const id = (_c = $('a', manga).first().attr('href')) !== null && _c !== void 0 ? _c : title;
                 const image = $('.update_image img', manga).attr('src').replace('-61x61', '');
                 const sub = 'Chap' + $('a:nth-of-type(1)', manga).text().trim().split('chap')[1];
                 // if (!id || !subtitle) continue;
@@ -821,7 +854,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
             $ = this.cheerio.load(data.data);
             for (let manga of $('.wrap_update .update_item').toArray()) {
                 const title = $('h3.nowrap a', manga).attr('title');
-                const id = (_c = $('h3.nowrap a', manga).attr('href')) !== null && _c !== void 0 ? _c : title;
+                const id = (_d = $('h3.nowrap a', manga).attr('href')) !== null && _d !== void 0 ? _d : title;
                 const image = $('a img', manga).attr('src').split('-');
                 const ext = image.splice(-1)[0].split('.')[1];
                 const sub = 'Chap' + $('a', manga).last().text().trim().split('chap')[1];
@@ -849,7 +882,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
             $ = this.cheerio.load(data.data);
             for (let manga of $('.wrap_update .update_item').toArray()) {
                 const title = $('h3.nowrap a', manga).attr('title');
-                const id = (_d = $('h3.nowrap a', manga).attr('href')) !== null && _d !== void 0 ? _d : title;
+                const id = (_e = $('h3.nowrap a', manga).attr('href')) !== null && _e !== void 0 ? _e : title;
                 const image = $('a img', manga).attr('src').split('-');
                 const ext = image.splice(-1)[0].split('.')[1];
                 const sub = 'Chap' + $('a', manga).last().text().trim().split('chap')[1];
@@ -877,7 +910,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
             $ = this.cheerio.load(data.data);
             for (let manga of $('.wrap_update .update_item').toArray()) {
                 const title = $('h3.nowrap a', manga).attr('title');
-                const id = (_e = $('h3.nowrap a', manga).attr('href')) !== null && _e !== void 0 ? _e : title;
+                const id = (_f = $('h3.nowrap a', manga).attr('href')) !== null && _f !== void 0 ? _f : title;
                 const image = $('a img', manga).attr('src').split('-');
                 const ext = image.splice(-1)[0].split('.')[1];
                 const sub = 'Chap' + $('a', manga).last().text().trim().split('chap')[1];
