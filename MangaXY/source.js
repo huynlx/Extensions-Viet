@@ -598,7 +598,7 @@ const DOMAIN = 'https://mangaxy.com/';
 const method = 'GET';
 exports.MangaXYInfo = {
     version: '1.0.0',
-    name: 'MangaXY',
+    name: 'MangaXY (TT8)',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
