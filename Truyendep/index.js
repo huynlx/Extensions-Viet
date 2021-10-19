@@ -876,18 +876,23 @@ class Truyendep extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             let param = '';
             let url = '';
+            let select = 1;
             switch (homepageSectionId) {
                 case "new_updated":
                     url = `https://truyendep.net/moi-cap-nhat/page/${page}/`;
+                    select = 1;
                     break;
                 case "new_added":
                     url = `https://truyendep.net/moi-dang/page=${page}`;
+                    select = 2;
                     break;
                 case "hot":
                     url = `https://truyendep.net/hot/page=${page}`;
+                    select = 2;
                     break;
                 case "view":
                     url = `https://truyendep.net/top-view/page=${page}`;
+                    select = 2;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
@@ -899,7 +904,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
-            const manga = TruyendepParser_1.parseViewMore($, homepageSectionId);
+            const manga = TruyendepParser_1.parseViewMore($, select);
             metadata = !TruyendepParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: manga,
@@ -989,11 +994,11 @@ exports.parseSearch = ($) => {
     }
     return mangas;
 };
-exports.parseViewMore = ($, homepageSectionId) => {
+exports.parseViewMore = ($, select) => {
     var _a, _b, _c, _d, _e;
     const mangas = [];
     const collectedIds = [];
-    if (homepageSectionId === 'new_updated') {
+    if (select === 1) {
         for (let manga of $('.wrap_update .update_item').toArray()) {
             const title = $('a', manga).first().attr('title');
             const id = (_a = $('a', manga).first().attr('href')) !== null && _a !== void 0 ? _a : title;
@@ -1019,16 +1024,21 @@ exports.parseViewMore = ($, homepageSectionId) => {
             const image = (_e = $('a img', manga).attr('src')) === null || _e === void 0 ? void 0 : _e.split('-');
             const ext = image === null || image === void 0 ? void 0 : image.splice(-1)[0].split('.')[1];
             const sub = 'Chap' + $('a', manga).last().text().trim().split('chap')[1];
-            mangas.push(createMangaTile({
-                id: id,
-                image: (image === null || image === void 0 ? void 0 : image.join('-')) + '.' + ext,
-                title: createIconText({
-                    text: exports.decodeHTMLEntity(title),
-                }),
-                subtitleText: createIconText({
-                    text: sub,
-                }),
-            }));
+            if (!id || !title)
+                continue;
+            if (!collectedIds.includes(id)) {
+                mangas.push(createMangaTile({
+                    id: id,
+                    image: (image === null || image === void 0 ? void 0 : image.join('-')) + '.' + ext,
+                    title: createIconText({
+                        text: exports.decodeHTMLEntity(title),
+                    }),
+                    subtitleText: createIconText({
+                        text: sub,
+                    }),
+                }));
+                collectedIds.push(id);
+            }
         }
     }
     return mangas;
