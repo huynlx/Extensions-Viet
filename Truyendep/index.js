@@ -715,7 +715,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
             const pages = [];
             console.log(listImages);
             for (let i in listImages) {
-                pages.push(`https://1.truyentranhmanga.com/images/${TruyendepParser_1.ChangeToSlug(title1)}/${TruyendepParser_1.ChangeToSlug(title2)}/${i}.${listImages[i].includes('jpg') ? 'jpg' : 'webp'}`);
+                pages.push(`https://1.truyentranhmanga.com/images/${TruyendepParser_1.ChangeToSlug(title1)}/${TruyendepParser_1.ChangeToSlug(title2)}/${i}.${listImages[i].includes('webp') ? 'webp' : 'jpg'}`);
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
