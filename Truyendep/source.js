@@ -1078,7 +1078,7 @@ exports.parseSearch = ($) => {
         const id = (_b = $('h3.nowrap a', manga).attr('href')) !== null && _b !== void 0 ? _b : title;
         const image = (_c = $('a img', manga).attr('src')) === null || _c === void 0 ? void 0 : _c.split('-');
         const ext = image === null || image === void 0 ? void 0 : image.splice(-1)[0].split('.')[1];
-        const sub = 'Chap' + $('a', manga).last().text().trim().split('chap')[1];
+        const sub = $('a', manga).last().text().trim();
         mangas.push(createMangaTile({
             id: id,
             image: (image === null || image === void 0 ? void 0 : image.join('-')) + '.' + ext,
