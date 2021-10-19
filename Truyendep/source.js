@@ -725,7 +725,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c, _d, _e, _f, _g;
         return __awaiter(this, void 0, void 0, function* () {
             let featured = createHomeSection({
                 id: 'featured',
@@ -757,6 +757,11 @@ class Truyendep extends paperback_extensions_common_1.Source {
                 title: "TOP VIEW",
                 view_more: true,
             });
+            let full = createHomeSection({
+                id: 'full',
+                title: "HOÀN THÀNH",
+                view_more: true,
+            });
             //Load empty sections
             sectionCallback(featured);
             sectionCallback(highlight);
@@ -764,6 +769,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
             sectionCallback(newAdded);
             sectionCallback(hot);
             sectionCallback(view);
+            sectionCallback(full);
             ///Get the section data
             //featured
             let request = createRequestObject({
@@ -928,6 +934,34 @@ class Truyendep extends paperback_extensions_common_1.Source {
             }
             view.items = viewItems;
             sectionCallback(view);
+            // full
+            request = createRequestObject({
+                url: 'https://truyendep.net/full/',
+                method: "GET",
+            });
+            let fullItems = [];
+            data = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(data.data);
+            for (let manga of $('.wrap_update .update_item').toArray()) {
+                const title = $('h3.nowrap a', manga).attr('title');
+                const id = (_g = $('h3.nowrap a', manga).attr('href')) !== null && _g !== void 0 ? _g : title;
+                const image = $('a img', manga).attr('src').split('-');
+                const ext = image.splice(-1)[0].split('.')[1];
+                const sub = 'Chap' + $('a', manga).last().text().trim().split('chap')[1];
+                // if (!id || !title) continue;
+                fullItems.push(createMangaTile({
+                    id: id,
+                    image: image.join('-') + '.' + ext,
+                    title: createIconText({
+                        text: TruyendepParser_1.decodeHTMLEntity(title),
+                    }),
+                    subtitleText: createIconText({
+                        text: sub,
+                    }),
+                }));
+            }
+            full.items = fullItems;
+            sectionCallback(full);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
@@ -952,6 +986,10 @@ class Truyendep extends paperback_extensions_common_1.Source {
                     break;
                 case "view":
                     url = `https://truyendep.net/top-view/page/${page}`;
+                    select = 2;
+                    break;
+                case "full":
+                    url = `https://truyendep.net/full/page/${page}`;
                     select = 2;
                     break;
                 default:
