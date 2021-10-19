@@ -749,7 +749,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
             //Load empty sections
             sectionCallback(newUpdated);
             // sectionCallback(newAdded);
-            // sectionCallback(hot);
+            sectionCallback(hot);
             ///Get the section data
             //New Updates
             let request = createRequestObject({
@@ -780,23 +780,23 @@ class Truyendep extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             //New Added
             request = createRequestObject({
-                url: 'https://truyentranh.net/comic-latest',
+                url: 'https://truyendep.net/moi-dang/',
                 method: "GET",
             });
             let newAddItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let manga of $('.content .card-list > .card').toArray()) {
-                const title = $('.card-title', manga).text().trim();
-                const id = (_b = $('.card-title > a', manga).attr('href')) !== null && _b !== void 0 ? _b : title;
-                const image = $('.card-img', manga).attr('src');
-                const sub = $('.list-chapter > li:first-child > a', manga).text().trim();
+            for (let manga of $('.wrap_update .update_item').toArray()) {
+                const title = $('h3.nowrap a', manga).attr('title');
+                const id = (_b = $('h3.nowrap a', manga).attr('href')) !== null && _b !== void 0 ? _b : title;
+                const image = $('a img', manga).attr('src').replace('-87x130', '');
+                const sub = 'Chap' + $('a', manga).last().text().trim().split('chap')[1];
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
                     id: id,
                     image: image,
                     title: createIconText({
-                        text: title,
+                        text: TruyendepParser_1.decodeHTMLEntity(title),
                     }),
                     subtitleText: createIconText({
                         text: sub,
@@ -813,7 +813,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
             let popular = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let manga of $('#bottomslider .list-slider-item').toArray()) {
+            for (let manga of $('.wrap_update .update_item').toArray()) {
                 const title = $('h3.nowrap a', manga).attr('title');
                 const id = (_c = $('h3.nowrap a', manga).attr('href')) !== null && _c !== void 0 ? _c : title;
                 const image = $('a img', manga).attr('src').replace('-87x130', '');
@@ -822,8 +822,12 @@ class Truyendep extends paperback_extensions_common_1.Source {
                 popular.push(createMangaTile({
                     id: id,
                     image: image,
-                    title: createIconText({ text: title }),
-                    subtitleText: createIconText({ text: sub }),
+                    title: createIconText({
+                        text: TruyendepParser_1.decodeHTMLEntity(title),
+                    }),
+                    subtitleText: createIconText({
+                        text: sub,
+                    }),
                 }));
             }
             hot.items = popular;
