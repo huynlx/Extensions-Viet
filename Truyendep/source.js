@@ -729,12 +729,12 @@ class Truyendep extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
-                title: "DÀNH CHO BẠN",
-                view_more: false,
+                title: "HOT UPDATE",
+                view_more: true,
             });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
@@ -743,13 +743,19 @@ class Truyendep extends paperback_extensions_common_1.Source {
             });
             let newAdded = createHomeSection({
                 id: 'new_added',
-                title: "TÁC PHẨM MỚI",
+                title: "MỚI ĐĂNG",
+                view_more: true,
+            });
+            let view = createHomeSection({
+                id: 'view',
+                title: "TOP VIEW",
                 view_more: true,
             });
             //Load empty sections
             sectionCallback(newUpdated);
             sectionCallback(newAdded);
             sectionCallback(hot);
+            sectionCallback(view);
             ///Get the section data
             //New Updates
             let request = createRequestObject({
@@ -834,6 +840,34 @@ class Truyendep extends paperback_extensions_common_1.Source {
             }
             hot.items = popular;
             sectionCallback(hot);
+            // view
+            request = createRequestObject({
+                url: 'https://truyendep.net/top-view/',
+                method: "GET",
+            });
+            let viewItems = [];
+            data = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(data.data);
+            for (let manga of $('.wrap_update .update_item').toArray()) {
+                const title = $('h3.nowrap a', manga).attr('title');
+                const id = (_d = $('h3.nowrap a', manga).attr('href')) !== null && _d !== void 0 ? _d : title;
+                const image = $('a img', manga).attr('src').split('-');
+                const ext = image.splice(-1)[0].split('.')[1];
+                const sub = 'Chap' + $('a', manga).last().text().trim().split('chap')[1];
+                // if (!id || !title) continue;
+                viewItems.push(createMangaTile({
+                    id: id,
+                    image: image.join('-') + '.' + ext,
+                    title: createIconText({
+                        text: TruyendepParser_1.decodeHTMLEntity(title),
+                    }),
+                    subtitleText: createIconText({
+                        text: sub,
+                    }),
+                }));
+            }
+            view.items = viewItems;
+            sectionCallback(view);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
@@ -847,7 +881,13 @@ class Truyendep extends paperback_extensions_common_1.Source {
                     url = `https://truyendep.net/moi-cap-nhat/page/${page}/`;
                     break;
                 case "new_added":
-                    url = `https://truyentranh.net/comic-latest?page=${page}`;
+                    url = `https://truyendep.net/moi-dang/page=${page}`;
+                    break;
+                case "hot":
+                    url = `https://truyendep.net/hot/page=${page}`;
+                    break;
+                case "view":
+                    url = `https://truyendep.net/top-view/page=${page}`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
