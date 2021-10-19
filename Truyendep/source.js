@@ -682,12 +682,14 @@ class Truyendep extends paperback_extensions_common_1.Source {
             // let html = Buffer.from(createByteArray(response.rawData)).toString()
             const $ = this.cheerio.load(response.data);
             const chapters = [];
+            var i = 0;
             for (const obj of $(".chapter-list .row").toArray()) {
+                i++;
                 var chapNum = parseFloat($('span:first-child > a', obj).text().split(' ').pop());
                 var time = $('span:last-child', obj).text().trim().split('-');
                 chapters.push(createChapter({
                     id: $('span:first-child > a', obj).attr('href'),
-                    chapNum: chapNum,
+                    chapNum: isNaN(chapNum) ? i : chapNum,
                     name: '',
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
@@ -1054,7 +1056,6 @@ function ChangeToSlug(title) {
     slug = slug.replace(/\`|\~|\!|\@|\#|\||\$|\%|\^|\&|\*|\(|\)|\+|\=|\,|\.|\/|\?|\>|\<|\'|\"|\:|\;|_/gi, '-');
     //Đổi khoảng trắng thành ký tự gạch ngang
     slug = slug.replace(/ /gi, "-");
-    //Đổi nhiều ký tự gạch ngang liên tiếp thành 1 ký tự gạch ngang
     //Phòng trường hợp người nhập vào quá nhiều ký tự trắng
     slug = slug.replace(/\-\-\-\-\-/gi, '-');
     slug = slug.replace(/\-\-\-\-/gi, '-');
@@ -1063,6 +1064,8 @@ function ChangeToSlug(title) {
     //Xóa các ký tự gạch ngang ở đầu và cuối
     slug = '@' + slug + '@';
     slug = slug.replace(/\@\-|\-\@|\@/gi, '');
+    //Đổi nhiều ký tự gạch ngang liên tiếp thành 1 ký tự gạch ngang
+    slug = slug.replace('-–-', '-');
     //In slug ra textbox có id “slug”
     return slug;
 }
