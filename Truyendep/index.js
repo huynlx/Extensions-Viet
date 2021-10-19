@@ -635,7 +635,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
             let tags = [];
             let status = 1;
             let creator = '';
-            let desc = $('.entry-content p').text();
+            let desc = $('.entry-content').text();
             for (const t of $('.detail-manga-category a').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_b = (_a = $(t).attr('href')) === null || _a === void 0 ? void 0 : _a.trim()) !== null && _b !== void 0 ? _b : genre;
