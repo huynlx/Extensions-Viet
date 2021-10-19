@@ -1011,7 +1011,7 @@ class Truyendep extends paperback_extensions_common_1.Source {
         });
     }
     getSearchResults(query, metadata) {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
@@ -1049,6 +1049,25 @@ class Truyendep extends paperback_extensions_common_1.Source {
                         const title = (_d = $('img', manga).attr('title')) !== null && _d !== void 0 ? _d : "";
                         const id = (_e = $(manga).attr('href')) !== null && _e !== void 0 ? _e : title;
                         const image = (_f = $('img', manga).attr('src')) === null || _f === void 0 ? void 0 : _f.split('-');
+                        const ext = image === null || image === void 0 ? void 0 : image.splice(-1)[0].split('.')[1];
+                        tiles.push(createMangaTile({
+                            id: id,
+                            image: (image === null || image === void 0 ? void 0 : image.join('-')) + '.' + ext,
+                            title: createIconText({
+                                text: TruyendepParser_1.decodeHTMLEntity(title),
+                            })
+                        }));
+                    }
+                    let request2 = createRequestObject({
+                        url: "https://truyendep.net/wp-content/themes/manga/focus.html?nocache=1634673567",
+                        method: "GET",
+                    });
+                    let data2 = yield this.requestManager.schedule(request2, 1);
+                    let $2 = this.cheerio.load(data2.data);
+                    for (let manga of $2('.wrap-focus a').toArray()) {
+                        const title = (_g = $('img', manga).attr('title')) !== null && _g !== void 0 ? _g : "";
+                        const id = (_h = $(manga).attr('href')) !== null && _h !== void 0 ? _h : title;
+                        const image = (_j = $('img', manga).attr('src')) === null || _j === void 0 ? void 0 : _j.split('-');
                         const ext = image === null || image === void 0 ? void 0 : image.splice(-1)[0].split('.')[1];
                         tiles.push(createMangaTile({
                             id: id,
