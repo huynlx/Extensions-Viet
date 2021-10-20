@@ -709,7 +709,7 @@ class Mangaii extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b;
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
@@ -728,22 +728,25 @@ class Mangaii extends paperback_extensions_common_1.Source {
             });
             //Load empty sections
             sectionCallback(newUpdated);
-            sectionCallback(newAdded);
-            sectionCallback(hot);
+            // sectionCallback(newAdded);
+            // sectionCallback(hot);
             ///Get the section data
             //New Updates
             let request = createRequestObject({
-                url: 'https://truyentranh.net/comic',
+                url: DOMAIN,
                 method: "GET",
             });
             let newUpdatedItems = [];
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            for (let manga of $('.content .card-list > .card').toArray()) {
-                const title = $('.card-title', manga).text().trim();
-                const id = (_a = $('.card-title > a', manga).attr('href')) !== null && _a !== void 0 ? _a : title;
-                const image = $('.card-img', manga).attr('src');
-                const sub = $('.list-chapter > li:first-child > a', manga).text().trim();
+            var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
+            if (dt)
+                dt = JSON.parse(dt[1]);
+            for (let manga of dt.props.pageProps.comics.laste_comics) {
+                const title = manga.name;
+                const id = 'https://mangaii.com/comic/' + manga.slug;
+                const image = `https://mangaii.com/_next/image?url=https%3A%2F%2Fapi.mangaii.com%2Fmedia%2Fcover_images%2F${manga.cover_image}&w=128&q=100`;
+                const sub = 'Chapter ' + manga.chapter;
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
@@ -768,7 +771,7 @@ class Mangaii extends paperback_extensions_common_1.Source {
             $ = this.cheerio.load(data.data);
             for (let manga of $('.content .card-list > .card').toArray()) {
                 const title = $('.card-title', manga).text().trim();
-                const id = (_b = $('.card-title > a', manga).attr('href')) !== null && _b !== void 0 ? _b : title;
+                const id = (_a = $('.card-title > a', manga).attr('href')) !== null && _a !== void 0 ? _a : title;
                 const image = $('.card-img', manga).attr('src');
                 const sub = $('.list-chapter > li:first-child > a', manga).text().trim();
                 // if (!id || !subtitle) continue;
@@ -784,7 +787,7 @@ class Mangaii extends paperback_extensions_common_1.Source {
                 }));
             }
             newAdded.items = newAddItems;
-            sectionCallback(newAdded);
+            // sectionCallback(newAdded);
             // Hot
             request = createRequestObject({
                 url: 'https://truyentranh.net',
@@ -807,7 +810,6 @@ class Mangaii extends paperback_extensions_common_1.Source {
                 }));
             }
             hot.items = popular;
-            sectionCallback(hot);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
