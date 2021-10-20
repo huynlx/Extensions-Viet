@@ -623,31 +623,32 @@ class Mangaii extends paperback_extensions_common_1.Source {
     getMangaShareUrl(mangaId) { return `${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
-        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
                 url: mangaId,
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
-            // let html = Buffer.from(createByteArray(data.rawData)).toString()
             let $ = this.cheerio.load(data.data);
+            var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
+            if (dt)
+                dt = JSON.parse(dt[1]).props.pageProps.comic;
             let tags = [];
-            let status = 1;
-            let desc = $('.detail-manga-intro').text();
-            for (const t of $('.detail-manga-category a').toArray()) {
-                const genre = $(t).text().trim();
-                const id = (_b = (_a = $(t).attr('href')) === null || _a === void 0 ? void 0 : _a.trim()) !== null && _b !== void 0 ? _b : genre;
+            let status = (dt.status === 'ongoing') ? 1 : 0;
+            let desc = dt.description;
+            for (const t of dt.genres) {
+                const genre = t.name;
+                const id = `https://mangaii.com/genre/${t.slug}`;
                 tags.push(createTag({ label: genre, id }));
             }
-            const image = (_c = $('.detail-img').attr('data-image-full')) !== null && _c !== void 0 ? _c : "fuck";
-            const creator = $('.detail-banner-info ul li:nth-child(3) > a > span').text();
+            const image = `https://mangaii.com/_next/image?url=https%3A%2F%2Fapi.mangaii.com%2Fmedia%2Fcover_images%2F${dt.cover_image}&w=256&q=100`;
+            const creator = '';
             return createManga({
                 id: mangaId,
                 author: creator,
                 artist: creator,
                 desc,
-                titles: [$('.detail-manga-title > h1').text()],
+                titles: [dt.name],
                 image: image,
                 status,
                 hentai: false,
@@ -661,24 +662,20 @@ class Mangaii extends paperback_extensions_common_1.Source {
                 url: mangaId,
                 method,
             });
-            var i = 0;
             const response = yield this.requestManager.schedule(request, 1);
-            // let html = Buffer.from(createByteArray(response.rawData)).toString()
             const $ = this.cheerio.load(response.data);
+            var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
+            if (dt)
+                dt = JSON.parse(dt[1]).props.pageProps.comic;
             const chapters = [];
-            for (const obj of $(".chapter-list-item-box").toArray().reverse()) {
-                i++;
-                var chapNum = parseFloat($('.chapter-select > a', obj).text().split(' ')[1]);
-                var time = $('.chapter-info > time', obj).text().trim().split(', ');
-                var d = time[0].split('/');
-                var t = time[1];
+            for (const obj of dt.chapters) {
                 chapters.push(createChapter({
-                    id: $('.chapter-select > a', obj).attr('href'),
-                    chapNum: isNaN(chapNum) ? i : chapNum,
-                    name: $('.chapter-select > a', obj).text(),
+                    id: `https://mangaii.com/comic/${dt.slug}/${obj.slug}`,
+                    chapNum: obj.number,
+                    name: obj.name,
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: new Date(d[1] + '/' + d[0] + '/' + d[2] + ' ' + t)
+                    time: MangaiiParser_1.convertTime(obj.created_at)
                 }));
             }
             return chapters;
@@ -692,11 +689,12 @@ class Mangaii extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
+            var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
+            if (dt)
+                dt = JSON.parse(dt[1]).props.pageProps.comic;
             const pages = [];
-            for (let obj of $('.manga-reading-box > .page-chapter > img').toArray()) {
-                if (!obj.attribs['src'])
-                    continue;
-                let link = obj.attribs['src'].trim();
+            for (let obj of dt.chapter.images.split(',_,')) {
+                let link = `https://s3-hcm1-r1.longvan.net/mangaii/chapters/${obj}`;
                 pages.push(encodeURI(link));
             }
             const chapterDetails = createChapterDetails({
@@ -747,7 +745,6 @@ class Mangaii extends paperback_extensions_common_1.Source {
                 const id = 'https://mangaii.com/comic/' + manga.slug;
                 const image = `https://mangaii.com/_next/image?url=https%3A%2F%2Fapi.mangaii.com%2Fmedia%2Fcover_images%2F${manga.cover_image}&w=256&q=100`;
                 const sub = 'Chapter ' + manga.chapter.number;
-                // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
                     image: image,
