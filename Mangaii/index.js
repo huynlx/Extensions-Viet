@@ -695,7 +695,7 @@ class Mangaii extends paperback_extensions_common_1.Source {
             const pages = [];
             for (let obj of dt.chapter.images.split(',_,')) {
                 let link = `https://s3-hcm1-r1.longvan.net/mangaii/chapters/${obj}`;
-                pages.push(encodeURI(link));
+                pages.push((link));
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
