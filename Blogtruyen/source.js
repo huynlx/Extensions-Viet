@@ -725,7 +725,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f, _g, _h;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
         return __awaiter(this, void 0, void 0, function* () {
             let featured = createHomeSection({
                 id: 'featured',
@@ -747,10 +747,28 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
                 title: "Truyện mới đăng",
                 view_more: false,
             });
+            let full = createHomeSection({
+                id: 'full',
+                title: "Đủ bộ",
+                view_more: true,
+            });
+            let girl = createHomeSection({
+                id: 'girl',
+                title: "Con gái",
+                view_more: true,
+            });
+            let boy = createHomeSection({
+                id: 'boy',
+                title: "Con trai",
+                view_more: true,
+            });
             //Load empty sections
             sectionCallback(hot);
             sectionCallback(newUpdated);
             sectionCallback(newAdded);
+            sectionCallback(full);
+            sectionCallback(girl);
+            sectionCallback(boy);
             ///Get the section data
             //Featured
             let url = `${DOMAIN}`;
@@ -860,6 +878,33 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             }
             newAdded.items = newAddItems;
             sectionCallback(newAdded);
+            //full
+            url = '';
+            request = createRequestObject({
+                url: 'https://blogtruyen.vn/ajax/Category/AjaxLoadMangaByCategory?id=0&orderBy=5&p=1',
+                method: "GET",
+            });
+            let fullItems = [];
+            data = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(data.data);
+            for (let obj of $('p:not(:first-child)', '.list').toArray()) {
+                let title = $(`a`, obj).text().trim();
+                let subtitle = 'Chương ' + $(`span:nth-child(2)`, obj).text().trim();
+                const image = (_j = $('img', $(obj).next()).attr('src')) !== null && _j !== void 0 ? _j : "";
+                let id = (_k = $(`a`, obj).attr('href')) !== null && _k !== void 0 ? _k : title;
+                fullItems.push(createMangaTile({
+                    id: id,
+                    image: encodeURI(image.replace('150', '200')),
+                    title: createIconText({
+                        text: BlogtruyenParser_1.decodeHTMLEntity(title),
+                    }),
+                    subtitleText: createIconText({
+                        text: (subtitle),
+                    }),
+                }));
+            }
+            full.items = fullItems;
+            sectionCallback(full);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {

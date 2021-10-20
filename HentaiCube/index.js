@@ -778,7 +778,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                     id: id,
                     image: encodeURI(image),
                     title: createIconText({
-                        text: title,
+                        text: HentaiCubeParser_1.decodeHTMLEntity(title),
                     }),
                     subtitleText: createIconText({
                         text: (subtitle),
@@ -1152,7 +1152,7 @@ exports.parseSearch = ($, set) => {
                     id: id,
                     image: encodeURI(image),
                     title: createIconText({
-                        text: title,
+                        text: exports.decodeHTMLEntity(title),
                     }),
                     subtitleText: createIconText({
                         text: (subtitle),
@@ -1173,7 +1173,7 @@ exports.parseSearch = ($, set) => {
                     id: id,
                     image: encodeURI(image.replace('-110x150', '')),
                     title: createIconText({
-                        text: title,
+                        text: exports.decodeHTMLEntity(title),
                     }),
                     subtitleText: createIconText({
                         text: (subtitle),
@@ -1186,7 +1186,7 @@ exports.parseSearch = ($, set) => {
     return mangas;
 };
 exports.parseViewMore = ($, select) => {
-    var _a, _b;
+    var _a, _b, _c;
     const manga = [];
     const collectedIds = [];
     if (select === 1 || select === 2 || select === 0) {
@@ -1200,7 +1200,7 @@ exports.parseViewMore = ($, select) => {
                     id: id,
                     image: encodeURI(image),
                     title: createIconText({
-                        text: title !== null && title !== void 0 ? title : "",
+                        text: (_c = exports.decodeHTMLEntity(title)) !== null && _c !== void 0 ? _c : "",
                     }),
                     subtitleText: createIconText({
                         text: (subtitle),
