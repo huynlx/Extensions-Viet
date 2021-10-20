@@ -7535,10 +7535,14 @@ class CManga extends paperback_extensions_common_1.Source {
             });
             const data = yield this.requestManager.schedule(request, 1);
             var chapter_content = JSON.parse(JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data)))[0].content);
+            var pages = [];
+            for (const img of chapter_content) {
+                pages.push(img.replace('.net', '.com'));
+            }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
                 mangaId: mangaId,
-                pages: chapter_content,
+                pages: pages,
                 longStrip: false
             });
             return chapterDetails;
@@ -7574,7 +7578,6 @@ class CManga extends paperback_extensions_common_1.Source {
             let popular = [];
             let data = yield this.requestManager.schedule(request, 1);
             let json = JSON.parse(data.data);
-            console.log(json);
             for (var i of Object.keys(json.day)) {
                 var item = json.day[i];
                 if (!item.name)
