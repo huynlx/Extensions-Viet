@@ -635,7 +635,7 @@ class Mangaii extends paperback_extensions_common_1.Source {
                 dt = JSON.parse(dt[1]).props.pageProps.comic;
             let tags = [];
             let status = (dt.status === 'ongoing') ? 1 : 0;
-            let desc = $('#description').text();
+            let desc = !dt.description ? $('#description').text() : dt.description;
             for (const t of dt.genres) {
                 const genre = t.name;
                 const id = `https://mangaii.com/genre/${t.slug}`;
