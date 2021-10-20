@@ -741,12 +741,12 @@ class Mangaii extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
             if (dt)
-                dt = JSON.parse(dt[1]);
-            for (let manga of dt.props.pageProps.comics.laste_comics) {
+                dt = JSON.parse(dt[1]).props.pageProps.comics;
+            for (let manga of dt.laste_comics) {
                 const title = manga.name;
                 const id = 'https://mangaii.com/comic/' + manga.slug;
-                const image = `https://mangaii.com/_next/image?url=https%3A%2F%2Fapi.mangaii.com%2Fmedia%2Fcover_images%2F${manga.cover_image}&w=128&q=100`;
-                const sub = 'Chapter ' + manga.chapter;
+                const image = `https://mangaii.com/_next/image?url=https%3A%2F%2Fapi.mangaii.com%2Fmedia%2Fcover_images%2F${manga.cover_image}&w=256&q=100`;
+                const sub = 'Chapter ' + manga.chapter.number;
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
