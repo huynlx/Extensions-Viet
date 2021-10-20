@@ -689,16 +689,11 @@ class Mangaii extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
-            var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
-            if (dt)
-                dt = JSON.parse(dt[1]).props.pageProps.comic;
             const pages = [];
-            for (let obj of dt.chapter.images.split(',_,')) {
-                let link = `https://s3-hcm-r1.longvan.net/mangaii-s4/chapters/${obj}`;
+            for (let obj of $('._1-mrs > img').toArray()) {
+                let link = $(obj).attr('src');
                 pages.push((link));
             }
-            console.log(pages);
-            console.log('cc');
             const chapterDetails = createChapterDetails({
                 id: chapterId,
                 mangaId: mangaId,
