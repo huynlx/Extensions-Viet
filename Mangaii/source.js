@@ -694,9 +694,11 @@ class Mangaii extends paperback_extensions_common_1.Source {
                 dt = JSON.parse(dt[1]).props.pageProps.comic;
             const pages = [];
             for (let obj of dt.chapter.images.split(',_,')) {
-                let link = `https://s3-hcm1-r1.longvan.net/mangaii/chapters/${obj}`;
+                let link = `https://s3-hcm-r1.longvan.net/mangaii-s4/chapters/${obj}`;
                 pages.push((link));
             }
+            console.log(pages);
+            console.log('cc');
             const chapterDetails = createChapterDetails({
                 id: chapterId,
                 mangaId: mangaId,
