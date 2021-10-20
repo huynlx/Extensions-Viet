@@ -7516,7 +7516,7 @@ class CManga extends paperback_extensions_common_1.Source {
                 chapters.push(createChapter({
                     id: DOMAIN + mangaId.split("::")[1] + '/' + CMangaParser_1.change_alias(obj.chapter_name) + '/' + obj.id_chapter,
                     chapNum: parseFloat(obj.chapter_num),
-                    name: '',
+                    name: CMangaParser_1.titleCase(obj.chapter_name) === ('Chapter ' + obj.chapter_num) ? '' : CMangaParser_1.titleCase(obj.chapter_name),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
                     time: new Date(d2 + " " + t2)
