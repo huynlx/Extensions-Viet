@@ -707,80 +707,40 @@ class Mangaii extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
-                title: "Hot là đây!",
+                title: "# Hot là đây!",
                 view_more: false,
             });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
-                title: "Mới cập nhập!",
+                title: "# Mới cập nhập!",
                 view_more: true,
             });
-            let newAdded = createHomeSection({
-                id: 'new_added',
-                title: "TÁC PHẨM MỚI",
-                view_more: true,
+            let view = createHomeSection({
+                id: 'view',
+                title: "Bảng xếp hạng",
+                view_more: false,
+            });
+            let news = createHomeSection({
+                id: 'new',
+                title: "# Mới ra mắt",
+                view_more: false,
             });
             //Load empty sections
+            sectionCallback(hot);
             sectionCallback(newUpdated);
-            // sectionCallback(newAdded);
-            // sectionCallback(hot);
+            sectionCallback(view);
+            sectionCallback(news);
             ///Get the section data
-            //New Updates
+            //Get json data
             let request = createRequestObject({
                 url: DOMAIN,
                 method: "GET",
             });
-            let newUpdatedItems = [];
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
             if (dt)
                 dt = JSON.parse(dt[1]).props.pageProps.comics;
-            for (let manga of dt.laste_comics) {
-                const title = manga.name;
-                const id = 'https://mangaii.com/comic/' + manga.slug;
-                const image = `https://mangaii.com/_next/image?url=https%3A%2F%2Fapi.mangaii.com%2Fmedia%2Fcover_images%2F${manga.cover_image}&w=256&q=100`;
-                const sub = 'Chapter ' + manga.chapter.number;
-                newUpdatedItems.push(createMangaTile({
-                    id: id,
-                    image: image,
-                    title: createIconText({
-                        text: title,
-                    }),
-                    subtitleText: createIconText({
-                        text: sub,
-                    }),
-                }));
-            }
-            newUpdated.items = newUpdatedItems;
-            sectionCallback(newUpdated);
-            // //New Added
-            // request = createRequestObject({
-            //     url: 'https://truyentranh.net/comic-latest',
-            //     method: "GET",
-            // });
-            // let newAddItems: MangaTile[] = [];
-            // data = await this.requestManager.schedule(request, 1);
-            // $ = this.cheerio.load(data.data);
-            // for (let manga of $('.content .card-list > .card').toArray()) {
-            //     const title = $('.card-title', manga).text().trim();
-            //     const id = $('.card-title > a', manga).attr('href') ?? title;
-            //     const image = $('.card-img', manga).attr('src');
-            //     const sub = $('.list-chapter > li:first-child > a', manga).text().trim();
-            //     // if (!id || !subtitle) continue;
-            //     newAddItems.push(createMangaTile({
-            //         id: id,
-            //         image: image,
-            //         title: createIconText({
-            //             text: title,
-            //         }),
-            //         subtitleText: createIconText({
-            //             text: sub,
-            //         }),
-            //     }))
-            // }
-            // newAdded.items = newAddItems;
-            // sectionCallback(newAdded);
             // Hot
             let popularItems = [];
             for (let manga of dt.translate) {
@@ -801,6 +761,66 @@ class Mangaii extends paperback_extensions_common_1.Source {
             }
             hot.items = popularItems;
             sectionCallback(hot);
+            //New Updates
+            let newUpdatedItems = [];
+            for (let manga of dt.laste_comics) {
+                const title = manga.name;
+                const id = 'https://mangaii.com/comic/' + manga.slug;
+                const image = `https://mangaii.com/_next/image?url=https%3A%2F%2Fapi.mangaii.com%2Fmedia%2Fcover_images%2F${manga.cover_image}&w=256&q=100`;
+                const sub = 'Chapter ' + manga.chapter.number;
+                newUpdatedItems.push(createMangaTile({
+                    id: id,
+                    image: image,
+                    title: createIconText({
+                        text: title,
+                    }),
+                    subtitleText: createIconText({
+                        text: sub,
+                    }),
+                }));
+            }
+            newUpdated.items = newUpdatedItems;
+            sectionCallback(newUpdated);
+            //view
+            let newAddItems = [];
+            for (let manga of dt.top_views) {
+                const title = manga.name;
+                const id = 'https://mangaii.com/comic/' + manga.slug;
+                const image = `https://mangaii.com/_next/image?url=https%3A%2F%2Fapi.mangaii.com%2Fmedia%2Fcover_images%2F${manga.cover_image}&w=256&q=100`;
+                const sub = 'Chapter ' + manga.chapter.number;
+                newAddItems.push(createMangaTile({
+                    id: id,
+                    image: image,
+                    title: createIconText({
+                        text: title,
+                    }),
+                    subtitleText: createIconText({
+                        text: sub,
+                    }),
+                }));
+            }
+            view.items = newAddItems;
+            sectionCallback(view);
+            //new
+            let newsItems = [];
+            for (let manga of dt.new_comics) {
+                const title = manga.name;
+                const id = 'https://mangaii.com/comic/' + manga.slug;
+                const image = `https://mangaii.com/_next/image?url=https%3A%2F%2Fapi.mangaii.com%2Fmedia%2Fcover_images%2F${manga.cover_image}&w=256&q=100`;
+                const sub = 'Chapter ' + manga.chapter.number;
+                newAddItems.push(createMangaTile({
+                    id: id,
+                    image: image,
+                    title: createIconText({
+                        text: title,
+                    }),
+                    subtitleText: createIconText({
+                        text: sub,
+                    }),
+                }));
+            }
+            news.items = newsItems;
+            sectionCallback(news);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
