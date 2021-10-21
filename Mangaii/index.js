@@ -768,7 +768,7 @@ class Mangaii extends paperback_extensions_common_1.Source {
             sectionCallback(hot);
             // featured
             let featuredItems = [];
-            for (let manga of dt.banners) {
+            for (let manga of dt.banners.slice(1)) {
                 const title = manga.name;
                 const id = manga.link;
                 const image = `https://mangaii.com/_next/image?url=https%3A%2F%2Fapi.mangaii.com%2Fmedia%2Fslider-banner%2F${encodeURI(manga.image)}&w=768&q=75`;
