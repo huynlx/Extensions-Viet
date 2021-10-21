@@ -744,7 +744,7 @@ class HentaiVL extends paperback_extensions_common_1.Source {
             for (let obj of $('li', '.list-hot').toArray()) {
                 let title = $(`.title`, obj).text().trim();
                 let subtitle = $(`.chapter > a`, obj).text().trim();
-                const image = (_a = $('.manga-thumb > a > img', obj).attr('data-original')) !== null && _a !== void 0 ? _a : "";
+                const image = (_a = $('.manga-thumb > a > img', obj).attr('src')) !== null && _a !== void 0 ? _a : "";
                 let id = (_b = $(`.manga-thumb > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
                 hotItems.push(createMangaTile({
                     id: id,

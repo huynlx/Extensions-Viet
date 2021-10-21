@@ -814,7 +814,7 @@ class Mangaii extends paperback_extensions_common_1.Source {
             let url = '';
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `https://truyentranh.net/comic?page=${page}`;
+                    url = `https://api.mangaii.com/api/v1/comics?page=${page}`;
                     break;
                 case "new_added":
                     url = `https://truyentranh.net/comic-latest?page=${page}`;
@@ -828,9 +828,9 @@ class Mangaii extends paperback_extensions_common_1.Source {
                 param
             });
             const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
-            const manga = MangaiiParser_1.parseViewMore($);
-            metadata = !MangaiiParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            const json = JSON.parse(response.data);
+            const manga = MangaiiParser_1.parseViewMore(json.data);
+            metadata = json.hasMore ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: manga,
                 metadata,
@@ -919,15 +919,15 @@ exports.parseSearch = ($) => {
     }
     return mangas;
 };
-exports.parseViewMore = ($) => {
-    var _a;
+exports.parseViewMore = (data) => {
     const mangas = [];
     const collectedIds = [];
-    for (let manga of $('.content .card-list > .card').toArray()) {
-        const title = $('.card-title', manga).text().trim();
-        const id = (_a = $('.card-title > a', manga).attr('href')) !== null && _a !== void 0 ? _a : title;
-        const image = $('.card-img', manga).attr('src');
-        const sub = $('.list-chapter > li:first-child > a', manga).text().trim();
+    for (let manga of data) {
+        const title = manga.name;
+        const id = 'https://mangaii.com/comic/' + manga.slug;
+        ;
+        const image = `https://mangaii.com/_next/image?url=https%3A%2F%2Fapi.mangaii.com%2Fmedia%2Fcover_images%2F${manga.cover_image}&w=256&q=100`;
+        const sub = 'Chapter ' + manga.chapter.number;
         if (!id || !title)
             continue;
         if (!collectedIds.includes(id)) {
