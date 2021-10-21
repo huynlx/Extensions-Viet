@@ -679,7 +679,7 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data);
+            let $ = this.cheerio.load(data.data);
             let tags = [];
             let creator = $('.author p').last().text().trim();
             let statusFinal = $('.status p').last().text().trim().includes('Đang') ? 1 : 0;
