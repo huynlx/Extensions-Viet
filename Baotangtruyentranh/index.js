@@ -928,30 +928,57 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
             const tags = [];
             const tags2 = [
                 {
-                    id: 'sort.name',
-                    label: 'A-Z'
+                    id: 'status.-1',
+                    label: 'Tất cả'
                 },
                 {
-                    id: 'sort.views',
-                    label: 'Lượt Xem'
+                    id: 'status.2',
+                    label: 'Hoàn thành'
                 },
                 {
-                    id: 'sort.last_update',
-                    label: 'Mới Cập Nhật'
+                    id: 'status.1',
+                    label: 'Đang tiến hành'
                 }
             ];
-            const tagss = [
+            const tags3 = [
                 {
-                    id: 'type.ASC',
-                    label: 'ASC'
+                    id: 'sort.13',
+                    label: 'Top ngày'
                 },
                 {
-                    id: 'type.DESC',
-                    label: 'DESC'
+                    id: 'sort.12',
+                    label: 'Top tuần'
+                },
+                {
+                    id: 'sort.11',
+                    label: 'Top tháng'
+                },
+                {
+                    id: 'sort.10',
+                    label: 'Top all'
+                },
+                {
+                    id: 'sort.20',
+                    label: 'Theo dõi'
+                },
+                {
+                    id: 'sort.25',
+                    label: 'Bình luận'
+                },
+                {
+                    id: 'sort.15',
+                    label: 'Truyện mới'
+                },
+                {
+                    id: 'sort.30',
+                    label: 'Số chapter'
+                },
+                {
+                    id: 'sort.0',
+                    label: 'Ngày cập nhật'
                 }
             ];
-            const tags5 = [];
-            const url = DOMAIN + `search`;
+            const url = DOMAIN;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -959,32 +986,17 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             //the loai
-            for (const tag of $('.navbar-nav > li.nav-item:nth-child(1) .no-gutters a.genres-item').toArray()) {
+            for (const tag of $('.megamenu .nav a').toArray()) {
                 const label = $(tag).text().trim();
-                const id = 'cate.' + $(tag).attr('href').split('-the-loai-')[1].split('.')[0];
+                const id = 'cate.' + $(tag).attr('href');
                 if (!id || !label)
                     continue;
-                tags.push({ id: id, label: label });
-            }
-            //trang thai
-            for (const tag of $('select#TinhTrang option').toArray()) {
-                var label = $(tag).text().trim();
-                if (label === 'Hoàn thành') {
-                    label = 'Đang tiến hành';
-                }
-                else if (label === 'Đang tiến hành') {
-                    label = 'Hoàn thành';
-                }
-                const id = 'status.' + $(tag).attr('value');
-                if (!id || !label)
-                    continue;
-                tags5.push({ id: id, label: label });
+                tags.push({ id: id, label: BaotangtruyentranhParser_1.decodeHTMLEntity(label) });
             }
             const tagSections = [
                 createTagSection({ id: '1', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
-                createTagSection({ id: '3', label: 'Sắp xếp theo', tags: tags2.map(x => createTag(x)) }),
-                createTagSection({ id: '0', label: 'Kiểu sắp xếp', tags: tagss.map(x => createTag(x)) }),
-                createTagSection({ id: '4', label: 'Trạng thái', tags: tags5.map(x => createTag(x)) })
+                createTagSection({ id: '2', label: 'Trạng thái', tags: tags2.map(x => createTag(x)) }),
+                createTagSection({ id: '3', label: 'Sắp xếp theo', tags: tags3.map(x => createTag(x)) }),
             ];
             return tagSections;
         });
