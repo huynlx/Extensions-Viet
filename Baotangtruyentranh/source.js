@@ -788,7 +788,7 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
                 let title = $('h3 > a', element).text().trim();
                 let image = $('.image img', element).attr("data-src");
                 let id = $('h3 > a', element).attr('href');
-                let subtitle = $("ul .chapter > a", element).first().text().trim().replace('Chapter', 'Chap') + ' | ' + $("ul .chapter > i", element).first().text().trim();
+                let subtitle = $("ul .chapter > a", element).first().text().trim().replace('Chapter ', 'C.') + ' | ' + $("ul .chapter > i", element).first().text().trim();
                 newUpdatedItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
                     image: (_a = (image)) !== null && _a !== void 0 ? _a : "",
