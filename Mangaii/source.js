@@ -771,7 +771,7 @@ class Mangaii extends paperback_extensions_common_1.Source {
             for (let manga of dt.banners) {
                 const title = manga.name;
                 const id = manga.link;
-                const image = `https://mangaii.com/_next/image?url=https%3A%2F%2Fapi.mangaii.com%2Fmedia%2Fcover_images%2F${manga.image}&w=768&q=75`;
+                const image = `https://mangaii.com/_next/image?url=https%3A%2F%2Fapi.mangaii.com%2Fmedia%2Fslider-banner%2F${encodeURI(manga.image)}&w=768&q=75`;
                 // const sub = 'Chapter ' + manga.chapter.number;
                 featuredItems.push(createMangaTile({
                     id: id,
