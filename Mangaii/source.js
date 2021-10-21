@@ -705,6 +705,11 @@ class Mangaii extends paperback_extensions_common_1.Source {
     }
     getHomePageSections(sectionCallback) {
         return __awaiter(this, void 0, void 0, function* () {
+            let featured = createHomeSection({
+                id: 'featured',
+                title: "Truyện Đề Cử",
+                type: paperback_extensions_common_1.HomeSectionType.featured
+            });
             let hot = createHomeSection({
                 id: 'hot',
                 title: "# Hot là đây!",
@@ -761,6 +766,23 @@ class Mangaii extends paperback_extensions_common_1.Source {
             }
             hot.items = popularItems;
             sectionCallback(hot);
+            // featured
+            let featuredItems = [];
+            for (let manga of dt.banners) {
+                const title = manga.name;
+                const id = manga.link;
+                const image = `https://mangaii.com/_next/image?url=https%3A%2F%2Fapi.mangaii.com%2Fmedia%2Fcover_images%2F${manga.image}&w=768&q=75`;
+                // const sub = 'Chapter ' + manga.chapter.number;
+                featuredItems.push(createMangaTile({
+                    id: id,
+                    image: image,
+                    title: createIconText({
+                        text: title,
+                    }),
+                }));
+            }
+            featured.items = featuredItems;
+            sectionCallback(featured);
             //New Updates
             let newUpdatedItems = [];
             for (let manga of dt.laste_comics) {
