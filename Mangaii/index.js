@@ -692,7 +692,7 @@ class Mangaii extends paperback_extensions_common_1.Source {
             const pages = [];
             for (let obj of $('._1-mrs > img').toArray()) {
                 let link = $(obj).attr('src');
-                pages.push((link));
+                pages.push(encodeURI(link));
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
