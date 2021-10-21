@@ -690,7 +690,7 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
                 artist: creator,
                 desc: desc,
                 titles: [BaotangtruyentranhParser_1.decodeHTMLEntity($('.title-detail').text().trim())],
-                image: (image),
+                image: encodeURI(image),
                 status: statusFinal,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
