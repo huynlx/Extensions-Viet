@@ -635,7 +635,7 @@ class WComic extends paperback_extensions_common_1.Source {
             let tags = [];
             let creator = '';
             let status = 1; //completed, 1 = Ongoing
-            let desc = $('.desc').text().trim();
+            let desc = $('.desc').text().replace('Nội dung', '').trim();
             for (const t of $('.list_cate a').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
