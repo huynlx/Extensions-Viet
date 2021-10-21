@@ -845,7 +845,7 @@ class WComic extends paperback_extensions_common_1.Source {
                 }
             });
             const request = createRequestObject({
-                url: (query.title ? (`${DOMAIN}tim-kiem/${query.title}/trang-${page}.html`) : encodeURI(`${DOMAIN}loc-truyen/cate-${search.cate}/status-${search.status}/rating-${search.rating}/minchap-${search.min}/trang-${page}.html`)),
+                url: (query.title ? encodeURI(`${DOMAIN}tim-kiem/${query.title}/trang-${page}.html`) : encodeURI(`${DOMAIN}loc-truyen/cate-${search.cate}/status-${search.status}/rating-${search.rating}/minchap-${search.min}/trang-${page}.html`)),
                 method: "GET"
             });
             const data = yield this.requestManager.schedule(request, 1);
