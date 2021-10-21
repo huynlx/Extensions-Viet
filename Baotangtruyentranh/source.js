@@ -690,7 +690,7 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
                 artist: creator,
                 desc: desc,
                 titles: [BaotangtruyentranhParser_1.decodeHTMLEntity($('.title-detail').text().trim())],
-                image: encodeURI(image),
+                image: encodeURI(BaotangtruyentranhParser_1.decodeHTMLEntity(image)),
                 status: statusFinal,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
@@ -751,7 +751,6 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             let featured = createHomeSection({
                 id: 'featured',
@@ -787,7 +786,7 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
                 let subtitle = $("ul .chapter > a", element).first().text().trim().replace('Chapter ', 'Ch.') + ' | ' + $("ul .chapter > i", element).first().text().trim();
                 newUpdatedItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
-                    image: (_a = (image)) !== null && _a !== void 0 ? _a : "",
+                    image: encodeURI(BaotangtruyentranhParser_1.decodeHTMLEntity(image)),
                     title: createIconText({ text: BaotangtruyentranhParser_1.decodeHTMLEntity(title) }),
                     subtitleText: createIconText({ text: BaotangtruyentranhParser_1.decodeHTMLEntity(subtitle) }),
                 }));
@@ -809,7 +808,7 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
                 let subtitle = $(".slide-caption > a", element).first().text().trim() + ' | ' + $(".time", element).first().text().trim();
                 featuredItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
-                    image: (_b = encodeURI(image)) !== null && _b !== void 0 ? _b : "",
+                    image: encodeURI(BaotangtruyentranhParser_1.decodeHTMLEntity(image)),
                     title: createIconText({ text: BaotangtruyentranhParser_1.decodeHTMLEntity(title) }),
                     subtitleText: createIconText({ text: BaotangtruyentranhParser_1.decodeHTMLEntity(subtitle) }),
                 }));
@@ -831,7 +830,7 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
                 let subtitle = $("ul .chapter > a", element).first().text().trim().replace('Chapter ', 'Ch.') + ' | ' + $("ul .chapter > i", element).first().text().trim();
                 transItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
-                    image: (_c = encodeURI(image)) !== null && _c !== void 0 ? _c : "",
+                    image: encodeURI(BaotangtruyentranhParser_1.decodeHTMLEntity(image)),
                     title: createIconText({ text: BaotangtruyentranhParser_1.decodeHTMLEntity(title) }),
                     subtitleText: createIconText({ text: BaotangtruyentranhParser_1.decodeHTMLEntity(subtitle) }),
                 }));
@@ -1013,7 +1012,7 @@ exports.generateSearch = (query) => {
     return encodeURI(keyword);
 };
 exports.parseSearch = ($) => {
-    var _a, _b;
+    var _a;
     const manga = [];
     for (const element of $('.row .item').toArray()) {
         let title = $('h3 > a', element).text().trim();
@@ -1022,7 +1021,7 @@ exports.parseSearch = ($) => {
         let subtitle = $("ul .chapter > a", element).first().text().trim().replace('Chapter ', 'Ch.') + ' | ' + $("ul .chapter > i", element).first().text().trim();
         manga.push(createMangaTile({
             id: id !== null && id !== void 0 ? id : "",
-            image: (_b = encodeURI(image)) !== null && _b !== void 0 ? _b : "",
+            image: encodeURI(exports.decodeHTMLEntity(image)),
             title: createIconText({ text: exports.decodeHTMLEntity(title) }),
             subtitleText: createIconText({ text: exports.decodeHTMLEntity(subtitle) }),
         }));
@@ -1030,7 +1029,7 @@ exports.parseSearch = ($) => {
     return manga;
 };
 exports.parseViewMore = ($) => {
-    var _a, _b;
+    var _a;
     const manga = [];
     for (const element of $('.row .item').toArray()) {
         let title = $('h3 > a', element).text().trim();
@@ -1039,7 +1038,7 @@ exports.parseViewMore = ($) => {
         let subtitle = $("ul .chapter > a", element).first().text().trim().replace('Chapter ', 'Ch.') + ' | ' + $("ul .chapter > i", element).first().text().trim();
         manga.push(createMangaTile({
             id: id !== null && id !== void 0 ? id : "",
-            image: (_b = encodeURI(image)) !== null && _b !== void 0 ? _b : "",
+            image: encodeURI(exports.decodeHTMLEntity(image)),
             title: createIconText({ text: exports.decodeHTMLEntity(title) }),
             subtitleText: createIconText({ text: exports.decodeHTMLEntity(subtitle) }),
         }));
