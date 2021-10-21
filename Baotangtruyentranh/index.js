@@ -681,14 +681,14 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let tags = [];
-            let creator = $('.author p').last().text().trim();
+            let creator = BaotangtruyentranhParser_1.decodeHTMLEntity($('.author p').last().text().trim());
             let statusFinal = $('.status p').last().text().trim().includes('Đang') ? 1 : 0;
             for (const t of $('a', '.kind').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
-                tags.push(createTag({ label: genre, id }));
+                tags.push(createTag({ label: BaotangtruyentranhParser_1.decodeHTMLEntity(genre), id }));
             }
-            let desc = $(".summary").text();
+            let desc = $("#summary").text();
             let image = (_b = $('.col-image img').attr("data-src")) !== null && _b !== void 0 ? _b : "";
             return createManga({
                 id: mangaId,
@@ -714,7 +714,8 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             const chapters = [];
-            for (const obj of $('#nt_listchapters .row:not(.heading)').toArray()) {
+            for (const obj of $('#nt_listchapter .row:not(.heading)').toArray()) {
+                console.log(obj);
                 let id = $('a', obj).first().attr('href');
                 let chapNum = parseFloat((_a = $('a', obj).first().text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
                 let name = ($('a', obj).first().text().trim() === ('Chapter ' + chapNum.toString())) ? '' : $('a', obj).first().text().trim();
