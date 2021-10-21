@@ -41,12 +41,12 @@ export const Truyentranh24Info: SourceInfo = {
 }
 
 export class Truyentranh24 extends Source {
-    getMangaShareUrl(mangaId: string): string { return (DOMAIN + mangaId) };
+    getMangaShareUrl(mangaId: string): string { return (DOMAIN + mangaId.split("::")[0]) };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
         requestTimeout: 20000
     })
-    dataId = '';
+
     async getMangaDetails(mangaId: string): Promise<Manga> {
         const url = DOMAIN + mangaId;
         const request = createRequestObject({
@@ -55,11 +55,11 @@ export class Truyentranh24 extends Source {
         });
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        let tags: Tag[] = [];
+        // let tags: Tag[] = [];
         let creator = '';
         let statusFinal = 1;
         creator = $('.manga-author > span').text().trim();
-        this.dataId = $('.container').attr('data-id');
+        let dataId = $('.container').attr('data-id');
         // for (const t of $('a', test).toArray()) {
         //     const genre = $(t).text().trim();
         //     const id = $(t).attr('href') ?? genre;
@@ -68,11 +68,10 @@ export class Truyentranh24 extends Source {
         let status = $('.manga-status > span').text().trim(); //completed, 1 = Ongoing
         statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
 
-
         let desc = $(".manga-content").text();
         const image = $('.manga-thumbnail > img').attr("data-src") ?? "";
         return createManga({
-            id: mangaId,
+            id: mangaId + "::" + dataId, //=> id là mangaId mới
             author: creator,
             artist: creator,
             desc: desc,
@@ -87,7 +86,7 @@ export class Truyentranh24 extends Source {
     }
     async getChapters(mangaId: string): Promise<Chapter[]> {
         const request = createRequestObject({
-            url: 'https://truyentranh24.com/api/mangas/' + this.dataId + '/chapters?offset=0&limit=0',
+            url: 'https://truyentranh24.com/api/mangas/' + mangaId.split("::")[1] + '/chapters?offset=0&limit=0',
             method,
             headers: {
                 'x-requested-with': 'XMLHttpRequest',
@@ -98,13 +97,13 @@ export class Truyentranh24 extends Source {
         const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
         const chapters: Chapter[] = [];
         for (const obj of json.chapters) {
-            let chapNum = obj.name;
+            let chapNum = obj.slug.split('-')[1];
             let name = obj.views.toLocaleString() + ' lượt đọc';
             let time = obj.created_at.split(' ');
             let d = time[0].split('-');
             let t = time[1].split(':');
             chapters.push(createChapter(<Chapter>{
-                id: DOMAIN + mangaId + '/' + obj.slug,
+                id: DOMAIN + mangaId.split("::")[0] + '/' + obj.slug, //chapterId
                 chapNum: Number(chapNum),
                 name,
                 mangaId: mangaId,
@@ -290,7 +289,7 @@ export class Truyentranh24 extends Source {
             let title = $('.item-title', element).text().trim();
             let image = $('.item-thumbnail > img', element).attr("data-src");
             let id = $('a', element).first().attr('href').split('/')[1] ?? title;
-            let subtitle = $(".item-children > a:first-child > .child-name", element).text().trim();
+            let subtitle = $(".item-children > a:first-child > .child-name", element).text().trim() + ' | ' + $(".item-children > a:first-child > .child-update", element).text().trim();
             addItems.push(createMangaTile({
                 id: id ?? "",
                 image: image ?? "",
@@ -359,7 +358,7 @@ export class Truyentranh24 extends Source {
                 break;
             case "new_updated":
                 url = `https://truyentranh24.com/chap-moi-nhat`;
-                select = 1;
+                select = 2;
                 break;
             case "view":
                 url = `https://truyentranh24.com/truyen-hot?p=${page}`;
@@ -376,7 +375,7 @@ export class Truyentranh24 extends Source {
 
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        let manga = parseViewMore($);
+        let manga = parseViewMore($, select);
         metadata = !isLastPage($) ? { page: page + 1 } : undefined;
         return createPagedResults({
             results: manga,

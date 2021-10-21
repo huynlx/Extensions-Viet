@@ -165,7 +165,7 @@ export class HentaiVL extends Source {
         for (let obj of $('li', '.list-hot').toArray()) {
             let title = $(`.title`, obj).text().trim();
             let subtitle = $(`.chapter > a`, obj).text().trim();
-            const image = $('.manga-thumb > a > img', obj).attr('data-original') ?? "";
+            const image = $('.manga-thumb > a > img', obj).attr('src') ?? "";
             let id = $(`.manga-thumb > a`, obj).attr('href') ?? title;
             hotItems.push(createMangaTile({
                 id: id,

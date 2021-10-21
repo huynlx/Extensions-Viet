@@ -619,9 +619,8 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             requestsPerSecond: 5,
             requestTimeout: 20000
         });
-        this.dataId = '';
     }
-    getMangaShareUrl(mangaId) { return (DOMAIN + mangaId); }
+    getMangaShareUrl(mangaId) { return (DOMAIN + mangaId.split("::")[0]); }
     ;
     getMangaDetails(mangaId) {
         var _a;
@@ -633,11 +632,11 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             });
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            let tags = [];
+            // let tags: Tag[] = [];
             let creator = '';
             let statusFinal = 1;
             creator = $('.manga-author > span').text().trim();
-            this.dataId = $('.container').attr('data-id');
+            let dataId = $('.container').attr('data-id');
             // for (const t of $('a', test).toArray()) {
             //     const genre = $(t).text().trim();
             //     const id = $(t).attr('href') ?? genre;
@@ -648,7 +647,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             let desc = $(".manga-content").text();
             const image = (_a = $('.manga-thumbnail > img').attr("data-src")) !== null && _a !== void 0 ? _a : "";
             return createManga({
-                id: mangaId,
+                id: mangaId + "::" + dataId,
                 author: creator,
                 artist: creator,
                 desc: desc,
@@ -663,7 +662,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: 'https://truyentranh24.com/api/mangas/' + this.dataId + '/chapters?offset=0&limit=0',
+                url: 'https://truyentranh24.com/api/mangas/' + mangaId.split("::")[1] + '/chapters?offset=0&limit=0',
                 method,
                 headers: {
                     'x-requested-with': 'XMLHttpRequest',
@@ -674,13 +673,13 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
             const chapters = [];
             for (const obj of json.chapters) {
-                let chapNum = obj.name;
+                let chapNum = obj.slug.split('-')[1];
                 let name = obj.views.toLocaleString() + ' lượt đọc';
                 let time = obj.created_at.split(' ');
                 let d = time[0].split('-');
                 let t = time[1].split(':');
                 chapters.push(createChapter({
-                    id: DOMAIN + mangaId + '/' + obj.slug,
+                    id: DOMAIN + mangaId.split("::")[0] + '/' + obj.slug,
                     chapNum: Number(chapNum),
                     name,
                     mangaId: mangaId,
@@ -863,7 +862,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
                 let title = $('.item-title', element).text().trim();
                 let image = $('.item-thumbnail > img', element).attr("data-src");
                 let id = (_e = $('a', element).first().attr('href').split('/')[1]) !== null && _e !== void 0 ? _e : title;
-                let subtitle = $(".item-children > a:first-child > .child-name", element).text().trim();
+                let subtitle = $(".item-children > a:first-child > .child-name", element).text().trim() + ' | ' + $(".item-children > a:first-child > .child-update", element).text().trim();
                 addItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
                     image: image !== null && image !== void 0 ? image : "",
@@ -932,7 +931,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
                     break;
                 case "new_updated":
                     url = `https://truyentranh24.com/chap-moi-nhat`;
-                    select = 1;
+                    select = 2;
                     break;
                 case "view":
                     url = `https://truyentranh24.com/truyen-hot?p=${page}`;
@@ -947,7 +946,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             });
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            let manga = Truyentranh24Parser_1.parseViewMore($);
+            let manga = Truyentranh24Parser_1.parseViewMore($, select);
             metadata = !Truyentranh24Parser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: manga,
@@ -1042,20 +1041,36 @@ exports.parseSearch = ($) => {
     }
     return manga;
 };
-exports.parseViewMore = ($) => {
-    var _a, _b;
+exports.parseViewMore = ($, select) => {
+    var _a, _b, _c, _d;
     const manga = [];
-    for (const element of $('.container-lm > section:nth-child(1) > .item-medium').toArray()) {
-        let title = $('.item-title', element).text().trim();
-        let image = $('.item-thumbnail > img', element).attr("data-src");
-        let id = (_b = (_a = $('a', element).first().attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[1]) !== null && _b !== void 0 ? _b : title;
-        let subtitle = $("span.background-8", element).text().trim();
-        manga.push(createMangaTile({
-            id: id !== null && id !== void 0 ? id : "",
-            image: image !== null && image !== void 0 ? image : "",
-            title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: subtitle }),
-        }));
+    if (select === 1) {
+        for (const element of $('.container-lm > section:nth-child(1) > .item-medium').toArray()) {
+            let title = $('.item-title', element).text().trim();
+            let image = $('.item-thumbnail > img', element).attr("data-src");
+            let id = (_b = (_a = $('a', element).first().attr('href')) === null || _a === void 0 ? void 0 : _a.split('/')[1]) !== null && _b !== void 0 ? _b : title;
+            let subtitle = $("span.background-8", element).text().trim();
+            manga.push(createMangaTile({
+                id: id !== null && id !== void 0 ? id : "",
+                image: image !== null && image !== void 0 ? image : "",
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: subtitle }),
+            }));
+        }
+    }
+    else {
+        for (const element of $('.container-lm > section:nth-child(1) > .item-medium').toArray()) {
+            let title = $('.item-title', element).text().trim();
+            let image = $('.item-thumbnail > img', element).attr("data-src");
+            let id = (_d = (_c = $('a', element).first().attr('href')) === null || _c === void 0 ? void 0 : _c.split('/')[1]) !== null && _d !== void 0 ? _d : title;
+            let subtitle = $("span.background-1", element).text().trim();
+            manga.push(createMangaTile({
+                id: id !== null && id !== void 0 ? id : "",
+                image: image !== null && image !== void 0 ? image : "",
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: subtitle }),
+            }));
+        }
     }
     return manga;
 };

@@ -196,7 +196,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                     id: id,
                     image: encodeURI(image),
                     title: createIconText({
-                        text: title,
+                        text: HentaiCubeParser_1.decodeHTMLEntity(title),
                     }),
                     subtitleText: createIconText({
                         text: (subtitle),

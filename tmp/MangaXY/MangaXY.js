@@ -16,7 +16,7 @@ const DOMAIN = 'https://mangaxy.com/';
 const method = 'GET';
 exports.MangaXYInfo = {
     version: '1.0.0',
-    name: 'MangaXY',
+    name: 'MangaXY (TT8)',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
@@ -140,7 +140,7 @@ class MangaXY extends paperback_extensions_common_1.Source {
                 if (!obj.attribs['src'])
                     continue;
                 let link = obj.attribs['src'];
-                pages.push(encodeURI(link.trim()));
+                pages.push((link.trim()));
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,

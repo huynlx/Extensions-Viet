@@ -96,7 +96,7 @@ class CManga extends paperback_extensions_common_1.Source {
                 chapters.push(createChapter({
                     id: DOMAIN + mangaId.split("::")[1] + '/' + CMangaParser_1.change_alias(obj.chapter_name) + '/' + obj.id_chapter,
                     chapNum: parseFloat(obj.chapter_num),
-                    name: CMangaParser_1.titleCase(obj.chapter_name),
+                    name: CMangaParser_1.titleCase(obj.chapter_name) === ('Chapter ' + obj.chapter_num) ? '' : CMangaParser_1.titleCase(obj.chapter_name),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
                     time: new Date(d2 + " " + t2)
@@ -115,10 +115,14 @@ class CManga extends paperback_extensions_common_1.Source {
             });
             const data = yield this.requestManager.schedule(request, 1);
             var chapter_content = JSON.parse(JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data)))[0].content);
+            var pages = [];
+            for (const img of chapter_content) {
+                pages.push(img.replace('.net', '.com'));
+            }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
                 mangaId: mangaId,
-                pages: chapter_content,
+                pages: pages,
                 longStrip: false
             });
             return chapterDetails;
@@ -154,7 +158,6 @@ class CManga extends paperback_extensions_common_1.Source {
             let popular = [];
             let data = yield this.requestManager.schedule(request, 1);
             let json = JSON.parse(data.data);
-            console.log(json);
             for (var i of Object.keys(json.day)) {
                 var item = json.day[i];
                 if (!item.name)

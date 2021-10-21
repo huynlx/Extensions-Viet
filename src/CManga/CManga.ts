@@ -101,7 +101,7 @@ export class CManga extends Source {
             chapters.push(createChapter(<Chapter>{
                 id: DOMAIN + mangaId.split("::")[1] + '/' + change_alias(obj.chapter_name) + '/' + obj.id_chapter,
                 chapNum: parseFloat(obj.chapter_num),
-                name: titleCase(obj.chapter_name),
+                name: titleCase(obj.chapter_name) === ('Chapter ' + obj.chapter_num) ? '' : titleCase(obj.chapter_name),
                 mangaId: mangaId,
                 langCode: LanguageCode.VIETNAMESE,
                 time: new Date(d2 + " " + t2)
@@ -120,10 +120,14 @@ export class CManga extends Source {
         });
         const data = await this.requestManager.schedule(request, 1);
         var chapter_content = JSON.parse(JSON.parse(decrypt_data(JSON.parse(data.data)))[0].content);
+        var pages = [];
+        for (const img of chapter_content) {
+            pages.push(img.replace('.net', '.com'));
+        }
         const chapterDetails = createChapterDetails({
             id: chapterId,
             mangaId: mangaId,
-            pages: chapter_content,
+            pages: pages,
             longStrip: false
         });
         return chapterDetails;
@@ -160,7 +164,6 @@ export class CManga extends Source {
         let popular: MangaTile[] = [];
         let data = await this.requestManager.schedule(request, 1);
         let json = JSON.parse(data.data);
-        console.log(json);
 
         for (var i of Object.keys(json.day)) {
             var item = json.day[i];
@@ -215,7 +218,7 @@ export class CManga extends Source {
         data = await this.requestManager.schedule(request, 1);
         json = JSON.parse(decrypt_data(JSON.parse(data.data)));
         console.log(json);
-        
+
         for (var i of Object.keys(json)) {
             var item = json[i];
             if (!item.name) continue;

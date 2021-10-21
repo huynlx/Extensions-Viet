@@ -342,7 +342,24 @@ export class TruyentranhLH extends Source {
         const response = await this.requestManager.schedule(request, 1)
         const $ = this.cheerio.load(response.data);
         const arrayTags: Tag[] = [];
-        const arrayTags2: Tag[] = [];
+        const arrayTags2: Tag[] = [
+            {
+                label: 'Tất cả',
+                id: 'status.'
+            },
+            {
+                label: 'Đang tiến hành',
+                id: 'status.1'
+            },
+            {
+                label: 'Tạm ngưng',
+                id: 'status.2'
+            },
+            {
+                label: 'Hoàn thành',
+                id: 'status.3'
+            }
+        ];
         const arrayTags3: Tag[] = [];
         //the loai
         for (const tag of $('div.search-gerne_item', 'div.form-group').toArray()) {
@@ -350,13 +367,6 @@ export class TruyentranhLH extends Source {
             const id = $('label', tag).attr('data-genre-id') ?? label;
             if (!id || !label) continue;
             arrayTags.push({ id: id, label: label });
-        }
-        //tinh trang
-        for (const tag of $('option', 'select#list-status').toArray()) {
-            const label = $(tag).text().trim();
-            const id = 'status.' + $(tag).attr('value') ?? label;
-            if (!id || !label) continue;
-            arrayTags2.push({ id: id, label: label });
         }
         //sap xep
         for (const tag of $('option', 'select#list-sort').toArray()) {

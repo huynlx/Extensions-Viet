@@ -49,3 +49,5 @@ https://huynh12345678.github.io/Extensions-Viet/
 |   38  | Vcomycs                   | https://vcomycs.com                        |
 |   39  | VietComic                 | https://vietcomic.net                      |
 |   40  | VlogTruyen                | https://vlogtruyen.net                     |
+|   41  | Truyendep                 | https://truyendep.net                      |
+|   42  | Mangaii                   | https://mangaii.com                        |

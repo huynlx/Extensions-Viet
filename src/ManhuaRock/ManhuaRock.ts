@@ -165,7 +165,11 @@ export class ManhuaRock extends Source {
         const pages: string[] = [];
         for (let obj of $('.chapter-content img').toArray()) {
             let link = $(obj).attr('data-original') ?? "";
-            pages.push(link.replace(/\n/g, ''));
+            if (link.includes('http')) {
+                pages.push(encodeURI(link.replace(/\n/g, '')));
+            } else {
+                pages.push(encodeURI('https://manhuarock.net/' + link.replace(/\n/g, '')));
+            }
         }
         const chapterDetails = createChapterDetails({
             id: chapterId,

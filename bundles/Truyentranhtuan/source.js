@@ -2830,7 +2830,7 @@ class Truyentranhtuan extends paperback_extensions_common_1.Source {
             let html = Buffer.from(createByteArray(data.rawData)).toString();
             let $ = this.cheerio.load(html);
             let newUpdatedItems = [];
-            for (const element of $('#new-chapter .manga-update').toArray().splice(0, 15)) {
+            for (const element of $('#new-chapter .manga-update').toArray()) {
                 let title = $('a', element).first().text().trim();
                 let img = $('img', element).attr('src').replace('-80x90', '');
                 let id = (_a = $('a', element).attr('href')) !== null && _a !== void 0 ? _a : title;

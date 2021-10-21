@@ -48,12 +48,12 @@ export const parseViewMore = ($: CheerioStatic, select: Number): MangaTile[] => 
         for (let obj of $('li', '.list-hot').toArray()) {
             let title = $(`.title`, obj).text().trim();
             let subtitle = $(`.chapter > a`, obj).text().trim();
-            const image = $('.manga-thumb > a > img', obj).attr('data-original') ?? "";
+            const image = $('.manga-thumb > a > img', obj).attr('data-original') ?? $('.manga-thumb > a > img', obj).attr('src');
             let id = $(`.manga-thumb > a`, obj).attr('href') ?? title;
             if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
                 manga.push(createMangaTile({
                     id: id,
-                    image: image,
+                    image: image ?? "",
                     title: createIconText({
                         text: title,
                     }),

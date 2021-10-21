@@ -30,7 +30,7 @@ export const parseSearch = ($: CheerioStatic, set: any): MangaTile[] => {
                     id: id,
                     image: encodeURI(image),
                     title: createIconText({
-                        text: title,
+                        text: decodeHTMLEntity(title),
                     }),
                     subtitleText: createIconText({
                         text: (subtitle),
@@ -50,7 +50,7 @@ export const parseSearch = ($: CheerioStatic, set: any): MangaTile[] => {
                     id: id,
                     image: encodeURI(image.replace('-110x150', '')),
                     title: createIconText({
-                        text: title,
+                        text: decodeHTMLEntity(title),
                     }),
                     subtitleText: createIconText({
                         text: (subtitle),
@@ -78,7 +78,7 @@ export const parseViewMore = ($: CheerioStatic, select: Number): MangaTile[] => 
                     id: id,
                     image: encodeURI(image),
                     title: createIconText({
-                        text: title ?? "",
+                        text: decodeHTMLEntity(title) ?? "",
                     }),
                     subtitleText: createIconText({
                         text: (subtitle),

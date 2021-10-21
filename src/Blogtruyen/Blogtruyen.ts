@@ -169,11 +169,29 @@ export class Blogtruyen extends Source {
             title: "Truyện mới đăng",
             view_more: false,
         });
+        let full: HomeSection = createHomeSection({
+            id: 'full',
+            title: "Đủ bộ",
+            view_more: true,
+        });
+        let girl: HomeSection = createHomeSection({
+            id: 'girl',
+            title: "Con gái",
+            view_more: true,
+        });
+        let boy: HomeSection = createHomeSection({
+            id: 'boy',
+            title: "Con trai",
+            view_more: true,
+        });
 
         //Load empty sections
         sectionCallback(hot);
         sectionCallback(newUpdated);
         sectionCallback(newAdded);
+        sectionCallback(full);
+        sectionCallback(girl);
+        sectionCallback(boy);
 
         ///Get the section data
         //Featured
@@ -286,6 +304,90 @@ export class Blogtruyen extends Source {
         }
         newAdded.items = newAddItems;
         sectionCallback(newAdded);
+
+        //full
+        url = '';
+        request = createRequestObject({
+            url: 'https://blogtruyen.vn/ajax/Category/AjaxLoadMangaByCategory?id=0&orderBy=5&p=1',
+            method: "GET",
+        });
+        let fullItems: MangaTile[] = [];
+        data = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(data.data);
+        for (let obj of $('p:not(:first-child)', '.list').toArray()) {
+            let title = $(`a`, obj).text().trim();
+            let subtitle = 'Chương ' + $(`span:nth-child(2)`, obj).text().trim();
+            const image = $('img', $(obj).next()).attr('src') ?? "";
+            let id = $(`a`, obj).attr('href') ?? title;
+            fullItems.push(createMangaTile({
+                id: id,
+                image: encodeURI(image.replace('150', '200')),
+                title: createIconText({
+                    text: decodeHTMLEntity(title),
+                }),
+                subtitleText: createIconText({
+                    text: (subtitle),
+                }),
+            }))
+        }
+        full.items = fullItems;
+        sectionCallback(full);
+
+        //girl
+        url = '';
+        request = createRequestObject({
+            url: 'https://blogtruyen.vn/ajax/Category/AjaxLoadMangaByCategory?id=29&orderBy=5&p=1',
+            method: "GET",
+        });
+        let girlItems: MangaTile[] = [];
+        data = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(data.data);
+        for (let obj of $('p:not(:first-child)', '.list').toArray()) {
+            let title = $(`a`, obj).text().trim();
+            let subtitle = 'Chương ' + $(`span:nth-child(2)`, obj).text().trim();
+            const image = $('img', $(obj).next()).attr('src') ?? "";
+            let id = $(`a`, obj).attr('href') ?? title;
+            girlItems.push(createMangaTile({
+                id: id,
+                image: encodeURI(image.replace('150', '200')),
+                title: createIconText({
+                    text: decodeHTMLEntity(title),
+                }),
+                subtitleText: createIconText({
+                    text: (subtitle),
+                }),
+            }))
+        }
+        girl.items = girlItems;
+        sectionCallback(girl);
+
+        //boy
+        url = '';
+        request = createRequestObject({
+            url: 'https://blogtruyen.vn/ajax/Category/AjaxLoadMangaByCategory?id=31&orderBy=5&p=1',
+            method: "GET",
+        });
+        let boyItems: MangaTile[] = [];
+        data = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(data.data);
+        for (let obj of $('p:not(:first-child)', '.list').toArray()) {
+            let title = $(`a`, obj).text().trim();
+            let subtitle = 'Chương ' + $(`span:nth-child(2)`, obj).text().trim();
+            const image = $('img', $(obj).next()).attr('src') ?? "";
+            let id = $(`a`, obj).attr('href') ?? title;
+            boyItems.push(createMangaTile({
+                id: id,
+                image: encodeURI(image.replace('150', '200')),
+                title: createIconText({
+                    text: decodeHTMLEntity(title),
+                }),
+                subtitleText: createIconText({
+                    text: (subtitle),
+                }),
+            }))
+        }
+        boy.items = boyItems;
+        sectionCallback(boy);
     }
 
     async getViewMoreItems(homepageSectionId: string, metadata: any): Promise<PagedResults> {
@@ -302,10 +404,18 @@ export class Blogtruyen extends Source {
                 url = `https://blogtruyen.vn/thumb-${page}`;
                 select = 1;
                 break;
-            // case "new_added":
-            //     url = `https://sayhentai.net/danh-sach-truyen.html?status=0&sort=id&page=${page}`;
-            //     select = 1;
-            //     break;
+            case "full":
+                url = `https://blogtruyen.vn/ajax/Category/AjaxLoadMangaByCategory?id=0&orderBy=5&p=${page}`;
+                select = 0;
+                break;
+            case "girl":
+                url = `https://blogtruyen.vn/ajax/Category/AjaxLoadMangaByCategory?id=29&orderBy=5&p=${page}`;
+                select = 0;
+                break;
+            case "boy":
+                url = `https://blogtruyen.vn/ajax/Category/AjaxLoadMangaByCategory?id=31&orderBy=5&p=${page}`;
+                select = 0;
+                break;
             default:
                 return Promise.resolve(createPagedResults({ results: [] }))
         }

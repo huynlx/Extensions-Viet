@@ -23,7 +23,7 @@ const method = 'GET'
 
 export const MangaXYInfo: SourceInfo = {
     version: '1.0.0',
-    name: 'MangaXY',
+    name: 'MangaXY (TT8)',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
@@ -137,7 +137,7 @@ export class MangaXY extends Source {
         for (let obj of $('.page-chapter img').toArray()) {
             if (!obj.attribs['src']) continue;
             let link = obj.attribs['src'];
-            pages.push(encodeURI(link.trim()));
+            pages.push((link.trim()));
         }
 
         const chapterDetails = createChapterDetails({
