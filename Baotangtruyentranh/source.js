@@ -718,6 +718,9 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
                 let id = $('a', obj).first().attr('href');
                 let chapNum = parseFloat((_a = $('a', obj).first().text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
                 let name = ($('a', obj).first().text().trim() === ('Chapter ' + chapNum.toString())) ? '' : $('a', obj).first().text().trim();
+                if ($('.coin-unlock').attr('title')) {
+                    name = $('.coin-unlock').attr('title');
+                }
                 let time = $('.col-xs-4', obj).text().trim();
                 chapters.push(createChapter({
                     id,
@@ -769,7 +772,7 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
             let trans = createHomeSection({
                 id: 'trans',
                 title: "TRUYỆN DỊCH",
-                view_more: false,
+                view_more: true,
             });
             //Load empty sections
             sectionCallback(newUpdated);
@@ -807,12 +810,12 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
             $ = this.cheerio.load(data.data);
             for (const element of $('.items-slide .item').toArray()) {
                 let title = $('.slide-caption h3', element).text().trim();
-                let image = $('a img', element).attr("src");
+                let image = $('a img', element).attr("data-src");
                 let id = $('a', element).attr('href');
-                let subtitle = $(".slide-caption > a", element).first().text().trim().replace('Chapter ', 'Ch.') + ' | ' + $(".time", element).first().text().trim();
+                let subtitle = $(".slide-caption > a", element).first().text().trim() + ' | ' + $(".time", element).first().text().trim();
                 featuredItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
-                    image: (_b = (image)) !== null && _b !== void 0 ? _b : "",
+                    image: (_b = encodeURI(image)) !== null && _b !== void 0 ? _b : "",
                     title: createIconText({ text: BaotangtruyentranhParser_1.decodeHTMLEntity(title) }),
                     subtitleText: createIconText({ text: BaotangtruyentranhParser_1.decodeHTMLEntity(subtitle) }),
                 }));
@@ -834,7 +837,7 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
                 let subtitle = $("ul .chapter > a", element).first().text().trim().replace('Chapter ', 'Ch.') + ' | ' + $("ul .chapter > i", element).first().text().trim();
                 transItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
-                    image: (_c = (image)) !== null && _c !== void 0 ? _c : "",
+                    image: (_c = encodeURI(image)) !== null && _c !== void 0 ? _c : "",
                     title: createIconText({ text: BaotangtruyentranhParser_1.decodeHTMLEntity(title) }),
                     subtitleText: createIconText({ text: BaotangtruyentranhParser_1.decodeHTMLEntity(subtitle) }),
                 }));
