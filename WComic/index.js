@@ -620,7 +620,7 @@ class WComic extends paperback_extensions_common_1.Source {
             requestTimeout: 20000
         });
     }
-    getMangaShareUrl(mangaId) { return `${DOMAIN}${mangaId}`; }
+    getMangaShareUrl(mangaId) { return `${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
         var _a;
@@ -790,14 +790,8 @@ class WComic extends paperback_extensions_common_1.Source {
             let param = '';
             let url = '';
             switch (homepageSectionId) {
-                case "hot":
-                    url = `${DOMAIN}danh-sach-truyen.html?status=0&sort=views&page=${page}`;
-                    break;
                 case "new_updated":
-                    url = `https://wcomic.site/truyen-moi-cap-nhap/trang-${page}.html`;
-                    break;
-                case "new_added":
-                    url = `${DOMAIN}danh-sach-truyen.html?status=0&sort=id&page=${page}`;
+                    url = `${DOMAIN}truyen-moi-cap-nhap/trang-${page}.html`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
