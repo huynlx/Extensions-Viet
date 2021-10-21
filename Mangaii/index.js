@@ -704,16 +704,15 @@ class Mangaii extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
-                title: "DÀNH CHO BẠN",
+                title: "Hot là đây!",
                 view_more: false,
             });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
-                title: "MỚI CẬP NHẬT",
+                title: "Mới cập nhập!",
                 view_more: true,
             });
             let newAdded = createHomeSection({
@@ -755,21 +754,41 @@ class Mangaii extends paperback_extensions_common_1.Source {
             }
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
-            //New Added
-            request = createRequestObject({
-                url: 'https://truyentranh.net/comic-latest',
-                method: "GET",
-            });
-            let newAddItems = [];
-            data = yield this.requestManager.schedule(request, 1);
-            $ = this.cheerio.load(data.data);
-            for (let manga of $('.content .card-list > .card').toArray()) {
-                const title = $('.card-title', manga).text().trim();
-                const id = (_a = $('.card-title > a', manga).attr('href')) !== null && _a !== void 0 ? _a : title;
-                const image = $('.card-img', manga).attr('src');
-                const sub = $('.list-chapter > li:first-child > a', manga).text().trim();
-                // if (!id || !subtitle) continue;
-                newAddItems.push(createMangaTile({
+            // //New Added
+            // request = createRequestObject({
+            //     url: 'https://truyentranh.net/comic-latest',
+            //     method: "GET",
+            // });
+            // let newAddItems: MangaTile[] = [];
+            // data = await this.requestManager.schedule(request, 1);
+            // $ = this.cheerio.load(data.data);
+            // for (let manga of $('.content .card-list > .card').toArray()) {
+            //     const title = $('.card-title', manga).text().trim();
+            //     const id = $('.card-title > a', manga).attr('href') ?? title;
+            //     const image = $('.card-img', manga).attr('src');
+            //     const sub = $('.list-chapter > li:first-child > a', manga).text().trim();
+            //     // if (!id || !subtitle) continue;
+            //     newAddItems.push(createMangaTile({
+            //         id: id,
+            //         image: image,
+            //         title: createIconText({
+            //             text: title,
+            //         }),
+            //         subtitleText: createIconText({
+            //             text: sub,
+            //         }),
+            //     }))
+            // }
+            // newAdded.items = newAddItems;
+            // sectionCallback(newAdded);
+            // Hot
+            let popularItems = [];
+            for (let manga of dt.translate) {
+                const title = manga.name;
+                const id = 'https://mangaii.com/comic/' + manga.slug;
+                const image = `https://mangaii.com/_next/image?url=https%3A%2F%2Fapi.mangaii.com%2Fmedia%2Fcover_images%2F${manga.cover_image}&w=256&q=100`;
+                const sub = 'Chapter ' + manga.chapter.number;
+                popularItems.push(createMangaTile({
                     id: id,
                     image: image,
                     title: createIconText({
@@ -780,30 +799,8 @@ class Mangaii extends paperback_extensions_common_1.Source {
                     }),
                 }));
             }
-            newAdded.items = newAddItems;
-            // sectionCallback(newAdded);
-            // Hot
-            request = createRequestObject({
-                url: 'https://truyentranh.net',
-                method: "GET",
-            });
-            let popular = [];
-            data = yield this.requestManager.schedule(request, 1);
-            $ = this.cheerio.load(data.data);
-            for (let manga of $('#bottomslider .list-slider-item').toArray()) {
-                const title = $('.card', manga).attr('title');
-                const id = $('.card', manga).attr('href');
-                const image = $('.card-img', manga).attr('src');
-                const sub = $('.card-chapter', manga).text().trim();
-                // if (!id || !title) continue;
-                popular.push(createMangaTile({
-                    id: id,
-                    image: image,
-                    title: createIconText({ text: title }),
-                    subtitleText: createIconText({ text: sub }),
-                }));
-            }
-            hot.items = popular;
+            hot.items = popularItems;
+            sectionCallback(hot);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {

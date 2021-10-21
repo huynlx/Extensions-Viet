@@ -952,12 +952,12 @@ exports.parseViewMore = ($, select) => {
         for (let obj of $('li', '.list-hot').toArray()) {
             let title = $(`.title`, obj).text().trim();
             let subtitle = $(`.chapter > a`, obj).text().trim();
-            const image = (_a = $('.manga-thumb > a > img', obj).attr('data-original')) !== null && _a !== void 0 ? _a : "";
+            const image = (_a = $('.manga-thumb > a > img', obj).attr('data-original')) !== null && _a !== void 0 ? _a : $('.manga-thumb > a > img', obj).attr('src');
             let id = (_b = $(`.manga-thumb > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
             if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
                 manga.push(createMangaTile({
                     id: id,
-                    image: image,
+                    image: image !== null && image !== void 0 ? image : "",
                     title: createIconText({
                         text: title,
                     }),
