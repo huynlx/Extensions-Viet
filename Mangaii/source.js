@@ -928,7 +928,6 @@ exports.Mangaii = Mangaii;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.convertTime = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
 const entities = require("entities"); //Import package for decoding HTML entities
-const DOMAIN = 'https://truyentranhaudio.online/';
 exports.generateSearch = (query) => {
     var _a;
     let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
