@@ -603,7 +603,7 @@ exports.WComicInfo = {
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from WComic',
-    websiteBaseURL: `https://saytruyen.net/`,
+    websiteBaseURL: DOMAIN,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
         {
@@ -635,7 +635,7 @@ class WComic extends paperback_extensions_common_1.Source {
             let tags = [];
             let creator = '';
             let status = 1; //completed, 1 = Ongoing
-            let desc = $('.desc').text();
+            let desc = $('.desc').text().trim();
             for (const t of $('.list_cate a').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
@@ -818,35 +818,35 @@ class WComic extends paperback_extensions_common_1.Source {
         });
     }
     getSearchResults(query, metadata) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const search = {
-                genres: '',
-                status: "0",
-                sort: "last_update",
-                name: (_d = query.title) !== null && _d !== void 0 ? _d : ''
+                cate: "",
+                status: "",
+                rating: "",
+                min: ""
             };
             tags.map((value) => {
-                if (value.indexOf('.') === -1) {
-                    search.genres = value;
-                }
-                else {
-                    switch (value.split(".")[0]) {
-                        case 'sort':
-                            search.sort = (value.split(".")[1]);
-                            break;
-                        case 'status':
-                            search.status = (value.split(".")[1]);
-                            break;
-                    }
+                switch (value.split(".")[0]) {
+                    case 'cate':
+                        search.cate = (value.split(".")[1]);
+                        break;
+                    case 'status':
+                        search.status = (value.split(".")[1]);
+                        break;
+                    case 'rating':
+                        search.rating = (value.split(".")[1]);
+                        break;
+                    case 'min':
+                        search.min = (value.split(".")[1]);
+                        break;
                 }
             });
             const request = createRequestObject({
-                url: (tags[0] === 'all' ? (DOMAIN + 'danh-sach-truyen.html?') : encodeURI(`${DOMAIN}danh-sach-truyen.html?status=${search.status}&name=${search.name}&genre=${search.genres}&sort=${search.sort}`)),
-                method: "GET",
-                param: encodeURI(`&page=${page}`)
+                url: (query.title ? (`${DOMAIN}tim-kiem/${query.title}/trang-${page}.html`) : encodeURI(`${DOMAIN}loc-truyen/cate-${search.cate}/status-${search.status}/rating-${search.rating}/minchap-${search.min}/trang-${page}.html`)),
+                method: "GET"
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
@@ -860,252 +860,56 @@ class WComic extends paperback_extensions_common_1.Source {
     }
     getSearchTags() {
         return __awaiter(this, void 0, void 0, function* () {
-            const tags = [
-                {
-                    "id": "all",
-                    "label": "Tất cả"
-                },
-                {
-                    "id": "18",
-                    "label": "18+"
-                },
-                {
-                    "id": "action",
-                    "label": "Action"
-                },
-                {
-                    "id": "adult",
-                    "label": "Adult"
-                },
-                {
-                    "id": "adventure",
-                    "label": "Adventure"
-                },
-                {
-                    "id": "anime",
-                    "label": "Anime"
-                },
-                {
-                    "id": "chuyển sinh",
-                    "label": "Chuyển Sinh"
-                },
-                {
-                    "id": "comedy",
-                    "label": "Comedy"
-                },
-                {
-                    "id": "comic",
-                    "label": "Comic"
-                },
-                {
-                    "id": "cooking",
-                    "label": "Cooking"
-                },
-                {
-                    "id": "cổ đại",
-                    "label": "Cổ Đại"
-                },
-                {
-                    "id": "doujinshi",
-                    "label": "Doujinshi"
-                },
-                {
-                    "id": "drama",
-                    "label": "Drama"
-                },
-                {
-                    "id": "đam mỹ",
-                    "label": "Đam Mỹ"
-                },
-                {
-                    "id": "ecchi",
-                    "label": "Ecchi"
-                },
-                {
-                    "id": "fantasy",
-                    "label": "Fantasy"
-                },
-                {
-                    "id": "gender bender",
-                    "label": "Gender Bender"
-                },
-                {
-                    "id": "harem",
-                    "label": "Harem"
-                },
-                {
-                    "id": "historical",
-                    "label": "Historical"
-                },
-                {
-                    "id": "horror",
-                    "label": "Horror"
-                },
-                {
-                    "id": "isekai",
-                    "label": "Isekai"
-                },
-                {
-                    "id": "josei",
-                    "label": "Josei"
-                },
-                {
-                    "id": "live action",
-                    "label": "Live action"
-                },
-                {
-                    "id": "manga",
-                    "label": "Manga"
-                },
-                {
-                    "id": "manhua",
-                    "label": "Manhua"
-                },
-                {
-                    "id": "manhwa",
-                    "label": "Manhwa"
-                },
-                {
-                    "id": "martial arts",
-                    "label": "Martial Arts"
-                },
-                {
-                    "id": "mature",
-                    "label": "Mature"
-                },
-                {
-                    "id": "mecha",
-                    "label": "Mecha"
-                },
-                {
-                    "id": "mystery",
-                    "label": "Mystery"
-                },
-                {
-                    "id": "ngôn tình",
-                    "label": "Ngôn Tình"
-                },
-                {
-                    "id": "one shot",
-                    "label": "One shot"
-                },
-                {
-                    "id": "psychological",
-                    "label": "Psychological"
-                },
-                {
-                    "id": "romance",
-                    "label": "Romance"
-                },
-                {
-                    "id": "school life",
-                    "label": "School Life"
-                },
-                {
-                    "id": "sci-fi",
-                    "label": "Sci-fi"
-                },
-                {
-                    "id": "seinen",
-                    "label": "Seinen"
-                },
-                {
-                    "id": "shoujo",
-                    "label": "Shoujo"
-                },
-                {
-                    "id": "shoujo ai",
-                    "label": "Shoujo Ai"
-                },
-                {
-                    "id": "shounen",
-                    "label": "Shounen"
-                },
-                {
-                    "id": "shounen ai",
-                    "label": "Shounen Ai"
-                },
-                {
-                    "id": "slice of life",
-                    "label": "Slice of Life"
-                },
-                {
-                    "id": "smut",
-                    "label": "Smut"
-                },
-                {
-                    "id": "soft yaoi",
-                    "label": "Soft Yaoi"
-                },
-                {
-                    "id": "soft yuri",
-                    "label": "Soft Yuri"
-                },
-                {
-                    "id": "sports",
-                    "label": "Sports"
-                },
-                {
-                    "id": "supernatural",
-                    "label": "Supernatural"
-                },
-                {
-                    "id": "tragedy",
-                    "label": "Tragedy"
-                },
-                {
-                    "id": "trinh thám",
-                    "label": "Trinh Thám"
-                },
-                {
-                    "id": "truyện màu",
-                    "label": "Truyện Màu"
-                },
-                {
-                    "id": "webtoon",
-                    "label": "Webtoon"
-                },
-                {
-                    "id": "xuyên không",
-                    "label": "Xuyên Không"
-                }
-            ];
-            const tags1 = [
-                {
-                    "id": "status.0",
-                    "label": "Tất Cả"
-                },
-                {
-                    "id": "status.2",
-                    "label": "Đang Tiến Hành"
-                },
-                {
-                    "id": "status.1",
-                    "label": "Đã Hoàn Thành"
-                }
-            ];
-            const tags2 = [
-                {
-                    "id": "sort.name",
-                    "label": "Tên Truyện"
-                },
-                {
-                    "id": "sort.views",
-                    "label": "Lượt Xem"
-                },
-                {
-                    "id": "sort.last_update",
-                    "label": "Ngày Cập Nhật"
-                },
-                {
-                    "id": "sort.id",
-                    "label": "Truyện Mới"
-                }
-            ];
+            let param = '';
+            let url = DOMAIN;
+            const request = createRequestObject({
+                url,
+                method,
+                param
+            });
+            const response = yield this.requestManager.schedule(request, 1);
+            const $ = this.cheerio.load(response.data);
+            const tags = [];
+            const tags1 = [];
+            const tags2 = [];
+            const tags3 = [];
+            //the loai
+            for (const tag of $('.checkbox_form > div').toArray()) {
+                const label = $('label', tag).text().trim();
+                const id = 'cate.' + $('input', tag).attr('value');
+                if (!id || !label)
+                    continue;
+                tags.push({ id: id, label: label });
+            }
+            //tinh trang
+            for (const tag of $('select[name="status_filter"] > option:not(:first-child)').toArray()) {
+                const label = $(tag).text().trim();
+                const id = 'status.' + $(tag).attr('value');
+                if (!id || !label)
+                    continue;
+                tags1.push({ id: id, label: label });
+            }
+            //diem
+            for (const tag of $('select[name="rating_filter"] > option:not(:first-child)').toArray()) {
+                const label = $(tag).text().trim();
+                const id = 'rating.' + $(tag).attr('value');
+                if (!id || !label)
+                    continue;
+                tags2.push({ id: id, label: label });
+            }
+            //chap
+            for (const tag of $('select[name="minchap_filter"] > option:not(:first-child)').toArray()) {
+                const label = $(tag).text().trim();
+                const id = 'min.' + $(tag).attr('value');
+                if (!id || !label)
+                    continue;
+                tags3.push({ id: id, label: label });
+            }
             const tagSections = [
                 createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
-                createTagSection({ id: '1', label: 'Trạng Thái', tags: tags1.map(x => createTag(x)) }),
-                createTagSection({ id: '2', label: 'Xếp Theo', tags: tags2.map(x => createTag(x)) }),
+                createTagSection({ id: '1', label: 'Tình Trạng', tags: tags1.map(x => createTag(x)) }),
+                createTagSection({ id: '2', label: 'Điểm', tags: tags2.map(x => createTag(x)) }),
+                createTagSection({ id: '3', label: 'Tổng Chap', tags: tags3.map(x => createTag(x)) })
             ];
             return tagSections;
         });
@@ -1131,16 +935,20 @@ exports.generateSearch = (query) => {
 exports.parseSearch = ($) => {
     var _a;
     const mangas = [];
-    for (let obj of $('li', 'ul#danhsachtruyen').toArray()) {
-        let title = $(`.info-bottom > a`, obj).text().trim();
-        let subtitle = $(`.info-bottom > span`, obj).text().split(":")[0].trim();
-        var image = $('a', obj).first().attr('data-src');
-        let id = (_a = $(`.info-bottom > a`, obj).attr("href")) !== null && _a !== void 0 ? _a : title;
+    for (let obj of $('.wc_comic_list > .wc_item').toArray()) {
+        let title = $(`a`, obj).first().attr('title');
+        let subtitle = $(`.row_one > span:first-child`, obj).text().trim();
+        const image = $(`a:first-child img`, obj).attr('src');
+        let id = (_a = $(`a:first-child`, obj).attr('href')) !== null && _a !== void 0 ? _a : "";
         mangas.push(createMangaTile({
-            id: encodeURIComponent(id),
-            image: (image === null || image === void 0 ? void 0 : image.includes('http')) ? image : ((image === null || image === void 0 ? void 0 : image.includes('//')) ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://saytruyen.net/' + image)),
-            title: createIconText({ text: decodeHTMLEntity(title) }),
-            subtitleText: createIconText({ text: subtitle }),
+            id: id !== null && id !== void 0 ? id : "",
+            image: image !== null && image !== void 0 ? image : "",
+            title: createIconText({
+                text: title !== null && title !== void 0 ? title : "",
+            }),
+            subtitleText: createIconText({
+                text: subtitle,
+            }),
         }));
     }
     return mangas;
