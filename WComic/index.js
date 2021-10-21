@@ -860,12 +860,10 @@ class WComic extends paperback_extensions_common_1.Source {
     }
     getSearchTags() {
         return __awaiter(this, void 0, void 0, function* () {
-            let param = '';
-            let url = DOMAIN;
+            let url = `${DOMAIN}loc-truyen`;
             const request = createRequestObject({
                 url,
-                method,
-                param
+                method
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
