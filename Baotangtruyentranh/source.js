@@ -718,8 +718,8 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
                 let id = $('a', obj).first().attr('href');
                 let chapNum = parseFloat((_a = $('a', obj).first().text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
                 let name = ($('a', obj).first().text().trim() === ('Chapter ' + chapNum.toString())) ? '' : $('a', obj).first().text().trim();
-                if ($('.coin-unlock').attr('title')) {
-                    name = $('.coin-unlock').attr('title');
+                if ($('.coin-unlock', obj).attr('title')) {
+                    name = 'Locked (' + $('.coin-unlock', obj).attr('title') + ')';
                 }
                 let time = $('.col-xs-4', obj).text().trim();
                 chapters.push(createChapter({
@@ -854,7 +854,11 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
             let select = 1;
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = DOMAIN + `manga- list.html ? listType = pagination & page=${page} & artist=& author=& group=& m_status=& name=& genre=& ungenre=& sort=last_update & sort_type=DESC`;
+                    url = `https://baotangtruyentranh.com/?page=${page}&typegroup=0`;
+                    select = 1;
+                    break;
+                case "trans":
+                    url = `https://baotangtruyentranh.com/?page=${page}&typegroup=1`;
                     select = 1;
                     break;
                 default:
@@ -1036,29 +1040,17 @@ exports.parseSearch = ($) => {
     return manga;
 };
 exports.parseViewMore = ($) => {
-    var _a;
     const manga = [];
-    for (const element of $('.card-body > .row > .thumb-item-flow').toArray()) {
-        let title = $('.series-title > a', element).text().trim();
-        let image = $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
-        if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
-            if (image === null || image === void 0 ? void 0 : image.startsWith('//')) {
-                image = 'https:' + image;
-            }
-            else {
-                image = 'https://vcomi.co/' + image;
-            }
-        }
-        else {
-            image = image;
-        }
-        let id = (_a = $('.series-title > a', element).attr('href')) !== null && _a !== void 0 ? _a : title;
-        let subtitle = 'Chương ' + $(".chapter-title > a", element).text().trim();
+    for (const element of $('.row .item').toArray()) {
+        let title = $('h3 > a', element).text().trim();
+        let image = $('.image img', element).attr("data-src");
+        let id = $('h3 > a', element).attr('href');
+        let subtitle = $("ul .chapter > a", element).first().text().trim().replace('Chapter ', 'Ch.') + ' | ' + $("ul .chapter > i", element).first().text().trim();
         manga.push(createMangaTile({
-            id: id,
+            id: id !== null && id !== void 0 ? id : "",
             image: image !== null && image !== void 0 ? image : "",
-            title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: subtitle }),
+            title: createIconText({ text: exports.decodeHTMLEntity(title) }),
+            subtitleText: createIconText({ text: exports.decodeHTMLEntity(subtitle) }),
         }));
     }
     return manga;
@@ -1073,7 +1065,7 @@ exports.isLastPage = ($) => {
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($("ul.pagination > li > a.active").text().trim());
+    const currentPage = Number($("ul.pagination > li.active > a").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
