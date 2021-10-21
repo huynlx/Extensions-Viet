@@ -2690,59 +2690,34 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
         }
         return time;
     }
-    getMangaShareUrl(mangaId) { return (DOMAIN + mangaId); }
+    getMangaShareUrl(mangaId) { return (mangaId); }
     ;
     getMangaDetails(mangaId) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = DOMAIN + mangaId;
+            const url = mangaId;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
-            let html = Buffer.from(createByteArray(data.rawData)).toString();
-            let $ = this.cheerio.load(html);
+            let $ = this.cheerio.load(data.request.cookies);
             let tags = [];
-            let creator = '';
-            let statusFinal = 1;
-            for (const test of $('li', '.manga-info').toArray()) {
-                switch ($('b', test).text().trim()) {
-                    case "Tác giả":
-                        creator = $('a', test).text().trim();
-                        break;
-                    case "Thể loại":
-                        for (const t of $('a', test).toArray()) {
-                            const genre = $(t).text().trim();
-                            const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
-                            tags.push(createTag({ label: genre, id }));
-                        }
-                        break;
-                    case "Tình trạng":
-                        let status = $('a', test).text().trim(); //completed, 1 = Ongoing
-                        statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
-                        break;
-                }
+            let creator = $('.author p').last().text().trim();
+            let statusFinal = $('.status p').last().text().trim().includes('Đang') ? 1 : 0;
+            for (const t of $('a', '.kind').toArray()) {
+                const genre = $(t).text().trim();
+                const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
+                tags.push(createTag({ label: genre, id }));
             }
-            let desc = $(".summary-content").text();
-            let image = (_b = $('.info-cover img').attr("src")) !== null && _b !== void 0 ? _b : "";
-            if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
-                if (image === null || image === void 0 ? void 0 : image.startsWith('//')) {
-                    image = 'https:' + image;
-                }
-                else {
-                    image = 'https://vcomi.co/' + image;
-                }
-            }
-            else {
-                image = image;
-            }
+            let desc = $(".summary").text();
+            let image = (_b = $('.col-image img').attr("data-src")) !== null && _b !== void 0 ? _b : "";
             return createManga({
                 id: mangaId,
                 author: creator,
                 artist: creator,
                 desc: desc,
-                titles: [$('.manga-info h3').text().trim()],
+                titles: [BaotangtruyentranhParser_1.decodeHTMLEntity($('.title-detail').text().trim())],
                 image: encodeURI(image),
                 status: statusFinal,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
@@ -2755,25 +2730,21 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: DOMAIN + mangaId,
+                url: mangaId,
                 method,
             });
             let data = yield this.requestManager.schedule(request, 1);
             let html = Buffer.from(createByteArray(data.rawData)).toString();
             let $ = this.cheerio.load(html);
             const chapters = [];
-            var i = 0;
-            for (const obj of $('.list-chapters > a').toArray().reverse()) {
-                i++;
-                let id = DOMAIN + $(obj).first().attr('href');
-                let chapNum = parseFloat((_a = $('.chapter-name', obj).first().text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
-                let name = $('.chapter-view', obj).first().text().trim();
-                let time = $('.chapter-time', obj).first().text().trim();
-                // let H = time[0];
-                // let D = time[1].split('/');
+            for (const obj of $('#nt_listchapters .row:not(.heading)').toArray()) {
+                let id = $('a', obj).first().attr('href');
+                let chapNum = parseFloat((_a = $('a', obj).first().text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
+                let name = ($('a', obj).first().text().trim() === ('Chapter ' + chapNum.toString())) ? '' : $('a', obj).first().text().trim();
+                let time = $('div:nth-of-type(2)', obj).text().trim();
                 chapters.push(createChapter({
                     id,
-                    chapNum: isNaN(chapNum) ? i : chapNum,
+                    chapNum: chapNum,
                     name,
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
@@ -2784,7 +2755,6 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
         });
     }
     getChapterDetails(mangaId, chapterId) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
                 url: `${chapterId}`,
@@ -2793,19 +2763,8 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             const pages = [];
-            for (let obj of $('.chapter-content img').toArray()) {
-                let image = (_a = $(obj).attr('data-original').replace(/\n/g, '')) !== null && _a !== void 0 ? _a : "";
-                if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
-                    if (image === null || image === void 0 ? void 0 : image.startsWith('//')) {
-                        image = 'https:' + image;
-                    }
-                    else {
-                        image = 'https://vcomi.co/' + image;
-                    }
-                }
-                else {
-                    image = image;
-                }
+            for (let obj of $('.reading-detail img').toArray()) {
+                let image = $(obj).attr('data-src');
                 pages.push(encodeURI(image));
             }
             const chapterDetails = createChapterDetails({
@@ -2818,7 +2777,7 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             let hot = createHomeSection({
                 id: 'hot',
@@ -2836,61 +2795,26 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
                 view_more: false,
             });
             //Load empty sections
-            // sectionCallback(hot);
             sectionCallback(newUpdated);
             // sectionCallback(view);
-            ///Get the section data
-            // Hot
-            let request = createRequestObject({
-                url: DOMAIN,
-                method: "GET",
-            });
-            let popular = [];
-            let data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
-            for (let manga of $('.owl-item', '.owl-stage').toArray()) {
-                const title = $('.series-title', manga).text().trim();
-                const id = $('.thumb-wrapper > a', manga).attr('href');
-                const image = (_a = $('.thumb-wrapper > a > .a6-ratio > .img-in-ratio', manga).css('background-image')) !== null && _a !== void 0 ? _a : "";
-                let bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
-                const sub = $('.chapter-title > a', manga).text().trim();
-                if (!(bg === null || bg === void 0 ? void 0 : bg.includes('http'))) {
-                    if (bg === null || bg === void 0 ? void 0 : bg.startsWith('//')) {
-                        bg = 'https:' + bg;
-                    }
-                    else {
-                        bg = 'https://vcomi.co/' + bg;
-                    }
-                }
-                else {
-                    bg = bg;
-                }
-                popular.push(createMangaTile({
-                    id: id,
-                    image: encodeURI(bg),
-                    title: createIconText({ text: title }),
-                    subtitleText: createIconText({ text: sub.replace('Chap', 'Chương') }),
-                }));
-            }
-            hot.items = popular;
-            // sectionCallback(hot);
+            ///Get the section dat
             //New Updates
-            request = createRequestObject({
+            let request = createRequestObject({
                 url: 'https://baotangtruyentranh.com/?page=1&typegroup=0',
                 method: "GET",
             });
-            data = yield this.requestManager.schedule(request, 1);
-            $ = this.cheerio.load(data.data);
+            let data = yield this.requestManager.schedule(request, 1);
+            let $ = this.cheerio.load(data.data);
             let newUpdatedItems = [];
             for (const element of $('.row .item').toArray()) {
                 let title = $('h3 > a', element).text().trim();
                 let image = $('.image img', element).attr("data-src");
                 let id = $('h3 > a', element).attr('href');
-                let subtitle = $("ul .chapter > a", element).first().text().trim() + ' | ' + $("ul .chapter > i", element).first().text().trim();
+                let subtitle = $("ul .chapter > a", element).first().text().trim().replace('Chapter', 'Chap') + ' | ' + $("ul .chapter > i", element).first().text().trim();
                 newUpdatedItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
-                    image: (_b = (image)) !== null && _b !== void 0 ? _b : "",
-                    title: createIconText({ text: title }),
+                    image: (_a = (image)) !== null && _a !== void 0 ? _a : "",
+                    title: createIconText({ text: BaotangtruyentranhParser_1.decodeHTMLEntity(title) }),
                     subtitleText: createIconText({ text: subtitle }),
                 }));
             }
@@ -2918,11 +2842,11 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
                 else {
                     image = image;
                 }
-                let id = (_c = $('.series-title > a', manga).attr('href')) !== null && _c !== void 0 ? _c : title;
+                let id = (_b = $('.series-title > a', manga).attr('href')) !== null && _b !== void 0 ? _b : title;
                 let subtitle = $(".chapter-title > a", manga).text().trim();
                 viewItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
-                    image: (_d = encodeURI(image)) !== null && _d !== void 0 ? _d : "",
+                    image: (_c = encodeURI(image)) !== null && _c !== void 0 ? _c : "",
                     title: createIconText({ text: title }),
                     subtitleText: createIconText({ text: subtitle }),
                 }));
@@ -2938,7 +2862,7 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
             let select = 1;
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = DOMAIN + `manga-list.html?listType=pagination&page=${page}&artist=&author=&group=&m_status=&name=&genre=&ungenre=&sort=last_update&sort_type=DESC`;
+                    url = DOMAIN + `manga- list.html ? listType = pagination & page=${page} & artist=& author=& group=& m_status=& name=& genre=& ungenre=& sort=last_update & sort_type=DESC`;
                     select = 1;
                     break;
                 default:
@@ -2990,7 +2914,7 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
                 }
             });
             const request = createRequestObject({
-                url: encodeURI(`${DOMAIN}manga-list.html?listType=pagination&page=${page}&group=${search.translater}&m_status=${search.status}&name=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&genre=${search.cate}&sort=${search.sort}&sort_type=${search.type}`),
+                url: encodeURI(`${DOMAIN}manga - list.html ? listType = pagination & page=${page} & group=${search.translater} & m_status=${search.status} & name=${(_d = query.title) !== null && _d !== void 0 ? _d : ''} & genre=${search.cate} & sort=${search.sort} & sort_type=${search.type}`),
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
@@ -3081,7 +3005,7 @@ exports.Baotangtruyentranh = Baotangtruyentranh;
 },{"./BaotangtruyentranhParser":59,"buffer":2,"paperback-extensions-common":15}],59:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.capitalizeFirstLetter = void 0;
+exports.decodeHTMLEntity = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = exports.capitalizeFirstLetter = void 0;
 const entities = require("entities"); //Import package for decoding HTML entities
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -3163,7 +3087,7 @@ exports.isLastPage = ($) => {
         isLast = true;
     return isLast;
 };
-const decodeHTMLEntity = (str) => {
+exports.decodeHTMLEntity = (str) => {
     return entities.decodeHTML(str);
 };
 
