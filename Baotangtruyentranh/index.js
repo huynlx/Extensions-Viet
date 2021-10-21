@@ -980,8 +980,10 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             //the loai
             for (const tag of $('.megamenu .nav a').toArray()) {
-                const label = $(tag).text().trim();
-                const id = 'cate.' + $(tag).attr('href').split('/').pop();
+                let label = $(tag).text().trim();
+                let id = 'cate.' + $(tag).attr('href').split('/').pop();
+                if (label === 'Tất cả')
+                    id = '';
                 if (!id || !label)
                     continue;
                 tags.push({ id: id, label: BaotangtruyentranhParser_1.decodeHTMLEntity(label) });
