@@ -756,24 +756,24 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
     getHomePageSections(sectionCallback) {
         var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
-            let hot = createHomeSection({
-                id: 'hot',
-                title: "TRUYỆN HOT TRONG NGÀY",
-                view_more: false,
+            let featured = createHomeSection({
+                id: 'featured',
+                title: "Truyện Đề Cử",
+                type: paperback_extensions_common_1.HomeSectionType.featured
             });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
                 title: "TRUYỆN MỚI CẬP NHẬT",
                 view_more: true,
             });
-            let view = createHomeSection({
-                id: 'view',
-                title: "TRUYỆN MỚI ĐĂNG",
+            let trans = createHomeSection({
+                id: 'trans',
+                title: "TRUYỆN DỊCH",
                 view_more: false,
             });
             //Load empty sections
             sectionCallback(newUpdated);
-            // sectionCallback(view);
+            sectionCallback(trans);
             ///Get the section dat
             //New Updates
             let request = createRequestObject({
@@ -797,38 +797,50 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
             }
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
-            //view
+            //featured
             request = createRequestObject({
                 url: DOMAIN,
                 method: "GET",
             });
-            let viewItems = [];
+            let featuredItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let manga of $('.thumb-item-flow:not(:last-child)', '.col-md-8 > .card:nth-child(4) .row').toArray()) {
-                let title = $('.series-title > a', manga).text().trim();
-                let image = $('.a6-ratio > .img-in-ratio', manga).attr("data-bg");
-                if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
-                    if (image === null || image === void 0 ? void 0 : image.startsWith('//')) {
-                        image = 'https:' + image;
-                    }
-                    else {
-                        image = 'https://vcomi.co/' + image;
-                    }
-                }
-                else {
-                    image = image;
-                }
-                let id = (_b = $('.series-title > a', manga).attr('href')) !== null && _b !== void 0 ? _b : title;
-                let subtitle = $(".chapter-title > a", manga).text().trim();
-                viewItems.push(createMangaTile({
+            for (const element of $('.items-slide .item').toArray()) {
+                let title = $('.slide-caption h3', element).text().trim();
+                let image = $('a img', element).attr("src");
+                let id = $('a', element).attr('href');
+                let subtitle = $(".slide-caption > a", element).first().text().trim().replace('Chapter ', 'Ch.') + ' | ' + $(".time", element).first().text().trim();
+                featuredItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
-                    image: (_c = encodeURI(image)) !== null && _c !== void 0 ? _c : "",
-                    title: createIconText({ text: title }),
-                    subtitleText: createIconText({ text: subtitle }),
+                    image: (_b = (image)) !== null && _b !== void 0 ? _b : "",
+                    title: createIconText({ text: BaotangtruyentranhParser_1.decodeHTMLEntity(title) }),
+                    subtitleText: createIconText({ text: BaotangtruyentranhParser_1.decodeHTMLEntity(subtitle) }),
                 }));
             }
-            view.items = viewItems;
+            featured.items = featuredItems;
+            sectionCallback(featured);
+            //trans
+            request = createRequestObject({
+                url: 'https://baotangtruyentranh.com/?page=1&typegroup=1',
+                method: "GET",
+            });
+            let transItems = [];
+            data = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(data.data);
+            for (const element of $('.row .item').toArray()) {
+                let title = $('h3 > a', element).text().trim();
+                let image = $('.image img', element).attr("data-src");
+                let id = $('h3 > a', element).attr('href');
+                let subtitle = $("ul .chapter > a", element).first().text().trim().replace('Chapter ', 'Ch.') + ' | ' + $("ul .chapter > i", element).first().text().trim();
+                transItems.push(createMangaTile({
+                    id: id !== null && id !== void 0 ? id : "",
+                    image: (_c = (image)) !== null && _c !== void 0 ? _c : "",
+                    title: createIconText({ text: BaotangtruyentranhParser_1.decodeHTMLEntity(title) }),
+                    subtitleText: createIconText({ text: BaotangtruyentranhParser_1.decodeHTMLEntity(subtitle) }),
+                }));
+            }
+            trans.items = transItems;
+            sectionCallback(trans);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
