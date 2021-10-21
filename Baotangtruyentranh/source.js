@@ -715,18 +715,17 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             const chapters = [];
             for (const obj of $('#nt_listchapter .row:not(.heading)').toArray()) {
-                console.log(obj);
                 let id = $('a', obj).first().attr('href');
                 let chapNum = parseFloat((_a = $('a', obj).first().text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
                 let name = ($('a', obj).first().text().trim() === ('Chapter ' + chapNum.toString())) ? '' : $('a', obj).first().text().trim();
-                let time = $('div:nth-of-type(2)', obj).text().trim();
+                let time = $('.col-xs-4', obj).text().trim();
                 chapters.push(createChapter({
                     id,
                     chapNum: chapNum,
                     name,
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: this.convertTime(time)
+                    time: this.convertTime(BaotangtruyentranhParser_1.decodeHTMLEntity(time))
                 }));
             }
             return chapters;
@@ -788,12 +787,12 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
                 let title = $('h3 > a', element).text().trim();
                 let image = $('.image img', element).attr("data-src");
                 let id = $('h3 > a', element).attr('href');
-                let subtitle = $("ul .chapter > a", element).first().text().trim().replace('Chapter ', 'C.') + ' | ' + $("ul .chapter > i", element).first().text().trim();
+                let subtitle = $("ul .chapter > a", element).first().text().trim().replace('Chapter ', 'Ch.') + ' | ' + $("ul .chapter > i", element).first().text().trim();
                 newUpdatedItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
                     image: (_a = (image)) !== null && _a !== void 0 ? _a : "",
                     title: createIconText({ text: BaotangtruyentranhParser_1.decodeHTMLEntity(title) }),
-                    subtitleText: createIconText({ text: subtitle }),
+                    subtitleText: createIconText({ text: BaotangtruyentranhParser_1.decodeHTMLEntity(subtitle) }),
                 }));
             }
             newUpdated.items = newUpdatedItems;
