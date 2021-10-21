@@ -860,13 +860,13 @@ class Mangaii extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: query.title ? encodeURI(`https://truyentranh.net/search?page=${page}&q=${query.title}`) : `${tags[0]}?page=${page}`,
+                url: query.title ? encodeURI(`https://api.mangaii.com/api/v1/search?name=${query.title}&page=${page}`) : `https://api.mangaii.com/api/v1/comics?page=${page}&genre=${tags[0]}`,
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
-            const tiles = MangaiiParser_1.parseSearch($);
-            metadata = !MangaiiParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            const json = JSON.parse(data.data);
+            const tiles = MangaiiParser_1.parseSearch(json.data);
+            metadata = json.hasMore ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: tiles,
                 metadata
@@ -875,18 +875,17 @@ class Mangaii extends paperback_extensions_common_1.Source {
     }
     getSearchTags() {
         return __awaiter(this, void 0, void 0, function* () {
-            const url = DOMAIN;
+            const url = 'https://mangaii.com/_next/data/fM7pdjCUFacEnYx_vhENt/vi/genre/all-qWerTy12.json?slug=all-qWerTy12';
             const request = createRequestObject({
                 url: url,
                 method: "GET",
             });
             const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
+            const json = JSON.parse(response.data).pageProps.genres;
             const arrayTags = [];
-            const collectedIds = [];
             //the loai
-            for (const tag of $('.dropdown-menu > ul > li > a').toArray()) {
-                arrayTags.push({ id: $(tag).attr('href'), label: $(tag).text().trim() });
+            for (const tag of json) {
+                arrayTags.push({ id: tag.slug, label: tag.name });
             }
             const tagSections = [
                 createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) }),
@@ -913,15 +912,15 @@ exports.generateSearch = (query) => {
     let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
     return encodeURI(keyword);
 };
-exports.parseSearch = ($) => {
-    var _a;
+exports.parseSearch = (data) => {
     const mangas = [];
     const collectedIds = [];
-    for (let manga of $('.content .card-list > .card').toArray()) {
-        const title = $('.card-title', manga).text().trim();
-        const id = (_a = $('.card-title > a', manga).attr('href')) !== null && _a !== void 0 ? _a : title;
-        const image = $('.card-img', manga).attr('src');
-        const sub = $('.list-chapter > li:first-child > a', manga).text().trim();
+    for (let manga of data) {
+        const title = manga.name;
+        const id = 'https://mangaii.com/comic/' + manga.slug;
+        ;
+        const image = `https://mangaii.com/_next/image?url=https%3A%2F%2Fapi.mangaii.com%2Fmedia%2Fcover_images%2F${manga.cover_image}&w=256&q=100`;
+        const sub = 'Chapter ' + manga.chapter.number;
         if (!id || !title)
             continue;
         if (!collectedIds.includes(id)) {
