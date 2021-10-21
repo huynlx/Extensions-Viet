@@ -879,24 +879,19 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
         });
     }
     getSearchResults(query, metadata) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const search = {
-                cate: '',
-                translater: "",
-                status: "",
-                sort: "views",
-                type: 'DESC'
+                cate: "",
+                status: "-1",
+                sort: "0",
             };
             tags.map((value) => {
                 switch (value.split(".")[0]) {
                     case 'cate':
                         search.cate = (value.split(".")[1]);
-                        break;
-                    case 'translater':
-                        search.translater = (value.split(".")[1]);
                         break;
                     case 'status':
                         search.status = (value.split(".")[1]);
@@ -904,13 +899,11 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
                     case 'sort':
                         search.sort = (value.split(".")[1]);
                         break;
-                    case 'type':
-                        search.type = (value.split(".")[1]);
-                        break;
                 }
             });
             const request = createRequestObject({
-                url: encodeURI(`${DOMAIN}manga - list.html ? listType = pagination & page=${page} & group=${search.translater} & m_status=${search.status} & name=${(_d = query.title) !== null && _d !== void 0 ? _d : ''} & genre=${search.cate} & sort=${search.sort} & sort_type=${search.type}`),
+                url: query.title ? encodeURI(`https://baotangtruyentranh.com/tim-truyen?keyword=${query.title}&page=${page}`)
+                    : encodeURI(`https://baotangtruyentranh.com/tim-truyen/${search.cate}?status=${search.status}&sort=${search.sort}&page=${page}`),
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
@@ -988,7 +981,7 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
             //the loai
             for (const tag of $('.megamenu .nav a').toArray()) {
                 const label = $(tag).text().trim();
-                const id = 'cate.' + $(tag).attr('href');
+                const id = 'cate.' + $(tag).attr('href').split('/').pop();
                 if (!id || !label)
                     continue;
                 tags.push({ id: id, label: BaotangtruyentranhParser_1.decodeHTMLEntity(label) });
@@ -1024,43 +1017,33 @@ exports.generateSearch = (query) => {
     return encodeURI(keyword);
 };
 exports.parseSearch = ($) => {
-    var _a;
+    var _a, _b;
     const manga = [];
-    for (const element of $('.card-body > .row > .thumb-item-flow').toArray()) {
-        let title = $('.series-title > a', element).text().trim();
-        let image = $('.a6-ratio > .img-in-ratio', element).attr("data-bg");
-        if (!(image === null || image === void 0 ? void 0 : image.includes('http'))) {
-            if (image === null || image === void 0 ? void 0 : image.startsWith('//')) {
-                image = 'https:' + image;
-            }
-            else {
-                image = 'https://vcomi.co/' + image;
-            }
-        }
-        else {
-            image = image;
-        }
-        let id = (_a = $('.series-title > a', element).attr('href')) !== null && _a !== void 0 ? _a : title;
-        let subtitle = 'Chương ' + $(".chapter-title > a", element).text().trim();
+    for (const element of $('.row .item').toArray()) {
+        let title = $('h3 > a', element).text().trim();
+        let image = (_a = $('.image img', element).attr("data-src")) !== null && _a !== void 0 ? _a : "";
+        let id = $('h3 > a', element).attr('href');
+        let subtitle = $("ul .chapter > a", element).first().text().trim().replace('Chapter ', 'Ch.') + ' | ' + $("ul .chapter > i", element).first().text().trim();
         manga.push(createMangaTile({
-            id: id,
-            image: image !== null && image !== void 0 ? image : "",
-            title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: subtitle }),
+            id: id !== null && id !== void 0 ? id : "",
+            image: (_b = encodeURI(image)) !== null && _b !== void 0 ? _b : "",
+            title: createIconText({ text: exports.decodeHTMLEntity(title) }),
+            subtitleText: createIconText({ text: exports.decodeHTMLEntity(subtitle) }),
         }));
     }
     return manga;
 };
 exports.parseViewMore = ($) => {
+    var _a, _b;
     const manga = [];
     for (const element of $('.row .item').toArray()) {
         let title = $('h3 > a', element).text().trim();
-        let image = $('.image img', element).attr("data-src");
+        let image = (_a = $('.image img', element).attr("data-src")) !== null && _a !== void 0 ? _a : "";
         let id = $('h3 > a', element).attr('href');
         let subtitle = $("ul .chapter > a", element).first().text().trim().replace('Chapter ', 'Ch.') + ' | ' + $("ul .chapter > i", element).first().text().trim();
         manga.push(createMangaTile({
             id: id !== null && id !== void 0 ? id : "",
-            image: image !== null && image !== void 0 ? image : "",
+            image: (_b = encodeURI(image)) !== null && _b !== void 0 ? _b : "",
             title: createIconText({ text: exports.decodeHTMLEntity(title) }),
             subtitleText: createIconText({ text: exports.decodeHTMLEntity(subtitle) }),
         }));
