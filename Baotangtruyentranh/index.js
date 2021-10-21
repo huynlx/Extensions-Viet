@@ -597,7 +597,7 @@ const BaotangtruyentranhParser_1 = require("./BaotangtruyentranhParser");
 const DOMAIN = 'https://baotangtruyentranh.com/';
 const method = 'GET';
 exports.BaotangtruyentranhInfo = {
-    version: '2.0.0',
+    version: '1.0.0',
     name: 'Baotangtruyentranh',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -619,12 +619,6 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
             requestsPerSecond: 5,
             requestTimeout: 20000
         });
-        // override getCloudflareBypassRequest(): Request {
-        //     return createRequestObject({ //https://lxhentai.com/
-        //         url: 'https://manhuarock.net/',
-        //         method: 'GET',
-        //     }) //dit buoi lam lxhentai nua dkm, ti fix thanh medoctruyen
-        // }
     }
     convertTime(timeAgo) {
         var _a;
@@ -719,7 +713,7 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
                 let chapNum = parseFloat((_a = $('a', obj).first().text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
                 let name = ($('a', obj).first().text().trim() === ('Chapter ' + chapNum.toString())) ? '' : $('a', obj).first().text().trim();
                 if ($('.coin-unlock', obj).attr('title')) {
-                    name = 'Locked (' + $('.coin-unlock', obj).attr('title') + ')';
+                    name = 'LOCKED (' + $('.coin-unlock', obj).attr('title') + ')';
                 }
                 let time = $('.col-xs-4', obj).text().trim();
                 chapters.push(createChapter({
@@ -990,7 +984,7 @@ class Baotangtruyentranh extends paperback_extensions_common_1.Source {
             }
             const tagSections = [
                 createTagSection({ id: '1', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
-                createTagSection({ id: '2', label: 'Trạng thái', tags: tags2.map(x => createTag(x)) }),
+                createTagSection({ id: '2', label: 'Tình trạng', tags: tags2.map(x => createTag(x)) }),
                 createTagSection({ id: '3', label: 'Sắp xếp theo', tags: tags3.map(x => createTag(x)) }),
             ];
             return tagSections;
