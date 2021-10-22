@@ -619,6 +619,11 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             requestsPerSecond: 5,
             requestTimeout: 20000
         });
+        // override globalRequestHeaders(): RequestHeaders {
+        //     return {
+        //         referer: DOMAIN
+        //     }
+        // }
     }
     convertTime(timeAgo) {
         var _a;
@@ -682,7 +687,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: TruyengihotParser_1.decodeHTMLEntity(genre), id }));
             }
-            let desc = $(".product-synopsis-inner").first().text().replace('Giới thiệu', '');
+            let desc = $(".product-synopsis-inner").first().text().replace('Giới thiệu', '').replace('Xem thêm', '');
             let image = $(".cover-image img").first().attr("src");
             if (!image.includes('http'))
                 image = 'https://truyengihot.net/' + image;
@@ -995,11 +1000,6 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             ];
             return tagSections;
         });
-    }
-    globalRequestHeaders() {
-        return {
-            referer: DOMAIN
-        };
     }
 }
 exports.Truyengihot = Truyengihot;
