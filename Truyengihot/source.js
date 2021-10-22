@@ -667,7 +667,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
     getMangaDetails(mangaId) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = mangaId;
+            const url = 'https://truyengihot.net/truyen-he-thong-sac-ai.html';
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -700,7 +700,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                 tags.push(createTag({ label: TruyengihotParser_1.decodeHTMLEntity(genre), id }));
             }
             console.log(checkNovel);
-            let desc = (checkNovel ? '[NOVEL]\n' : '') + $(".product-synopsis-content p").last().text().trim();
+            let desc = (checkNovel ? '[NOVEL] ' : '') + $(".product-synopsis-content p").last().text().trim();
             console.log(desc);
             let image = $(".cover-image img").first().attr("src");
             if (!image.includes('http'))
