@@ -726,7 +726,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             for (var i = el.length - 1; i >= 0; i--) {
                 var e = el[i];
                 let id = 'https://truyengihot.net/' + $(e).attr("href");
-                let name = $('.no', e).text();
+                let name = $('.no', e).text().trim();
                 let chapNum = parseFloat(name.split(' ')[1]);
                 let time = $('.date', e).text().trim();
                 chapters.push(createChapter({
