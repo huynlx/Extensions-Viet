@@ -688,14 +688,13 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                 }
             }
             let checkNovel = false;
-            for (const x of statusFinal) {
+            for (const x of $('.cover-artist img.top-tags').toArray()) {
                 if (x.attribs['src'].includes('novel.png')) {
                     checkNovel = true;
                     break;
                 }
             }
             for (const t of $('.cover-artist a[href*=the-loai]').toArray()) {
-                // console.log(t);
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: TruyengihotParser_1.decodeHTMLEntity(genre), id }));
@@ -769,7 +768,6 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                     img = base + img;
                 pages.push(img);
             }
-            // console.log(pages);
             const chapterDetails = createChapterDetails({
                 id: chapterId,
                 mangaId: mangaId,
