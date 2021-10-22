@@ -678,7 +678,8 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             let creator = TruyengihotParser_1.decodeHTMLEntity($(".cover-artist a[href~=tac-gia]").text() || '');
             let statusFinal = $('.top-tags').toArray();
             for (const x of statusFinal) {
-                if (x.attr('src').includes('ongoing.png')) {
+                console.log(x);
+                if (x.attribs['src'].includes('ongoing.png')) {
                     statusFinal = 1;
                     break;
                 }
