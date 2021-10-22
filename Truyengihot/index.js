@@ -909,10 +909,11 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                 type: "",
                 sortType: "DESC"
             };
+            const genres = [];
             tags.map((value) => {
                 switch (value.split(".")[0]) {
                     case 'genre':
-                        search.genre = (value.split(".")[1]);
+                        genres.push(value.split(".")[1]);
                         break;
                     case 'status':
                         search.status = (value.split(".")[1]);
@@ -928,6 +929,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                         break;
                 }
             });
+            search.genre = (genres !== null && genres !== void 0 ? genres : []).join(",");
             const request = createRequestObject({
                 url: encodeURI(`${DOMAIN}danh-sach-truyen.html?listType=pagination&artist=&author=&group=&m_status=${search.status}&genre=${search.genre}&ungenre=&sort=${search.sort}&sort_type=${search.sortType}&manga_type=${search.type}&name=${(_d = query.title) !== null && _d !== void 0 ? _d : ""}&page=${page}`),
                 method: "GET",
