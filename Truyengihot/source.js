@@ -701,7 +701,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                 id: mangaId,
                 author: creator,
                 artist: creator,
-                desc: desc,
+                desc: TruyengihotParser_1.decodeHTMLEntity(desc),
                 titles: [TruyengihotParser_1.decodeHTMLEntity($("h2.cover-title").text())],
                 image: encodeURI(TruyengihotParser_1.decodeHTMLEntity(image)),
                 status: statusFinal,
