@@ -692,7 +692,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: TruyengihotParser_1.decodeHTMLEntity(genre), id }));
             }
-            let desc = TruyengihotParser_1.decodeHTMLEntity($(".product-synopsis-content").html()).replace(/  +/g, '').replace(/<[^>]+>/g, '').replace('Xem thêm', '').trim();
+            let desc = TruyengihotParser_1.decodeHTMLEntity($(".product-synopsis-content").html()).replace(/  +/g, '\n').replace(/<[^>]+>/g, '').replace('Xem thêm', '').trim();
             let image = $(".cover-image img").first().attr("src");
             if (!image.includes('http'))
                 image = 'https://truyengihot.net/' + image;
