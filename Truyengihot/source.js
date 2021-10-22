@@ -700,7 +700,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                 id: mangaId,
                 author: creator,
                 artist: creator,
-                desc: '[Novel] ' + desc,
+                desc: desc,
                 titles: [TruyengihotParser_1.decodeHTMLEntity($("h2.cover-title").text())],
                 image: encodeURI(TruyengihotParser_1.decodeHTMLEntity(image)),
                 status: statusFinal,
@@ -903,14 +903,16 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const search = {
-                cate: "",
-                status: "-1",
-                sort: "0",
+                genre: "",
+                status: "",
+                sort: "last_update",
+                type: "",
+                sortType: "DESC"
             };
             tags.map((value) => {
                 switch (value.split(".")[0]) {
-                    case 'cate':
-                        search.cate = (value.split(".")[1]);
+                    case 'genre':
+                        search.genre = (value.split(".")[1]);
                         break;
                     case 'status':
                         search.status = (value.split(".")[1]);
@@ -918,11 +920,16 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                     case 'sort':
                         search.sort = (value.split(".")[1]);
                         break;
+                    case 'type':
+                        search.type = (value.split(".")[1]);
+                        break;
+                    case 'sortType':
+                        search.sortType = (value.split(".")[1]);
+                        break;
                 }
             });
             const request = createRequestObject({
-                url: query.title ? encodeURI(`https://baotangtruyentranh.com/tim-truyen?keyword=${query.title}&page=${page}`)
-                    : encodeURI(`https://baotangtruyentranh.com/tim-truyen/${search.cate}?status=${search.status}&sort=${search.sort}&page=${page}`),
+                url: encodeURI(`${DOMAIN}danh-sach-truyen.html?listType=pagination&artist=&author=&group=&m_status=${search.status}&genre=${search.genre}&ungenre=&sort=${search.sort}&sort_type=${search.sortType}&manga_type=${search.type}&name=${query.title}`),
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
@@ -1021,13 +1028,17 @@ exports.generateSearch = (query) => {
     return encodeURI(keyword);
 };
 exports.parseSearch = ($) => {
-    var _a;
+    var _a, _b;
     const manga = [];
-    for (const element of $('.row .item').toArray()) {
-        let title = $('h3 > a', element).text().trim();
-        let image = (_a = $('.image img', element).attr("data-src")) !== null && _a !== void 0 ? _a : "";
-        let id = $('h3 > a', element).attr('href');
-        let subtitle = $("ul .chapter > a", element).first().text().trim().replace('Chapter ', 'Ch.') + ' | ' + $("ul .chapter > i", element).first().text().trim();
+    var allItem = $('ul.cw-list li').toArray();
+    for (var i in allItem) {
+        var item = allItem[i];
+        let title = $('.title a', item).text();
+        let image = (_b = (_a = $('.thumb', item).attr('style')) === null || _a === void 0 ? void 0 : _a.split(/['']/)[1]) !== null && _b !== void 0 ? _b : "";
+        if (!image.includes('http'))
+            image = 'https://truyengihot.net/' + image;
+        let id = 'https://truyengihot.net' + $('.title a', item).attr('href');
+        let subtitle = $('.chapter-link', item).last().text();
         manga.push(createMangaTile({
             id: id !== null && id !== void 0 ? id : "",
             image: encodeURI(exports.decodeHTMLEntity(image)),
