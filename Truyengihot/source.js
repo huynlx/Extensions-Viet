@@ -742,10 +742,13 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             for (var i = 0; i < el.length; i++) {
                 var e = el[i];
                 let img = $(e).attr("data-echo");
-                if (img.includes('http'))
+                if (!img)
+                    continue;
+                if (!img.includes('http'))
                     img = base + img;
                 pages.push(img);
             }
+            console.log(pages);
             const chapterDetails = createChapterDetails({
                 id: chapterId,
                 mangaId: mangaId,
