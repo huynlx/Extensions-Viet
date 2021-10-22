@@ -664,7 +664,7 @@ class MangaXY extends paperback_extensions_common_1.Source {
                     continue;
                 }
             }
-            const image = "https://" + cover;
+            const image = cover.includes('http') ? (cover) : ("https:" + cover);
             return createManga({
                 id: mangaId,
                 author: creator,
