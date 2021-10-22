@@ -784,8 +784,10 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                 var item = allItem[i];
                 let title = $('.title a', item).text();
                 let image = $('.thumb', item).attr('style').split(/['']/)[1];
+                if (!image.includes('http'))
+                    image = 'https://truyengihot.net/' + image;
                 let id = $('.title a', item).attr('href');
-                let subtitle = 'Chap ' + $('.chapter-link', item).last().text();
+                let subtitle = $('.chapter-link', item).last().text();
                 newUpdatedItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
                     image: encodeURI(TruyengihotParser_1.decodeHTMLEntity(image)),
@@ -806,6 +808,8 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             for (const element of $('#swiper-hot .swiper-slide a').toArray()) {
                 let title = $('.info', element).text().trim();
                 let image = $('img', element).attr("src");
+                if (!image.includes('http'))
+                    image = 'https://truyengihot.net/' + image;
                 let id = 'https://truyengihot.net' + $(element).attr('href');
                 featuredItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
