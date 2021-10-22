@@ -687,13 +687,20 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                     break;
                 }
             }
+            let checkNovel = false;
+            for (const x of statusFinal) {
+                if (x.attribs['src'].includes('novel.png')) {
+                    checkNovel = true;
+                    break;
+                }
+            }
             for (const t of $('.cover-artist a[href*=the-loai]').toArray()) {
                 // console.log(t);
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: TruyengihotParser_1.decodeHTMLEntity(genre), id }));
             }
-            let desc = $(".product-synopsis-content p").last().text().trim();
+            let desc = (checkNovel ? '[NOVEL]\n' : '') + $(".product-synopsis-content p").last().text().trim();
             let image = $(".cover-image img").first().attr("src");
             if (!image.includes('http'))
                 image = 'https://truyengihot.net/' + image;
@@ -707,7 +714,8 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                 status: statusFinal,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
-                tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
+                tags: [createTagSection({ label: "genres", tags: tags, id: '0' })],
+                lastUpdate: new Date('10/20/2010')
             });
         });
     }
