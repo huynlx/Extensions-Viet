@@ -693,14 +693,14 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: TruyengihotParser_1.decodeHTMLEntity(genre), id }));
             }
-            let desc = $(".product-synopsis-content").first().text().trim().replace('Xem thêm', '');
+            let desc = $(".product-synopsis-content p").first().text().trim();
             let image = $(".cover-image img").first().attr("src");
             if (!image.includes('http'))
                 image = 'https://truyengihot.net/' + image;
             return createManga({
                 id: mangaId,
                 author: creator,
-                artist: $(".cover-artist:first-child > span").last().text(),
+                artist: creator,
                 desc: desc,
                 titles: [TruyengihotParser_1.decodeHTMLEntity($("h2.cover-title").text())],
                 image: encodeURI(TruyengihotParser_1.decodeHTMLEntity(image)),
@@ -870,7 +870,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             let select = 1;
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `https://baotangtruyentranh.com/?page=${page}&typegroup=0`;
+                    url = `https://truyengihot.net/danh-sach-truyen.html?page=${page}`;
                     select = 1;
                     break;
                 case "trans":
@@ -1052,13 +1052,17 @@ exports.parseSearch = ($) => {
     return manga;
 };
 exports.parseViewMore = ($) => {
-    var _a;
+    var _a, _b;
     const manga = [];
-    for (const element of $('.row .item').toArray()) {
-        let title = $('h3 > a', element).text().trim();
-        let image = (_a = $('.image img', element).attr("data-src")) !== null && _a !== void 0 ? _a : "";
-        let id = $('h3 > a', element).attr('href');
-        let subtitle = $("ul .chapter > a", element).first().text().trim().replace('Chapter ', 'Ch.') + ' | ' + $("ul .chapter > i", element).first().text().trim();
+    var allItem = $('ul.cw-list li').toArray();
+    for (var i in allItem) {
+        var item = allItem[i];
+        let title = $('.title a', item).text();
+        let image = (_b = (_a = $('.thumb', item).attr('style')) === null || _a === void 0 ? void 0 : _a.split(/['']/)[1]) !== null && _b !== void 0 ? _b : "";
+        if (!image.includes('http'))
+            image = 'https://truyengihot.net/' + image;
+        let id = 'https://truyengihot.net' + $('.title a', item).attr('href');
+        let subtitle = $('.chapter-link', item).last().text();
         manga.push(createMangaTile({
             id: id !== null && id !== void 0 ? id : "",
             image: encodeURI(exports.decodeHTMLEntity(image)),
@@ -1078,7 +1082,7 @@ exports.isLastPage = ($) => {
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($("ul.pagination > li.active > a").text().trim());
+    const currentPage = Number($("ul.pagination > li > a.current").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;
