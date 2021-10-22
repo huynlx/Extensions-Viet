@@ -675,12 +675,9 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let tags = [];
-            let creator = TruyengihotParser_1.decodeHTMLEntity($(".cover-artist a[href~=tac-gia]").text() || '');
+            let creator = TruyengihotParser_1.decodeHTMLEntity($(".cover-artist a[href*=tac-gia]").text() || '');
             let statusFinal = $('.cover-artist img.top-tags').toArray();
-            console.log(mangaId);
-            console.log(statusFinal);
             for (const x of statusFinal) {
-                // console.log(x.attribs['src']);
                 if (x.attribs['src'].includes('full.png')) {
                     statusFinal = 0;
                     break;
@@ -690,7 +687,8 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                     break;
                 }
             }
-            for (const t of $('.cover-artist a[href~="the-loai"]').toArray()) {
+            for (const t of $('.cover-artist a[href*=the-loai]').toArray()) {
+                console.log(t);
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: TruyengihotParser_1.decodeHTMLEntity(genre), id }));
