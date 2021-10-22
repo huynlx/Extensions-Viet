@@ -692,7 +692,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: TruyengihotParser_1.decodeHTMLEntity(genre), id }));
             }
-            let desc = TruyengihotParser_1.decodeHTMLEntity($(".product-synopsis-content").html().replace('<p></p>', '')).replace(/<[^>]+>/g, '').replace('Xem thêm', '');
+            let desc = TruyengihotParser_1.decodeHTMLEntity($(".product-synopsis-content").html().replace('<p></p>', '')).replace(/ +(?= )/g, '').replace(/<[^>]+>/g, '').replace('Xem thêm', '').trim();
             // .replace(/<[^>]+>/g, '').replace('Xem thêm', '').trim();
             console.log((desc));
             let image = $(".cover-image img").first().attr("src");
@@ -702,7 +702,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                 id: mangaId,
                 author: creator,
                 artist: creator,
-                desc: TruyengihotParser_1.decodeHTMLEntity(desc),
+                desc: desc,
                 titles: [TruyengihotParser_1.decodeHTMLEntity($("h2.cover-title").text())],
                 image: encodeURI(TruyengihotParser_1.decodeHTMLEntity(image)),
                 status: statusFinal,

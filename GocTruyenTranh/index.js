@@ -658,7 +658,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
                 id: mangaId,
                 author: creator,
                 artist: creator,
-                desc: desc,
+                desc: GocTruyenTranhParser_1.decodeHTMLEntity(desc),
                 titles: [GocTruyenTranhParser_1.decodeHTMLEntity($('.detail-section .title > h1').text().trim())],
                 image: encodeURI(image),
                 status,
