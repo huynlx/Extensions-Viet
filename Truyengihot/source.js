@@ -676,15 +676,17 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             let tags = [];
             let creator = TruyengihotParser_1.decodeHTMLEntity($(".cover-artist a[href~=tac-gia]").text() || '');
-            let statusFinal = $('.top-tags').toArray();
+            let statusFinal = $('.cover-artist img.top-tags').toArray();
+            console.log(mangaId);
+            console.log(statusFinal);
             for (const x of statusFinal) {
-                console.log(x);
-                if (x.attribs['src'].includes('ongoing.png')) {
-                    statusFinal = 1;
+                // console.log(x.attribs['src']);
+                if (x.attribs['src'].includes('full.png')) {
+                    statusFinal = 0;
                     break;
                 }
                 else {
-                    statusFinal = 0;
+                    statusFinal = 1;
                     break;
                 }
             }
@@ -759,7 +761,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                     img = base + img;
                 pages.push(img);
             }
-            console.log(pages);
+            // console.log(pages);
             const chapterDetails = createChapterDetails({
                 id: chapterId,
                 mangaId: mangaId,
