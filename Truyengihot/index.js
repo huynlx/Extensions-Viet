@@ -676,13 +676,23 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             let tags = [];
             let creator = TruyengihotParser_1.decodeHTMLEntity($(".cover-artist a[href~=tac-gia]").text() || '');
-            let statusFinal = $('.top-tags').attr('src').includes('ongoing.png') ? 1 : 0;
+            let statusFinal = $('.top-tags').toArray();
+            for (const x of statusFinal) {
+                if (x.attr('src').includes('ongoing.png')) {
+                    statusFinal = 1;
+                    break;
+                }
+                else {
+                    statusFinal = 0;
+                    break;
+                }
+            }
             for (const t of $(".cover-artist a[href~=the-loai]").toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: TruyengihotParser_1.decodeHTMLEntity(genre), id }));
             }
-            let desc = $(".product-synopsis-inner").first().text().replace('Giới thiệu', '').replace('Xem thêm', '');
+            let desc = $(".product-synopsis-content").first().text().trim().replace('Xem thêm', '');
             let image = $(".cover-image img").first().attr("src");
             if (!image.includes('http'))
                 image = 'https://truyengihot.net/' + image;
@@ -713,12 +723,12 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             for (var i = el.length - 1; i >= 0; i--) {
                 var e = el[i];
                 let id = 'https://truyengihot.net/' + $(e).attr("href");
-                let chapNum = i + 1;
                 let name = $('.no', e).text();
+                let chapNum = parseFloat(name.split(' ')[1]);
                 let time = $('.date', e).text().trim();
                 chapters.push(createChapter({
                     id,
-                    chapNum: chapNum,
+                    chapNum: isNaN(chapNum) ? i + 1 : chapNum,
                     name,
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
