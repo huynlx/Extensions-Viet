@@ -730,17 +730,20 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             const chapters = [];
             var el = $("#episode_list li a").toArray().reverse();
+            const collectChapnum = [];
             for (var i = el.length - 1; i >= 0; i--) {
                 var e = el[i];
                 let id = 'https://truyengihot.net/' + $(e).attr("href");
                 let name = $('.no', e).text().trim();
                 let chapNum = parseFloat(name.split(' ')[1]);
+                let chapNumfinal = isNaN(chapNum) ? i + 1 : (collectChapnum.includes(chapNum) ? (i + 1) : chapNum);
+                collectChapnum.push(chapNumfinal);
                 if ($('span', e).first().attr('class') === 'episode-item-lock')
                     name = '(LOCKED) ' + name;
                 let time = $('.date', e).text().trim();
                 chapters.push(createChapter({
                     id,
-                    chapNum: isNaN(chapNum) ? i + 1 : chapNum,
+                    chapNum: chapNumfinal,
                     name,
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
