@@ -687,21 +687,12 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                     break;
                 }
             }
-            let checkNovel = false;
-            for (const x of $('.cover-artist img.top-tags').toArray()) {
-                if (x.attribs['src'].includes('novel.png')) {
-                    checkNovel = true;
-                    break;
-                }
-            }
             for (const t of $('.cover-artist a[href*=the-loai]').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: TruyengihotParser_1.decodeHTMLEntity(genre), id }));
             }
-            console.log(checkNovel);
-            let desc = (checkNovel ? '[NOVEL] ' : '') + $(".product-synopsis-content p").last().text().trim();
-            console.log(desc);
+            let desc = $(".product-synopsis-content p").last().text().trim();
             let image = $(".cover-image img").first().attr("src");
             if (!image.includes('http'))
                 image = 'https://truyengihot.net/' + image;
@@ -709,14 +700,12 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                 id: mangaId,
                 author: creator,
                 artist: creator,
-                desc: desc,
+                desc: '[Novel] ' + desc,
                 titles: [TruyengihotParser_1.decodeHTMLEntity($("h2.cover-title").text())],
                 image: encodeURI(TruyengihotParser_1.decodeHTMLEntity(image)),
                 status: statusFinal,
-                // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
                 tags: [createTagSection({ label: "genres", tags: tags, id: '0' })],
-                lastUpdate: new Date('10/20/2010')
             });
         });
     }
@@ -731,10 +720,11 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             const chapters = [];
             var el = $("#episode_list li a").toArray().reverse();
             const collectChapnum = [];
-            for (var i = 0; i <= el.length; i++) {
+            for (var i = 0; i <= el.length - 1; i++) {
                 var e = el[i];
                 let id = 'https://truyengihot.net/' + $(e).attr("href");
                 let name = $('.no', e).text().trim();
+                console.log(name);
                 let chapNum = parseFloat(name.split(' ')[1]);
                 let chapNumfinal = isNaN(chapNum) ? i + 1 : (collectChapnum.includes(chapNum) ? (i + 1) : chapNum);
                 collectChapnum.push(chapNumfinal);
@@ -750,7 +740,6 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                     time: this.convertTime(TruyengihotParser_1.decodeHTMLEntity(time))
                 }));
             }
-            console.log(chapters);
             return chapters;
         });
     }
