@@ -690,7 +690,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                     break;
                 }
             }
-            for (const t of $(".cover-artist a[href~=the-loai]").toArray()) {
+            for (const t of $('.cover-artist a[href~="the-loai"]').toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: TruyengihotParser_1.decodeHTMLEntity(genre), id }));
