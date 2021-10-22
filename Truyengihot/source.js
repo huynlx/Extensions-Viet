@@ -597,7 +597,7 @@ const TruyengihotParser_1 = require("./TruyengihotParser");
 const DOMAIN = 'https://truyengihot.net/';
 const method = 'GET';
 exports.TruyengihotInfo = {
-    version: '1.0.0',
+    version: '1.5.0',
     name: 'Truyengihot',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -692,7 +692,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: TruyengihotParser_1.decodeHTMLEntity(genre), id }));
             }
-            let desc = $(".product-synopsis-content").text().trim().replace(/ Xem thêm /gi, '');
+            let desc = $(".product-synopsis-content").text().replace('Xem thêm', '').trim();
             let image = $(".cover-image img").first().attr("src");
             if (!image.includes('http'))
                 image = 'https://truyengihot.net/' + image;
@@ -724,7 +724,6 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                 var e = el[i];
                 let id = 'https://truyengihot.net/' + $(e).attr("href");
                 let name = $('.no', e).text().trim();
-                console.log(name);
                 let chapNum = parseFloat(name.split(' ')[1]);
                 let chapNumfinal = isNaN(chapNum) ? i + 1 : (collectChapnum.includes(chapNum) ? (i + 1) : chapNum);
                 collectChapnum.push(chapNumfinal);
@@ -784,14 +783,8 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                 title: "TRUYỆN MỚI CẬP NHẬT",
                 view_more: true,
             });
-            let trans = createHomeSection({
-                id: 'trans',
-                title: "TRUYỆN DỊCH",
-                view_more: true,
-            });
             //Load empty sections
             sectionCallback(newUpdated);
-            // sectionCallback(trans);
             ///Get the section dat
             //New Updates
             let request = createRequestObject({
@@ -841,28 +834,6 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             }
             featured.items = featuredItems;
             sectionCallback(featured);
-            //trans
-            request = createRequestObject({
-                url: 'https://baotangtruyentranh.com/?page=1&typegroup=1',
-                method: "GET",
-            });
-            let transItems = [];
-            data = yield this.requestManager.schedule(request, 1);
-            $ = this.cheerio.load(data.data);
-            for (const element of $('.row .item').toArray()) {
-                let title = $('h3 > a', element).text().trim();
-                let image = $('.image img', element).attr("data-src");
-                let id = $('h3 > a', element).attr('href');
-                let subtitle = $("ul .chapter > a", element).first().text().trim().replace('Chapter ', 'Ch.') + ' | ' + $("ul .chapter > i", element).first().text().trim();
-                transItems.push(createMangaTile({
-                    id: id !== null && id !== void 0 ? id : "",
-                    image: encodeURI(TruyengihotParser_1.decodeHTMLEntity(image)),
-                    title: createIconText({ text: TruyengihotParser_1.decodeHTMLEntity(title) }),
-                    subtitleText: createIconText({ text: TruyengihotParser_1.decodeHTMLEntity(subtitle) }),
-                }));
-            }
-            trans.items = transItems;
-            // sectionCallback(trans);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
@@ -874,10 +845,6 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             switch (homepageSectionId) {
                 case "new_updated":
                     url = `https://truyengihot.net/danh-sach-truyen.html?page=${page}`;
-                    select = 1;
-                    break;
-                case "trans":
-                    url = `https://baotangtruyentranh.com/?page=${page}&typegroup=1`;
                     select = 1;
                     break;
                 default:
