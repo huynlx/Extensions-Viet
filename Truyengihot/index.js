@@ -682,7 +682,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: TruyengihotParser_1.decodeHTMLEntity(genre), id }));
             }
-            let desc = $(".product-synopsis-inner").first().text().replace(/ Xem thêm|Giới thiệu /gi, '');
+            let desc = $(".product-synopsis-inner").first().text().replace('Giới thiệu', '');
             let image = $(".cover-image img").first().attr("src");
             if (!image.includes('http'))
                 image = 'https://truyengihot.net/' + image;
@@ -711,7 +711,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             const chapters = [];
             var el = $("#episode_list li a").toArray();
             for (var i = el.length - 1; i >= 0; i--) {
-                var e = el.get(i);
+                var e = el[i];
                 let id = 'https://truyengihot.net/' + $(e).attr("href");
                 let chapNum = i;
                 let name = $('.no', e).text();
@@ -739,8 +739,8 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(data.data);
             const pages = [];
             var el = $(".pageWrapper img").toArray();
-            for (var i = 0; i < el.size(); i++) {
-                var e = el.get(i);
+            for (var i = 0; i < el.length; i++) {
+                var e = el[i];
                 let img = $(e).attr("data-echo");
                 if (!img.endsWith('donate.png')) {
                     pages.push(encodeURI(base + img));
