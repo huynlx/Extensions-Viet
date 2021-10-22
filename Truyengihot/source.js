@@ -667,7 +667,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
     getMangaDetails(mangaId) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = 'https://truyengihot.net/truyen-he-thong-sac-ai.html';
+            const url = mangaId;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -712,7 +712,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: 'https://truyengihot.net/truyen-he-thong-sac-ai.html',
+                url: mangaId,
                 method,
             });
             let data = yield this.requestManager.schedule(request, 1);
@@ -929,7 +929,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                 }
             });
             const request = createRequestObject({
-                url: encodeURI(`${DOMAIN}danh-sach-truyen.html?listType=pagination&artist=&author=&group=&m_status=${search.status}&genre=${search.genre}&ungenre=&sort=${search.sort}&sort_type=${search.sortType}&manga_type=${search.type}&name=${query.title}`),
+                url: encodeURI(`${DOMAIN}danh-sach-truyen.html?listType=pagination&artist=&author=&group=&m_status=${search.status}&genre=${search.genre}&ungenre=&sort=${search.sort}&sort_type=${search.sortType}&manga_type=${search.type}&name=${query.title}&page=${page}`),
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
