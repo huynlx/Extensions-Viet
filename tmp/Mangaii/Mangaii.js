@@ -53,7 +53,7 @@ class Mangaii extends paperback_extensions_common_1.Source {
                 dt = JSON.parse(dt[1]).props.pageProps.comic;
             let tags = [];
             let status = (dt.status === 'ongoing') ? 1 : 0;
-            let desc = dt.description;
+            let desc = !dt.description ? $('#description').text() : dt.description;
             for (const t of dt.genres) {
                 const genre = t.name;
                 const id = `https://mangaii.com/genre/${t.slug}`;
@@ -107,16 +107,11 @@ class Mangaii extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
-            var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
-            if (dt)
-                dt = JSON.parse(dt[1]).props.pageProps.comic;
             const pages = [];
-            for (let obj of dt.chapter.images.split(',_,')) {
-                let link = `https://s3-hcm-r1.longvan.net/mangaii-s4/chapters/${obj}`;
-                pages.push((link));
+            for (let obj of $('._1-mrs > img').toArray()) {
+                let link = $(obj).attr('src');
+                pages.push(encodeURI(link));
             }
-            console.log(pages);
-            console.log('cc');
             const chapterDetails = createChapterDetails({
                 id: chapterId,
                 mangaId: mangaId,
@@ -127,39 +122,87 @@ class Mangaii extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
+            let featured = createHomeSection({
+                id: 'featured',
+                title: "Truyện Đề Cử",
+                type: paperback_extensions_common_1.HomeSectionType.featured
+            });
             let hot = createHomeSection({
                 id: 'hot',
-                title: "DÀNH CHO BẠN",
+                title: "# Hot là đây!",
                 view_more: false,
             });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
-                title: "MỚI CẬP NHẬT",
+                title: "# Mới cập nhập!",
                 view_more: true,
             });
-            let newAdded = createHomeSection({
-                id: 'new_added',
-                title: "TÁC PHẨM MỚI",
-                view_more: true,
+            let view = createHomeSection({
+                id: 'view',
+                title: "Bảng xếp hạng",
+                view_more: false,
+            });
+            let news = createHomeSection({
+                id: 'new',
+                title: "# Mới ra mắt",
+                view_more: false,
             });
             //Load empty sections
+            sectionCallback(hot);
             sectionCallback(newUpdated);
-            // sectionCallback(newAdded);
-            // sectionCallback(hot);
+            sectionCallback(view);
+            sectionCallback(news);
             ///Get the section data
-            //New Updates
+            //Get json data
             let request = createRequestObject({
                 url: DOMAIN,
                 method: "GET",
             });
-            let newUpdatedItems = [];
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
             if (dt)
                 dt = JSON.parse(dt[1]).props.pageProps.comics;
+            // Hot
+            let popularItems = [];
+            for (let manga of dt.translate) {
+                const title = manga.name;
+                const id = 'https://mangaii.com/comic/' + manga.slug;
+                const image = `https://mangaii.com/_next/image?url=https%3A%2F%2Fapi.mangaii.com%2Fmedia%2Fcover_images%2F${manga.cover_image}&w=256&q=100`;
+                const sub = 'Chapter ' + manga.chapter.number;
+                popularItems.push(createMangaTile({
+                    id: id,
+                    image: image,
+                    title: createIconText({
+                        text: title,
+                    }),
+                    subtitleText: createIconText({
+                        text: sub,
+                    }),
+                }));
+            }
+            hot.items = popularItems;
+            sectionCallback(hot);
+            // featured
+            let featuredItems = [];
+            for (let manga of dt.banners.slice(1)) {
+                const title = manga.name;
+                const id = manga.link;
+                const image = `https://mangaii.com/_next/image?url=https%3A%2F%2Fapi.mangaii.com%2Fmedia%2Fslider-banner%2F${encodeURI(manga.image)}&w=768&q=75`;
+                // const sub = 'Chapter ' + manga.chapter.number;
+                featuredItems.push(createMangaTile({
+                    id: id,
+                    image: image,
+                    title: createIconText({
+                        text: title,
+                    }),
+                }));
+            }
+            featured.items = featuredItems;
+            sectionCallback(featured);
+            //New Updates
+            let newUpdatedItems = [];
             for (let manga of dt.laste_comics) {
                 const title = manga.name;
                 const id = 'https://mangaii.com/comic/' + manga.slug;
@@ -178,20 +221,13 @@ class Mangaii extends paperback_extensions_common_1.Source {
             }
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
-            //New Added
-            request = createRequestObject({
-                url: 'https://truyentranh.net/comic-latest',
-                method: "GET",
-            });
+            //view
             let newAddItems = [];
-            data = yield this.requestManager.schedule(request, 1);
-            $ = this.cheerio.load(data.data);
-            for (let manga of $('.content .card-list > .card').toArray()) {
-                const title = $('.card-title', manga).text().trim();
-                const id = (_a = $('.card-title > a', manga).attr('href')) !== null && _a !== void 0 ? _a : title;
-                const image = $('.card-img', manga).attr('src');
-                const sub = $('.list-chapter > li:first-child > a', manga).text().trim();
-                // if (!id || !subtitle) continue;
+            for (let manga of dt.top_views) {
+                const title = manga.name;
+                const id = 'https://mangaii.com/comic/' + manga.slug;
+                const image = `https://mangaii.com/_next/image?url=https%3A%2F%2Fapi.mangaii.com%2Fmedia%2Fcover_images%2F${manga.cover_image}&w=256&q=100`;
+                const sub = manga.total_views.toLocaleString() + ' views';
                 newAddItems.push(createMangaTile({
                     id: id,
                     image: image,
@@ -203,30 +239,28 @@ class Mangaii extends paperback_extensions_common_1.Source {
                     }),
                 }));
             }
-            newAdded.items = newAddItems;
-            // sectionCallback(newAdded);
-            // Hot
-            request = createRequestObject({
-                url: 'https://truyentranh.net',
-                method: "GET",
-            });
-            let popular = [];
-            data = yield this.requestManager.schedule(request, 1);
-            $ = this.cheerio.load(data.data);
-            for (let manga of $('#bottomslider .list-slider-item').toArray()) {
-                const title = $('.card', manga).attr('title');
-                const id = $('.card', manga).attr('href');
-                const image = $('.card-img', manga).attr('src');
-                const sub = $('.card-chapter', manga).text().trim();
-                // if (!id || !title) continue;
-                popular.push(createMangaTile({
+            view.items = newAddItems;
+            sectionCallback(view);
+            //new
+            let newsItems = [];
+            for (let manga of dt.new_comics) {
+                const title = manga.name;
+                const id = 'https://mangaii.com/comic/' + manga.slug;
+                const image = `https://mangaii.com/_next/image?url=https%3A%2F%2Fapi.mangaii.com%2Fmedia%2Fcover_images%2F${manga.cover_image}&w=256&q=100`;
+                const sub = 'Chapter ' + manga.chapter.number;
+                newsItems.push(createMangaTile({
                     id: id,
                     image: image,
-                    title: createIconText({ text: title }),
-                    subtitleText: createIconText({ text: sub }),
+                    title: createIconText({
+                        text: title,
+                    }),
+                    subtitleText: createIconText({
+                        text: sub,
+                    }),
                 }));
             }
-            hot.items = popular;
+            news.items = newsItems;
+            sectionCallback(news);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
@@ -237,7 +271,7 @@ class Mangaii extends paperback_extensions_common_1.Source {
             let url = '';
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `https://truyentranh.net/comic?page=${page}`;
+                    url = `https://api.mangaii.com/api/v1/comics?page=${page}`;
                     break;
                 case "new_added":
                     url = `https://truyentranh.net/comic-latest?page=${page}`;
@@ -251,9 +285,9 @@ class Mangaii extends paperback_extensions_common_1.Source {
                 param
             });
             const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
-            const manga = MangaiiParser_1.parseViewMore($);
-            metadata = !MangaiiParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            const json = JSON.parse(response.data);
+            const manga = MangaiiParser_1.parseViewMore(json.data);
+            metadata = json.hasMore ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: manga,
                 metadata,
@@ -266,13 +300,13 @@ class Mangaii extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: query.title ? encodeURI(`https://truyentranh.net/search?page=${page}&q=${query.title}`) : `${tags[0]}?page=${page}`,
+                url: query.title ? encodeURI(`https://api.mangaii.com/api/v1/search?name=${query.title}&page=${page}`) : `https://api.mangaii.com/api/v1/comics?page=${page}&genre=${tags[0]}`,
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
-            let $ = this.cheerio.load(data.data);
-            const tiles = MangaiiParser_1.parseSearch($);
-            metadata = !MangaiiParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            const json = JSON.parse(data.data);
+            const tiles = MangaiiParser_1.parseSearch(json.data);
+            metadata = json.hasMore ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: tiles,
                 metadata
@@ -281,18 +315,17 @@ class Mangaii extends paperback_extensions_common_1.Source {
     }
     getSearchTags() {
         return __awaiter(this, void 0, void 0, function* () {
-            const url = DOMAIN;
+            const url = 'https://mangaii.com/_next/data/fM7pdjCUFacEnYx_vhENt/vi/genre/all-qWerTy12.json?slug=all-qWerTy12';
             const request = createRequestObject({
                 url: url,
                 method: "GET",
             });
             const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
+            const json = JSON.parse(response.data).pageProps.genres;
             const arrayTags = [];
-            const collectedIds = [];
             //the loai
-            for (const tag of $('.dropdown-menu > ul > li > a').toArray()) {
-                arrayTags.push({ id: $(tag).attr('href'), label: $(tag).text().trim() });
+            for (const tag of json) {
+                arrayTags.push({ id: tag.slug, label: tag.name });
             }
             const tagSections = [
                 createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) }),

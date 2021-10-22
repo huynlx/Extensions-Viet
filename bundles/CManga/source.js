@@ -7537,7 +7537,8 @@ class CManga extends paperback_extensions_common_1.Source {
             var chapter_content = JSON.parse(JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data)))[0].content);
             var pages = [];
             for (const img of chapter_content) {
-                pages.push(img.replace('.net', '.com'));
+                // pages.push(img);
+                pages.push(img.replace('.net', '.com').replace('?v=1&', '?v=1000&')); //1,01,11,21,31,41,...
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,

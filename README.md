@@ -51,3 +51,6 @@ https://huynh12345678.github.io/Extensions-Viet/
 |   40  | VlogTruyen                | https://vlogtruyen.net                     |
 |   41  | Truyendep                 | https://truyendep.net                      |
 |   42  | Mangaii                   | https://mangaii.com                        |
+|   43  | WComic                    | https://wcomic.site                        |
+|   44  | Truyengihot               | https://truyengihot.net                    |
+|   45  | Baotangtruyentranh        | https://baotangtruyentranh.com             |

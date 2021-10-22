@@ -7,77 +7,63 @@ exports.generateSearch = (query) => {
     let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
     return encodeURI(keyword);
 };
-exports.parseSearch = (data) => {
+exports.parseSearch = ($) => {
+    var _a;
     const mangas = [];
+    for (let obj of $('.wc_comic_list > .wc_item').toArray()) {
+        let title = $(`a`, obj).first().attr('title');
+        let subtitle = $(`.row_one > span:first-child`, obj).text().trim();
+        const image = $(`a:first-child img`, obj).attr('src');
+        let id = (_a = $(`a:first-child`, obj).attr('href')) !== null && _a !== void 0 ? _a : "";
+        mangas.push(createMangaTile({
+            id: id !== null && id !== void 0 ? id : "",
+            image: image !== null && image !== void 0 ? image : "",
+            title: createIconText({
+                text: title !== null && title !== void 0 ? title : "",
+            }),
+            subtitleText: createIconText({
+                text: subtitle,
+            }),
+        }));
+    }
+    return mangas;
+};
+exports.parseViewMore = ($) => {
+    var _a;
+    const manga = [];
     const collectedIds = [];
-    for (let manga of data) {
-        const title = manga.name;
-        const id = 'https://mangaii.com/comic/' + manga.slug;
-        ;
-        const image = `https://mangaii.com/_next/image?url=https%3A%2F%2Fapi.mangaii.com%2Fmedia%2Fcover_images%2F${manga.cover_image}&w=256&q=100`;
-        const sub = 'Chapter ' + manga.chapter.number;
-        if (!id || !title)
-            continue;
-        if (!collectedIds.includes(id)) {
-            mangas.push(createMangaTile({
-                id: id,
+    for (let obj of $('.wc_comic_list > .wc_item').toArray()) {
+        let title = $(`a`, obj).first().attr('title');
+        let subtitle = $(`.row_one > span:first-child`, obj).text().trim();
+        const image = $(`a:first-child img`, obj).attr('src');
+        let id = (_a = $(`a:first-child`, obj).attr('href')) !== null && _a !== void 0 ? _a : "";
+        if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
+            manga.push(createMangaTile({
+                id: id !== null && id !== void 0 ? id : "",
                 image: image !== null && image !== void 0 ? image : "",
-                title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: sub }),
+                title: createIconText({
+                    text: title !== null && title !== void 0 ? title : "",
+                }),
+                subtitleText: createIconText({
+                    text: subtitle,
+                }),
             }));
             collectedIds.push(id);
         }
     }
-    return mangas;
+    return manga;
 };
-exports.parseViewMore = (data) => {
-    const mangas = [];
-    const collectedIds = [];
-    for (let manga of data) {
-        const title = manga.name;
-        const id = 'https://mangaii.com/comic/' + manga.slug;
-        ;
-        const image = `https://mangaii.com/_next/image?url=https%3A%2F%2Fapi.mangaii.com%2Fmedia%2Fcover_images%2F${manga.cover_image}&w=256&q=100`;
-        const sub = 'Chapter ' + manga.chapter.number;
-        if (!id || !title)
-            continue;
-        if (!collectedIds.includes(id)) {
-            mangas.push(createMangaTile({
-                id: id,
-                image: image !== null && image !== void 0 ? image : "",
-                title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: sub }),
-            }));
-            collectedIds.push(id);
-        }
-    }
-    return mangas;
-};
-// export const parseTags = ($: CheerioStatic): TagSection[] => {
-//     const arrayTags: Tag[] = [];
-//     for (const obj of $("li", "ul").toArray()) {
-//         const label = ($("a", obj).text().trim());
-//         const id = $('a', obj).attr('href') ?? "";
-//         if (id == "") continue;
-//         arrayTags.push({
-//             id: id,
-//             label: label,
-//         });
-//     }
-//     const tagSections: TagSection[] = [createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) })];
-//     return tagSections;
-// }
 exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
-    for (const page of $("li.page-item", "ul.pagination").toArray()) {
-        const p = Number($('a.page-link', page).text().trim());
+    for (const page of $("a", ".pagination").toArray()) {
+        const p = Number($(page).text().trim());
         if (isNaN(p))
             continue;
         pages.push(p);
     }
     const lastPage = Math.max(...pages);
-    const currentPage = Number($("ul.pagination > li.page-item.active > a.page-link").text().trim());
+    const currentPage = Number($(".pagination a.active_page").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
     return isLast;

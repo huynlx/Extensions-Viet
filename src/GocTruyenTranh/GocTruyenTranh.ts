@@ -80,7 +80,7 @@ export class GocTruyenTranh extends Source {
             id: mangaId,
             author: creator,
             artist: creator,
-            desc: desc,
+            desc: decodeHTMLEntity(desc),
             titles: [decodeHTMLEntity($('.detail-section .title > h1').text().trim())],
             image: encodeURI(image),
             status,
