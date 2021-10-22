@@ -619,11 +619,6 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             requestsPerSecond: 5,
             requestTimeout: 20000
         });
-        // override globalRequestHeaders(): RequestHeaders {
-        //     return {
-        //         referer: DOMAIN
-        //     }
-        // }
     }
     convertTime(timeAgo) {
         var _a;
@@ -747,7 +742,9 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             for (var i = 0; i < el.length; i++) {
                 var e = el[i];
                 let img = $(e).attr("data-echo");
-                pages.push(encodeURI(base + img));
+                if (img.includes('http'))
+                    img = base + img;
+                pages.push(img);
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
@@ -1000,6 +997,11 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             ];
             return tagSections;
         });
+    }
+    globalRequestHeaders() {
+        return {
+            referer: DOMAIN
+        };
     }
 }
 exports.Truyengihot = Truyengihot;
