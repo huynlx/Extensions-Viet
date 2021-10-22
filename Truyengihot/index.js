@@ -709,11 +709,11 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             const chapters = [];
-            var el = $("#episode_list li a").toArray();
+            var el = $("#episode_list li a").toArray().reverse();
             for (var i = el.length - 1; i >= 0; i--) {
                 var e = el[i];
                 let id = 'https://truyengihot.net/' + $(e).attr("href");
-                let chapNum = i;
+                let chapNum = i + 1;
                 let name = $('.no', e).text();
                 let time = $('.date', e).text().trim();
                 chapters.push(createChapter({
@@ -742,9 +742,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             for (var i = 0; i < el.length; i++) {
                 var e = el[i];
                 let img = $(e).attr("data-echo");
-                if (!img.endsWith('donate.png')) {
-                    pages.push(encodeURI(base + img));
-                }
+                pages.push(encodeURI(base + img));
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
