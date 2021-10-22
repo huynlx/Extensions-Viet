@@ -665,7 +665,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
     getMangaShareUrl(mangaId) { return (mangaId); }
     ;
     getMangaDetails(mangaId) {
-        var _a, _b;
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const url = mangaId;
             const request = createRequestObject({
@@ -675,21 +675,23 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let tags = [];
-            let creator = TruyengihotParser_1.decodeHTMLEntity($('.author p').last().text().trim());
-            let statusFinal = $('.status p').last().text().trim().includes('Đang') ? 1 : 0;
-            for (const t of $('a', '.kind').toArray()) {
+            let creator = TruyengihotParser_1.decodeHTMLEntity($(".cover-artist a[href~=tac-gia]").text() || '');
+            let statusFinal = $('.top-tags').attr('src').includes('ongoing.png') ? 1 : 0;
+            for (const t of $(".cover-artist a[href~=the-loai]").toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: TruyengihotParser_1.decodeHTMLEntity(genre), id }));
             }
-            let desc = $("#summary").text();
-            let image = (_b = $('.col-image img').attr("data-src")) !== null && _b !== void 0 ? _b : "";
+            let desc = $(".product-synopsis-inner").first().text().replace(/ Xem thêm|Giới thiệu /gi, '');
+            let image = $(".cover-image img").first().attr("src");
+            if (!image.includes('http'))
+                image = 'https://truyengihot.net/' + image;
             return createManga({
                 id: mangaId,
                 author: creator,
-                artist: creator,
+                artist: $(".cover-artist:first-child > span").last().text(),
                 desc: desc,
-                titles: [TruyengihotParser_1.decodeHTMLEntity($('.title-detail').text().trim())],
+                titles: [TruyengihotParser_1.decodeHTMLEntity($("h2.cover-title").text())],
                 image: encodeURI(TruyengihotParser_1.decodeHTMLEntity(image)),
                 status: statusFinal,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
@@ -699,7 +701,6 @@ class Truyengihot extends paperback_extensions_common_1.Source {
         });
     }
     getChapters(mangaId) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
                 url: mangaId,
@@ -708,14 +709,13 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             const chapters = [];
-            for (const obj of $('#nt_listchapter .row:not(.heading)').toArray()) {
-                let id = $('a', obj).first().attr('href');
-                let chapNum = parseFloat((_a = $('a', obj).first().text()) === null || _a === void 0 ? void 0 : _a.split(' ')[1]);
-                let name = ($('a', obj).first().text().trim() === ('Chapter ' + chapNum.toString())) ? '' : $('a', obj).first().text().trim();
-                if ($('.coin-unlock', obj).attr('title')) {
-                    name = 'LOCKED (' + $('.coin-unlock', obj).attr('title') + ')';
-                }
-                let time = $('.col-xs-4', obj).text().trim();
+            var el = $("#episode_list li a").toArray();
+            for (var i = el.length - 1; i >= 0; i--) {
+                var e = el.get(i);
+                let id = 'https://truyengihot.net/' + $(e).attr("href");
+                let chapNum = i;
+                let name = $('.no', e).text();
+                let time = $('.date', e).text().trim();
                 chapters.push(createChapter({
                     id,
                     chapNum: chapNum,
@@ -734,12 +734,17 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                 url: `${chapterId}`,
                 method
             });
+            const base = 'https://truyengihot.net/';
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             const pages = [];
-            for (let obj of $('.reading-detail img').toArray()) {
-                let image = $(obj).attr('data-src');
-                pages.push(encodeURI(image));
+            var el = $(".pageWrapper img").toArray();
+            for (var i = 0; i < el.size(); i++) {
+                var e = el.get(i);
+                let img = $(e).attr("data-echo");
+                if (!img.endsWith('donate.png')) {
+                    pages.push(encodeURI(base + img));
+                }
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
@@ -786,7 +791,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                 let image = $('.thumb', item).attr('style').split(/['']/)[1];
                 if (!image.includes('http'))
                     image = 'https://truyengihot.net/' + image;
-                let id = $('.title a', item).attr('href');
+                let id = 'https://truyengihot.net' + $('.title a', item).attr('href');
                 let subtitle = $('.chapter-link', item).last().text();
                 newUpdatedItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
