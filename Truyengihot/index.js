@@ -714,7 +714,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: 'https://truyengihot.net/truyen-de-quoc-tinh-te-de-nhat-sung-hon.html',
+                url: mangaId,
                 method,
             });
             let data = yield this.requestManager.schedule(request, 1);
@@ -937,79 +937,62 @@ class Truyengihot extends paperback_extensions_common_1.Source {
     getSearchTags() {
         return __awaiter(this, void 0, void 0, function* () {
             const tags = [];
-            const tags2 = [
-                {
-                    id: 'status.-1',
-                    label: 'Tất cả'
-                },
-                {
-                    id: 'status.2',
-                    label: 'Hoàn thành'
-                },
-                {
-                    id: 'status.1',
-                    label: 'Đang tiến hành'
-                }
-            ];
-            const tags3 = [
-                {
-                    id: 'sort.13',
-                    label: 'Top ngày'
-                },
-                {
-                    id: 'sort.12',
-                    label: 'Top tuần'
-                },
-                {
-                    id: 'sort.11',
-                    label: 'Top tháng'
-                },
-                {
-                    id: 'sort.10',
-                    label: 'Top all'
-                },
-                {
-                    id: 'sort.20',
-                    label: 'Theo dõi'
-                },
-                {
-                    id: 'sort.25',
-                    label: 'Bình luận'
-                },
-                {
-                    id: 'sort.15',
-                    label: 'Truyện mới'
-                },
-                {
-                    id: 'sort.30',
-                    label: 'Số chapter'
-                },
-                {
-                    id: 'sort.0',
-                    label: 'Ngày cập nhật'
-                }
-            ];
-            const url = DOMAIN;
+            const tags2 = [];
+            const tags3 = [];
+            const tags4 = [];
+            const tags5 = [];
             const request = createRequestObject({
-                url: url,
+                url: 'https://truyengihot.net/danh-sach-truyen.html',
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            //the loai
-            for (const tag of $('.megamenu .nav a').toArray()) {
+            //loai truyen
+            for (const tag of $('#m_manga_type button').toArray()) {
                 let label = $(tag).text().trim();
-                let id = 'cate.' + $(tag).attr('href').split('/').pop();
-                if (label === 'Tất cả')
-                    id = 'cate.';
+                let id = 'type.' + $(tag).attr('data-val');
                 if (!id || !label)
                     continue;
-                tags.push({ id: id, label: TruyengihotParser_1.decodeHTMLEntity(label) });
+                tags.push({ id: id, label: (label) });
+            }
+            //the loai
+            for (const tag of $('#m_genres button').toArray()) {
+                let label = $(tag).text().trim();
+                let id = 'genre.' + $(tag).attr('data-val');
+                if (!id || !label)
+                    continue;
+                tags2.push({ id: id, label: (label) });
+            }
+            //trang thai
+            for (const tag of $('#m_status button').toArray()) {
+                let label = $(tag).text().trim();
+                let id = 'status.' + $(tag).attr('data-val');
+                if (!id || !label)
+                    continue;
+                tags3.push({ id: id, label: (label) });
+            }
+            //sap xep
+            for (const tag of $('#m_sort button').toArray()) {
+                let label = $(tag).text().trim();
+                let id = 'sort.' + $(tag).attr('data-val');
+                if (!id || !label)
+                    continue;
+                tags4.push({ id: id, label: (label) });
+            }
+            //loai sap xep
+            for (const tag of $('#m_sort_type button').toArray()) {
+                let label = $(tag).text().trim();
+                let id = 'sortType.' + $(tag).attr('data-val');
+                if (!id || !label)
+                    continue;
+                tags5.push({ id: id, label: (label) });
             }
             const tagSections = [
-                createTagSection({ id: '1', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
-                createTagSection({ id: '2', label: 'Tình trạng', tags: tags2.map(x => createTag(x)) }),
-                createTagSection({ id: '3', label: 'Sắp xếp theo', tags: tags3.map(x => createTag(x)) }),
+                createTagSection({ id: '1', label: 'Loại truyện', tags: tags.map(x => createTag(x)) }),
+                createTagSection({ id: '2', label: 'Thể loại', tags: tags2.map(x => createTag(x)) }),
+                createTagSection({ id: '3', label: 'Trạng thái', tags: tags3.map(x => createTag(x)) }),
+                createTagSection({ id: '4', label: 'Sắp xếp', tags: tags4.map(x => createTag(x)) }),
+                createTagSection({ id: '5', label: 'Loại sắp xếp', tags: tags5.map(x => createTag(x)) }),
             ];
             return tagSections;
         });
