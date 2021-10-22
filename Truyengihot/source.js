@@ -688,7 +688,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                 }
             }
             for (const t of $('.cover-artist a[href*=the-loai]').toArray()) {
-                console.log(t);
+                // console.log(t);
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: TruyengihotParser_1.decodeHTMLEntity(genre), id }));
@@ -714,7 +714,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: mangaId,
+                url: 'https://truyengihot.net/truyen-de-quoc-tinh-te-de-nhat-sung-hon.html',
                 method,
             });
             let data = yield this.requestManager.schedule(request, 1);
@@ -725,9 +725,9 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                 var e = el[i];
                 let id = 'https://truyengihot.net/' + $(e).attr("href");
                 let name = $('.no', e).text().trim();
-                if ($('.episode-item-lock', e))
-                    name = '(LOCKED) ' + name;
                 let chapNum = parseFloat(name.split(' ')[1]);
+                if ($('span', e).first().attr('class') === 'episode-item-lock')
+                    name = '(LOCKED) ' + name;
                 let time = $('.date', e).text().trim();
                 chapters.push(createChapter({
                     id,
