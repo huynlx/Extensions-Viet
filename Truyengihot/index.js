@@ -898,7 +898,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
         });
     }
     getSearchResults(query, metadata) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
@@ -929,7 +929,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                 }
             });
             const request = createRequestObject({
-                url: encodeURI(`${DOMAIN}danh-sach-truyen.html?listType=pagination&artist=&author=&group=&m_status=${search.status}&genre=${search.genre}&ungenre=&sort=${search.sort}&sort_type=${search.sortType}&manga_type=${search.type}&name=${query.title}&page=${page}`),
+                url: encodeURI(`${DOMAIN}danh-sach-truyen.html?listType=pagination&artist=&author=&group=&m_status=${search.status}&genre=${search.genre}&ungenre=&sort=${search.sort}&sort_type=${search.sortType}&manga_type=${search.type}&name=${(_d = query.title) !== null && _d !== void 0 ? _d : ""}&page=${page}`),
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
