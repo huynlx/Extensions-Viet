@@ -693,7 +693,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: TruyengihotParser_1.decodeHTMLEntity(genre), id }));
             }
-            let desc = $(".product-synopsis-content p").first().text().trim();
+            let desc = $(".product-synopsis-content p").last().text().trim();
             let image = $(".cover-image img").first().attr("src");
             if (!image.includes('http'))
                 image = 'https://truyengihot.net/' + image;
@@ -725,6 +725,8 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                 var e = el[i];
                 let id = 'https://truyengihot.net/' + $(e).attr("href");
                 let name = $('.no', e).text().trim();
+                if ($('.episode-item-lock', e))
+                    name = '(LOCKED) ' + name;
                 let chapNum = parseFloat(name.split(' ')[1]);
                 let time = $('.date', e).text().trim();
                 chapters.push(createChapter({
