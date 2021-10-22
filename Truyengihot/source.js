@@ -699,7 +699,9 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                 const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: TruyengihotParser_1.decodeHTMLEntity(genre), id }));
             }
+            console.log(checkNovel);
             let desc = (checkNovel ? '[NOVEL]\n' : '') + $(".product-synopsis-content p").last().text().trim();
+            console.log(desc);
             let image = $(".cover-image img").first().attr("src");
             if (!image.includes('http'))
                 image = 'https://truyengihot.net/' + image;
