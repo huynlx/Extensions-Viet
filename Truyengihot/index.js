@@ -712,7 +712,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: mangaId,
+                url: 'https://truyengihot.net/truyen-18-duoi-doi-canh-ay.html',
                 method,
             });
             let data = yield this.requestManager.schedule(request, 1);
@@ -720,10 +720,14 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             const chapters = [];
             var el = $("#episode_list li a").toArray().reverse();
             const collectChapnum = [];
+            const collectName = [];
             for (var i = 0; i <= el.length - 1; i++) {
                 var e = el[i];
                 let id = 'https://truyengihot.net/' + $(e).attr("href");
                 let name = $('.no', e).text().trim();
+                if (collectName.includes(name))
+                    continue;
+                collectName.push(name);
                 let chapNum = parseFloat(name.split(' ')[1]);
                 let chapNumfinal = isNaN(chapNum) ? i + 1 : (collectChapnum.includes(chapNum) ? (i + 1) : chapNum);
                 collectChapnum.push(chapNumfinal);
@@ -739,6 +743,7 @@ class Truyengihot extends paperback_extensions_common_1.Source {
                     time: this.convertTime(TruyengihotParser_1.decodeHTMLEntity(time))
                 }));
             }
+            console.log(collectChapnum);
             return chapters;
         });
     }
