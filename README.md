@@ -23,7 +23,7 @@ https://huynh12345678.github.io/Extensions-Viet/
 |   12  | HorrorFC                  | https://www.horrorfc.net                   |
 |   13  | LXHentai                  | https://lxhentai.com                       |
 |   14  | MangaToro                 | https://vi.mangatoro.com                   |
-|   15  | MangaXY                   | https://mangaxy.com                        |
+|   15  | MangaXY (TT8)             | https://mangaxy.com                        |
 |   16  | ManhuaRock                | https://manhuarock.net                     |
 |   17  | MeDocTruyen               | https://www.medoctruyentranh.net           |
 |   18  | NetTruyen                 | http://www.nettruyenpro.com                |
@@ -54,4 +54,3 @@ https://huynh12345678.github.io/Extensions-Viet/
 |   43  | WComic                    | https://wcomic.site                        |
 |   44  | Truyengihot               | https://truyengihot.net                    |
 |   45  | Baotangtruyentranh        | https://baotangtruyentranh.com             |
-
