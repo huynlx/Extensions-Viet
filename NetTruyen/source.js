@@ -643,16 +643,18 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             return this.parser.parseTags($);
         });
     }
-    // async filterUpdatedManga(mangaUpdatesFoundCallback: (updates: MangaUpdates) => void, time: Date, ids: string[]): Promise<void> {
-    //     const request = createRequestObject({
-    //         url: DOMAIN,
-    //         headers: { 'content-type': 'application/x-www-form-urlencoded' },
-    //         method: 'GET',
-    //     })
-    //     const response = await this.requestManager.schedule(request, 1)
-    //     const returnObject = this.parser.parseUpdatedManga(response.data, time, ids)
-    //     mangaUpdatesFoundCallback(createMangaUpdates(returnObject))
-    // }
+    filterUpdatedManga(mangaUpdatesFoundCallback, time, ids) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const request = createRequestObject({
+                url: DOMAIN,
+                method: 'GET',
+            });
+            const response = yield this.requestManager.schedule(request, 1);
+            const $ = this.cheerio.load(response.data);
+            const returnObject = this.parser.parseUpdatedManga($, time, ids);
+            mangaUpdatesFoundCallback(createMangaUpdates(returnObject));
+        });
+    }
     globalRequestHeaders() {
         return {
             referer: DOMAIN
@@ -954,6 +956,26 @@ class Parser {
             }
         }
         return mangas;
+    }
+    parseUpdatedManga($, time, ids) {
+        var _a;
+        const returnObject = {
+            'ids': []
+        };
+        const updateManga = [];
+        for (let manga of $('div.item', 'div.row').toArray()) {
+            const id = (_a = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+            const time = this.convertTime($("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a > i", manga).last().text().trim());
+            updateManga.push(({
+                id: id,
+                time: time
+            }));
+        }
+        for (const elem of updateManga) {
+            if (ids.includes(elem.id) && time < new Date(elem.time))
+                returnObject.ids.push(elem.id);
+        }
+        return returnObject;
     }
 }
 exports.Parser = Parser;
