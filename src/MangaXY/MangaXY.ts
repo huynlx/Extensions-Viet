@@ -56,7 +56,7 @@ export class MangaXY extends Source {
         var checkCover = $(".detail-top-right img").attr("style");
         var cover = '';
         if (checkCover?.indexOf('jpg') != -1 || checkCover.indexOf('png') != -1 || checkCover.indexOf('jpeg') != -1 || checkCover.indexOf('webp') != -1 || checkCover.indexOf('gif') != -1)
-            cover = checkCover.match(/image: url\('\/\/(.+)\'\)/)[1]
+            cover = checkCover.split(/['']/)[1]
         else
             cover = ""
         let tags: Tag[] = [];
@@ -80,7 +80,8 @@ export class MangaXY extends Source {
                 continue;
             }
         }
-        const image = "https://" + cover;
+        const image = cover.includes('http') ? (cover) : ("https:" + cover);
+
         return createManga({
             id: mangaId,
             author: creator,

@@ -11,7 +11,7 @@ import {
     TagSection,
     HomeSectionType,
     ContentRating,
-    // MangaUpdates
+    MangaUpdates
 } from "paperback-extensions-common"
 import { Parser } from './NetTruyenParser';
 
@@ -295,17 +295,17 @@ export class NetTruyen extends Source {
         return this.parser.parseTags($);
     }
 
-    // async filterUpdatedManga(mangaUpdatesFoundCallback: (updates: MangaUpdates) => void, time: Date, ids: string[]): Promise<void> {
-    //     const request = createRequestObject({
-    //         url: DOMAIN,
-    //         headers: { 'content-type': 'application/x-www-form-urlencoded' },
-    //         method: 'GET',
-    //     })
+    override async filterUpdatedManga(mangaUpdatesFoundCallback: (updates: MangaUpdates) => void, time: Date, ids: string[]): Promise<void> {
+        const request = createRequestObject({
+            url: DOMAIN,
+            method: 'GET',
+        })
 
-    //     const response = await this.requestManager.schedule(request, 1)
-    //     const returnObject = this.parser.parseUpdatedManga(response.data, time, ids)
-    //     mangaUpdatesFoundCallback(createMangaUpdates(returnObject))
-    // }
+        const response = await this.requestManager.schedule(request, 1)
+        const $ = this.cheerio.load(response.data);
+        const returnObject = this.parser.parseUpdatedManga($, time, ids)
+        mangaUpdatesFoundCallback(createMangaUpdates(returnObject))
+    }
 
     globalRequestHeaders(): RequestHeaders { //ko có cái này ko load đc page truyện (load ảnh)
         return {

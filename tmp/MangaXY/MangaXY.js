@@ -58,7 +58,7 @@ class MangaXY extends paperback_extensions_common_1.Source {
             var checkCover = $(".detail-top-right img").attr("style");
             var cover = '';
             if ((checkCover === null || checkCover === void 0 ? void 0 : checkCover.indexOf('jpg')) != -1 || checkCover.indexOf('png') != -1 || checkCover.indexOf('jpeg') != -1 || checkCover.indexOf('webp') != -1 || checkCover.indexOf('gif') != -1)
-                cover = checkCover.match(/image: url\('\/\/(.+)\'\)/)[1];
+                cover = checkCover.split(/['']/)[1];
             else
                 cover = "";
             let tags = [];
@@ -83,6 +83,7 @@ class MangaXY extends paperback_extensions_common_1.Source {
                 }
             }
             const image = "https://" + cover;
+            console.log(image);
             return createManga({
                 id: mangaId,
                 author: creator,

@@ -290,16 +290,25 @@ export class Parser {
         return mangas;
     }
 
-    // parseUpdatedManga(data: any, time: Date, ids: string[]): MangaUpdates {
-    //     const returnObject: MangaUpdates = {
-    //         'ids': []
-    //     }
-    //     const updateManga = JSON.parse(data.match(regex['latest'])?.[1])
-    //     for (const elem of updateManga) {
-    //         if (ids.includes(elem.IndexName) && time < new Date(elem.Date)) returnObject.ids.push(elem.IndexName)
-    //     }
-    //     return returnObject
-    // }
+    parseUpdatedManga($: any, time: Date, ids: string[]): MangaUpdates {
+        const returnObject: MangaUpdates = {
+            'ids': []
+        }
+        const updateManga = [];
+        for (let manga of $('div.item', 'div.row').toArray()) {
+            const id = $('figure.clearfix > div.image > a', manga).attr('href')?.split('/').pop();
+            const time = this.convertTime($("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > i", manga).last().text().trim());
+            updateManga.push(({
+                id: id,
+                time: time
+            }));
+        }
+
+        for (const elem of updateManga) {
+            if (ids.includes(elem.id) && time < new Date(elem.time)) returnObject.ids.push(elem.id)
+        }
+        return returnObject
+    }
 
 }
 

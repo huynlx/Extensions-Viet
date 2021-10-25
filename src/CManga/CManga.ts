@@ -123,7 +123,7 @@ export class CManga extends Source {
         var pages = [];
         for (const img of chapter_content) {
             // pages.push(img);
-            pages.push(img.replace('.net', '.com').replace('?v=1&', '?v=1000&')); //1,01,11,21,31,41,...
+            pages.push(img.replace('.net', '.com').replace('?v=1&', '?v=9999&')); //1,01,11,21,31,41,...
         }
         const chapterDetails = createChapterDetails({
             id: chapterId,
