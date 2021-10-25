@@ -965,7 +965,7 @@ class Parser {
         const updateManga = [];
         for (let manga of $('div.item', 'div.row').toArray()) {
             const id = (_a = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-            const time = this.convertTime($("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a > i", manga).last().text().trim());
+            const time = this.convertTime($("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > i", manga).last().text().trim());
             updateManga.push(({
                 id: id,
                 time: time
