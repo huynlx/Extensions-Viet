@@ -398,6 +398,10 @@ exports.NhatTruyenInfo = {
             text: "Recommended",
             type: paperback_extensions_common_1.TagType.BLUE
         },
+        {
+            text: 'Notifications',
+            type: paperback_extensions_common_1.TagType.GREEN
+        }
     ]
 };
 class NhatTruyen extends paperback_extensions_common_1.Source {
@@ -641,6 +645,18 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             return this.parser.parseTags($);
+        });
+    }
+    filterUpdatedManga(mangaUpdatesFoundCallback, time, ids) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const request = createRequestObject({
+                url: DOMAIN,
+                method: 'GET',
+            });
+            const response = yield this.requestManager.schedule(request, 1);
+            const $ = this.cheerio.load(response.data);
+            const returnObject = this.parser.parseUpdatedManga($, time, ids);
+            mangaUpdatesFoundCallback(createMangaUpdates(returnObject));
         });
     }
     globalRequestHeaders() {
@@ -944,6 +960,26 @@ class Parser {
             }
         }
         return mangas;
+    }
+    parseUpdatedManga($, time, ids) {
+        var _a;
+        const returnObject = {
+            'ids': []
+        };
+        const updateManga = [];
+        for (let manga of $('div.item', 'div.row').toArray()) {
+            const id = (_a = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+            const time = this.convertTime($("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > i", manga).last().text().trim());
+            updateManga.push(({
+                id: id,
+                time: time
+            }));
+        }
+        for (const elem of updateManga) {
+            if (ids.includes(elem.id) && time < new Date(elem.time))
+                returnObject.ids.push(elem.id);
+        }
+        return returnObject;
     }
 }
 exports.Parser = Parser;
