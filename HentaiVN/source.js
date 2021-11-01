@@ -1105,8 +1105,8 @@ exports.parseFullSections = ($, sections, sectionCallback) => {
             subtitleText: createIconText({ text: fixsub.trim() }),
         }));
     }
-    sections[3].items = popular;
-    sectionCallback(sections[3]);
+    sections[5].items = popular;
+    sectionCallback(sections[5]);
 };
 exports.generateSearch = (query) => {
     var _a;
