@@ -746,7 +746,7 @@ class Parser {
             chapters.push(createChapter({
                 id: $('div.chapter a', obj).attr('href'),
                 chapNum: chapNum,
-                name: name.split(('Chapter ' + chapNum + ':'))[1].trim(),
+                name: name.includes(':') ? name.split('Chapter ' + chapNum + ':')[1].trim() : '',
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
                 time: timeFinal,
