@@ -13,7 +13,7 @@ import {
     RequestHeaders,
     HomeSectionType
 } from "paperback-extensions-common"
-import { parseRandomSections, parseSearch, isLastPage, parseChapterDetails, parseChapters, parseHomeSections, parseMangaDetails, parseViewMore, parseAddedSections, parsePopularSections } from "./HentaiVNParser"
+import { parseRandomSections, parseSearch, isLastPage, parseChapterDetails, parseChapters, parseFullSections, parseHomeSections, parseMangaDetails, parseViewMore, parseAddedSections, parsePopularSections } from "./HentaiVNParser"
 import tags from './tags.json';
 
 const DOMAIN = `https://hentaivn.tv/`
@@ -85,7 +85,8 @@ export class HentaiVN extends Source {
         const section1 = createHomeSection({ id: 'recently-updated', title: 'Mới cập nhật', view_more: true });
         const section2 = createHomeSection({ id: 'popular', title: 'Tiêu điểm', view_more: true });
         const section3 = createHomeSection({ id: 'recently_added', title: 'Truyện mới đăng', view_more: true });
-        const sections = [section0, section5, section1, section2, section3];
+        const section4 = createHomeSection({ id: 'full', title: 'Truyện Full', view_more: true });
+        const sections = [section0, section5, section1, section2, section3, section4];
 
         let request = createRequestObject({
             url: `${DOMAIN}`,
@@ -120,11 +121,20 @@ export class HentaiVN extends Source {
         //popular
         request = createRequestObject({
             url: `${DOMAIN}tieu-diem.html`,
-            method,
+            method
         });
         response = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(response.data);
         parsePopularSections($, sections, sectionCallback);
+
+        //full
+        request = createRequestObject({
+            url: `${DOMAIN}da-hoan-thanh.html`,
+            method,
+        });
+        response = await this.requestManager.schedule(request, 1);
+        $ = this.cheerio.load(response.data);
+        parseFullSections($, sections, sectionCallback);
     }
 
     async getViewMoreItems(homepageSectionId: string, metadata: any): Promise<PagedResults> {
@@ -145,6 +155,11 @@ export class HentaiVN extends Source {
                 break;
             case "popular":
                 url = `${DOMAIN}tieu-diem.html`;
+                param = `?page=${page}`;
+                select = 3;
+                break;
+            case "full":
+                url = `${DOMAIN}da-hoan-thanh.html`;
                 param = `?page=${page}`;
                 select = 3;
                 break;

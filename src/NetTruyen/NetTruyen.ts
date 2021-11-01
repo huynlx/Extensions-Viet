@@ -42,6 +42,10 @@ export const NetTruyenInfo: SourceInfo = {
             text: "Recommended",
             type: TagType.BLUE
         },
+        {
+            text: 'Notifications',
+            type: TagType.GREEN
+        }
     ]
 }
 

@@ -7551,11 +7551,6 @@ class CManga extends paperback_extensions_common_1.Source {
     }
     getHomePageSections(sectionCallback) {
         return __awaiter(this, void 0, void 0, function* () {
-            let hot = createHomeSection({
-                id: 'hot',
-                title: "Top ngày",
-                view_more: false,
-            });
             let newUpdated = createHomeSection({
                 id: 'new_updated',
                 title: "Truyện mới cập nhật",
@@ -7567,44 +7562,18 @@ class CManga extends paperback_extensions_common_1.Source {
                 view_more: true,
             });
             //Load empty sections
-            sectionCallback(hot);
             sectionCallback(newUpdated);
             sectionCallback(newAdded);
             ///Get the section data
-            // Hot
-            let request = createRequestObject({
-                url: 'https://cmangatop.com/api/top?data=book_top',
-                method: "GET",
-            });
-            let popular = [];
-            let data = yield this.requestManager.schedule(request, 1);
-            let json = JSON.parse(data.data);
-            for (var i of Object.keys(json.day)) {
-                var item = json.day[i];
-                if (!item.name)
-                    continue;
-                popular.push(createMangaTile({
-                    id: item.url + '-' + item.id + "::" + item.url,
-                    image: 'https://cmangatop.com/assets/tmp/book/avatar/' + item.avatar + '.jpg',
-                    title: createIconText({
-                        text: CMangaParser_1.titleCase(item.name),
-                    }),
-                    subtitleText: createIconText({
-                        text: 'Chap ' + item.chapter,
-                    }),
-                }));
-            }
-            hot.items = popular;
-            sectionCallback(hot);
             //New Updates
-            request = createRequestObject({
+            let request = createRequestObject({
                 url: "https://cmangatop.com/api/list_item",
                 method: "GET",
                 param: '?page=1&limit=20&sort=new&type=all&tag=&child=off&status=all&num_chapter=0'
             });
             let newUpdatedItems = [];
-            data = yield this.requestManager.schedule(request, 1);
-            json = JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data)));
+            let data = yield this.requestManager.schedule(request, 1);
+            let json = JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data)));
             for (var i of Object.keys(json)) {
                 var item = json[i];
                 if (!item.name)
@@ -7810,11 +7779,11 @@ class CManga extends paperback_extensions_common_1.Source {
                 arrayTags.push({ id: id, label: label });
             }
             const tagSections = [
+                createTagSection({ id: '4', label: 'Rank', tags: arrayTags5.map(x => createTag(x)) }),
                 createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) }),
                 createTagSection({ id: '1', label: 'Sắp xếp theo', tags: arrayTags2.map(x => createTag(x)) }),
                 createTagSection({ id: '2', label: 'Tình trạng', tags: arrayTags3.map(x => createTag(x)) }),
-                createTagSection({ id: '3', label: 'Num chapter', tags: arrayTags4.map(x => createTag(x)) }),
-                createTagSection({ id: '4', label: 'Rank', tags: arrayTags5.map(x => createTag(x)) }),
+                createTagSection({ id: '3', label: 'Num chapter', tags: arrayTags4.map(x => createTag(x)) })
             ];
             return tagSections;
         });

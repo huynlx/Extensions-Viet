@@ -689,7 +689,7 @@ class TruyentranhLH extends paperback_extensions_common_1.Source {
                 chapters.push(createChapter({
                     id: $(obj).first().attr('href'),
                     chapNum: isNaN(chapNum) ? i : chapNum,
-                    name: $('li > .chapter-name', obj).text(),
+                    name: TruyentranhLHParser_1.decodeHTMLEntity($('li > .chapter-name', obj).text()),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
                     time

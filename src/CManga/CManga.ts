@@ -135,11 +135,6 @@ export class CManga extends Source {
     }
 
     async getHomePageSections(sectionCallback: (section: HomeSection) => void): Promise<void> {
-        let hot: HomeSection = createHomeSection({
-            id: 'hot',
-            title: "Top ngày",
-            view_more: false,
-        });
         let newUpdated: HomeSection = createHomeSection({
             id: 'new_updated',
             title: "Truyện mới cập nhật",
@@ -152,46 +147,19 @@ export class CManga extends Source {
         });
 
         //Load empty sections
-        sectionCallback(hot);
         sectionCallback(newUpdated);
         sectionCallback(newAdded);
 
         ///Get the section data
-        // Hot
-        let request = createRequestObject({
-            url: 'https://cmangatop.com/api/top?data=book_top',
-            method: "GET",
-        });
-        let popular: MangaTile[] = [];
-        let data = await this.requestManager.schedule(request, 1);
-        let json = JSON.parse(data.data);
-
-        for (var i of Object.keys(json.day)) {
-            var item = json.day[i];
-            if (!item.name) continue;
-            popular.push(createMangaTile({
-                id: item.url + '-' + item.id + "::" + item.url,
-                image: 'https://cmangatop.com/assets/tmp/book/avatar/' + item.avatar + '.jpg',
-                title: createIconText({
-                    text: titleCase(item.name),
-                }),
-                subtitleText: createIconText({
-                    text: 'Chap ' + item.chapter,
-                }),
-            }))
-        }
-        hot.items = popular;
-        sectionCallback(hot);
-
         //New Updates
-        request = createRequestObject({
+        let request = createRequestObject({
             url: "https://cmangatop.com/api/list_item",
             method: "GET",
             param: '?page=1&limit=20&sort=new&type=all&tag=&child=off&status=all&num_chapter=0'
         });
         let newUpdatedItems: MangaTile[] = [];
-        data = await this.requestManager.schedule(request, 1);
-        json = JSON.parse(decrypt_data(JSON.parse(data.data)));
+        let data = await this.requestManager.schedule(request, 1);
+        let json = JSON.parse(decrypt_data(JSON.parse(data.data)));
         for (var i of Object.keys(json)) {
             var item = json[i];
             if (!item.name) continue;
@@ -398,11 +366,11 @@ export class CManga extends Source {
         }
 
         const tagSections: TagSection[] = [
+            createTagSection({ id: '4', label: 'Rank', tags: arrayTags5.map(x => createTag(x)) }),
             createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) }),
             createTagSection({ id: '1', label: 'Sắp xếp theo', tags: arrayTags2.map(x => createTag(x)) }),
             createTagSection({ id: '2', label: 'Tình trạng', tags: arrayTags3.map(x => createTag(x)) }),
-            createTagSection({ id: '3', label: 'Num chapter', tags: arrayTags4.map(x => createTag(x)) }),
-            createTagSection({ id: '4', label: 'Rank', tags: arrayTags5.map(x => createTag(x)) }),
+            createTagSection({ id: '3', label: 'Num chapter', tags: arrayTags4.map(x => createTag(x)) })
         ]
         return tagSections;
     }

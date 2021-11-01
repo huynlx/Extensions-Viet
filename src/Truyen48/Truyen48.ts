@@ -14,9 +14,10 @@ import {
     MangaTile,
     Tag,
     LanguageCode,
-    HomeSectionType
+    HomeSectionType,
+    MangaUpdates
 } from "paperback-extensions-common"
-import { parseSearch, isLastPage, parseViewMore } from "./Truyen48Parser"
+import { parseSearch, isLastPage, parseViewMore, parseUpdatedManga } from "./Truyen48Parser"
 
 const DOMAIN = 'http://truyen48.com/'
 const method = 'GET'
@@ -35,6 +36,10 @@ export const Truyen48Info: SourceInfo = {
             text: "Recommended",
             type: TagType.BLUE
         },
+        {
+            text: 'Notifications',
+            type: TagType.GREEN
+        }
     ]
 }
 
@@ -491,6 +496,18 @@ export class Truyen48 extends Source {
             createTagSection({ id: '4', label: 'Sắp xếp (Chỉ chọn 1)', tags: arrayTags5.map(x => createTag(x)) }),
         ]
         return tagSections;
+    }
+
+    override async filterUpdatedManga(mangaUpdatesFoundCallback: (updates: MangaUpdates) => void, time: Date, ids: string[]): Promise<void> {
+        const request = createRequestObject({
+            url: DOMAIN,
+            method: 'GET',
+        })
+
+        const response = await this.requestManager.schedule(request, 1)
+        const $ = this.cheerio.load(response.data);
+        const returnObject = parseUpdatedManga($, time, ids)
+        mangaUpdatesFoundCallback(createMangaUpdates(returnObject))
     }
 
     globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này

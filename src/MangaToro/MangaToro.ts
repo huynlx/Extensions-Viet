@@ -11,6 +11,7 @@ import {
     TagSection,
     HomeSectionType,
     ContentRating,
+    MangaUpdates
 } from "paperback-extensions-common"
 import { Parser } from './MangaToroParser';
 
@@ -41,6 +42,10 @@ export const MangaToroInfo: SourceInfo = {
             text: "Recommended",
             type: TagType.BLUE
         },
+        {
+            text: 'Notifications',
+            type: TagType.GREEN
+        }
     ]
 }
 
@@ -293,6 +298,18 @@ export class MangaToro extends Source {
         const response = await this.requestManager.schedule(request, 1)
         const $ = this.cheerio.load(response.data);
         return this.parser.parseTags($);
+    }
+
+    override async filterUpdatedManga(mangaUpdatesFoundCallback: (updates: MangaUpdates) => void, time: Date, ids: string[]): Promise<void> {
+        const request = createRequestObject({
+            url: DOMAIN,
+            method: 'GET',
+        })
+
+        const response = await this.requestManager.schedule(request, 1)
+        const $ = this.cheerio.load(response.data);
+        const returnObject = this.parser.parseUpdatedManga($, time, ids)
+        mangaUpdatesFoundCallback(createMangaUpdates(returnObject))
     }
 
     globalRequestHeaders(): RequestHeaders { //ko có cái này ko load đc page truyện (load ảnh)

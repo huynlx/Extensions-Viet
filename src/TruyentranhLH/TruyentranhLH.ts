@@ -110,7 +110,7 @@ export class TruyentranhLH extends Source {
             chapters.push(createChapter(<Chapter>{
                 id: $(obj).first().attr('href'),
                 chapNum: isNaN(chapNum) ? i : chapNum,
-                name: $('li > .chapter-name', obj).text(),
+                name: decodeHTMLEntity($('li > .chapter-name', obj).text()),
                 mangaId: mangaId,
                 langCode: LanguageCode.VIETNAMESE,
                 time

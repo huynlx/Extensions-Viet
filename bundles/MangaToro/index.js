@@ -398,6 +398,10 @@ exports.MangaToroInfo = {
             text: "Recommended",
             type: paperback_extensions_common_1.TagType.BLUE
         },
+        {
+            text: 'Notifications',
+            type: paperback_extensions_common_1.TagType.GREEN
+        }
     ]
 };
 class MangaToro extends paperback_extensions_common_1.Source {
@@ -643,6 +647,18 @@ class MangaToro extends paperback_extensions_common_1.Source {
             return this.parser.parseTags($);
         });
     }
+    filterUpdatedManga(mangaUpdatesFoundCallback, time, ids) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const request = createRequestObject({
+                url: DOMAIN,
+                method: 'GET',
+            });
+            const response = yield this.requestManager.schedule(request, 1);
+            const $ = this.cheerio.load(response.data);
+            const returnObject = this.parser.parseUpdatedManga($, time, ids);
+            mangaUpdatesFoundCallback(createMangaUpdates(returnObject));
+        });
+    }
     globalRequestHeaders() {
         return {
             referer: DOMAIN
@@ -723,14 +739,18 @@ class Parser {
         const chapters = [];
         for (let obj of $('div.list-chapter > nav > ul > li.row:not(.heading)').toArray()) {
             let time = $('div.col-xs-4', obj).text();
+            let group = $('div.col-xs-3', obj).text();
+            let name = $('div.chapter a', obj).text();
+            let chapNum = parseFloat($('div.chapter a', obj).text().split(' ')[1]);
             let timeFinal = this.convertTime(time);
             chapters.push(createChapter({
                 id: $('div.chapter a', obj).attr('href'),
-                chapNum: parseFloat($('div.chapter a', obj).text().split(' ')[1]),
-                name: $('div.chapter a', obj).text(),
+                chapNum: chapNum,
+                name: name.includes(':') ? name.split('Chapter ' + chapNum + ':')[1].trim() : '',
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                time: timeFinal
+                time: timeFinal,
+                group: group + ' lượt xem'
             }));
         }
         return chapters;
@@ -940,6 +960,26 @@ class Parser {
             }));
         }
         return mangas;
+    }
+    parseUpdatedManga($, time, ids) {
+        var _a;
+        const returnObject = {
+            'ids': []
+        };
+        const updateManga = [];
+        for (let manga of $('div.item', 'div.row').toArray()) {
+            const id = (_a = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+            const time = this.convertTime($("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > i", manga).last().text().trim());
+            updateManga.push(({
+                id: id,
+                time: time
+            }));
+        }
+        for (const elem of updateManga) {
+            if (ids.includes(elem.id) && time < new Date(elem.time))
+                returnObject.ids.push(elem.id);
+        }
+        return returnObject;
     }
 }
 exports.Parser = Parser;

@@ -899,7 +899,7 @@ class Mangaii extends paperback_extensions_common_1.Source {
     }
     getSearchTags() {
         return __awaiter(this, void 0, void 0, function* () {
-            const url = 'https://mangaii.com/_next/data/fM7pdjCUFacEnYx_vhENt/vi/genre/all-qWerTy12.json?slug=all-qWerTy12';
+            const url = 'https://mangaii.com/_next/data/J2CY4LWdNLjLnJT2cm3r4/vi/genre/all-qWerTy12.json?slug=all-qWerTy12';
             const request = createRequestObject({
                 url: url,
                 method: "GET",

@@ -331,7 +331,7 @@ export class Mangaii extends Source {
     }
 
     async getSearchTags(): Promise<TagSection[]> {
-        const url = 'https://mangaii.com/_next/data/fM7pdjCUFacEnYx_vhENt/vi/genre/all-qWerTy12.json?slug=all-qWerTy12'
+        const url = 'https://mangaii.com/_next/data/J2CY4LWdNLjLnJT2cm3r4/vi/genre/all-qWerTy12.json?slug=all-qWerTy12'
         const request = createRequestObject({
             url: url,
             method: "GET",

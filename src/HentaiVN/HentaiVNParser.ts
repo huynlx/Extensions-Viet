@@ -192,6 +192,27 @@ export const parsePopularSections = ($: CheerioStatic, sections: HomeSection[], 
     sectionCallback(sections[3]);
 }
 
+export const parseFullSections = ($: CheerioStatic, sections: HomeSection[], sectionCallback: (section: HomeSection) => void): void => {
+    //popular
+    let popular: MangaTile[] = [];
+    for (let manga of $('.item', '.block-item').toArray()) {
+        const title = $('.box-description > p > a', manga).text();
+        const id = $('.box-cover > a', manga).attr('href')?.split('/').pop();
+        const image = $('.box-cover > a > img', manga).attr('data-src');
+        const subtitle = $(".box-description p:nth-child(1)", manga).text().trim();
+        const fixsub = subtitle.split('-')[1];
+        if (!id || !title) continue;
+        popular.push(createMangaTile({
+            id: encodeURIComponent(id) + "::" + image,
+            image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
+            title: createIconText({ text: title }),
+            subtitleText: createIconText({ text: fixsub.trim() }),
+        }));
+    }
+    sections[5].items = popular;
+    sectionCallback(sections[5]);
+}
+
 export const generateSearch = (query: SearchRequest): string => {
     let keyword: string = query.title ?? "";
     return encodeURI(keyword);
