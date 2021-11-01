@@ -610,6 +610,10 @@ exports.Truyen48Info = {
             text: "Recommended",
             type: paperback_extensions_common_1.TagType.BLUE
         },
+        {
+            text: 'Notifications',
+            type: paperback_extensions_common_1.TagType.GREEN
+        }
     ]
 };
 class Truyen48 extends paperback_extensions_common_1.Source {
@@ -1069,6 +1073,18 @@ class Truyen48 extends paperback_extensions_common_1.Source {
             return tagSections;
         });
     }
+    filterUpdatedManga(mangaUpdatesFoundCallback, time, ids) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const request = createRequestObject({
+                url: DOMAIN,
+                method: 'GET',
+            });
+            const response = yield this.requestManager.schedule(request, 1);
+            const $ = this.cheerio.load(response.data);
+            const returnObject = Truyen48Parser_1.parseUpdatedManga($, time, ids);
+            mangaUpdatesFoundCallback(createMangaUpdates(returnObject));
+        });
+    }
     globalRequestHeaders() {
         return {
             referer: `${DOMAIN} `
@@ -1080,8 +1096,44 @@ exports.Truyen48 = Truyen48;
 },{"./Truyen48Parser":56,"paperback-extensions-common":12}],56:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isLastPage = exports.parseTags = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
+exports.parseUpdatedManga = exports.isLastPage = exports.parseTags = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
 const entities = require("entities"); //Import package for decoding HTML entities
+function convertTime(timeAgo) {
+    var _a;
+    let time;
+    let trimmed = Number(((_a = /\d*/.exec(timeAgo)) !== null && _a !== void 0 ? _a : [])[0]);
+    trimmed = (trimmed == 0 && timeAgo.includes('a')) ? 1 : trimmed;
+    if (timeAgo.includes('giây') || timeAgo.includes('secs')) {
+        time = new Date(Date.now() - trimmed * 1000); // => mili giây (1000 ms = 1s)
+    }
+    else if (timeAgo.includes('phút')) {
+        time = new Date(Date.now() - trimmed * 60000);
+    }
+    else if (timeAgo.includes('giờ')) {
+        time = new Date(Date.now() - trimmed * 3600000);
+    }
+    else if (timeAgo.includes('ngày')) {
+        time = new Date(Date.now() - trimmed * 86400000);
+    }
+    else if (timeAgo.includes('năm')) {
+        time = new Date(Date.now() - trimmed * 31556952000);
+    }
+    else {
+        if (timeAgo.includes(":")) {
+            let split = timeAgo.split(' ');
+            let H = split[0]; //vd => 21:08
+            let D = split[1]; //vd => 25/08 
+            let fixD = D.split('/');
+            let finalD = fixD[1] + '/' + fixD[0] + '/' + new Date().getFullYear();
+            time = new Date(finalD + ' ' + H);
+        }
+        else {
+            let split = timeAgo.split('/'); //vd => 05/12/18
+            time = new Date(split[1] + '/' + split[0] + '/' + '20' + split[2]);
+        }
+    }
+    return time;
+}
 exports.generateSearch = (query) => {
     var _a;
     let keyword = (_a = query.title) !== null && _a !== void 0 ? _a : "";
@@ -1163,6 +1215,27 @@ exports.isLastPage = ($) => {
 const decodeHTMLEntity = (str) => {
     return entities.decodeHTML(str);
 };
+function parseUpdatedManga($, time, ids) {
+    var _a;
+    const returnObject = {
+        'ids': []
+    };
+    const updateManga = [];
+    for (let manga of $('li', '.latest').toArray()) {
+        const id = (_a = $(`a`, manga).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop();
+        const time = convertTime($('span.time-ago', manga).text().trim());
+        updateManga.push(({
+            id: id,
+            time: time
+        }));
+    }
+    for (const elem of updateManga) {
+        if (ids.includes(elem.id) && time < new Date(elem.time))
+            returnObject.ids.push(elem.id);
+    }
+    return returnObject;
+}
+exports.parseUpdatedManga = parseUpdatedManga;
 
 },{"entities":1}]},{},[55])(55)
 });
