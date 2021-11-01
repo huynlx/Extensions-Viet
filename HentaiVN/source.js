@@ -699,11 +699,8 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             HentaiVNParser_1.parseAddedSections($, sections, sectionCallback);
             //popular
             request = createRequestObject({
-                url: `${DOMAIN}danh-sach.html`,
-                method,
-                headers: {
-                    'cookie': '_ga=GA1.1.185668854.1628861877; cf_clearance=NdUPWAfjMy.rycbpwl42oWuU2__sWcErnwH_6DgpZo0-1631534430-0-150; mobile=0; <?php echo $id_anime; tataxoff=1; view5=0; view2=0; view3=0; view=0; _ga_KWGNBG0QW0=GS1.1.1635758192.50.1.1635760740.0; view4=1; view0=0'
-                }
+                url: `${DOMAIN}tieu-diem.html`,
+                method
             });
             response = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(response.data);
