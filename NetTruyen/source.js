@@ -739,14 +739,18 @@ class Parser {
         const chapters = [];
         for (let obj of $('div.list-chapter > nav > ul > li.row:not(.heading)').toArray()) {
             let time = $('div.col-xs-4', obj).text();
+            let group = $('div.col-xs-3', obj).text();
+            let name = $('div.chapter a', obj).text();
+            let chapNum = parseFloat($('div.chapter a', obj).text().split(' ')[1]);
             let timeFinal = this.convertTime(time);
             chapters.push(createChapter({
                 id: $('div.chapter a', obj).attr('href'),
-                chapNum: parseFloat($('div.chapter a', obj).text().split(' ')[1]),
-                name: $('div.chapter a', obj).text(),
+                chapNum: chapNum,
+                name: name.includes(':') ? name.split('Chapter ' + chapNum + ':')[1].trim() : '',
                 mangaId: mangaId,
                 langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                time: timeFinal
+                time: timeFinal,
+                group: group + ' lượt xem'
             }));
         }
         return chapters;
