@@ -665,12 +665,12 @@ class HentaiVN extends paperback_extensions_common_1.Source {
     getHomePageSections(sectionCallback) {
         return __awaiter(this, void 0, void 0, function* () {
             const section0 = createHomeSection({ id: 'featured', title: 'Tiêu điểm', type: paperback_extensions_common_1.HomeSectionType.featured });
-            const section5 = createHomeSection({ id: 'random', title: 'Truyện ngẫu nhiên', view_more: false });
+            // const section5 = createHomeSection({ id: 'random', title: 'Truyện ngẫu nhiên', view_more: false });
             const section1 = createHomeSection({ id: 'recently-updated', title: 'Mới cập nhật', view_more: true });
             const section2 = createHomeSection({ id: 'popular', title: 'Tiêu điểm', view_more: true });
             const section3 = createHomeSection({ id: 'recently_added', title: 'Truyện mới đăng', view_more: true });
             const section4 = createHomeSection({ id: 'full', title: 'Truyện Full', view_more: true });
-            const sections = [section0, section5, section1, section2, section3, section4];
+            const sections = [section0, section1, section2, section3, section4];
             let request = createRequestObject({
                 url: `${DOMAIN}`,
                 method,
