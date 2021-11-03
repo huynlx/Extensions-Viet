@@ -681,10 +681,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             //random
             request = createRequestObject({
                 url: DOMAIN + 'list-random.php',
-                method: 'POST',
-                headers: {
-                    'content-type': 'application/x-www-form-urlencoded'
-                }
+                method: 'GET'
             });
             response = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(response.data);
@@ -1039,6 +1036,7 @@ exports.parseRandomSections = ($, sections, sectionCallback) => {
             subtitleText: createIconText({ text: subtitle }),
         }));
     }
+    console.log(random);
     sections[1].items = random;
     sectionCallback(sections[1]);
 };
