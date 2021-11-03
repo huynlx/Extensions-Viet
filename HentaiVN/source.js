@@ -678,14 +678,14 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             let response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             HentaiVNParser_1.parseHomeSections($, sections, sectionCallback);
-            //random
-            request = createRequestObject({
-                url: DOMAIN + 'list-random.php',
-                method: 'GET'
-            });
-            response = yield this.requestManager.schedule(request, 1);
-            $ = this.cheerio.load(response.data);
-            HentaiVNParser_1.parseRandomSections($, sections, sectionCallback);
+            // //random
+            // request = createRequestObject({
+            //     url: DOMAIN + 'list-random.php',
+            //     method: 'GET'
+            // })
+            // response = await this.requestManager.schedule(request, 1);
+            // $ = this.cheerio.load(response.data);
+            // parseRandomSections($, sections, sectionCallback);
             //added
             request = createRequestObject({
                 url: `${DOMAIN}danh-sach.html`,
@@ -1018,22 +1018,24 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
     sectionCallback(sections[2]);
 };
 exports.parseRandomSections = ($, sections, sectionCallback) => {
+    var _a;
     //Random
     let random = [];
-    // for (let manga of $('li', '.page-random').toArray()) {
-    //     const title = $('.des-same > a > b', manga).text();
-    //     const id = $('.img-same > a', manga).attr('href')?.split('/').pop();
-    //     const image = $('.img-same > a > div', manga).css('background');
-    //     const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
-    //     const subtitle = $("b", manga).last().text().trim();
-    //     if (!id || !title) continue;
-    //     random.push(createMangaTile({
-    //         id: encodeURIComponent(id) + "::" + bg,
-    //         image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
-    //         title: createIconText({ text: title }),
-    //         subtitleText: createIconText({ text: subtitle }),
-    //     }));
-    // }
+    for (let manga of $('li', '.page-random').toArray()) {
+        const title = $('.des-same > a > b', manga).text();
+        const id = (_a = $('.img-same > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+        const image = $('.img-same > a > div', manga).css('background');
+        const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+        const subtitle = $("b", manga).last().text().trim();
+        if (!id || !title)
+            continue;
+        random.push(createMangaTile({
+            id: encodeURIComponent(id) + "::" + bg,
+            image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
+            title: createIconText({ text: title }),
+            subtitleText: createIconText({ text: subtitle }),
+        }));
+    }
     sections[1].items = random;
     sectionCallback(sections[1]);
 };
