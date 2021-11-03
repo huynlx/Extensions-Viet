@@ -999,7 +999,7 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
     sectionCallback(sections[0]);
     //Recently Updated
     let staffPick = [];
-    for (let manga of $('ul', 'ul.page-item').toArray()) {
+    for (let manga of $('ul', 'ul.page-item').toArray().splice(0, 15)) {
         const title = $('span > a > h2', manga).first().text();
         const id = (_b = $('a', manga).attr('href')) === null || _b === void 0 ? void 0 : _b.split('/').pop();
         // const image = $('a > div', manga).css('background');
