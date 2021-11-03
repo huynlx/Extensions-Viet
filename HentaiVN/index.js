@@ -1018,25 +1018,22 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
     sectionCallback(sections[2]);
 };
 exports.parseRandomSections = ($, sections, sectionCallback) => {
-    var _a;
     //Random
     let random = [];
-    for (let manga of $('li', '.page-random').toArray()) {
-        const title = $('.des-same > a > b', manga).text();
-        const id = (_a = $('.img-same > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-        const image = $('.img-same > a > div', manga).css('background');
-        const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
-        const subtitle = $("b", manga).last().text().trim();
-        if (!id || !title)
-            continue;
-        random.push(createMangaTile({
-            id: encodeURIComponent(id) + "::" + bg,
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
-            title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: subtitle }),
-        }));
-    }
-    console.log(random);
+    // for (let manga of $('li', '.page-random').toArray()) {
+    //     const title = $('.des-same > a > b', manga).text();
+    //     const id = $('.img-same > a', manga).attr('href')?.split('/').pop();
+    //     const image = $('.img-same > a > div', manga).css('background');
+    //     const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+    //     const subtitle = $("b", manga).last().text().trim();
+    //     if (!id || !title) continue;
+    //     random.push(createMangaTile({
+    //         id: encodeURIComponent(id) + "::" + bg,
+    //         image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
+    //         title: createIconText({ text: title }),
+    //         subtitleText: createIconText({ text: subtitle }),
+    //     }));
+    // }
     sections[1].items = random;
     sectionCallback(sections[1]);
 };
