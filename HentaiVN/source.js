@@ -665,12 +665,12 @@ class HentaiVN extends paperback_extensions_common_1.Source {
     getHomePageSections(sectionCallback) {
         return __awaiter(this, void 0, void 0, function* () {
             const section0 = createHomeSection({ id: 'featured', title: 'Tiêu điểm', type: paperback_extensions_common_1.HomeSectionType.featured });
-            // const section5 = createHomeSection({ id: 'random', title: 'Truyện ngẫu nhiên', view_more: false });
+            const section5 = createHomeSection({ id: 'random', title: 'Truyện ngẫu nhiên', view_more: false });
             const section1 = createHomeSection({ id: 'recently-updated', title: 'Mới cập nhật', view_more: true });
             const section2 = createHomeSection({ id: 'popular', title: 'Tiêu điểm', view_more: true });
             const section3 = createHomeSection({ id: 'recently_added', title: 'Truyện mới đăng', view_more: true });
             const section4 = createHomeSection({ id: 'full', title: 'Truyện Full', view_more: true });
-            const sections = [section0, section1, section2, section3, section4];
+            const sections = [section0, section5, section1, section2, section3, section4];
             let request = createRequestObject({
                 url: `${DOMAIN}`,
                 method,
@@ -678,14 +678,14 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             let response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             HentaiVNParser_1.parseHomeSections($, sections, sectionCallback);
-            // //random
-            // request = createRequestObject({
-            //     url: DOMAIN + 'list-random.php',
-            //     method: 'GET'
-            // })
-            // response = await this.requestManager.schedule(request, 1);
-            // $ = this.cheerio.load(response.data);
-            // parseRandomSections($, sections, sectionCallback);
+            //random
+            request = createRequestObject({
+                url: DOMAIN + 'list-random.php',
+                method: 'GET'
+            });
+            response = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(response.data);
+            HentaiVNParser_1.parseRandomSections($, sections, sectionCallback);
             //added
             request = createRequestObject({
                 url: `${DOMAIN}danh-sach.html`,
@@ -1002,14 +1002,15 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
     for (let manga of $('ul', 'ul.page-item').toArray()) {
         const title = $('span > a > h2', manga).first().text();
         const id = (_b = $('a', manga).attr('href')) === null || _b === void 0 ? void 0 : _b.split('/').pop();
-        const image = $('a > div', manga).css('background');
-        const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+        // const image = $('a > div', manga).css('background');
+        // const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+        const image = $("a > img", manga).attr('data-src');
         const subtitle = $("a > b", manga).last().text().trim();
         if (!id || !title)
             continue;
         staffPick.push(createMangaTile({
-            id: encodeURIComponent(id) + "::" + bg,
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
+            id: encodeURIComponent(id) + "::" + image,
+            image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
             title: createIconText({ text: title }),
             subtitleText: createIconText({ text: subtitle }),
         }));
