@@ -1103,19 +1103,19 @@ function convertTime(timeAgo) {
     let time;
     let trimmed = Number(((_a = /\d*/.exec(timeAgo)) !== null && _a !== void 0 ? _a : [])[0]);
     trimmed = (trimmed == 0 && timeAgo.includes('a')) ? 1 : trimmed;
-    if (timeAgo.includes('giây') || timeAgo.includes('secs')) {
+    if (timeAgo.includes('Giây') || timeAgo.includes('secs')) {
         time = new Date(Date.now() - trimmed * 1000); // => mili giây (1000 ms = 1s)
     }
-    else if (timeAgo.includes('phút')) {
+    else if (timeAgo.includes('Phút')) {
         time = new Date(Date.now() - trimmed * 60000);
     }
-    else if (timeAgo.includes('giờ')) {
+    else if (timeAgo.includes('Giờ')) {
         time = new Date(Date.now() - trimmed * 3600000);
     }
-    else if (timeAgo.includes('ngày')) {
+    else if (timeAgo.includes('Ngày')) {
         time = new Date(Date.now() - trimmed * 86400000);
     }
-    else if (timeAgo.includes('năm')) {
+    else if (timeAgo.includes('Năm')) {
         time = new Date(Date.now() - trimmed * 31556952000);
     }
     else {
