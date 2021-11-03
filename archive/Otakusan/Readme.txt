@@ -1,1 +1,0 @@
-câu chuyện muôn thuở đéo call được api lấy ảnh :))

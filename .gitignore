@@ -1,9 +1,0 @@
-# Project exclude paths
-node_modules
-archive
-bundles
-.gitignore
-tmp
-coverage
-.nyc_output
-.idea
