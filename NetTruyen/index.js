@@ -650,7 +650,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
     filterUpdatedManga(mangaUpdatesFoundCallback, time, ids) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: DOMAIN,
+                url: DOMAIN + 'truyen-tranh/' + ids[0],
                 method: 'GET',
             });
             const response = yield this.requestManager.schedule(request, 1);
@@ -966,21 +966,23 @@ class Parser {
         return mangas;
     }
     parseUpdatedManga($, time, ids) {
-        var _a;
         const returnObject = {
             'ids': []
         };
         const updateManga = [];
-        for (let manga of $('div.item', 'div.row').toArray()) {
-            const id = (_a = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-            const time = this.convertTime($("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > i", manga).last().text().trim());
-            updateManga.push(({
-                id: id,
-                time: time
-            }));
-        }
+        // for (let manga of $('div.item', 'div.row').toArray()) {
+        const id = ids[0];
+        let x = $('time.small').text().trim();
+        let y = x.split("lúc:")[1].replace(']', '').trim().split(' ');
+        let z = y[1].split('/');
+        const timeUpdate = new Date(z[1] + '/' + z[0] + '/' + z[2] + ' ' + y[0]);
+        updateManga.push(({
+            id: id,
+            time: timeUpdate
+        }));
+        // }
         for (const elem of updateManga) {
-            if (ids.includes(elem.id) && time < new Date(elem.time))
+            if (ids.includes(elem.id) && time < elem.time)
                 returnObject.ids.push(elem.id);
         }
         return returnObject;
