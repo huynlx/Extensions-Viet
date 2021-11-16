@@ -648,24 +648,34 @@ class NetTruyen extends paperback_extensions_common_1.Source {
         });
     }
     filterUpdatedManga(mangaUpdatesFoundCallback, time, ids) {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             /* test thử nếu ko đc thì quay lại cách cũ nhưng sửa load thêm mấy page sau của trang mới cập nhật nữa */
             const updateManga = [];
-            for (let item of ids) {
+            const pages = 10;
+            for (let i = 1; i < pages + 1; i++) {
                 const request = createRequestObject({
-                    url: DOMAIN + 'truyen-tranh/' + item,
+                    url: DOMAIN + '?page=' + i,
                     method: 'GET',
                 });
                 const response = yield this.requestManager.schedule(request, 1);
                 const $ = this.cheerio.load(response.data);
-                let x = $('time.small').text().trim();
-                let y = x.split("lúc:")[1].replace(']', '').trim().split(' ');
-                let z = y[1].split('/');
-                const timeUpdate = new Date(z[1] + '/' + z[0] + '/' + z[2] + ' ' + y[0]);
-                updateManga.push({
-                    id: item,
-                    time: timeUpdate
-                });
+                // let x = $('time.small').text().trim();
+                // let y = x.split("lúc:")[1].replace(']', '').trim().split(' ');
+                // let z = y[1].split('/');
+                // const timeUpdate = new Date(z[1] + '/' + z[0] + '/' + z[2] + ' ' + y[0]);
+                // updateManga.push({
+                //     id: item,
+                //     time: timeUpdate
+                // })
+                for (let manga of $('div.item', 'div.row').toArray()) {
+                    const id = (_a = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+                    const time = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > i", manga).last().text().trim();
+                    updateManga.push(({
+                        id: id,
+                        time: time
+                    }));
+                }
             }
             const returnObject = this.parser.parseUpdatedManga(updateManga, time, ids);
             mangaUpdatesFoundCallback(createMangaUpdates(returnObject));
@@ -993,7 +1003,7 @@ class Parser {
         // }));
         // // }
         for (const elem of updateManga) {
-            if (ids.includes(elem.id) && time < elem.time)
+            if (ids.includes(elem.id) && time < this.convertTime(elem.time))
                 returnObject.ids.push(elem.id);
         }
         return returnObject;
