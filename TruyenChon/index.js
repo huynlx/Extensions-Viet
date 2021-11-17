@@ -375,6 +375,7 @@ exports.TruyenChon = exports.TruyenChonInfo = exports.isLastPage = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const TruyenChonParser_1 = require("./TruyenChonParser");
 const DOMAIN = 'http://truyenchon.com/';
+const userAgentRandomizer = `Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/78.0${Math.floor(Math.random() * 100000)}`;
 exports.isLastPage = ($) => {
     const current = $('ul.pagination > li.active > a').text();
     let total = $('ul.pagination > li.PagerSSCCells:last-child').text();
@@ -664,11 +665,25 @@ class TruyenChon extends paperback_extensions_common_1.Source {
             referer: DOMAIN
         };
     }
+    constructHeaders(headers, refererPath) {
+        headers = headers !== null && headers !== void 0 ? headers : {};
+        if (userAgentRandomizer !== '') {
+            headers['user-agent'] = userAgentRandomizer;
+        }
+        headers['referer'] = `http://truyenchon.com${refererPath !== null && refererPath !== void 0 ? refererPath : ''}`;
+        return headers;
+    }
     getCloudflareBypassRequest() {
         return createRequestObject({
-            url: DOMAIN,
+            url: `http://truyenchon.com`,
             method: 'GET',
+            headers: this.constructHeaders()
         });
+    }
+    CloudFlareError(status) {
+        if (status == 503) {
+            throw new Error('CLOUDFLARE BYPASS ERROR:\nPlease go to Settings > Sources > \<\The name of this source\> and press Cloudflare Bypass');
+        }
     }
 }
 exports.TruyenChon = TruyenChon;
