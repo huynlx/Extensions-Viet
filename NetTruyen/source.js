@@ -534,12 +534,18 @@ class NetTruyen extends paperback_extensions_common_1.Source {
                 title: "Truyện Mới Thêm Gần Đây",
                 view_more: true,
             });
+            let full = createHomeSection({
+                id: 'full',
+                title: "Truyện Đã Hoàn Thành",
+                view_more: true,
+            });
             //Load empty sections
             sectionCallback(featured);
             sectionCallback(viewest);
             sectionCallback(hot);
             sectionCallback(newUpdated);
             sectionCallback(newAdded);
+            sectionCallback(full);
             ///Get the section data
             //Featured
             let url = `${DOMAIN}`;
@@ -591,6 +597,16 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             $ = this.cheerio.load(data.data);
             newAdded.items = this.parser.parseNewAddedSection($);
             sectionCallback(newAdded);
+            //Full
+            url = `${DOMAIN}truyen-full`;
+            request = createRequestObject({
+                url: url,
+                method: "GET",
+            });
+            data = yield this.requestManager.schedule(request, 1);
+            $ = this.cheerio.load(data.data);
+            full.items = this.parser.parseFullSection($);
+            sectionCallback(full);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
@@ -615,6 +631,10 @@ class NetTruyen extends paperback_extensions_common_1.Source {
                 case "new_added":
                     param = `?status=-1&sort=15&page=${page}`;
                     url = `${DOMAIN}tim-truyen`;
+                    break;
+                case "full":
+                    param = `?page=${page}`;
+                    url = `${DOMAIN}truyen-full`;
                     break;
                 default:
                     throw new Error("Requested to getViewMoreItems for a section ID which doesn't exist");
@@ -963,6 +983,25 @@ class Parser {
             }));
         }
         return newAddedItems;
+    }
+    parseFullSection($) {
+        var _a;
+        let fullItems = [];
+        for (let manga of $('div.item', 'div.row').toArray().splice(0, 20)) {
+            const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
+            const id = (_a = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+            const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
+            const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
+            if (!id || !title)
+                continue;
+            fullItems.push(createMangaTile({
+                id: id,
+                image: !image ? "https://i.imgur.com/GYUxEX8.png" : 'http:' + image,
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: subtitle }),
+            }));
+        }
+        return fullItems;
     }
     parseViewMoreItems($) {
         var _a;
