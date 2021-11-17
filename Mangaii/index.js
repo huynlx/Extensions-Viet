@@ -596,7 +596,6 @@ const paperback_extensions_common_1 = require("paperback-extensions-common");
 const MangaiiParser_1 = require("./MangaiiParser");
 const DOMAIN = 'https://mangaii.com/';
 const method = 'GET';
-var buildId = '';
 exports.MangaiiInfo = {
     version: '1.0.0',
     name: 'Mangaii',
@@ -747,7 +746,6 @@ class Mangaii extends paperback_extensions_common_1.Source {
             var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
             if (dt) {
                 dt = JSON.parse(dt[1]).props.pageProps.comics;
-                buildId = JSON.parse(dt[1]).buildId;
             }
             // Hot
             let popularItems = [];
@@ -902,6 +900,19 @@ class Mangaii extends paperback_extensions_common_1.Source {
     }
     getSearchTags() {
         return __awaiter(this, void 0, void 0, function* () {
+            //get buildId
+            let buildId = '';
+            let requestId = createRequestObject({
+                url: DOMAIN,
+                method: "GET",
+            });
+            let data = yield this.requestManager.schedule(requestId, 1);
+            let $ = this.cheerio.load(data.data);
+            var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
+            if (dt) {
+                buildId = JSON.parse(dt[1]).buildId;
+            }
+            //get json
             const url = `https://mangaii.com/_next/data/${buildId}/vi/genre/all-qWerTy12.json?slug=all-qWerTy12`;
             const request = createRequestObject({
                 url: url,
