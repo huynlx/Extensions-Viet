@@ -856,10 +856,7 @@ class Mangaii extends paperback_extensions_common_1.Source {
             let url = '';
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `https://api.mangaii.com/api/v1/comics?page=${page}`;
-                    break;
-                case "new_added":
-                    url = `https://truyentranh.net/comic-latest?page=${page}`;
+                    url = `https://api.mangaii.com/api/v1/comics?page=${page}&limit=50`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
@@ -885,7 +882,7 @@ class Mangaii extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: query.title ? encodeURI(`https://api.mangaii.com/api/v1/search?name=${query.title}&page=${page}`) : `https://api.mangaii.com/api/v1/comics?page=${page}&genre=${tags[0]}`,
+                url: query.title ? encodeURI(`https://api.mangaii.com/api/v1/search?name=${query.title}&page=${page}&limit=50`) : `https://api.mangaii.com/api/v1/comics?page=${page}&genre=${tags[0]}&limit=50`,
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
