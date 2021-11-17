@@ -553,7 +553,7 @@ class TruyenChon extends paperback_extensions_common_1.Source {
             featured.items = this.parser.parseFeaturedSection($);
             sectionCallback(featured);
             //View
-            url = `${DOMAIN}tim-truyen?status=-1&sort=10`;
+            url = `${DOMAIN}the-loai?status=-1&sort=10`;
             request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -583,7 +583,7 @@ class TruyenChon extends paperback_extensions_common_1.Source {
             newUpdated.items = this.parser.parseNewUpdatedSection($);
             sectionCallback(newUpdated);
             //New added
-            url = `${DOMAIN}tim-truyen?status=-1&sort=15`;
+            url = `${DOMAIN}the-loai?status=-1&sort=15`;
             request = createRequestObject({
                 url: url,
                 method: "GET",
