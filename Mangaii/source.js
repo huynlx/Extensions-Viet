@@ -596,6 +596,7 @@ const paperback_extensions_common_1 = require("paperback-extensions-common");
 const MangaiiParser_1 = require("./MangaiiParser");
 const DOMAIN = 'https://mangaii.com/';
 const method = 'GET';
+var buildId = '';
 exports.MangaiiInfo = {
     version: '1.0.0',
     name: 'Mangaii',
@@ -735,7 +736,7 @@ class Mangaii extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             sectionCallback(view);
             sectionCallback(news);
-            ///Get the section data
+            /* Get the section data */
             //Get json data
             let request = createRequestObject({
                 url: DOMAIN,
@@ -744,8 +745,10 @@ class Mangaii extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
-            if (dt)
+            if (dt) {
                 dt = JSON.parse(dt[1]).props.pageProps.comics;
+                buildId = JSON.parse(dt[1]).buildId;
+            }
             // Hot
             let popularItems = [];
             for (let manga of dt.translate) {
@@ -899,7 +902,7 @@ class Mangaii extends paperback_extensions_common_1.Source {
     }
     getSearchTags() {
         return __awaiter(this, void 0, void 0, function* () {
-            const url = 'https://mangaii.com/_next/data/J2CY4LWdNLjLnJT2cm3r4/vi/genre/all-qWerTy12.json?slug=all-qWerTy12';
+            const url = `https://mangaii.com/_next/data/${buildId}/vi/genre/all-qWerTy12.json?slug=all-qWerTy12`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
