@@ -943,7 +943,7 @@ exports.parseSearch = (data) => {
         const id = 'https://mangaii.com/comic/' + manga.slug;
         ;
         const image = `https://mangaii.com/_next/image?url=https%3A%2F%2Fapi.mangaii.com%2Fmedia%2Fcover_images%2F${manga.cover_image}&w=256&q=100`;
-        const sub = 'Chapter ' + manga.chapter.number;
+        const sub = 'Chapter ' + (manga.chapter ? manga.chapter.number : '1');
         if (!id || !title)
             continue;
         if (!collectedIds.includes(id)) {
