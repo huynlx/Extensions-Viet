@@ -664,6 +664,12 @@ class TruyenChon extends paperback_extensions_common_1.Source {
             referer: DOMAIN
         };
     }
+    getCloudflareBypassRequest() {
+        return createRequestObject({
+            url: DOMAIN,
+            method: 'GET',
+        });
+    }
 }
 exports.TruyenChon = TruyenChon;
 
