@@ -670,7 +670,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             const section2 = createHomeSection({ id: 'popular', title: 'Tiêu điểm', view_more: true });
             const section3 = createHomeSection({ id: 'recently_added', title: 'Truyện mới đăng', view_more: true });
             const section4 = createHomeSection({ id: 'full', title: 'Truyện Full', view_more: true });
-            const sections = [section0, section5, section1, section2, section3, section4];
+            const sections = [section0, section5, section1, section3, section4];
             let request = createRequestObject({
                 url: `${DOMAIN}`,
                 method,
@@ -1005,13 +1005,13 @@ exports.parseHomeSections = ($, $2, sections, sectionCallback) => {
     sectionCallback(sections[0]);
     //Recently Updated
     let staffPick = [];
-    for (let manga of $('.item ul').toArray().splice(0, 15)) {
-        const title = $('span > a > h2', manga).first().text();
-        const id = (_b = $('a', manga).attr('href')) === null || _b === void 0 ? void 0 : _b.split('/').pop();
+    for (let manga of $2('.item ul').toArray().splice(0, 15)) {
+        const title = $2('span > a > h2', manga).first().text();
+        const id = (_b = $2('a', manga).attr('href')) === null || _b === void 0 ? void 0 : _b.split('/').pop();
         // const image = $('a > div', manga).css('background');
         // const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
-        const image = $("a > img", manga).attr('data-src');
-        const subtitle = $("a > b", manga).last().text().trim();
+        const image = $2("a > img", manga).attr('data-src');
+        const subtitle = $2("a > b", manga).last().text().trim();
         if (!id || !title)
             continue;
         staffPick.push(createMangaTile({
@@ -1087,7 +1087,7 @@ exports.parsePopularSections = ($, sections, sectionCallback) => {
         }));
     }
     sections[3].items = popular;
-    sectionCallback(sections[3]);
+    // sectionCallback(sections[3]);
 };
 exports.parseFullSections = ($, sections, sectionCallback) => {
     var _a;
