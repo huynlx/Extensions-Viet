@@ -670,7 +670,6 @@ class NetTruyen extends paperback_extensions_common_1.Source {
     filterUpdatedManga(mangaUpdatesFoundCallback, time, ids) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            /* test thử nếu ko đc thì quay lại cách cũ nhưng sửa load thêm mấy page sau của trang mới cập nhật nữa */
             const updateManga = [];
             const pages = 10;
             for (let i = 1; i < pages + 1; i++) {
