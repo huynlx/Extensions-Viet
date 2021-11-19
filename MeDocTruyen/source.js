@@ -765,8 +765,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             if (dt)
                 dt = JSON.parse(dt[1]);
             var novels = dt.props.pageProps.initialState.home.list[1].items.splice(0, 10);
-            var elParent = $('.home-main-left > .area-con').find("h2:contains('Cập nhật mới')").parent();
-            var el = $('.story-list-box > .story-item', elParent).toArray();
+            var el = $('.home-main-left > .area-con:nth-child(1) > .story-list-box > .story-item').toArray();
             for (var i = 0; i < el.length; i++) {
                 var e = el[i];
                 updateItems.push(createMangaTile({
@@ -859,7 +858,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
             if (dt)
                 dt = JSON.parse(dt[1]);
-            var novels = dt.props.pageProps.initialState.home.list[7].items.splice(0, 10);
+            var novels = dt.props.pageProps.initialState.home.list[8].items.splice(0, 10);
             var el = $('.home-main-left > .area-con:nth-child(4) > .story-list-box > .story-item').toArray();
             for (var i = 0; i < el.length; i++) {
                 var e = el[i];
@@ -883,13 +882,13 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
             if (dt)
                 dt = JSON.parse(dt[1]);
-            var novels = dt.props.pageProps.initialState.home.list[13].items.splice(0, 10);
+            var novels = dt.props.pageProps.initialState.home.list[11].items.splice(0, 10);
             var el = $('.home-main-left > .area-con:nth-child(5) > .story-list-box > .story-item').toArray();
             for (var i = 0; i < el.length; i++) {
                 var e = el[i];
                 artbookItems.push(createMangaTile({
                     id: $('a', e).first().attr('href'),
-                    image: novels[i].img_url ? novels[i].img_url : '',
+                    image: novels[i].img_url,
                     title: createIconText({ text: novels[i].title }),
                     subtitleText: createIconText({ text: 'Chapter ' + novels[i].newest_chapters[0].chapter_index }),
                 }));
