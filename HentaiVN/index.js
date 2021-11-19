@@ -675,9 +675,15 @@ class HentaiVN extends paperback_extensions_common_1.Source {
                 url: `${DOMAIN}`,
                 method,
             });
+            let justUpdated = createRequestObject({
+                url: `${DOMAIN}list-moicapnhat-doc.php`,
+                method,
+            });
             let response = yield this.requestManager.schedule(request, 1);
+            let response2 = yield this.requestManager.schedule(justUpdated, 1);
             let $ = this.cheerio.load(response.data);
-            HentaiVNParser_1.parseHomeSections($, sections, sectionCallback);
+            let $2 = this.cheerio.load(response2.data);
+            HentaiVNParser_1.parseHomeSections($, $2, sections, sectionCallback);
             //random
             request = createRequestObject({
                 url: DOMAIN + 'list-random.php',
@@ -974,7 +980,7 @@ exports.parseChapterDetails = ($, mangaId, chapterId) => {
     });
     return chapterDetails;
 };
-exports.parseHomeSections = ($, sections, sectionCallback) => {
+exports.parseHomeSections = ($, $2, sections, sectionCallback) => {
     var _a, _b;
     for (const section of sections)
         sectionCallback(section);
@@ -999,7 +1005,7 @@ exports.parseHomeSections = ($, sections, sectionCallback) => {
     sectionCallback(sections[0]);
     //Recently Updated
     let staffPick = [];
-    for (let manga of $('ul', 'ul.page-item').toArray().splice(0, 15)) {
+    for (let manga of $('.item ul').toArray().splice(0, 15)) {
         const title = $('span > a > h2', manga).first().text();
         const id = (_b = $('a', manga).attr('href')) === null || _b === void 0 ? void 0 : _b.split('/').pop();
         // const image = $('a > div', manga).css('background');
@@ -1034,7 +1040,6 @@ exports.parseRandomSections = ($, sections, sectionCallback) => {
             id: encodeURIComponent(id) + "::" + bg,
             image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
             title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: subtitle }),
         }));
     }
     sections[1].items = random;
