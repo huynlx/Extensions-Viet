@@ -607,7 +607,7 @@ exports.HentaiVNInfo = {
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from HentaiVN',
-    websiteBaseURL: DOMAIN,
+    websiteBaseURL: '',
     contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
         {
@@ -669,7 +669,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             const section1 = createHomeSection({ id: 'recently-updated', title: 'Mới cập nhật', view_more: true });
             const section2 = createHomeSection({ id: 'popular', title: 'Tiêu điểm', view_more: true });
             const section3 = createHomeSection({ id: 'recently_added', title: 'Truyện mới đăng', view_more: true });
-            const section4 = createHomeSection({ id: 'full', title: 'Truyện Full', view_more: true });
+            const section4 = createHomeSection({ id: 'full', title: 'Truyện đã hoàn thành', view_more: true });
             const sections = [section0, section5, section1, section3, section4];
             let request = createRequestObject({
                 url: `${DOMAIN}`,
@@ -1117,22 +1117,40 @@ exports.generateSearch = (query) => {
     return encodeURI(keyword);
 };
 exports.parseSearch = ($) => {
-    var _a;
+    var _a, _b;
     const mangas = [];
-    for (let manga of $('.item', '.block-item').toArray()) {
-        const title = $('.box-description > p > a', manga).text();
-        const id = (_a = $('.box-cover > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-        const image = $('.box-cover > a > img', manga).attr('data-src');
-        const subtitle = $(".box-description p:nth-child(1)", manga).text().trim();
-        const fixsub = subtitle.split('-')[1];
-        if (!id || !title)
-            continue;
-        mangas.push(createMangaTile({
-            id: encodeURIComponent(id) + "::" + image,
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.trim()),
-            title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: fixsub.trim() }),
-        }));
+    if ($("title").text().includes("Tìm kiếm truyện nâng cao")) {
+        for (let manga of $('.search-li', '.search-ul').toArray()) {
+            const title = $('.search-des b', manga).text();
+            const id = (_a = $('.search-des > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
+            const image = $('.search-img img', manga).attr('src');
+            const subtitle = $(".search-des", manga).text().split('-').slice(1).join(' - ');
+            if (!id || !title)
+                continue;
+            mangas.push(createMangaTile({
+                id: encodeURIComponent(id) + "::" + image,
+                image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.trim()),
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: subtitle.trim() }),
+            }));
+        }
+    }
+    else {
+        for (let manga of $('.item', '.block-item').toArray()) {
+            const title = $('.box-description > p > a', manga).text();
+            const id = (_b = $('.box-cover > a', manga).attr('href')) === null || _b === void 0 ? void 0 : _b.split('/').pop();
+            const image = $('.box-cover > a > img', manga).attr('data-src');
+            const subtitle = $(".box-description p:nth-child(1)", manga).text().trim();
+            const fixsub = subtitle.split('-')[1];
+            if (!id || !title)
+                continue;
+            mangas.push(createMangaTile({
+                id: encodeURIComponent(id) + "::" + image,
+                image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.trim()),
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: fixsub.trim() }),
+            }));
+        }
     }
     return mangas;
 };
