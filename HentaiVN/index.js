@@ -1605,7 +1605,7 @@ module.exports=[
         "label": "Manhua"
     },
     {
-        "id": "/forum/search-plus.php?name=&dou=&char=&tag=114&search=",
+        "id": "/forum/search-plus.php?name=&dou=&char=&tag%5B%5D=114&search=",
         "label": "Manhwa"
     },
     {
