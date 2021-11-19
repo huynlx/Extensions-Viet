@@ -700,14 +700,14 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             response = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(response.data);
             HentaiVNParser_1.parseAddedSections($, sections, sectionCallback);
-            //popular
-            request = createRequestObject({
-                url: `${DOMAIN}tieu-diem.html`,
-                method
-            });
-            response = yield this.requestManager.schedule(request, 1);
-            $ = this.cheerio.load(response.data);
-            HentaiVNParser_1.parsePopularSections($, sections, sectionCallback);
+            /*   //popular
+              request = createRequestObject({
+                  url: `${DOMAIN}tieu-diem.html`,
+                  method
+              });
+              response = await this.requestManager.schedule(request, 1);
+              $ = this.cheerio.load(response.data);
+              parsePopularSections($, sections, sectionCallback); */
             //full
             request = createRequestObject({
                 url: `${DOMAIN}da-hoan-thanh.html`,
@@ -1010,7 +1010,7 @@ exports.parseHomeSections = ($, $2, sections, sectionCallback) => {
         const id = (_b = $2('a', manga).attr('href')) === null || _b === void 0 ? void 0 : _b.split('/').pop();
         // const image = $('a > div', manga).css('background');
         // const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
-        const image = $2("a > img", manga).attr('data-src');
+        const image = $2("a > img", manga).attr('src');
         const subtitle = $2("a > b", manga).last().text().trim();
         if (!id || !title)
             continue;
@@ -1064,8 +1064,8 @@ exports.parseAddedSections = ($, sections, sectionCallback) => {
             subtitleText: createIconText({ text: fixsub.trim() }),
         }));
     }
-    sections[4].items = added;
-    sectionCallback(sections[4]);
+    sections[3].items = added;
+    sectionCallback(sections[3]);
 };
 exports.parsePopularSections = ($, sections, sectionCallback) => {
     var _a;
@@ -1087,11 +1087,11 @@ exports.parsePopularSections = ($, sections, sectionCallback) => {
         }));
     }
     sections[3].items = popular;
-    // sectionCallback(sections[3]);
+    sectionCallback(sections[3]);
 };
 exports.parseFullSections = ($, sections, sectionCallback) => {
     var _a;
-    //popular
+    //full
     let popular = [];
     for (let manga of $('.item', '.block-item').toArray()) {
         const title = $('.box-description > p > a', manga).text();
@@ -1108,8 +1108,8 @@ exports.parseFullSections = ($, sections, sectionCallback) => {
             subtitleText: createIconText({ text: fixsub.trim() }),
         }));
     }
-    sections[5].items = popular;
-    sectionCallback(sections[5]);
+    sections[4].items = popular;
+    sectionCallback(sections[4]);
 };
 exports.generateSearch = (query) => {
     var _a;
