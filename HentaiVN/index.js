@@ -1131,7 +1131,7 @@ exports.parseSearch = ($) => {
                 id: encodeURIComponent(id) + "::" + image,
                 image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.trim()),
                 title: createIconText({ text: title }),
-                subtitleText: createIconText({ text: subtitle.trim() }),
+                subtitleText: createIconText({ text: subtitle.split('Tên khác')[0].trim() }),
             }));
         }
     }
@@ -1605,7 +1605,7 @@ module.exports=[
         "label": "Manhua"
     },
     {
-        "id": "/the-loai-114-manhwa.html",
+        "id": "/forum/search-plus.php?name=&dou=&char=&tag=114&search=",
         "label": "Manhwa"
     },
     {
