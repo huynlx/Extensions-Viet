@@ -765,7 +765,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             if (dt)
                 dt = JSON.parse(dt[1]);
             var novels = dt.props.pageProps.initialState.home.list[1].items.splice(0, 10);
-            var elParent = $('.home-main-left > .area-con').find(".story-list-title > h2:contains('Cập nhật mới')").parent();
+            var elParent = $('.home-main-left > .area-con').find("h2:contains('Cập nhật mới')").parent();
             var el = $('.story-list-box > .story-item', elParent).toArray();
             for (var i = 0; i < el.length; i++) {
                 var e = el[i];
