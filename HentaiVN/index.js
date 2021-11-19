@@ -1124,7 +1124,7 @@ exports.parseSearch = ($) => {
             const title = $('.search-des b', manga).text();
             const id = (_a = $('.search-des > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
             const image = $('.search-img img', manga).attr('src');
-            const subtitle = $(".search-des", manga).text().split('-').slice(1).join(' - ');
+            const subtitle = $(".search-des", manga).text().split('-').slice(1).join('-');
             if (!id || !title)
                 continue;
             mangas.push(createMangaTile({

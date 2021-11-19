@@ -858,7 +858,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
             if (dt)
                 dt = JSON.parse(dt[1]);
-            var novels = dt.props.pageProps.initialState.home.list[8].items.splice(0, 10);
+            var novels = dt.props.pageProps.initialState.home.list[7].items.splice(0, 10);
             var el = $('.home-main-left > .area-con:nth-child(4) > .story-list-box > .story-item').toArray();
             for (var i = 0; i < el.length; i++) {
                 var e = el[i];
@@ -882,7 +882,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
             if (dt)
                 dt = JSON.parse(dt[1]);
-            var novels = dt.props.pageProps.initialState.home.list[11].items.splice(0, 10);
+            var novels = dt.props.pageProps.initialState.home.list[13].items.splice(0, 10);
             var el = $('.home-main-left > .area-con:nth-child(5) > .story-list-box > .story-item').toArray();
             for (var i = 0; i < el.length; i++) {
                 var e = el[i];
