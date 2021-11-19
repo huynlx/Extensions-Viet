@@ -992,7 +992,7 @@ class Parser {
         // }));
         // // }
         for (const elem of updateManga) {
-            if (ids.includes(elem.id) && time < this.convertTime(elem.time))
+            if (ids.includes(elem.id) && time < elem.time)
                 returnObject.ids.push(elem.id);
         }
         return returnObject;
