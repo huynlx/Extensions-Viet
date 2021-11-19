@@ -888,7 +888,7 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
                 var e = el[i];
                 artbookItems.push(createMangaTile({
                     id: $('a', e).first().attr('href'),
-                    image: novels[i].img_url,
+                    image: novels[i].img_url ? novels[i].img_url : '',
                     title: createIconText({ text: novels[i].title }),
                     subtitleText: createIconText({ text: 'Chapter ' + novels[i].newest_chapters[0].chapter_index }),
                 }));
