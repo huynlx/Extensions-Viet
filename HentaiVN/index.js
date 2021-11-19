@@ -1203,30 +1203,15 @@ exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
     for (const page of $("li", "ul.pagination").toArray()) {
-        let p;
-        if ($("title").text().includes("Tìm kiếm truyện nâng cao")) {
-            let text = $('a', page).text().trim();
-            if (text === '« Đầu') {
-                p = 1;
-            }
-            else if (text === '...') {
-                continue;
-            }
-            else if (text === '» Cuối') {
-                p = Math.max(...pages) + 1;
-            }
-            else {
-                p = Number(text);
-            }
-        }
-        else {
-            p = Number($('a', page).text().trim());
-            if (isNaN(p))
-                continue;
-        }
+        const p = Number($('a', page).text().trim());
+        if (isNaN(p))
+            continue;
         pages.push(p);
     }
-    const lastPage = Math.max(...pages);
+    let lastPage = Math.max(...pages);
+    if ($("title").text().includes("Tìm kiếm truyện nâng cao")) {
+        lastPage = Math.max(...pages) + 1;
+    }
     const currentPage = Number($("li > b").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
