@@ -1200,18 +1200,24 @@ exports.parseViewMore = ($, select) => {
     return manga;
 };
 exports.isLastPage = ($) => {
+    var _a;
     let isLast = false;
     const pages = [];
     for (const page of $("li", "ul.pagination").toArray()) {
-        const p = Number($('a', page).text().trim());
-        if (isNaN(p))
-            continue;
+        let p;
+        if ($("title").text().includes("Tìm kiếm truyện nâng cao")) {
+            p = Number((_a = $('a', page).attr('href')) === null || _a === void 0 ? void 0 : _a.split('=').pop());
+            if (isNaN(p))
+                continue;
+        }
+        else {
+            p = Number($('a', page).text().trim());
+            if (isNaN(p))
+                continue;
+        }
         pages.push(p);
     }
     let lastPage = Math.max(...pages);
-    if ($("title").text().includes("Tìm kiếm truyện nâng cao")) {
-        lastPage = Math.max(...pages) + 1;
-    }
     const currentPage = Number($("li > b").text().trim());
     if (currentPage >= lastPage)
         isLast = true;
