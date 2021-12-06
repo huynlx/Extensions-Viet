@@ -706,9 +706,9 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             let $ = this.cheerio.load(response.data);
             const pages = [];
             for (let obj of $('.text-left img').toArray()) {
-                if (!obj.attribs['data-src'])
+                if (!obj.attribs['src'])
                     continue;
-                let link = obj.attribs['data-src'].trim();
+                let link = obj.attribs['src'].trim();
                 pages.push(encodeURI(link));
             }
             const chapterDetails = createChapterDetails({
