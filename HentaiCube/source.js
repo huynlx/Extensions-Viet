@@ -1048,7 +1048,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                 url,
                 method: "GET"
             });
-            url = url.replace(`${page}`, `${page + 1}`);
+            url = url.replace(`page/${page}/`, `page/${page + 1}/`);
             const request2 = createRequestObject({
                 url,
                 method: "GET"
