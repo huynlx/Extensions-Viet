@@ -635,7 +635,10 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             let tags = [];
             let creator = '';
             let status = 1; //completed, 1 = Ongoing
-            let desc = $('.description-summary > .summary__content ul li').first().text();
+            let desc = '';
+            $('.description-summary > .summary__content ul li').toArray().map((item) => {
+                desc += '● ' + $(item).text() + '\n';
+            });
             for (const test of $('.post-content_item', '.post-content').toArray()) {
                 switch ($('.summary-heading > h5', test).text().trim()) {
                     case 'Tác giả':
