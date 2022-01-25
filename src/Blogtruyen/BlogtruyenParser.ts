@@ -23,7 +23,7 @@ export const parseSearch = ($: CheerioStatic): MangaTile[] => {
         if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
             mangas.push(createMangaTile({
                 id: encodeURI(id),
-                image: encodeURI(image.replace('150', '200')),
+                image: encodeURI(image.replace('150x', '300x300')),
                 title: createIconText({ text: decodeHTMLEntity(title) }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
@@ -45,7 +45,7 @@ export const parseViewMore = ($: CheerioStatic, select: Number): MangaTile[] => 
             if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
                 manga.push(createMangaTile({
                     id: id,
-                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.replace('150_150', '200')),
+                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image),
                     title: createIconText({ text: decodeHTMLEntity(title) }),
                     subtitleText: createIconText({ text: 'Chương ' + subtitle }),
                 }));
@@ -61,7 +61,7 @@ export const parseViewMore = ($: CheerioStatic, select: Number): MangaTile[] => 
             if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
                 manga.push(createMangaTile({
                     id: id,
-                    image: encodeURI(image.replace('150', '200')),
+                    image: encodeURI(image.replace('150x', '300x300')),
                     title: createIconText({
                         text: decodeHTMLEntity(title),
                     }),

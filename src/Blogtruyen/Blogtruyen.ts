@@ -206,7 +206,7 @@ export class Blogtruyen extends Source {
         for (let manga of $('a', 'div#storyPinked').toArray()) {
             const title = ($('p:first-child', $(manga).next()).text().trim());
             const id = $(manga).attr('href');
-            const image = $('img', manga).attr('src')?.replace('182_182', '400') ?? "";
+            const image = $('img', manga).attr('src')?.replace('300x300', '500x') ?? "";
             const subtitle = ($('p:last-child', $(manga).next()).text().trim());
             if (!id || !title) continue;
             featuredItems.push(createMangaTile({
@@ -235,7 +235,7 @@ export class Blogtruyen extends Source {
             let id = $(`a`, obj).attr('href') ?? title;
             hotItems.push(createMangaTile({
                 id: id,
-                image: encodeURI(image.replace('150', '200')),
+                image: encodeURI(image.replace('150x', '300x300')),
                 title: createIconText({
                     text: decodeHTMLEntity(title),
                 }),
@@ -264,7 +264,7 @@ export class Blogtruyen extends Source {
             // if (!id || !subtitle) continue;
             newUpdatedItems.push(createMangaTile({
                 id: id,
-                image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.replace('150_150', '200')),
+                image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image),
                 title: createIconText({
                     text: decodeHTMLEntity(title),
                 }),
@@ -293,7 +293,7 @@ export class Blogtruyen extends Source {
             // if (!id || !subtitle) continue;
             newAddItems.push(createMangaTile({
                 id: id,
-                image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.replace('86_86', '200')),
+                image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.replace('110x110', '300x300')),
                 title: createIconText({
                     text: decodeHTMLEntity(title),
                 })
@@ -321,7 +321,7 @@ export class Blogtruyen extends Source {
             let id = $(`a`, obj).attr('href') ?? title;
             fullItems.push(createMangaTile({
                 id: id,
-                image: encodeURI(image.replace('150', '200')),
+                image: encodeURI(image.replace('150x', '300x300')),
                 title: createIconText({
                     text: decodeHTMLEntity(title),
                 }),
@@ -349,7 +349,7 @@ export class Blogtruyen extends Source {
             let id = $(`a`, obj).attr('href') ?? title;
             girlItems.push(createMangaTile({
                 id: id,
-                image: encodeURI(image.replace('150', '200')),
+                image: encodeURI(image.replace('150x', '300x300')),
                 title: createIconText({
                     text: decodeHTMLEntity(title),
                 }),
@@ -377,7 +377,7 @@ export class Blogtruyen extends Source {
             let id = $(`a`, obj).attr('href') ?? title;
             boyItems.push(createMangaTile({
                 id: id,
-                image: encodeURI(image.replace('150', '200')),
+                image: encodeURI(image.replace('150x', '300x300')),
                 title: createIconText({
                     text: decodeHTMLEntity(title),
                 }),
