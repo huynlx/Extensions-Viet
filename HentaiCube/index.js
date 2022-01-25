@@ -704,48 +704,21 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
-            const pages = [
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/03.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/04.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/05.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/06.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/07.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/08.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/09.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/10.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/11.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/12.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/13.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/14.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/15.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/16.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/17.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/18.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/19.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/20.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/21.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/22.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/23.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/24.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/25.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/26.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/27.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/28.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/29.jpg',
-                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/30.jpg'
-            ];
-            // let link;
-            // for (let obj of $('.text-left noscript img').toArray()) {
-            //     // if (!obj.attribs['data-src']) {
-            //         link = obj.attribs['src'].trim();
-            //     //     // console.log(link);
-            //     // }else{
-            //         // link = obj.attribs['data-src'].trim();
-            //     //     // console.log(link);
-            //     // };
-            //     pages.push(encodeURI(link));
-            // }
-            // console.log(pages);
+            const pages = [];
+            let link;
+            for (let obj of $('.text-left > div > img').toArray()) {
+                if (!obj.attribs['data-src']) {
+                    link = obj.attribs['src'].trim();
+                    //     // console.log(link);
+                }
+                else {
+                    link = obj.attribs['data-src'].trim();
+                    //     // console.log(link);
+                }
+                ;
+                pages.push(encodeURI(link));
+            }
+            console.log(pages);
             const chapterDetails = createChapterDetails({
                 id: chapterId,
                 mangaId: mangaId,
@@ -756,7 +729,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
         return __awaiter(this, void 0, void 0, function* () {
             let featured = createHomeSection({
                 id: 'featured',
@@ -833,8 +806,8 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             $ = this.cheerio.load(data.data);
             for (let obj of $('.popular-item-wrap', '#manga-recent-2 .widget-content').toArray()) {
                 let title = $(`.popular-content a`, obj).text().trim();
-                const image = (_d = $(`.popular-img > a > img`, obj).attr('data-src')) === null || _d === void 0 ? void 0 : _d.replace('-75x106', '');
-                let id = (_e = $(`.popular-img > a`, obj).attr('href')) !== null && _e !== void 0 ? _e : title;
+                const image = $(`.popular-img > a > img`, obj).attr('data-src') ? $(`.popular-img > a > img`, obj).attr('data-src').replace('-75x106', '') : $(`.popular-img > a > img`, obj).attr('src').replace('-75x106', '');
+                let id = (_d = $(`.popular-img > a`, obj).attr('href')) !== null && _d !== void 0 ? _d : title;
                 topItems.push(createMangaTile({
                     id: id,
                     image: encodeURI(image),
@@ -856,8 +829,8 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             $ = this.cheerio.load(data.data);
             for (let obj of $('.popular-item-wrap', '#manga-recent-3 .widget-content').toArray()) {
                 let title = $(`.popular-content a`, obj).text().trim();
-                const image = (_f = $(`.popular-img > a > img`, obj).attr('data-src')) === null || _f === void 0 ? void 0 : _f.replace('-75x106', '');
-                let id = (_g = $(`.popular-img > a`, obj).attr('href')) !== null && _g !== void 0 ? _g : title;
+                const image = $(`.popular-img > a > img`, obj).attr('data-src') ? $(`.popular-img > a > img`, obj).attr('data-src').replace('-75x106', '') : $(`.popular-img > a > img`, obj).attr('src').replace('-75x106', '');
+                let id = (_e = $(`.popular-img > a`, obj).attr('href')) !== null && _e !== void 0 ? _e : title;
                 hotItems.push(createMangaTile({
                     id: id,
                     image: encodeURI(image),
@@ -880,13 +853,13 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
                 let title = $(`.post-title > h3 > a`, obj).text().trim();
                 let subtitle = $(`.chapter > a`, obj).text().trim();
-                const image = (_h = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _h !== void 0 ? _h : "";
-                let id = (_j = $(`.c-image-hover > a`, obj).attr('href')) !== null && _j !== void 0 ? _j : title;
+                const image = (_f = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _f !== void 0 ? _f : $('.c-image-hover > a > img', obj).attr('src');
+                let id = (_g = $(`.c-image-hover > a`, obj).attr('href')) !== null && _g !== void 0 ? _g : title;
                 newUpdatedItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
                     image: encodeURI(image),
                     title: createIconText({
-                        text: (_k = HentaiCubeParser_1.decodeHTMLEntity(title)) !== null && _k !== void 0 ? _k : "",
+                        text: (_h = HentaiCubeParser_1.decodeHTMLEntity(title)) !== null && _h !== void 0 ? _h : "",
                     }),
                     subtitleText: createIconText({
                         text: subtitle
@@ -907,8 +880,8 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
                 let title = $(`.post-title > h3 > a`, obj).text().trim();
                 let subtitle = $(`.chapter > a`, obj).text().trim();
-                const image = (_l = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _l !== void 0 ? _l : "";
-                let id = (_m = $(`.c-image-hover > a`, obj).attr('href')) !== null && _m !== void 0 ? _m : title;
+                const image = (_j = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _j !== void 0 ? _j : $('.c-image-hover > a > img', obj).attr('src');
+                let id = (_k = $(`.c-image-hover > a`, obj).attr('href')) !== null && _k !== void 0 ? _k : title;
                 newAddItems.push(createMangaTile({
                     id: id,
                     image: encodeURI(image),
@@ -934,8 +907,8 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
                 let title = $(`.post-title > h3 > a`, obj).text().trim();
                 let subtitle = $(`.chapter > a`, obj).text().trim();
-                const image = (_o = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _o !== void 0 ? _o : "";
-                let id = (_p = $(`.c-image-hover > a`, obj).attr('href')) !== null && _p !== void 0 ? _p : title;
+                const image = (_l = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _l !== void 0 ? _l : $('.c-image-hover > a > img', obj).attr('src');
+                let id = (_m = $(`.c-image-hover > a`, obj).attr('href')) !== null && _m !== void 0 ? _m : title;
                 newItems.push(createMangaTile({
                     id: id !== null && id !== void 0 ? id : "",
                     image: encodeURI(image),
@@ -1180,7 +1153,7 @@ exports.parseSearch = ($, set) => {
         for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
             let title = $(`.post-title > h3 > a`, obj).text().trim();
             let subtitle = $(`.chapter > a`, obj).text().trim();
-            const image = (_a = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _a !== void 0 ? _a : "";
+            const image = (_a = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _a !== void 0 ? _a : $('.c-image-hover > a > img', obj).attr('src');
             let id = (_b = $(`.c-image-hover > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
             if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
                 mangas.push(createMangaTile({
@@ -1228,7 +1201,7 @@ exports.parseViewMore = ($, select) => {
         for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
             let title = $(`.post-title > h3 > a`, obj).text().trim();
             let subtitle = $(`.chapter > a`, obj).text().trim();
-            const image = (_a = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _a !== void 0 ? _a : "";
+            const image = (_a = $('.c-image-hover > a > img', obj).attr('data-src')) !== null && _a !== void 0 ? _a : $('.c-image-hover > a > img', obj).attr('src');
             let id = (_b = $(`.c-image-hover > a`, obj).attr('href')) !== null && _b !== void 0 ? _b : title;
             if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
                 manga.push(createMangaTile({
