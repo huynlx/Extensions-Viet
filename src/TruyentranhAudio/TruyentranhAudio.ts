@@ -103,7 +103,8 @@ export class TruyentranhAudio extends Source {
                 name: $('a', obj).attr('title'),
                 mangaId: mangaId,
                 langCode: LanguageCode.VIETNAMESE,
-                time: convertTime($('.chapter-time', obj).text().trim())
+                time: convertTime($('.chapter-time', obj).text().trim()),
+                group: $('.chapter-view', obj).text().trim()
             }));
         }
 

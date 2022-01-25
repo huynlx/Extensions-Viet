@@ -23,12 +23,12 @@ export const parseSearch = ($: CheerioStatic, set: any): MangaTile[] => {
         for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
             let title = $(`.post-title > h3 > a`, obj).text().trim();
             let subtitle = $(`.chapter > a`, obj).text().trim();
-            const image = $('.c-image-hover > a > img', obj).attr('data-src') ?? "";
+            const image = $('.c-image-hover > a > img', obj).attr('data-src') ?? $('.c-image-hover > a > img', obj).attr('src');
             let id = $(`.c-image-hover > a`, obj).attr('href') ?? title;
             if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
                 mangas.push(createMangaTile({
                     id: id,
-                    image: encodeURI(image),
+                    image: encodeURI(image!),
                     title: createIconText({
                         text: decodeHTMLEntity(title),
                     }),
@@ -71,12 +71,12 @@ export const parseViewMore = ($: CheerioStatic, select: Number): MangaTile[] => 
         for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
             let title = $(`.post-title > h3 > a`, obj).text().trim();
             let subtitle = $(`.chapter > a`, obj).text().trim();
-            const image = $('.c-image-hover > a > img', obj).attr('data-src') ?? "";
+            const image = $('.c-image-hover > a > img', obj).attr('data-src') ?? $('.c-image-hover > a > img', obj).attr('src');
             let id = $(`.c-image-hover > a`, obj).attr('href') ?? title;
             if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
                 manga.push(createMangaTile({
                     id: id,
-                    image: encodeURI(image),
+                    image: encodeURI(image!),
                     title: createIconText({
                         text: decodeHTMLEntity(title) ?? "",
                     }),

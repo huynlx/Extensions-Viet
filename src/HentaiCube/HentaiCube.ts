@@ -56,7 +56,11 @@ export class HentaiCube extends Source {
         let tags: Tag[] = [];
         let creator = '';
         let status = 1; //completed, 1 = Ongoing
-        let desc = $('.description-summary > .summary__content').text();
+        let desc = '';
+        $('.description-summary > .summary__content ul li').toArray().map((item: any) => {
+            desc += '●  ' + $(item).text() + '\n';
+        })
+
         for (const test of $('.post-content_item', '.post-content').toArray()) {
             switch ($('.summary-heading > h5', test).text().trim()) {
                 case 'Tác giả':
@@ -82,7 +86,7 @@ export class HentaiCube extends Source {
             id: mangaId,
             author: creator,
             artist: creator,
-            desc: desc,
+            desc: decodeHTMLEntity(desc),
             titles: [decodeHTMLEntity($('.post-title > h1').text().trim())],
             image: encodeURI(image),
             status,
@@ -128,19 +132,14 @@ export class HentaiCube extends Source {
         let $ = this.cheerio.load(response.data);
         const pages: string[] = [];
         let link;
-        for (let obj of $('.text-left noscript img').toArray()) {
-            // if (!obj.attribs['data-src']) {
+        for (let obj of $('.text-left > div > img').toArray()) {
+            if (!obj.attribs['data-src']) {
                 link = obj.attribs['src'].trim();
-            //     // console.log(link);
-                
-            // }else{
-                // link = obj.attribs['data-src'].trim();
-            //     // console.log(link);
-            // };
+            } else {
+                link = obj.attribs['data-src'].trim();
+            };
             pages.push(encodeURI(link));
         }
-        console.log(pages);
-
 
         const chapterDetails = createChapterDetails({
             id: chapterId,
@@ -204,7 +203,7 @@ export class HentaiCube extends Source {
         for (let obj of $('.item__wrap ', '.slider__container .slider__item').toArray()) {
             let title = $(`.slider__content .post-title`, obj).text().trim();
             let subtitle = $(`.slider__content .chapter-item a`, obj).first().text().trim();
-            const image = $('.slider__thumb a > img', obj).attr('data-src')?.replace('-110x150', '') ?? "";
+            const image = $('.slider__thumb a > img', obj).attr('data-src') ? $('.slider__thumb a > img', obj).attr('data-src').replace('-110x150', '') : $('.slider__thumb a > img', obj).attr('src').replace('-110x150', '');
             let id = $(`.slider__thumb a`, obj).attr('href') ?? title;
             featuredItems.push(createMangaTile({
                 id: id,
@@ -231,7 +230,7 @@ export class HentaiCube extends Source {
         $ = this.cheerio.load(data.data);
         for (let obj of $('.popular-item-wrap', '#manga-recent-2 .widget-content').toArray()) {
             let title = $(`.popular-content a`, obj).text().trim();
-            const image = $(`.popular-img > a > img`, obj).attr('data-src')?.replace('-75x106', '');
+            const image = $(`.popular-img > a > img`, obj).attr('data-src') ? $(`.popular-img > a > img`, obj).attr('data-src').replace('-75x106', '') : $(`.popular-img > a > img`, obj).attr('src').replace('-75x106', '');
             let id = $(`.popular-img > a`, obj).attr('href') ?? title;
             topItems.push(createMangaTile({
                 id: id,
@@ -255,7 +254,7 @@ export class HentaiCube extends Source {
         $ = this.cheerio.load(data.data);
         for (let obj of $('.popular-item-wrap', '#manga-recent-3 .widget-content').toArray()) {
             let title = $(`.popular-content a`, obj).text().trim();
-            const image = $(`.popular-img > a > img`, obj).attr('data-src')?.replace('-75x106', '');
+            const image = $(`.popular-img > a > img`, obj).attr('data-src') ? $(`.popular-img > a > img`, obj).attr('data-src').replace('-75x106', '') : $(`.popular-img > a > img`, obj).attr('src').replace('-75x106', '');
             let id = $(`.popular-img > a`, obj).attr('href') ?? title;
             hotItems.push(createMangaTile({
                 id: id,
@@ -280,7 +279,7 @@ export class HentaiCube extends Source {
         for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
             let title = $(`.post-title > h3 > a`, obj).text().trim();
             let subtitle = $(`.chapter > a`, obj).text().trim();
-            const image = $('.c-image-hover > a > img', obj).attr('data-src') ?? "";
+            const image = $('.c-image-hover > a > img', obj).attr('data-src') ?? $('.c-image-hover > a > img', obj).attr('src');
             let id = $(`.c-image-hover > a`, obj).attr('href') ?? title;
             newUpdatedItems.push(createMangaTile({
                 id: id ?? "",
@@ -308,7 +307,7 @@ export class HentaiCube extends Source {
         for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
             let title = $(`.post-title > h3 > a`, obj).text().trim();
             let subtitle = $(`.chapter > a`, obj).text().trim();
-            const image = $('.c-image-hover > a > img', obj).attr('data-src') ?? "";
+            const image = $('.c-image-hover > a > img', obj).attr('data-src') ?? $('.c-image-hover > a > img', obj).attr('src');
             let id = $(`.c-image-hover > a`, obj).attr('href') ?? title;
             newAddItems.push(createMangaTile({
                 id: id,
@@ -336,7 +335,7 @@ export class HentaiCube extends Source {
         for (let obj of $('.c-tabs-item__content', '.tab-content-wrap').toArray()) {
             let title = $(`.post-title > h3 > a`, obj).text().trim();
             let subtitle = $(`.chapter > a`, obj).text().trim();
-            const image = $('.c-image-hover > a > img', obj).attr('data-src') ?? "";
+            const image = $('.c-image-hover > a > img', obj).attr('data-src') ?? $('.c-image-hover > a > img', obj).attr('src');
             let id = $(`.c-image-hover > a`, obj).attr('href') ?? title;
             newItems.push(createMangaTile({
                 id: id ?? "",
@@ -356,18 +355,22 @@ export class HentaiCube extends Source {
     async getViewMoreItems(homepageSectionId: string, metadata: any): Promise<PagedResults> {
         let page: number = metadata?.page ?? 1;
         let url = '';
+        let url2 = ''
         let select = 1;
         switch (homepageSectionId) {
             case "new":
                 url = `https://hentaicube.net/page/${page}/?s&post_type=wp-manga&m_orderby=new-manga`;
+                url2 = `https://hentaicube.net/page/${page + 1}/?s&post_type=wp-manga&m_orderby=new-manga`;
                 select = 0;
                 break;
             case "new_updated":
                 url = `https://hentaicube.net/page/${page}/?s&post_type=wp-manga&m_orderby=latest`;
+                url2 = `https://hentaicube.net/page/${page + 1}/?s&post_type=wp-manga&m_orderby=latest`;
                 select = 1;
                 break;
             case "view":
                 url = `https://hentaicube.net/page/${page}/?s&post_type=wp-manga&m_orderby=views`;
+                url2 = `https://hentaicube.net/page/${page + 1}/?s&post_type=wp-manga&m_orderby=views`;
                 select = 2;
                 break;
             default:
@@ -379,12 +382,21 @@ export class HentaiCube extends Source {
             method
         });
 
+        url = url2;
+        const request2 = createRequestObject({
+            url, // url = url2
+            method
+        });
+
         const response = await this.requestManager.schedule(request, 1);
+        const response2 = await this.requestManager.schedule(request2, 1);
         const $ = this.cheerio.load(response.data);
+        const $2 = this.cheerio.load(response2.data);
         let manga = parseViewMore($, select);
-        metadata = !isLastPage($) ? { page: page + 1 } : undefined;
+        let manga2 = parseViewMore($2, select);
+        metadata = !isLastPage($) ? { page: page + 2 } : undefined;
         return createPagedResults({
-            results: manga,
+            results: manga.concat(manga2),
             metadata,
         });
     }
@@ -460,14 +472,23 @@ export class HentaiCube extends Source {
             method: "GET"
         });
 
-        const data = await this.requestManager.schedule(request, 1);
-        let $ = this.cheerio.load(data.data);
-        const tiles = parseSearch($, set);
+        url = url.replace(`page/${page}/`, `page/${page + 1}/`);
+        const request2 = createRequestObject({
+            url,
+            method: "GET"
+        });
 
-        metadata = !isLastPage($) ? { page: page + 1 } : undefined;
+        const data = await this.requestManager.schedule(request, 1);
+        const data2 = await this.requestManager.schedule(request2, 1);
+        let $ = this.cheerio.load(data.data);
+        let $2 = this.cheerio.load(data2.data);
+        const tiles = parseSearch($, set);
+        const tiles2 = parseSearch($2, set);
+
+        metadata = !isLastPage($) ? { page: page + 2 } : undefined;
 
         return createPagedResults({
-            results: tiles,
+            results: tiles.concat(tiles2),
             metadata
         });
     }
@@ -546,7 +567,7 @@ export class HentaiCube extends Source {
 
         const tagSections: TagSection[] = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
         createTagSection({ id: '1', label: 'Tình Trạng', tags: tags2.map(x => createTag(x)) }),
-        createTagSection({ id: '2', label: 'Năm', tags: tags3.map(x => createTag(x)) }),
+        // createTagSection({ id: '2', label: 'Năm', tags: tags3.map(x => createTag(x)) }),
         createTagSection({ id: '3', label: 'Xếp theo', tags: tags4.map(x => createTag(x)) })
         ]
         return tagSections;
