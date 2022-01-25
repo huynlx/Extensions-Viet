@@ -811,7 +811,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
                 let id = (_d = $(`a`, obj).attr('href')) !== null && _d !== void 0 ? _d : title;
                 hotItems.push(createMangaTile({
                     id: id,
-                    image: encodeURI(image.replace('150', '200')),
+                    image: encodeURI(image.replace('150x', '300x300')),
                     title: createIconText({
                         text: BlogtruyenParser_1.decodeHTMLEntity(title),
                     }),
@@ -839,7 +839,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
                     id: id,
-                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.replace('150_150', '200')),
+                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image),
                     title: createIconText({
                         text: BlogtruyenParser_1.decodeHTMLEntity(title),
                     }),
@@ -867,7 +867,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
                     id: id,
-                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.replace('86_86', '200')),
+                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.replace('110x110', '300x300')),
                     title: createIconText({
                         text: BlogtruyenParser_1.decodeHTMLEntity(title),
                     })
@@ -894,7 +894,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
                 let id = (_k = $(`a`, obj).attr('href')) !== null && _k !== void 0 ? _k : title;
                 fullItems.push(createMangaTile({
                     id: id,
-                    image: encodeURI(image.replace('150', '200')),
+                    image: encodeURI(image.replace('150x', '300x300')),
                     title: createIconText({
                         text: BlogtruyenParser_1.decodeHTMLEntity(title),
                     }),
@@ -921,7 +921,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
                 let id = (_m = $(`a`, obj).attr('href')) !== null && _m !== void 0 ? _m : title;
                 girlItems.push(createMangaTile({
                     id: id,
-                    image: encodeURI(image.replace('150', '200')),
+                    image: encodeURI(image.replace('150x', '300x300')),
                     title: createIconText({
                         text: BlogtruyenParser_1.decodeHTMLEntity(title),
                     }),
@@ -948,7 +948,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
                 let id = (_p = $(`a`, obj).attr('href')) !== null && _p !== void 0 ? _p : title;
                 boyItems.push(createMangaTile({
                     id: id,
-                    image: encodeURI(image.replace('150', '200')),
+                    image: encodeURI(image.replace('150x', '300x300')),
                     title: createIconText({
                         text: BlogtruyenParser_1.decodeHTMLEntity(title),
                     }),
@@ -1080,7 +1080,7 @@ exports.parseSearch = ($) => {
         if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
             mangas.push(createMangaTile({
                 id: encodeURI(id),
-                image: encodeURI(image.replace('150', '200')),
+                image: encodeURI(image.replace('150x', '300x300')),
                 title: createIconText({ text: exports.decodeHTMLEntity(title) }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
@@ -1102,7 +1102,7 @@ exports.parseViewMore = ($, select) => {
             if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
                 manga.push(createMangaTile({
                     id: id,
-                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.replace('150_150', '200')),
+                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image),
                     title: createIconText({ text: exports.decodeHTMLEntity(title) }),
                     subtitleText: createIconText({ text: 'Chương ' + subtitle }),
                 }));
@@ -1119,7 +1119,7 @@ exports.parseViewMore = ($, select) => {
             if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
                 manga.push(createMangaTile({
                     id: id,
-                    image: encodeURI(image.replace('150', '200')),
+                    image: encodeURI(image.replace('150x', '300x300')),
                     title: createIconText({
                         text: exports.decodeHTMLEntity(title),
                     }),
