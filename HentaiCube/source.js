@@ -1048,12 +1048,20 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                 url,
                 method: "GET"
             });
+            url = url.replace(`${page}`, `${page + 1}`);
+            const request2 = createRequestObject({
+                url,
+                method: "GET"
+            });
             const data = yield this.requestManager.schedule(request, 1);
+            const data2 = yield this.requestManager.schedule(request2, 1);
             let $ = this.cheerio.load(data.data);
+            let $2 = this.cheerio.load(data2.data);
             const tiles = HentaiCubeParser_1.parseSearch($, set);
-            metadata = !HentaiCubeParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            const tiles2 = HentaiCubeParser_1.parseSearch($2, set);
+            metadata = !HentaiCubeParser_1.isLastPage($) ? { page: page + 2 } : undefined;
             return createPagedResults({
-                results: tiles,
+                results: tiles.concat(tiles2),
                 metadata
             });
         });
