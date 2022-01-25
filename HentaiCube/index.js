@@ -637,7 +637,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             let status = 1; //completed, 1 = Ongoing
             let desc = '';
             $('.description-summary > .summary__content ul li').toArray().map((item) => {
-                desc += '&#9679; ' + $(item).text() + '\n';
+                desc += '●  ' + $(item).text() + '\n';
             });
             for (const test of $('.post-content_item', '.post-content').toArray()) {
                 switch ($('.summary-heading > h5', test).text().trim()) {
@@ -712,16 +712,13 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             for (let obj of $('.text-left > div > img').toArray()) {
                 if (!obj.attribs['data-src']) {
                     link = obj.attribs['src'].trim();
-                    //     // console.log(link);
                 }
                 else {
                     link = obj.attribs['data-src'].trim();
-                    //     // console.log(link);
                 }
                 ;
                 pages.push(encodeURI(link));
             }
-            console.log(pages);
             const chapterDetails = createChapterDetails({
                 id: chapterId,
                 mangaId: mangaId,
