@@ -655,7 +655,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                         break;
                 }
             }
-            const image = (_c = (_b = $('.tab-summary img').attr('data-src')) === null || _b === void 0 ? void 0 : _b.replace('-193x278', '')) !== null && _c !== void 0 ? _c : "";
+            const image = (_c = (_b = $('.tab-summary img').attr('src')) === null || _b === void 0 ? void 0 : _b.replace('-193x278', '')) !== null && _c !== void 0 ? _c : "";
             return createManga({
                 id: mangaId,
                 author: creator,
@@ -705,12 +705,18 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
-            for (let obj of $('.text-left img').toArray()) {
-                if (!obj.attribs['src'])
-                    continue;
-                let link = obj.attribs['src'].trim();
+            let link;
+            for (let obj of $('.text-left noscript img').toArray()) {
+                // if (!obj.attribs['data-src']) {
+                link = obj.attribs['src'].trim();
+                //     // console.log(link);
+                // }else{
+                // link = obj.attribs['data-src'].trim();
+                //     // console.log(link);
+                // };
                 pages.push(encodeURI(link));
             }
+            console.log(pages);
             const chapterDetails = createChapterDetails({
                 id: chapterId,
                 mangaId: mangaId,
