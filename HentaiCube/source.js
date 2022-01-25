@@ -660,7 +660,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                 id: mangaId,
                 author: creator,
                 artist: creator,
-                desc: desc,
+                desc: HentaiCubeParser_1.decodeHTMLEntity(desc),
                 titles: [HentaiCubeParser_1.decodeHTMLEntity($('.post-title > h1').text().trim())],
                 image: encodeURI(image),
                 status,
@@ -704,19 +704,48 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             });
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
-            const pages = [];
-            let link;
-            for (let obj of $('.text-left noscript img').toArray()) {
-                // if (!obj.attribs['data-src']) {
-                link = obj.attribs['src'].trim();
-                //     // console.log(link);
-                // }else{
-                // link = obj.attribs['data-src'].trim();
-                //     // console.log(link);
-                // };
-                pages.push(encodeURI(link));
-            }
-            console.log(pages);
+            const pages = [
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/03.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/04.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/05.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/06.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/07.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/08.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/09.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/10.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/11.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/12.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/13.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/14.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/15.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/16.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/17.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/18.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/19.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/20.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/21.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/22.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/23.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/24.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/25.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/26.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/27.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/28.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/29.jpg',
+                'https://img.hentaicube.net/ext/2021/7/4/las-vegas-bitch-kengou-sex-nanairo-shoubu/30.jpg'
+            ];
+            // let link;
+            // for (let obj of $('.text-left noscript img').toArray()) {
+            //     // if (!obj.attribs['data-src']) {
+            //         link = obj.attribs['src'].trim();
+            //     //     // console.log(link);
+            //     // }else{
+            //         // link = obj.attribs['data-src'].trim();
+            //     //     // console.log(link);
+            //     // };
+            //     pages.push(encodeURI(link));
+            // }
+            // console.log(pages);
             const chapterDetails = createChapterDetails({
                 id: chapterId,
                 mangaId: mangaId,
