@@ -929,18 +929,22 @@ class HentaiCube extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             let url = '';
+            let url2 = '';
             let select = 1;
             switch (homepageSectionId) {
                 case "new":
                     url = `https://hentaicube.net/page/${page}/?s&post_type=wp-manga&m_orderby=new-manga`;
+                    url2 = `https://hentaicube.net/page/${page + 1}/?s&post_type=wp-manga&m_orderby=new-manga`;
                     select = 0;
                     break;
                 case "new_updated":
                     url = `https://hentaicube.net/page/${page}/?s&post_type=wp-manga&m_orderby=latest`;
+                    url2 = `https://hentaicube.net/page/${page + 1}/?s&post_type=wp-manga&m_orderby=latest`;
                     select = 1;
                     break;
                 case "view":
                     url = `https://hentaicube.net/page/${page}/?s&post_type=wp-manga&m_orderby=views`;
+                    url2 = `https://hentaicube.net/page/${page + 1}/?s&post_type=wp-manga&m_orderby=views`;
                     select = 2;
                     break;
                 default:
@@ -950,12 +954,20 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                 url,
                 method
             });
+            const request2 = createRequestObject({
+                url,
+                method
+            });
             const response = yield this.requestManager.schedule(request, 1);
+            url = url.replace(`${page}`, `${page + 1}`);
+            const response2 = yield this.requestManager.schedule(request2, 1);
             const $ = this.cheerio.load(response.data);
+            const $2 = this.cheerio.load(response2.data);
             let manga = HentaiCubeParser_1.parseViewMore($, select);
-            metadata = !HentaiCubeParser_1.isLastPage($) ? { page: page + 1 } : undefined;
+            let manga2 = HentaiCubeParser_1.parseViewMore($2, select);
+            metadata = !HentaiCubeParser_1.isLastPage($) ? { page: page + 2 } : undefined;
             return createPagedResults({
-                results: manga,
+                results: manga.concat(manga2),
                 metadata,
             });
         });
