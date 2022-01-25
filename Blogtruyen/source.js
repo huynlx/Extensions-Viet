@@ -782,7 +782,7 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             for (let manga of $('a', 'div#storyPinked').toArray()) {
                 const title = ($('p:first-child', $(manga).next()).text().trim());
                 const id = $(manga).attr('href');
-                const image = (_b = (_a = $('img', manga).attr('src')) === null || _a === void 0 ? void 0 : _a.replace('182_182', '400')) !== null && _b !== void 0 ? _b : "";
+                const image = (_b = (_a = $('img', manga).attr('src')) === null || _a === void 0 ? void 0 : _a.replace('300x300', '500x')) !== null && _b !== void 0 ? _b : "";
                 const subtitle = ($('p:last-child', $(manga).next()).text().trim());
                 if (!id || !title)
                     continue;
