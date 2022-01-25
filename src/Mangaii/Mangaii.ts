@@ -158,7 +158,7 @@ export class Mangaii extends Source {
         sectionCallback(view);
         sectionCallback(news);
 
-        ///Get the section data
+        /* Get the section data */
         //Get json data
         let request = createRequestObject({
             url: DOMAIN,
@@ -167,7 +167,9 @@ export class Mangaii extends Source {
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
-        if (dt) dt = JSON.parse(dt[1]).props.pageProps.comics;
+        if (dt) {
+            dt = JSON.parse(dt[1]).props.pageProps.comics;
+        }
 
         // Hot
         let popularItems: MangaTile[] = [];
@@ -274,8 +276,6 @@ export class Mangaii extends Source {
         }
         news.items = newsItems;
         sectionCallback(news);
-
-
     }
 
     async getViewMoreItems(homepageSectionId: string, metadata: any): Promise<PagedResults> {
@@ -284,10 +284,7 @@ export class Mangaii extends Source {
         let url = '';
         switch (homepageSectionId) {
             case "new_updated":
-                url = `https://api.mangaii.com/api/v1/comics?page=${page}`;
-                break;
-            case "new_added":
-                url = `https://truyentranh.net/comic-latest?page=${page}`;
+                url = `https://api.mangaii.com/api/v1/comics?page=${page}&limit=50`;
                 break;
             default:
                 return Promise.resolve(createPagedResults({ results: [] }))
@@ -314,7 +311,7 @@ export class Mangaii extends Source {
         let page = metadata?.page ?? 1;
         const tags = query.includedTags?.map(tag => tag.id) ?? [];
         const request = createRequestObject({
-            url: query.title ? encodeURI(`https://api.mangaii.com/api/v1/search?name=${query.title}&page=${page}`) : `https://api.mangaii.com/api/v1/comics?page=${page}&genre=${tags[0]}`,
+            url: query.title ? encodeURI(`https://api.mangaii.com/api/v1/search?name=${query.title}&page=${page}&limit=50`) : `https://api.mangaii.com/api/v1/comics?page=${page}&genre=${tags[0]}&limit=50`,
             method: "GET",
         });
 
@@ -331,15 +328,17 @@ export class Mangaii extends Source {
     }
 
     async getSearchTags(): Promise<TagSection[]> {
-        const url = 'https://mangaii.com/_next/data/J2CY4LWdNLjLnJT2cm3r4/vi/genre/all-qWerTy12.json?slug=all-qWerTy12'
-        const request = createRequestObject({
-            url: url,
+        //get json
+        let requestId = createRequestObject({
+            url: 'https://mangaii.com/genre/all-qWerTy12',
             method: "GET",
         });
-
-        const response = await this.requestManager.schedule(request, 1)
-        const json = JSON.parse(response.data).pageProps.genres;
+        let response = await this.requestManager.schedule(requestId, 1);
+        let $ = this.cheerio.load(response.data);
+        var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
+        const json = JSON.parse(dt[1]).props.pageProps.genres;
         const arrayTags: Tag[] = [];
+        
         //the loai
         for (const tag of json) {
             arrayTags.push({ id: tag.slug, label: tag.name });

@@ -273,6 +273,25 @@ export class Parser {
         return newAddedItems;
     }
 
+    parseFullSection($: any): MangaTile[] {
+        let fullItems: MangaTile[] = [];
+        for (let manga of $('div.item', 'div.row').toArray().splice(0, 20)) {
+            const title = $('figure.clearfix > figcaption > h3 > a', manga).first().text();
+            const id = $('figure.clearfix > div.image > a', manga).attr('href')?.split('/').pop();
+            const image = $('figure.clearfix > div.image > a > img', manga).first().attr('data-original');
+            const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga).last().text().trim();
+            if (!id || !title) continue;
+            fullItems.push(createMangaTile({
+                id: id,
+                image: !image ? "https://i.imgur.com/GYUxEX8.png" : 'http:' + image,
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: subtitle }),
+            }));
+        }
+
+        return fullItems;
+    }
+
     parseViewMoreItems($: any): MangaTile[] {
         const mangas: MangaTile[] = [];
         const collectedIds: string[] = [];
@@ -295,22 +314,24 @@ export class Parser {
         return mangas;
     }
 
-    parseUpdatedManga($: any, time: Date, ids: string[]): MangaUpdates {
+    parseUpdatedManga(updateManga: any, time: Date, ids: string[]): MangaUpdates {
         const returnObject: MangaUpdates = {
             'ids': []
         }
-        const updateManga = [];
-        for (let manga of $('div.item', 'div.row').toArray()) {
-            const id = $('figure.clearfix > div.image > a', manga).attr('href')?.split('/').pop();
-            const time = this.convertTime($("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > i", manga).last().text().trim());
-            updateManga.push(({
-                id: id,
-                time: time
-            }));
-        }
+        // // for (let manga of $('div.item', 'div.row').toArray()) {
+        // const id = ids[0];
+        // let x = $('time.small').text().trim();
+        // let y = x.split("lúc:")[1].replace(']', '').trim().split(' ');
+        // let z = y[1].split('/');
+        // const timeUpdate = new Date(z[1] + '/' + z[0] + '/' + z[2] + ' ' + y[0]);
+        // updateManga.push(({
+        //     id: id,
+        //     time: timeUpdate
+        // }));
+        // // }
 
         for (const elem of updateManga) {
-            if (ids.includes(elem.id) && time < new Date(elem.time)) returnObject.ids.push(elem.id)
+            if (ids.includes(elem.id) && time < this.convertTime(elem.time)) returnObject.ids.push(elem.id)
         }
         return returnObject
     }

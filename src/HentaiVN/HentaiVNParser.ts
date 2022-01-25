@@ -86,7 +86,7 @@ export interface UpdatedManga {
     loadMore: boolean;
 }
 
-export const parseHomeSections = ($: CheerioStatic, sections: HomeSection[], sectionCallback: (section: HomeSection) => void): void => {
+export const parseHomeSections = ($: CheerioStatic, $2: CheerioStatic, sections: HomeSection[], sectionCallback: (section: HomeSection) => void): void => {
     for (const section of sections) sectionCallback(section);
 
     //featured
@@ -111,16 +111,17 @@ export const parseHomeSections = ($: CheerioStatic, sections: HomeSection[], sec
 
     //Recently Updated
     let staffPick: MangaTile[] = [];
-    for (let manga of $('ul', 'ul.page-item').toArray()) {
-        const title = $('span > a > h2', manga).first().text();
-        const id = $('a', manga).attr('href')?.split('/').pop();
-        const image = $('a > div', manga).css('background');
-        const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
-        const subtitle = $("a > b", manga).last().text().trim();
+    for (let manga of $2('.item ul').toArray().splice(0, 15)) {
+        const title = $2('span > a > h2', manga).first().text();
+        const id = $2('a', manga).attr('href')?.split('/').pop();
+        // const image = $('a > div', manga).css('background');
+        // const bg = image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+        const image = $2("a > img", manga).attr('src');
+        const subtitle = $2("a > b", manga).last().text().trim();
         if (!id || !title) continue;
         staffPick.push(createMangaTile({
-            id: encodeURIComponent(id) + "::" + bg,
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
+            id: encodeURIComponent(id) + "::" + image,
+            image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
             title: createIconText({ text: title }),
             subtitleText: createIconText({ text: subtitle }),
         }));
@@ -143,7 +144,7 @@ export const parseRandomSections = ($: CheerioStatic, sections: HomeSection[], s
             id: encodeURIComponent(id) + "::" + bg,
             image: !image ? "https://i.imgur.com/GYUxEX8.png" : bg,
             title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: subtitle }),
+            // subtitleText: createIconText({ text: subtitle }),
         }));
     }
     sections[1].items = random;
@@ -167,8 +168,8 @@ export const parseAddedSections = ($: CheerioStatic, sections: HomeSection[], se
             subtitleText: createIconText({ text: fixsub.trim() }),
         }));
     }
-    sections[4].items = added;
-    sectionCallback(sections[4]);
+    sections[3].items = added;
+    sectionCallback(sections[3]);
 }
 
 export const parsePopularSections = ($: CheerioStatic, sections: HomeSection[], sectionCallback: (section: HomeSection) => void): void => {
@@ -193,7 +194,7 @@ export const parsePopularSections = ($: CheerioStatic, sections: HomeSection[], 
 }
 
 export const parseFullSections = ($: CheerioStatic, sections: HomeSection[], sectionCallback: (section: HomeSection) => void): void => {
-    //popular
+    //full
     let popular: MangaTile[] = [];
     for (let manga of $('.item', '.block-item').toArray()) {
         const title = $('.box-description > p > a', manga).text();
@@ -209,8 +210,8 @@ export const parseFullSections = ($: CheerioStatic, sections: HomeSection[], sec
             subtitleText: createIconText({ text: fixsub.trim() }),
         }));
     }
-    sections[5].items = popular;
-    sectionCallback(sections[5]);
+    sections[4].items = popular;
+    sectionCallback(sections[4]);
 }
 
 export const generateSearch = (query: SearchRequest): string => {
@@ -220,19 +221,35 @@ export const generateSearch = (query: SearchRequest): string => {
 
 export const parseSearch = ($: CheerioStatic): MangaTile[] => {
     const mangas: MangaTile[] = [];
-    for (let manga of $('.item', '.block-item').toArray()) {
-        const title = $('.box-description > p > a', manga).text();
-        const id = $('.box-cover > a', manga).attr('href')?.split('/').pop();
-        const image = $('.box-cover > a > img', manga).attr('data-src');
-        const subtitle = $(".box-description p:nth-child(1)", manga).text().trim();
-        const fixsub = subtitle.split('-')[1];
-        if (!id || !title) continue;
-        mangas.push(createMangaTile({
-            id: encodeURIComponent(id) + "::" + image,
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.trim()),
-            title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: fixsub.trim() }),
-        }));
+    if ($("title").text().includes("Tìm kiếm truyện nâng cao")) {
+        for (let manga of $('.search-li', '.search-ul').toArray()) {
+            const title = $('.search-des b', manga).text();
+            const id = $('.search-des > a', manga).attr('href')?.split('/').pop();
+            const image = $('.search-img img', manga).attr('src');
+            const subtitle = $(".search-des", manga).text().split('-').slice(1).join('-');
+            if (!id || !title) continue;
+            mangas.push(createMangaTile({
+                id: encodeURIComponent(id) + "::" + image,
+                image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.trim()),
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: subtitle.split('Tên khác')[0].trim() }),
+            }));
+        }
+    } else {
+        for (let manga of $('.item', '.block-item').toArray()) {
+            const title = $('.box-description > p > a', manga).text();
+            const id = $('.box-cover > a', manga).attr('href')?.split('/').pop();
+            const image = $('.box-cover > a > img', manga).attr('data-src');
+            const subtitle = $(".box-description p:nth-child(1)", manga).text().trim();
+            const fixsub = subtitle.split('-')[1];
+            if (!id || !title) continue;
+            mangas.push(createMangaTile({
+                id: encodeURIComponent(id) + "::" + image,
+                image: !image ? "https://i.imgur.com/GYUxEX8.png" : encodeURI(image.trim()),
+                title: createIconText({ text: title }),
+                subtitleText: createIconText({ text: fixsub.trim() }),
+            }));
+        }
     }
 
     return mangas;
@@ -286,11 +303,18 @@ export const isLastPage = ($: CheerioStatic): boolean => {
     const pages = [];
 
     for (const page of $("li", "ul.pagination").toArray()) {
-        const p = Number($('a', page).text().trim());
-        if (isNaN(p)) continue;
+        let p: any;
+        if ($("title").text().includes("Tìm kiếm truyện nâng cao")) {
+            p = Number($('a', page).attr('href')?.split('=').pop())
+            if (isNaN(p)) continue;
+        } else {
+            p = Number($('a', page).text().trim());
+            if (isNaN(p)) continue;
+        }
+
         pages.push(p);
     }
-    const lastPage = Math.max(...pages);
+    let lastPage = Math.max(...pages);
     const currentPage = Number($("li > b").text().trim());
     if (currentPage >= lastPage) isLast = true;
     return isLast;

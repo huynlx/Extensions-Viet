@@ -1,0 +1,1 @@
+Sau code thêm cái setting languages (vi,en,ja)

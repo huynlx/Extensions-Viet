@@ -85,25 +85,29 @@ export class HentaiVN extends Source {
         const section1 = createHomeSection({ id: 'recently-updated', title: 'Mới cập nhật', view_more: true });
         const section2 = createHomeSection({ id: 'popular', title: 'Tiêu điểm', view_more: true });
         const section3 = createHomeSection({ id: 'recently_added', title: 'Truyện mới đăng', view_more: true });
-        const section4 = createHomeSection({ id: 'full', title: 'Truyện Full', view_more: true });
-        const sections = [section0, section5, section1, section2, section3, section4];
+        const section4 = createHomeSection({ id: 'full', title: 'Truyện đã hoàn thành', view_more: true });
+        const sections = [section0, section5, section1, section3, section4];
 
         let request = createRequestObject({
             url: `${DOMAIN}`,
             method,
         });
 
+        let justUpdated = createRequestObject({
+            url: `${DOMAIN}list-moicapnhat-doc.php`,
+            method,
+        });
+
         let response = await this.requestManager.schedule(request, 1);
+        let response2 = await this.requestManager.schedule(justUpdated, 1);
         let $ = this.cheerio.load(response.data);
-        parseHomeSections($, sections, sectionCallback);
+        let $2 = this.cheerio.load(response2.data);
+        parseHomeSections($, $2, sections, sectionCallback);
 
         //random
         request = createRequestObject({
             url: DOMAIN + 'list-random.php',
-            method: 'POST',
-            headers: {
-                'content-type': 'application/x-www-form-urlencoded'
-            }
+            method: 'GET'
         })
         response = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(response.data);
@@ -118,14 +122,14 @@ export class HentaiVN extends Source {
         $ = this.cheerio.load(response.data);
         parseAddedSections($, sections, sectionCallback);
 
-        //popular
-        request = createRequestObject({
-            url: `${DOMAIN}tieu-diem.html`,
-            method
-        });
-        response = await this.requestManager.schedule(request, 1);
-        $ = this.cheerio.load(response.data);
-        parsePopularSections($, sections, sectionCallback);
+        /*   //popular
+          request = createRequestObject({
+              url: `${DOMAIN}tieu-diem.html`,
+              method
+          });
+          response = await this.requestManager.schedule(request, 1);
+          $ = this.cheerio.load(response.data);
+          parsePopularSections($, sections, sectionCallback); */
 
         //full
         request = createRequestObject({

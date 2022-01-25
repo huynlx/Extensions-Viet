@@ -54,3 +54,4 @@ https://huynh12345678.github.io/Extensions-Viet/
 |   43  | WComic                    | https://wcomic.site                        |
 |   44  | Truyengihot               | https://truyengihot.net                    |
 |   45  | Baotangtruyentranh        | https://baotangtruyentranh.com             |
+|   46  | TruyenChon                | http://truyenchon.com                      |

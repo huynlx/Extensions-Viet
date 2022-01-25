@@ -76,7 +76,8 @@ export class HentaiCube extends Source {
                     break;
             }
         }
-        const image = $('.tab-summary img').attr('data-src')?.replace('-193x278', '') ?? "";
+        const image = $('.tab-summary img').attr('src')?.replace('-193x278', '') ?? "";
+
         return createManga({
             id: mangaId,
             author: creator,
@@ -126,11 +127,20 @@ export class HentaiCube extends Source {
         const response = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(response.data);
         const pages: string[] = [];
-        for (let obj of $('.text-left img').toArray()) {
-            if (!obj.attribs['data-src']) continue;
-            let link = obj.attribs['data-src'].trim();
+        let link;
+        for (let obj of $('.text-left noscript img').toArray()) {
+            // if (!obj.attribs['data-src']) {
+                link = obj.attribs['src'].trim();
+            //     // console.log(link);
+                
+            // }else{
+                // link = obj.attribs['data-src'].trim();
+            //     // console.log(link);
+            // };
             pages.push(encodeURI(link));
         }
+        console.log(pages);
+
 
         const chapterDetails = createChapterDetails({
             id: chapterId,

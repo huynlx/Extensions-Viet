@@ -51,7 +51,7 @@ export class Parser {
         }
 
         const creator = $('ul.list-info > li.author > p.col-xs-8').text();
-        const image = 'http:' + $('div.col-image > img').attr('src');
+        const image = $('div.col-image > img').attr('src');
         return createManga({
             id: mangaId,
             author: creator,
@@ -113,7 +113,7 @@ export class Parser {
             if (!id || !title) continue;
             tiles.push(createMangaTile({
                 id: id,
-                image: !image ? "https://i.imgur.com/GYUxEX8.png" : 'http:' + image,
+                image: !image ? "https://i.imgur.com/GYUxEX8.png" :  image,
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
@@ -184,7 +184,7 @@ export class Parser {
             if (!id || !title) continue;
             featuredItems.push(createMangaTile({
                 id: id,
-                image: !image ? "https://i.imgur.com/GYUxEX8.png" : 'http:' + image,
+                image: !image ? "https://i.imgur.com/GYUxEX8.png" :  image,
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({
                     text: subtitle,
@@ -206,7 +206,7 @@ export class Parser {
             if (!id || !title) continue;
             viewestItems.push(createMangaTile({
                 id: id,
-                image: !image ? "https://i.imgur.com/GYUxEX8.png" : 'http:' + image,
+                image: !image ? "https://i.imgur.com/GYUxEX8.png" :  image,
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
@@ -225,7 +225,7 @@ export class Parser {
             if (!id || !title) continue;
             TopWeek.push(createMangaTile({
                 id: id,
-                image: !image ? "https://i.imgur.com/GYUxEX8.png" : 'http:' + image,
+                image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
@@ -244,7 +244,7 @@ export class Parser {
             if (!id || !title) continue;
             newUpdatedItems.push(createMangaTile({
                 id: id,
-                image: !image ? "https://i.imgur.com/GYUxEX8.png" : 'http:' + image,
+                image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
@@ -263,7 +263,7 @@ export class Parser {
             if (!id || !title) continue;
             newAddedItems.push(createMangaTile({
                 id: id,
-                image: !image ? "https://i.imgur.com/GYUxEX8.png" : 'http:' + image,
+                image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
             }));
@@ -284,7 +284,7 @@ export class Parser {
             if (!collectedIds.includes(id)) { //ko push truyện trùng nhau
                 mangas.push(createMangaTile({
                     id: id,
-                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : 'http:' + image,
+                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
                     title: createIconText({ text: title }),
                     subtitleText: createIconText({ text: subtitle }),
                 }));
@@ -294,24 +294,22 @@ export class Parser {
         return mangas;
     }
 
-    parseUpdatedManga(updateManga: any, time: Date, ids: string[]): MangaUpdates {
+    parseUpdatedManga($: any, time: Date, ids: string[]): MangaUpdates {
         const returnObject: MangaUpdates = {
             'ids': []
         }
-        // // for (let manga of $('div.item', 'div.row').toArray()) {
-        // const id = ids[0];
-        // let x = $('time.small').text().trim();
-        // let y = x.split("lúc:")[1].replace(']', '').trim().split(' ');
-        // let z = y[1].split('/');
-        // const timeUpdate = new Date(z[1] + '/' + z[0] + '/' + z[2] + ' ' + y[0]);
-        // updateManga.push(({
-        //     id: id,
-        //     time: timeUpdate
-        // }));
-        // // }
+        const updateManga = [];
+        for (let manga of $('div.item', 'div.row').toArray()) {
+            const id = $('figure.clearfix > div.image > a', manga).attr('href')?.split('/').pop();
+            const time = this.convertTime($("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > i", manga).last().text().trim());
+            updateManga.push(({
+                id: id,
+                time: time
+            }));
+        }
 
         for (const elem of updateManga) {
-            if (ids.includes(elem.id) && time < elem.time) returnObject.ids.push(elem.id)
+            if (ids.includes(elem.id) && time < new Date(elem.time)) returnObject.ids.push(elem.id)
         }
         return returnObject
     }

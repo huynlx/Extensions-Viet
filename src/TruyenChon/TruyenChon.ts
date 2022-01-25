@@ -11,11 +11,13 @@ import {
     TagSection,
     HomeSectionType,
     ContentRating,
-    MangaUpdates
+    MangaUpdates,
+    Request
 } from "paperback-extensions-common"
-import { Parser } from './NetTruyenParser';
+import { Parser } from './TruyenChonParser';
 
-const DOMAIN = 'http://www.nettruyenpro.com/'
+const DOMAIN = 'http://truyenchon.com/'
+const userAgentRandomizer = `Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/78.0${Math.floor(Math.random() * 100000)}`;
 
 export const isLastPage = ($: CheerioStatic): boolean => {
     const current = $('ul.pagination > li.active > a').text();
@@ -28,13 +30,13 @@ export const isLastPage = ($: CheerioStatic): boolean => {
     return true;
 }
 
-export const NetTruyenInfo: SourceInfo = {
+export const TruyenChonInfo: SourceInfo = {
     version: '3.0.0',
-    name: 'NetTruyen',
+    name: 'TruyenChon',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from NetTruyen.',
+    description: 'Extension that pulls manga from TruyenChon.',
     websiteBaseURL: DOMAIN,
     contentRating: ContentRating.MATURE,
     sourceTags: [
@@ -45,11 +47,15 @@ export const NetTruyenInfo: SourceInfo = {
         {
             text: 'Notifications',
             type: TagType.GREEN
+        },
+        {
+            text: 'Cloudflare',
+            type: TagType.RED
         }
     ]
 }
 
-export class NetTruyen extends Source {
+export class TruyenChon extends Source {
     parser = new Parser();
     getMangaShareUrl(mangaId: string): string { return `${DOMAIN}truyen-tranh/${mangaId}` };
     requestManager = createRequestManager({
@@ -87,6 +93,7 @@ export class NetTruyen extends Source {
         const data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         const pages = this.parser.parseChapterDetails($)
+
         return createChapterDetails({
             pages: pages,
             longStrip: false,
@@ -131,7 +138,7 @@ export class NetTruyen extends Source {
         search.genres = (genres ?? []).join(",");
         const url = `${DOMAIN}`
         const request = createRequestObject({
-            url: query.title ? (url + '/tim-truyen') : (url + '/tim-truyen-nang-cao'),
+            url: query.title ? (url + '/the-loai') : (url + '/tim-truyen-nang-cao'),
             method: "GET",
             param: encodeURI(`?keyword=${query.title ?? ''}&genres=${search.genres}&gender=${search.gender}&status=${search.status}&minchapter=${search.minchapter}&sort=${search.sort}&page=${page}`)
         });
@@ -174,11 +181,6 @@ export class NetTruyen extends Source {
             title: "Truyện Mới Thêm Gần Đây",
             view_more: true,
         });
-        let full: HomeSection = createHomeSection({
-            id: 'full',
-            title: "Truyện Đã Hoàn Thành",
-            view_more: true,
-        });
 
         //Load empty sections
         sectionCallback(featured);
@@ -186,7 +188,6 @@ export class NetTruyen extends Source {
         sectionCallback(hot);
         sectionCallback(newUpdated);
         sectionCallback(newAdded);
-        sectionCallback(full);
 
         ///Get the section data
         //Featured
@@ -202,7 +203,7 @@ export class NetTruyen extends Source {
         sectionCallback(featured);
 
         //View
-        url = `${DOMAIN}tim-truyen?status=-1&sort=10`
+        url = `${DOMAIN}the-loai?status=-1&sort=10`
         request = createRequestObject({
             url: url,
             method: "GET",
@@ -238,7 +239,7 @@ export class NetTruyen extends Source {
         sectionCallback(newUpdated);
 
         //New added
-        url = `${DOMAIN}tim-truyen?status=-1&sort=15`
+        url = `${DOMAIN}the-loai?status=-1&sort=15`
         request = createRequestObject({
             url: url,
             method: "GET",
@@ -248,18 +249,6 @@ export class NetTruyen extends Source {
 
         newAdded.items = this.parser.parseNewAddedSection($);
         sectionCallback(newAdded);
-
-        //Full
-        url = `${DOMAIN}truyen-full`
-        request = createRequestObject({
-            url: url,
-            method: "GET",
-        });
-        data = await this.requestManager.schedule(request, 1);
-        $ = this.cheerio.load(data.data);
-
-        full.items = this.parser.parseFullSection($);
-        sectionCallback(full);
     }
 
     async getViewMoreItems(homepageSectionId: string, metadata: any): Promise<PagedResults> {
@@ -282,10 +271,6 @@ export class NetTruyen extends Source {
             case "new_added":
                 param = `?status=-1&sort=15&page=${page}`;
                 url = `${DOMAIN}tim-truyen`;
-                break;
-            case "full":
-                param = `?page=${page}`;
-                url = `${DOMAIN}truyen-full`;
                 break;
             default:
                 throw new Error("Requested to getViewMoreItems for a section ID which doesn't exist");
@@ -322,40 +307,44 @@ export class NetTruyen extends Source {
     }
 
     override async filterUpdatedManga(mangaUpdatesFoundCallback: (updates: MangaUpdates) => void, time: Date, ids: string[]): Promise<void> {
-        const updateManga: any = [];
-        const pages = 10;
-        for (let i = 1; i < pages + 1; i++) {
-            const request = createRequestObject({
-                url: DOMAIN + '?page=' + i,
-                method: 'GET',
-            })
-            const response = await this.requestManager.schedule(request, 1)
-            const $ = this.cheerio.load(response.data);
-            // let x = $('time.small').text().trim();
-            // let y = x.split("lúc:")[1].replace(']', '').trim().split(' ');
-            // let z = y[1].split('/');
-            // const timeUpdate = new Date(z[1] + '/' + z[0] + '/' + z[2] + ' ' + y[0]);
-            // updateManga.push({
-            //     id: item,
-            //     time: timeUpdate
-            // })
-            for (let manga of $('div.item', 'div.row').toArray()) {
-                const id = $('figure.clearfix > div.image > a', manga).attr('href')?.split('/').pop();
-                const time = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > i", manga).last().text().trim();
-                updateManga.push(({
-                    id: id,
-                    time: time
-                }));
-            }
-        }
+        const request = createRequestObject({
+            url: DOMAIN,
+            method: 'GET',
+        })
 
-        const returnObject = this.parser.parseUpdatedManga(updateManga, time, ids)
+        const response = await this.requestManager.schedule(request, 1)
+        const $ = this.cheerio.load(response.data);
+        const returnObject = this.parser.parseUpdatedManga($, time, ids)
         mangaUpdatesFoundCallback(createMangaUpdates(returnObject))
     }
 
-    globalRequestHeaders(): RequestHeaders { //ko có cái này ko load đc page truyện (load ảnh)
+    override globalRequestHeaders(): RequestHeaders {
         return {
             referer: DOMAIN
         }
     }
+
+    constructHeaders(headers?: any, refererPath?: string): any {
+        headers = headers ?? {}
+        if (userAgentRandomizer !== '') {
+            headers['user-agent'] = userAgentRandomizer
+        }
+        headers['referer'] = `http://truyenchon.com${refererPath ?? ''}`
+        return headers
+    }
+
+    override getCloudflareBypassRequest(): Request {
+        return createRequestObject({
+            url: `http://truyenchon.com`,
+            method: 'GET',
+            headers: this.constructHeaders()
+        })
+    }
+
+    CloudFlareError(status: any) {
+        if (status == 503) {
+            throw new Error('CLOUDFLARE BYPASS ERROR:\nPlease go to Settings > Sources > \<\The name of this source\> and press Cloudflare Bypass')
+        }
+    }
+
 }

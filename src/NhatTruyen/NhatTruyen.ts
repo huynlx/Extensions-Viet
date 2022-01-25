@@ -301,14 +301,26 @@ export class NhatTruyen extends Source {
     }
 
     override async filterUpdatedManga(mangaUpdatesFoundCallback: (updates: MangaUpdates) => void, time: Date, ids: string[]): Promise<void> {
-        const request = createRequestObject({
-            url: DOMAIN,
-            method: 'GET',
-        })
+        const updateManga: any = [];
 
-        const response = await this.requestManager.schedule(request, 1)
-        const $ = this.cheerio.load(response.data);
-        const returnObject = this.parser.parseUpdatedManga($, time, ids)
+        for (let item of ids) {
+            const request = createRequestObject({
+                url: DOMAIN + 'truyen-tranh/' + item,
+                method: 'GET',
+            });
+            const response = await this.requestManager.schedule(request, 1)
+            const $ = this.cheerio.load(response.data);
+            let x = $('time.small').text().trim();
+            let y = x.split("lúc:")[1].replace(']', '').trim().split(' ');
+            let z = y[1].split('/');
+            const timeUpdate = new Date(z[1] + '/' + z[0] + '/' + z[2] + ' ' + y[0]);
+            updateManga.push({
+                id: item,
+                time: timeUpdate
+            });
+        }
+
+        const returnObject = this.parser.parseUpdatedManga(updateManga, time, ids)
         mangaUpdatesFoundCallback(createMangaUpdates(returnObject))
     }
 
