@@ -2702,7 +2702,8 @@ class TruyentranhAudio extends paperback_extensions_common_1.Source {
                     name: $('a', obj).attr('title'),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: TruyentranhAudioParser_1.convertTime($('.chapter-time', obj).text().trim())
+                    time: TruyentranhAudioParser_1.convertTime($('.chapter-time', obj).text().trim()),
+                    group: $('.chapter-view', obj).text().trim()
                 }));
             }
             return chapters;
