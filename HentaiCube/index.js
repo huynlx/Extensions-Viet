@@ -954,12 +954,12 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                 url,
                 method
             });
+            url = url2;
             const request2 = createRequestObject({
                 url,
                 method
             });
             const response = yield this.requestManager.schedule(request, 1);
-            url = url.replace(`${page}`, `${page + 1}`);
             const response2 = yield this.requestManager.schedule(request2, 1);
             const $ = this.cheerio.load(response.data);
             const $2 = this.cheerio.load(response2.data);
