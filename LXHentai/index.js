@@ -2691,17 +2691,17 @@ class LXHentai extends paperback_extensions_common_1.Source {
                 method: "GET",
             });
             const response = yield this.requestManager.schedule(request, 1);
-            const $ = this.cheerio.load(response.data);
-            const arrayTags = [{ id: 'https://lxhentai.com/story/cat.php?id=11', label: 'Adult' }];
+            const html = Buffer.from(createByteArray(response.rawData)).toString();
+            const $ = this.cheerio.load(html);
+            const arrayTags = [];
             //the loai
             for (const tag of $('.col-sm-3 a', '#showTheLoai').toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_a = 'https://lxhentai.com/' + $(tag).attr('href')) !== null && _a !== void 0 ? _a : label;
+                const id = (_a = 'https://lxhentai.com' + $(tag).attr('href')) !== null && _a !== void 0 ? _a : label;
                 if (!id || !label)
                     continue;
                 arrayTags.push({ id: id, label: label });
             }
-            console.log(arrayTags);
             const tagSections = [
                 createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) }),
             ];
