@@ -640,10 +640,12 @@ class HentaiVN extends paperback_extensions_common_1.Source {
     }
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
+            const idchapshow = mangaId.split("::")[0].split('-doc-truyen-')[0];
+            const idlinkanime = mangaId.split("::")[0].split('-doc-truyen-')[1];
             const request = createRequestObject({
                 url: `${DOMAIN}`,
                 method,
-                param: mangaId.split("::")[0],
+                param: `list-showchapter.php?idchapshow=${idchapshow}&idlinkanime=${idlinkanime}`,
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
