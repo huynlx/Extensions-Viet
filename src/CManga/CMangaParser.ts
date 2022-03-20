@@ -1,8 +1,7 @@
 import { MangaTile, SearchRequest } from "paperback-extensions-common";
+import { DOMAIN } from "./CManga";
 
 const entities = require("entities"); //Import package for decoding HTML entities
-const DOMAIN = 'https://cmangatop.com/';
-
 export interface UpdatedManga {
     ids: string[];
     loadMore: boolean;
@@ -22,7 +21,7 @@ export const parseSearch = (json: any, search: any): MangaTile[] => {
             if (!item.name) continue;
             manga.push(createMangaTile({
                 id: item.url + '-' + item.id + "::" + item.url,
-                image: 'https://cmangatop.com/assets/tmp/book/avatar/' + item.avatar + '.jpg',
+                image: DOMAIN + 'assets/tmp/book/avatar/' + item.avatar + '.jpg',
                 title: createIconText({
                     text: titleCase(item.name),
                 }),
@@ -37,7 +36,7 @@ export const parseSearch = (json: any, search: any): MangaTile[] => {
             if (!item.name) continue;
             manga.push(createMangaTile({
                 id: item.url + '-' + item.id_book + "::" + item.url,
-                image: 'https://cmangatop.com/assets/tmp/book/avatar/' + item.avatar + '.jpg',
+                image: DOMAIN + 'assets/tmp/book/avatar/' + item.avatar + '.jpg',
                 title: createIconText({
                     text: titleCase(item.name),
                 }),
@@ -59,7 +58,7 @@ export const parseViewMore = (json: any): MangaTile[] => {
         if (!item.name) continue;
         manga.push(createMangaTile({
             id: item.url + '-' + item.id_book + "::" + item.url,
-            image: 'https://cmangatop.com/assets/tmp/book/avatar/' + item.avatar + '.jpg',
+            image: DOMAIN + 'assets/tmp/book/avatar/' + item.avatar + '.jpg',
             title: createIconText({
                 text: titleCase(item.name),
             }),

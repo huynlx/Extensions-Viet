@@ -19,7 +19,7 @@ import {
 } from "paperback-extensions-common"
 import { parseSearch, isLastPage, parseViewMore, parseUpdatedManga } from "./TruyenQQParser"
 
-const DOMAIN = 'http://truyenqqtop.com/'
+const DOMAIN = 'http://truyenqqpro.com/'
 const method = 'GET'
 
 export const TruyenQQInfo: SourceInfo = {

@@ -17,20 +17,19 @@ import {
     HomeSectionType
 } from "paperback-extensions-common"
 
-// import axios from "axios";
 import { parseSearch, isLastPage, parseViewMore } from "./LXHentaiParser"
 
 const DOMAIN = 'https://lxhentai.com/'
 const method = 'GET'
 
 export const LXHentaiInfo: SourceInfo = {
-    version: '2.0.0',
+    version: '2.0.1',
     name: 'LXHentai',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from LXHentai',
-    websiteBaseURL: `https://lxhentai.com/`,
+    websiteBaseURL: DOMAIN,
     contentRating: ContentRating.ADULT,
     sourceTags: [
         {
@@ -306,19 +305,20 @@ export class LXHentai extends Source {
     }
 
     async getSearchTags(): Promise<TagSection[]> {
-        const url = `https://lxhentai.com/#`
+        const url = `https://lxhentai.com/`
         const request = createRequestObject({
             url: url,
             method: "GET",
         });
 
-        const response = await this.requestManager.schedule(request, 1)
-        const $ = this.cheerio.load(response.data);
+        const response = await this.requestManager.schedule(request, 1);
+        const html = Buffer.from(createByteArray(response.rawData)).toString();
+        const $ = this.cheerio.load(html);
         const arrayTags: Tag[] = [];
         //the loai
-        for (const tag of $('.col-6 a', '#theloaiMob').toArray()) {
+        for (const tag of $('.col-sm-3 a', '#showTheLoai').toArray()) {
             const label = $(tag).text().trim();
-            const id = 'https://lxhentai.com/' + $(tag).attr('href') ?? label;
+            const id = 'https://lxhentai.com' + $(tag).attr('href') ?? label;
             if (!id || !label) continue;
             arrayTags.push({ id: id, label: label });
         }

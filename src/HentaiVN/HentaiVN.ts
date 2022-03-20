@@ -20,7 +20,7 @@ const DOMAIN = `https://hentaivn.moe/`
 const method = 'GET'
 
 export const HentaiVNInfo: SourceInfo = {
-    version: '2.7.0',
+    version: '2.8.0',
     name: 'HentaiVN',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -54,11 +54,13 @@ export class HentaiVN extends Source {
         return parseMangaDetails($, mangaId);
     }
 
-    async getChapters(mangaId: string): Promise<Chapter[]> {
+    async getChapters(mangaId: string): Promise<Chapter[]> { // mangaId.split("::")[0] => 29680-doc-truyen-caffenny-hobaku.html
+        const idchapshow = mangaId.split("::")[0].split('-doc-truyen-')[0];
+        const idlinkanime = mangaId.split("::")[0].split('-doc-truyen-')[1];
         const request = createRequestObject({
-            url: `${DOMAIN}`,
+            url: `${DOMAIN}`, //https://hentaivn.moe/list-showchapter.php?idchapshow=12378&idlinkanime=ban-cung-phong-bat-dac-di
             method,
-            param: mangaId.split("::")[0],
+            param: `list-showchapter.php?idchapshow=${idchapshow}&idlinkanime=${idlinkanime}`,
         });
 
         const response = await this.requestManager.schedule(request, 1);

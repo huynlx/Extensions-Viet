@@ -18,11 +18,11 @@ import {
 
 import { parseSearch, parseViewMore, decodeHTMLEntity, decrypt_data, titleCase, change_alias } from "./CMangaParser"
 
-const DOMAIN = 'https://cmanganew.com/'
+export const DOMAIN = 'https://cmanganew.com/'
 const method = 'GET'
 
 export const CMangaInfo: SourceInfo = {
-    version: '2.0.0',
+    version: '2.1.0',
     name: 'CManga',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -54,7 +54,7 @@ export class CManga extends Source {
         let $ = this.cheerio.load(data.data);
         const book_id = $.html().match(/book_id.+"(.+)"/)[1];
         // const request2 = createRequestObject({
-        //     url: "https://cmangatop.com/api/book_detail?opt1=" + book_id,
+        //     url:  DOMAIN +"api/book_detail?opt1=" + book_id,
         //     method: "GET",
         // });
         // const data2 = await this.requestManager.schedule(request2, 1);
@@ -86,7 +86,7 @@ export class CManga extends Source {
     }
     async getChapters(mangaId: string): Promise<Chapter[]> {
         const request2 = createRequestObject({
-            url: "https://cmangatop.com/api/book_chapter?opt1=" + mangaId.split("::")[2],
+            url: `${DOMAIN}api/book_chapter?opt1=` + mangaId.split("::")[2],
             method: "GET",
         });
         const data2 = await this.requestManager.schedule(request2, 1);
@@ -115,7 +115,7 @@ export class CManga extends Source {
         const url = `${DOMAIN}${chapterId}`;
         const chapID = url.split('/').pop();
         const request = createRequestObject({
-            url: 'https://cmangatop.com/api/chapter_content?opt1=' + chapID,
+            url: `${DOMAIN}api/chapter_content?opt1=` + chapID,
             method
         });
         const data = await this.requestManager.schedule(request, 1);
@@ -153,7 +153,7 @@ export class CManga extends Source {
         ///Get the section data
         //New Updates
         let request = createRequestObject({
-            url: "https://cmangatop.com/api/list_item",
+            url: `${DOMAIN}api/list_item`,
             method: "GET",
             param: '?page=1&limit=20&sort=new&type=all&tag=&child=off&status=all&num_chapter=0'
         });
@@ -165,7 +165,7 @@ export class CManga extends Source {
             if (!item.name) continue;
             newUpdatedItems.push(createMangaTile({
                 id: item.url + '-' + item.id_book + "::" + item.url,
-                image: 'https://cmangatop.com/assets/tmp/book/avatar/' + item.avatar + '.jpg',
+                image: DOMAIN + 'assets/tmp/book/avatar/' + item.avatar + '.jpg',
                 title: createIconText({
                     text: titleCase(item.name),
                 }),
@@ -179,7 +179,7 @@ export class CManga extends Source {
 
         //New Added
         request = createRequestObject({
-            url: "https://cmangatop.com/api/list_item",
+            url: DOMAIN + "api/list_item",
             param: "?page=1&limit=20&sort=new&type=all&tag=Truy%E1%BB%87n%20si%C3%AAu%20hay&child=off&status=all&num_chapter=0",
             method: "GET",
         });
@@ -193,7 +193,7 @@ export class CManga extends Source {
             if (!item.name) continue;
             newAddItems.push(createMangaTile({
                 id: item.url + '-' + item.id_book + "::" + item.url,
-                image: 'https://cmangatop.com/assets/tmp/book/avatar/' + item.avatar + '.jpg',
+                image: DOMAIN + 'assets/tmp/book/avatar/' + item.avatar + '.jpg',
                 title: createIconText({
                     text: titleCase(item.name),
                 }),
@@ -213,11 +213,11 @@ export class CManga extends Source {
         let method = "GET";
         switch (homepageSectionId) {
             case "new_updated":
-                url = "https://cmangatop.com/api/list_item";
+                url = DOMAIN + "api/list_item";
                 param = `?page=${page}&limit=40&sort=new&type=all&tag=&child=off&status=all&num_chapter=0`;
                 break;
             case "new_added":
-                url = "https://cmangatop.com/api/list_item";
+                url = DOMAIN + "api/list_item";
                 param = `?page=${page}&limit=40&sort=new&type=all&tag=Truy%E1%BB%87n%20si%C3%AAu%20hay&child=off&status=all&num_chapter=0`;
                 break;
             default:
@@ -270,8 +270,8 @@ export class CManga extends Source {
             }
         })
         const request = createRequestObject({
-            url: query.title ? encodeURI('https://cmangatop.com/api/search?opt1=' + (query.title))
-                : (search.top !== '' ? "https://cmangatop.com/api/top?data=book_top" : encodeURI(`https://cmangatop.com/api/list_item?page=${page}&limit=40&sort=${search.sort}&type=all&tag=${search.tag}&child=off&status=${search.status}&num_chapter=${search.num_chapter}`)),
+            url: query.title ? encodeURI(DOMAIN + 'api/search?opt1=' + (query.title))
+                : (search.top !== '' ? DOMAIN + "api/top?data=book_top" : encodeURI(DOMAIN + `api/list_item?page=${page}&limit=40&sort=${search.sort}&type=all&tag=${search.tag}&child=off&status=${search.status}&num_chapter=${search.num_chapter}`)),
             method: "GET",
         });
 
