@@ -16,7 +16,7 @@ import {
 import { parseRandomSections, parseSearch, isLastPage, parseChapterDetails, parseChapters, parseFullSections, parseHomeSections, parseMangaDetails, parseViewMore, parseAddedSections, parsePopularSections } from "./HentaiVNParser"
 import tags from './tags.json';
 
-const DOMAIN = `https://hentaivn.tv/`
+const DOMAIN = `https://hentaivn.moe/`
 const method = 'GET'
 
 export const HentaiVNInfo: SourceInfo = {

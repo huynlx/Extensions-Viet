@@ -18,7 +18,7 @@ import {
 
 import { parseSearch, parseViewMore, decodeHTMLEntity, decrypt_data, titleCase, change_alias } from "./CMangaParser"
 
-const DOMAIN = 'https://cmangatop.com/'
+const DOMAIN = 'https://cmanganew.com/'
 const method = 'GET'
 
 export const CMangaInfo: SourceInfo = {

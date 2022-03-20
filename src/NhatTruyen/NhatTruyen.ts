@@ -15,7 +15,7 @@ import {
 } from "paperback-extensions-common"
 import { Parser } from './NhatTruyenParser';
 
-const DOMAIN = 'http://www.nhattruyenvip.com/'
+const DOMAIN = 'http://nhattruyengo.com/'
 
 export const isLastPage = ($: CheerioStatic): boolean => {
     const current = $('ul.pagination > li.active > a').text();
