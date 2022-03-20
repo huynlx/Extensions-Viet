@@ -598,7 +598,7 @@ exports.HentaiVN = exports.HentaiVNInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const HentaiVNParser_1 = require("./HentaiVNParser");
 const tags_json_1 = __importDefault(require("./tags.json"));
-const DOMAIN = `https://hentaivn.tv/`;
+const DOMAIN = `https://hentaivn.moe/`;
 const method = 'GET';
 exports.HentaiVNInfo = {
     version: '2.7.0',
