@@ -2685,7 +2685,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
     getSearchTags() {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://lxhentai.com/#`;
+            const url = `https://lxhentai.com/`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -2694,7 +2694,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             const arrayTags = [];
             //the loai
-            for (const tag of $('.col-6 a', '#theloaiMob').toArray()) {
+            for (const tag of $('.col-sm-3 a', '#showTheLoai').toArray()) {
                 const label = $(tag).text().trim();
                 const id = (_a = 'https://lxhentai.com/' + $(tag).attr('href')) !== null && _a !== void 0 ? _a : label;
                 if (!id || !label)
