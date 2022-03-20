@@ -385,7 +385,7 @@ exports.isLastPage = ($) => {
     return true;
 };
 exports.NhatTruyenInfo = {
-    version: '3.0.0',
+    version: '3.0.1',
     name: 'NhatTruyen',
     icon: 'icon.png',
     author: 'Huynhzip3',

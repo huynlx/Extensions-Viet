@@ -594,7 +594,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TruyenQQ = exports.TruyenQQInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const TruyenQQParser_1 = require("./TruyenQQParser");
-const DOMAIN = 'http://truyenqqtop.com/';
+const DOMAIN = 'http://truyenqqpro.com/';
 const method = 'GET';
 exports.TruyenQQInfo = {
     version: '3.0.0',
