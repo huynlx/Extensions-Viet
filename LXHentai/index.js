@@ -2395,18 +2395,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LXHentai = exports.LXHentaiInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
-// import axios from "axios";
 const LXHentaiParser_1 = require("./LXHentaiParser");
 const DOMAIN = 'https://lxhentai.com/';
 const method = 'GET';
 exports.LXHentaiInfo = {
-    version: '2.0.0',
+    version: '2.0.1',
     name: 'LXHentai',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from LXHentai',
-    websiteBaseURL: `https://lxhentai.com/`,
+    websiteBaseURL: DOMAIN,
     contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
         {
