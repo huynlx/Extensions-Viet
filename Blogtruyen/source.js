@@ -594,7 +594,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Blogtruyen = exports.BlogtruyenInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const BlogtruyenParser_1 = require("./BlogtruyenParser");
-const DOMAIN = 'https://truyentranhlh.net/';
+const DOMAIN = 'https://blogtruyen.vn';
 const method = 'GET';
 exports.BlogtruyenInfo = {
     version: '2.0.1',
