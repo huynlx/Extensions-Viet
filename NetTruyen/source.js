@@ -410,7 +410,19 @@ class NetTruyen extends paperback_extensions_common_1.Source {
         this.parser = new NetTruyenParser_1.Parser();
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
-            requestTimeout: 20000
+            requestTimeout: 20000,
+            interceptor: {
+                interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
+                    var _a;
+                    request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
+                        'referer': DOMAIN
+                    });
+                    return request;
+                }),
+                interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
+                    return response;
+                })
+            }
         });
     }
     getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh/${mangaId}`; }
@@ -698,22 +710,6 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             }
             const returnObject = this.parser.parseUpdatedManga(updateManga, time, ids);
             mangaUpdatesFoundCallback(createMangaUpdates(returnObject));
-        });
-    }
-    // globalRequestHeaders(): RequestHeaders { //ko có cái này ko load đc page truyện (load ảnh)
-    //     return {
-    //         referer: DOMAIN
-    //     }
-    // }
-    CloudFlareError(status) {
-        if (status == 503) {
-            throw new Error('CLOUDFLARE BYPASS ERROR:\nPlease go to Settings > Sources > \<\The name of this source\> and press Cloudflare Bypass');
-        }
-    }
-    getCloudflareBypassRequest() {
-        return createRequestObject({
-            url: DOMAIN,
-            method: 'GET'
         });
     }
 }
