@@ -700,10 +700,21 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             mangaUpdatesFoundCallback(createMangaUpdates(returnObject));
         });
     }
-    globalRequestHeaders() {
-        return {
-            referer: DOMAIN
-        };
+    // globalRequestHeaders(): RequestHeaders { //ko có cái này ko load đc page truyện (load ảnh)
+    //     return {
+    //         referer: DOMAIN
+    //     }
+    // }
+    CloudFlareError(status) {
+        if (status == 503) {
+            throw new Error('CLOUDFLARE BYPASS ERROR:\nPlease go to Settings > Sources > \<\The name of this source\> and press Cloudflare Bypass');
+        }
+    }
+    getCloudflareBypassRequest() {
+        return createRequestObject({
+            url: DOMAIN,
+            method: 'GET'
+        });
     }
 }
 exports.NetTruyen = NetTruyen;
