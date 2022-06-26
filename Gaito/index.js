@@ -596,13 +596,13 @@ const paperback_extensions_common_1 = require("paperback-extensions-common");
 const GaitoParser_1 = require("./GaitoParser");
 const method = 'GET';
 exports.GaitoInfo = {
-    version: '1.0.0',
+    version: '1.0.1',
     name: 'Gai.to',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from Gai.to',
-    websiteBaseURL: `https://www.gaito.me/truyen-hentai/`,
+    websiteBaseURL: `https://www.gaito.us/truyen-hentai/`,
     contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
         {
@@ -616,14 +616,26 @@ class Gaito extends paperback_extensions_common_1.Source {
         super(...arguments);
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
-            requestTimeout: 20000
+            requestTimeout: 20000,
+            interceptor: {
+                interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
+                    var _a;
+                    request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
+                        'referer': 'https://www.gaito.us/'
+                    });
+                    return request;
+                }),
+                interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
+                    return response;
+                })
+            }
         });
     }
-    getMangaShareUrl(mangaId) { return `https://www.gaito.me/truyen-hentai/comic/${mangaId}`; }
+    getMangaShareUrl(mangaId) { return `https://www.gaito.us/truyen-hentai/comic/${mangaId}`; }
     ;
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://api.gaito.me/manga/comics/${mangaId}`;
+            const url = `https://api.gaito.us/manga/comics/${mangaId}`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -657,7 +669,7 @@ class Gaito extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `https://api.gaito.me/manga/chapters?comicId=${mangaId}&mode=by-comic&orderBy=bySortOrderDown`,
+                url: `https://api.gaito.us/manga/chapters?comicId=${mangaId}&mode=by-comic&orderBy=bySortOrderDown`,
                 method,
             });
             const data = yield this.requestManager.schedule(request, 1);
@@ -681,7 +693,7 @@ class Gaito extends paperback_extensions_common_1.Source {
     getChapterDetails(mangaId, chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `https://api.gaito.me/manga/pages?chapterId=${chapterId}&mode=by-chapter`,
+                url: `https://api.gaito.us/manga/pages?chapterId=${chapterId}&mode=by-chapter`,
                 method
             });
             const data = yield this.requestManager.schedule(request, 1);
@@ -718,7 +730,7 @@ class Gaito extends paperback_extensions_common_1.Source {
             ///Get the section data
             //New Updates
             let request = createRequestObject({
-                url: 'https://api.gaito.me/manga/comics?limit=20&offset=0&sort=latest',
+                url: 'https://api.gaito.us/manga/comics?limit=20&offset=0&sort=latest',
                 method: "GET",
             });
             let newUpdatedItems = [];
@@ -745,7 +757,7 @@ class Gaito extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             //view
             request = createRequestObject({
-                url: 'https://api.gaito.me/manga/comics?limit=20&offset=0&sort=top-rated',
+                url: 'https://api.gaito.us/manga/comics?limit=20&offset=0&sort=top-rated',
                 method: "GET",
             });
             let newAddItems = [];
@@ -780,11 +792,11 @@ class Gaito extends paperback_extensions_common_1.Source {
             let select = 1;
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `https://api.gaito.me/manga/comics?limit=20&offset=${page}&sort=latest`;
+                    url = `https://api.gaito.us/manga/comics?limit=20&offset=${page}&sort=latest`;
                     select = 1;
                     break;
                 case "view":
-                    url = `https://api.gaito.me/manga/comics?limit=20&offset=${page}&sort=top-rated`;
+                    url = `https://api.gaito.us/manga/comics?limit=20&offset=${page}&sort=top-rated`;
                     select = 2;
                     break;
                 default:
@@ -810,7 +822,7 @@ class Gaito extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 0;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: encodeURI(`https://api.gaito.me/manga/comics?genreId=${tags[0]}&limit=20&offset=${page}&sort=latest`),
+                url: encodeURI(`https://api.gaito.us/manga/comics?genreId=${tags[0]}&limit=20&offset=${page}&sort=latest`),
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
@@ -826,7 +838,7 @@ class Gaito extends paperback_extensions_common_1.Source {
     getSearchTags() {
         return __awaiter(this, void 0, void 0, function* () {
             const tags = [];
-            const url = `https://api.gaito.me/ext/genres?plugin=manga`;
+            const url = `https://api.gaito.us/ext/genres?plugin=manga`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -844,11 +856,6 @@ class Gaito extends paperback_extensions_common_1.Source {
             const tagSections = [createTagSection({ id: '0', label: 'Thể Loại Hentai', tags: tags.map(x => createTag(x)) })];
             return tagSections;
         });
-    }
-    globalRequestHeaders() {
-        return {
-            referer: 'https://www.gaito.me/'
-        };
     }
 }
 exports.Gaito = Gaito;

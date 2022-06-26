@@ -597,7 +597,7 @@ const HentaiVLParser_1 = require("./HentaiVLParser");
 const DOMAIN = 'https://hentaivl.com/';
 const method = 'GET';
 exports.HentaiVLInfo = {
-    version: '1.0.0',
+    version: '1.0.1',
     name: 'HentaiVL',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -617,7 +617,19 @@ class HentaiVL extends paperback_extensions_common_1.Source {
         super(...arguments);
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
-            requestTimeout: 20000
+            requestTimeout: 20000,
+            interceptor: {
+                interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
+                    var _a;
+                    request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
+                        'referer': DOMAIN
+                    });
+                    return request;
+                }),
+                interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
+                    return response;
+                })
+            }
         });
     }
     getMangaShareUrl(mangaId) { return `https://hentaivl.com${mangaId}`; }
@@ -896,11 +908,6 @@ class HentaiVL extends paperback_extensions_common_1.Source {
             const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) })];
             return tagSections;
         });
-    }
-    globalRequestHeaders() {
-        return {
-            referer: 'https://hentaivl.com/'
-        };
     }
 }
 exports.HentaiVL = HentaiVL;

@@ -597,7 +597,7 @@ const MangaiiParser_1 = require("./MangaiiParser");
 const DOMAIN = 'https://mangaii.com/';
 const method = 'GET';
 exports.MangaiiInfo = {
-    version: '1.0.0',
+    version: '1.0.1',
     name: 'Mangaii',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -617,7 +617,19 @@ class Mangaii extends paperback_extensions_common_1.Source {
         super(...arguments);
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
-            requestTimeout: 20000
+            requestTimeout: 20000,
+            interceptor: {
+                interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
+                    var _a;
+                    request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
+                        'referer': DOMAIN
+                    });
+                    return request;
+                }),
+                interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
+                    return response;
+                })
+            }
         });
     }
     getMangaShareUrl(mangaId) { return `${mangaId}`; }
@@ -916,11 +928,6 @@ class Mangaii extends paperback_extensions_common_1.Source {
             ];
             return tagSections;
         });
-    }
-    globalRequestHeaders() {
-        return {
-            referer: `${DOMAIN}`
-        };
     }
 }
 exports.Mangaii = Mangaii;

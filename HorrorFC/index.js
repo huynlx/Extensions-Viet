@@ -594,12 +594,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.HorrorFC = exports.HorrorFCInfo = exports.isLastPage = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const HorrorFCParser_1 = require("./HorrorFCParser");
-const DOMAIN = 'https://horrorfc.net/';
+const DOMAIN = 'https://horrorfc.com/';
 exports.isLastPage = ($) => {
     return true;
 };
 exports.HorrorFCInfo = {
-    version: '1.0.0',
+    version: '1.0.1',
     name: 'HorrorFC',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -624,7 +624,19 @@ class HorrorFC extends paperback_extensions_common_1.Source {
         this.parser = new HorrorFCParser_1.Parser();
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
-            requestTimeout: 20000
+            requestTimeout: 20000,
+            interceptor: {
+                interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
+                    var _a;
+                    request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
+                        'referer': DOMAIN
+                    });
+                    return request;
+                }),
+                interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
+                    return response;
+                })
+            }
         });
     }
     getMangaShareUrl(mangaId) { return `${mangaId.split("::")[0]}`; }
@@ -754,15 +766,10 @@ class HorrorFC extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let count = $('a.item > span:nth-child(2)').text().trim();
-            const tags = [{ 'id': 'https://horrorfc.net/', 'label': 'Tất Cả (' + count + ')' }];
+            const tags = [{ 'id': 'https://horrorfc.com/', 'label': 'Tất Cả (' + count + ')' }];
             const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) })];
             return tagSections;
         });
-    }
-    globalRequestHeaders() {
-        return {
-            referer: DOMAIN
-        };
     }
 }
 exports.HorrorFC = HorrorFC;

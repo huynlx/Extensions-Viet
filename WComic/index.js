@@ -597,7 +597,7 @@ const WComicParser_1 = require("./WComicParser");
 const DOMAIN = 'https://wcomic.site/';
 const method = 'GET';
 exports.WComicInfo = {
-    version: '1.0.0',
+    version: '1.0.1',
     name: 'WComic',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -617,7 +617,19 @@ class WComic extends paperback_extensions_common_1.Source {
         super(...arguments);
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
-            requestTimeout: 20000
+            requestTimeout: 20000,
+            interceptor: {
+                interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
+                    var _a;
+                    request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
+                        'referer': DOMAIN
+                    });
+                    return request;
+                }),
+                interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
+                    return response;
+                })
+            }
         });
     }
     getMangaShareUrl(mangaId) { return `${mangaId}`; }
@@ -905,11 +917,6 @@ class WComic extends paperback_extensions_common_1.Source {
             ];
             return tagSections;
         });
-    }
-    globalRequestHeaders() {
-        return {
-            referer: DOMAIN
-        };
     }
 }
 exports.WComic = WComic;

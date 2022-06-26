@@ -597,7 +597,7 @@ const BlogtruyenParser_1 = require("./BlogtruyenParser");
 const DOMAIN = 'https://truyentranhlh.net/';
 const method = 'GET';
 exports.BlogtruyenInfo = {
-    version: '2.0.0',
+    version: '2.0.1',
     name: 'Blogtruyen',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -617,7 +617,19 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
         super(...arguments);
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
-            requestTimeout: 20000
+            requestTimeout: 20000,
+            interceptor: {
+                interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
+                    var _a;
+                    request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
+                        'referer': DOMAIN
+                    });
+                    return request;
+                }),
+                interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
+                    return response;
+                })
+            }
         });
     }
     getMangaShareUrl(mangaId) { return `https://blogtruyen.vn${mangaId}`; }
@@ -1049,11 +1061,6 @@ class Blogtruyen extends paperback_extensions_common_1.Source {
             const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) })];
             return tagSections;
         });
-    }
-    globalRequestHeaders() {
-        return {
-            referer: 'https://blogtruyen.vn/'
-        };
     }
 }
 exports.Blogtruyen = Blogtruyen;

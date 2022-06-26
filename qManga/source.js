@@ -596,7 +596,7 @@ const paperback_extensions_common_1 = require("paperback-extensions-common");
 const qMangaParser_1 = require("./qMangaParser");
 const method = 'GET';
 exports.qMangaInfo = {
-    version: '2.0.0',
+    version: '2.0.1',
     name: 'qManga',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -616,7 +616,19 @@ class qManga extends paperback_extensions_common_1.Source {
         super(...arguments);
         this.requestManager = createRequestManager({
             requestsPerSecond: 0.5,
-            requestTimeout: 15000
+            requestTimeout: 15000,
+            interceptor: {
+                interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
+                    var _a;
+                    request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
+                        'referer': 'https://qmanga.co/'
+                    });
+                    return request;
+                }),
+                interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
+                    return response;
+                })
+            }
         });
     }
     getMangaShareUrl(mangaId) { return `${mangaId}`; }
@@ -973,11 +985,6 @@ class qManga extends paperback_extensions_common_1.Source {
             ];
             return tagSections;
         });
-    }
-    globalRequestHeaders() {
-        return {
-            referer: 'https://qmanga.co/'
-        };
     }
 }
 exports.qManga = qManga;

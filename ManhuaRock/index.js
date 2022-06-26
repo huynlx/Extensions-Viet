@@ -2619,7 +2619,7 @@ const ManhuaRockParser_1 = require("./ManhuaRockParser");
 const DOMAIN = 'https://manhuarock.net/';
 const method = 'GET';
 exports.ManhuaRockInfo = {
-    version: '1.5.0',
+    version: '1.5.1',
     name: 'ManhuaRock',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -2639,14 +2639,20 @@ class ManhuaRock extends paperback_extensions_common_1.Source {
         super(...arguments);
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
-            requestTimeout: 20000
+            requestTimeout: 20000,
+            interceptor: {
+                interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
+                    var _a;
+                    request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
+                        'referer': DOMAIN
+                    });
+                    return request;
+                }),
+                interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
+                    return response;
+                })
+            }
         });
-        // override getCloudflareBypassRequest(): Request {
-        //     return createRequestObject({ //https://lxhentai.com/
-        //         url: 'https://manhuarock.net/',
-        //         method: 'GET',
-        //     }) //dit buoi lam lxhentai nua dkm, ti fix thanh medoctruyen
-        // }
     }
     convertTime(timeAgo) {
         var _a;
@@ -3063,11 +3069,6 @@ class ManhuaRock extends paperback_extensions_common_1.Source {
             ];
             return tagSections;
         });
-    }
-    globalRequestHeaders() {
-        return {
-            referer: DOMAIN
-        };
     }
 }
 exports.ManhuaRock = ManhuaRock;

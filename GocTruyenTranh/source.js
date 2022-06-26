@@ -594,10 +594,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GocTruyenTranh = exports.GocTruyenTranhInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const GocTruyenTranhParser_1 = require("./GocTruyenTranhParser");
-const DOMAIN = 'https://goctruyentranh.com/';
+const DOMAIN = 'https://goctruyentranhhay.com/';
 const method = 'GET';
 exports.GocTruyenTranhInfo = {
-    version: '1.0.0',
+    version: '1.0.1',
     name: 'GocTruyenTranh',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -617,7 +617,19 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
         super(...arguments);
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
-            requestTimeout: 20000
+            requestTimeout: 20000,
+            interceptor: {
+                interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
+                    var _a;
+                    request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
+                        'referer': DOMAIN
+                    });
+                    return request;
+                }),
+                interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
+                    return response;
+                })
+            }
         });
     }
     getMangaShareUrl(mangaId) { return `${mangaId.split("::")[0]}`; }
@@ -671,7 +683,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: `https://goctruyentranh.com/api/comic/${mangaId.split("::")[1]}/chapter?offset=0&limit=-1`,
+                url: `https://goctruyentranhhay.com/api/comic/${mangaId.split("::")[1]}/chapter?offset=0&limit=-1`,
                 method,
             });
             const data = yield this.requestManager.schedule(request, 1);
@@ -742,7 +754,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
             //Hot
             let url = '';
             let request = createRequestObject({
-                url: 'https://goctruyentranh.com/api/comic/search/view?p=0',
+                url: 'https://goctruyentranhhay.com/api/comic/search/view?p=0',
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
@@ -752,7 +764,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
             //New Updates
             url = '';
             request = createRequestObject({
-                url: 'https://goctruyentranh.com/api/comic/search/recent?p=0',
+                url: 'https://goctruyentranhhay.com/api/comic/search/recent?p=0',
                 method: "GET",
             });
             data = yield this.requestManager.schedule(request, 1);
@@ -762,7 +774,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
             //New Added
             url = DOMAIN;
             request = createRequestObject({
-                url: 'https://goctruyentranh.com/api/comic/search/new?p=0',
+                url: 'https://goctruyentranhhay.com/api/comic/search/new?p=0',
                 method: "GET",
             });
             data = yield this.requestManager.schedule(request, 1);
@@ -772,7 +784,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
             // //Featured
             // url = '';
             // request = createRequestObject({
-            //     url: 'https://goctruyentranh.com/trang-chu',
+            //     url: 'https://goctruyentranhhay.com/trang-chu',
             //     method: "GET",
             // });
             // let featuredItems: MangaTile[] = [];
@@ -804,13 +816,13 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
             let url = '';
             switch (homepageSectionId) {
                 case "hot":
-                    url = `https://goctruyentranh.com/api/comic/search/view?p=${page}`;
+                    url = `https://goctruyentranhhay.com/api/comic/search/view?p=${page}`;
                     break;
                 case "new_updated":
-                    url = `https://goctruyentranh.com/api/comic/search/recent?p=${page}`;
+                    url = `https://goctruyentranhhay.com/api/comic/search/recent?p=${page}`;
                     break;
                 case "new_added":
-                    url = `https://goctruyentranh.com/api/comic/search/new?p=${page}`;
+                    url = `https://goctruyentranhhay.com/api/comic/search/new?p=${page}`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
@@ -836,7 +848,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 0;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: query.title ? encodeURI(`https://goctruyentranh.com/api/comic/search?name=${query.title}`) : `https://goctruyentranh.com/api/comic/search/category?p=${page}&value=${tags[0]}`,
+                url: query.title ? encodeURI(`https://goctruyentranhhay.com/api/comic/search?name=${query.title}`) : `https://goctruyentranhhay.com/api/comic/search/category?p=${page}&value=${tags[0]}`,
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
@@ -851,7 +863,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
     }
     getSearchTags() {
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://goctruyentranh.com/api/category`;
+            const url = `https://goctruyentranhhay.com/api/category`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -872,11 +884,6 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
             ];
             return tagSections;
         });
-    }
-    globalRequestHeaders() {
-        return {
-            referer: 'https://goctruyentranh.com/'
-        };
     }
 }
 exports.GocTruyenTranh = GocTruyenTranh;

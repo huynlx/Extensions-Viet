@@ -597,7 +597,7 @@ const TruyengihotParser_1 = require("./TruyengihotParser");
 const DOMAIN = 'https://truyengihot.net/';
 const method = 'GET';
 exports.TruyengihotInfo = {
-    version: '1.5.0',
+    version: '1.5.1',
     name: 'Truyengihot',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -617,7 +617,19 @@ class Truyengihot extends paperback_extensions_common_1.Source {
         super(...arguments);
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
-            requestTimeout: 20000
+            requestTimeout: 20000,
+            interceptor: {
+                interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
+                    var _a;
+                    request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
+                        'referer': DOMAIN
+                    });
+                    return request;
+                }),
+                interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
+                    return response;
+                })
+            }
         });
     }
     convertTime(timeAgo) {
@@ -977,11 +989,6 @@ class Truyengihot extends paperback_extensions_common_1.Source {
             ];
             return tagSections;
         });
-    }
-    globalRequestHeaders() {
-        return {
-            referer: DOMAIN
-        };
     }
 }
 exports.Truyengihot = Truyengihot;

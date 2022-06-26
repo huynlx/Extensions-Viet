@@ -597,7 +597,7 @@ const HentaiCubeParser_1 = require("./HentaiCubeParser");
 const DOMAIN = 'https://hentaicb.top/';
 const method = 'GET';
 exports.HentaiCubeInfo = {
-    version: '2.7.0',
+    version: '2.7.1',
     name: 'HentaiCube',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -617,7 +617,19 @@ class HentaiCube extends paperback_extensions_common_1.Source {
         super(...arguments);
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
-            requestTimeout: 20000
+            requestTimeout: 20000,
+            interceptor: {
+                interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
+                    var _a;
+                    request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
+                        'referer': DOMAIN
+                    });
+                    return request;
+                }),
+                interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
+                    return response;
+                })
+            }
         });
     }
     getMangaShareUrl(mangaId) { return `${mangaId}`; }
@@ -1142,11 +1154,6 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             ];
             return tagSections;
         });
-    }
-    globalRequestHeaders() {
-        return {
-            referer: 'https://hentaicb.top/'
-        };
     }
 }
 exports.HentaiCube = HentaiCube;

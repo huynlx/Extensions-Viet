@@ -7432,10 +7432,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CManga = exports.CMangaInfo = exports.DOMAIN = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const CMangaParser_1 = require("./CMangaParser");
-exports.DOMAIN = 'https://cmanganew.com/';
+exports.DOMAIN = 'https://cmangac.com/';
 const method = 'GET';
 exports.CMangaInfo = {
-    version: '2.1.0',
+    version: '2.1.1',
     name: 'CManga',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -7455,7 +7455,19 @@ class CManga extends paperback_extensions_common_1.Source {
         super(...arguments);
         this.requestManager = createRequestManager({
             requestsPerSecond: 2,
-            requestTimeout: 15000
+            requestTimeout: 15000,
+            interceptor: {
+                interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
+                    var _a;
+                    request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
+                        'referer': exports.DOMAIN
+                    });
+                    return request;
+                }),
+                interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
+                    return response;
+                })
+            }
         });
     }
     getMangaShareUrl(mangaId) { return exports.DOMAIN + mangaId.split("::")[0]; }
@@ -7787,11 +7799,6 @@ class CManga extends paperback_extensions_common_1.Source {
             ];
             return tagSections;
         });
-    }
-    globalRequestHeaders() {
-        return {
-            referer: `${exports.DOMAIN}`
-        };
     }
 }
 exports.CManga = CManga;

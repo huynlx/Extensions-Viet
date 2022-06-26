@@ -597,7 +597,7 @@ const BeengParser_1 = require("./BeengParser");
 const DOMAIN = 'https://beeng.org/';
 const method = 'GET';
 exports.BeengInfo = {
-    version: '2.0.0',
+    version: '2.0.1',
     name: 'Beeng',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -617,7 +617,19 @@ class Beeng extends paperback_extensions_common_1.Source {
         super(...arguments);
         this.requestManager = createRequestManager({
             requestsPerSecond: 2,
-            requestTimeout: 10000
+            requestTimeout: 10000,
+            interceptor: {
+                interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
+                    var _a;
+                    request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
+                        'referer': DOMAIN
+                    });
+                    return request;
+                }),
+                interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
+                    return response;
+                })
+            }
         });
     }
     getMangaShareUrl(mangaId) { return `${DOMAIN}${mangaId}`; }
@@ -978,11 +990,6 @@ class Beeng extends paperback_extensions_common_1.Source {
             ];
             return tagSections;
         });
-    }
-    globalRequestHeaders() {
-        return {
-            referer: DOMAIN
-        };
     }
 }
 exports.Beeng = Beeng;

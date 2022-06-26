@@ -597,7 +597,7 @@ const TruyenQQParser_1 = require("./TruyenQQParser");
 const DOMAIN = 'http://truyenqqpro.com/';
 const method = 'GET';
 exports.TruyenQQInfo = {
-    version: '3.0.0',
+    version: '3.0.1',
     name: 'TruyenQQ',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -621,7 +621,19 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
         super(...arguments);
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
-            requestTimeout: 20000
+            requestTimeout: 20000,
+            interceptor: {
+                interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
+                    var _a;
+                    request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
+                        'referer': DOMAIN
+                    });
+                    return request;
+                }),
+                interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
+                    return response;
+                })
+            }
         });
     }
     getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh/${mangaId}`; }
@@ -1085,11 +1097,6 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             const returnObject = TruyenQQParser_1.parseUpdatedManga($, time, ids);
             mangaUpdatesFoundCallback(createMangaUpdates(returnObject));
         });
-    }
-    globalRequestHeaders() {
-        return {
-            referer: `${DOMAIN} `
-        };
     }
 }
 exports.TruyenQQ = TruyenQQ;

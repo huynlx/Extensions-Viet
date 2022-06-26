@@ -7434,7 +7434,7 @@ const paperback_extensions_common_1 = require("paperback-extensions-common");
 const VcomycsParser_1 = require("./VcomycsParser");
 const method = 'GET';
 exports.VcomycsInfo = {
-    version: '1.0.0',
+    version: '1.0.1',
     name: 'Vcomycs',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -7454,7 +7454,19 @@ class Vcomycs extends paperback_extensions_common_1.Source {
         super(...arguments);
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
-            requestTimeout: 20000
+            requestTimeout: 20000,
+            interceptor: {
+                interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
+                    var _a;
+                    request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
+                        'referer': 'https://vcomycs.com/'
+                    });
+                    return request;
+                }),
+                interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
+                    return response;
+                })
+            }
         });
     }
     getMangaShareUrl(mangaId) { return `${mangaId}`; }
@@ -7730,11 +7742,6 @@ class Vcomycs extends paperback_extensions_common_1.Source {
             ];
             return tagSections;
         });
-    }
-    globalRequestHeaders() {
-        return {
-            referer: 'https://vcomycs.com/'
-        };
     }
 }
 exports.Vcomycs = Vcomycs;

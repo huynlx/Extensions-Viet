@@ -596,7 +596,7 @@ const paperback_extensions_common_1 = require("paperback-extensions-common");
 const MeDocTruyenParser_1 = require("./MeDocTruyenParser");
 const method = 'GET';
 exports.MeDocTruyenInfo = {
-    version: '2.5.0',
+    version: '2.5.1',
     name: 'MeDocTruyen',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -616,7 +616,19 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
         super(...arguments);
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
-            requestTimeout: 20000
+            requestTimeout: 20000,
+            interceptor: {
+                interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
+                    var _a;
+                    request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
+                        'referer': 'https://m.medoctruyentranh.net/'
+                    });
+                    return request;
+                }),
+                interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
+                    return response;
+                })
+            }
         });
     }
     getMangaShareUrl(mangaId) { return (mangaId); }
@@ -1035,11 +1047,6 @@ class MeDocTruyen extends paperback_extensions_common_1.Source {
             ];
             return tagSections;
         });
-    }
-    globalRequestHeaders() {
-        return {
-            referer: 'https://www.medoctruyentranh.net/'
-        };
     }
 }
 exports.MeDocTruyen = MeDocTruyen;

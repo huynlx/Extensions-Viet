@@ -597,7 +597,7 @@ const HentaiVVParser_1 = require("./HentaiVVParser");
 const DOMAIN = 'https://hentaicube.net/';
 const method = 'GET';
 exports.HentaiVVInfo = {
-    version: '2.5.0',
+    version: '2.5.1',
     name: 'HentaiVV',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -617,7 +617,19 @@ class HentaiVV extends paperback_extensions_common_1.Source {
         super(...arguments);
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
-            requestTimeout: 20000
+            requestTimeout: 20000,
+            interceptor: {
+                interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
+                    var _a;
+                    request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
+                        'referer': DOMAIN
+                    });
+                    return request;
+                }),
+                interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
+                    return response;
+                })
+            }
         });
     }
     getMangaShareUrl(mangaId) { return `${mangaId}`; }
@@ -1058,11 +1070,6 @@ class HentaiVV extends paperback_extensions_common_1.Source {
                 createTagSection({ id: '2', label: 'Thời Gian', tags: tags3.map(x => createTag(x)) })];
             return tagSections;
         });
-    }
-    globalRequestHeaders() {
-        return {
-            referer: 'https://hentaivv.com/'
-        };
     }
 }
 exports.HentaiVV = HentaiVV;

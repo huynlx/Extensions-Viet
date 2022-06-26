@@ -601,7 +601,7 @@ const tags_json_1 = __importDefault(require("./tags.json"));
 const DOMAIN = `https://hentaivn.moe/`;
 const method = 'GET';
 exports.HentaiVNInfo = {
-    version: '2.8.0',
+    version: '2.8.1',
     name: 'HentaiVN',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -621,7 +621,19 @@ class HentaiVN extends paperback_extensions_common_1.Source {
         super(...arguments);
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
-            requestTimeout: 20000
+            requestTimeout: 20000,
+            interceptor: {
+                interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
+                    var _a;
+                    request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
+                        'referer': DOMAIN
+                    });
+                    return request;
+                }),
+                interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
+                    return response;
+                })
+            }
         });
     }
     getMangaShareUrl(mangaId) { return `${DOMAIN}${mangaId}`; }
@@ -889,11 +901,6 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             ];
             return tagSections;
         });
-    }
-    globalRequestHeaders() {
-        return {
-            referer: `${DOMAIN}` + '/'
-        };
     }
 }
 exports.HentaiVN = HentaiVN;

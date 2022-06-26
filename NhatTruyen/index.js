@@ -374,7 +374,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.NhatTruyen = exports.NhatTruyenInfo = exports.isLastPage = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const NhatTruyenParser_1 = require("./NhatTruyenParser");
-const DOMAIN = 'http://nhattruyengo.com/';
+const DOMAIN = 'http://nhattruyenmoi.com/';
 exports.isLastPage = ($) => {
     const current = $('ul.pagination > li.active > a').text();
     let total = $('ul.pagination > li.PagerSSCCells:last-child').text();
@@ -385,7 +385,7 @@ exports.isLastPage = ($) => {
     return true;
 };
 exports.NhatTruyenInfo = {
-    version: '3.0.1',
+    version: '3.0.2',
     name: 'NhatTruyen',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -410,7 +410,19 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
         this.parser = new NhatTruyenParser_1.Parser();
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
-            requestTimeout: 20000
+            requestTimeout: 20000,
+            interceptor: {
+                interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
+                    var _a;
+                    request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
+                        'referer': DOMAIN
+                    });
+                    return request;
+                }),
+                interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
+                    return response;
+                })
+            }
         });
     }
     getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh/${mangaId}`; }
@@ -669,11 +681,6 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             const returnObject = this.parser.parseUpdatedManga(updateManga, time, ids);
             mangaUpdatesFoundCallback(createMangaUpdates(returnObject));
         });
-    }
-    globalRequestHeaders() {
-        return {
-            referer: DOMAIN
-        };
     }
 }
 exports.NhatTruyen = NhatTruyen;

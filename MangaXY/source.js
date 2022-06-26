@@ -597,7 +597,7 @@ const MangaXYParser_1 = require("./MangaXYParser");
 const DOMAIN = 'https://mangaxy.com/';
 const method = 'GET';
 exports.MangaXYInfo = {
-    version: '1.0.0',
+    version: '1.0.1',
     name: 'MangaXY (TT8)',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -617,13 +617,20 @@ class MangaXY extends paperback_extensions_common_1.Source {
         super(...arguments);
         this.requestManager = createRequestManager({
             requestsPerSecond: 3,
-            requestTimeout: 15000
+            requestTimeout: 15000,
+            interceptor: {
+                interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
+                    var _a;
+                    request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
+                        'referer': DOMAIN
+                    });
+                    return request;
+                }),
+                interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
+                    return response;
+                })
+            }
         });
-        // globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
-        //     return {
-        //         referer: DOMAIN
-        //     }
-        // }
     }
     getMangaShareUrl(mangaId) { return `${mangaId}`; }
     ;

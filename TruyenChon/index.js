@@ -386,7 +386,7 @@ exports.isLastPage = ($) => {
     return true;
 };
 exports.TruyenChonInfo = {
-    version: '3.0.0',
+    version: '3.0.1',
     name: 'TruyenChon',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -415,7 +415,19 @@ class TruyenChon extends paperback_extensions_common_1.Source {
         this.parser = new TruyenChonParser_1.Parser();
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
-            requestTimeout: 20000
+            requestTimeout: 20000,
+            interceptor: {
+                interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
+                    var _a;
+                    request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
+                        'referer': DOMAIN
+                    });
+                    return request;
+                }),
+                interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
+                    return response;
+                })
+            }
         });
     }
     getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh/${mangaId}`; }

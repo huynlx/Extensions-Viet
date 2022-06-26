@@ -596,7 +596,7 @@ const paperback_extensions_common_1 = require("paperback-extensions-common");
 const VlogTruyenParser_1 = require("./VlogTruyenParser");
 const method = 'GET';
 exports.VlogTruyenInfo = {
-    version: '2.6.0',
+    version: '2.6.1',
     name: 'VlogTruyen',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -616,7 +616,19 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
         super(...arguments);
         this.requestManager = createRequestManager({
             requestsPerSecond: 5,
-            requestTimeout: 20000
+            requestTimeout: 20000,
+            interceptor: {
+                interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
+                    var _a;
+                    request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
+                        'referer': 'https://vlogtruyen.net/'
+                    });
+                    return request;
+                }),
+                interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
+                    return response;
+                })
+            }
         });
     }
     getMangaShareUrl(mangaId) { return `${mangaId}`; }
@@ -959,11 +971,6 @@ class VlogTruyen extends paperback_extensions_common_1.Source {
             ];
             return tagSections;
         });
-    }
-    globalRequestHeaders() {
-        return {
-            referer: 'https://vlogtruyen.net/'
-        };
     }
 }
 exports.VlogTruyen = VlogTruyen;
