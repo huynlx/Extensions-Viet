@@ -15,6 +15,8 @@ import {
     Tag,
     LanguageCode,
     HomeSectionType,
+    Request,
+    Response
 } from "paperback-extensions-common"
 import { parseSearch, isLastPage, parseViewMore, convertTime } from "./WComicParser"
 
@@ -22,7 +24,7 @@ const DOMAIN = 'https://wcomic.site/'
 const method = 'GET'
 
 export const WComicInfo: SourceInfo = {
-    version: '1.0.0',
+    version: '1.0.1',
     name: 'WComic',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -42,7 +44,24 @@ export class WComic extends Source {
     getMangaShareUrl(mangaId: string): string { return `${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -334,11 +353,5 @@ export class WComic extends Source {
             createTagSection({ id: '3', label: 'Tổng Chap', tags: tags3.map(x => createTag(x)) })
         ]
         return tagSections;
-    }
-
-    globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
-        return {
-            referer: DOMAIN
-        }
     }
 }

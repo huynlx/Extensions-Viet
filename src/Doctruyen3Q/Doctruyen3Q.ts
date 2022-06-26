@@ -10,7 +10,8 @@ import {
     TagType,
     TagSection,
     ContentRating,
-    RequestHeaders,
+    Request,
+    Response,
     MangaTile,
     Tag,
     HomeSectionType,
@@ -23,7 +24,7 @@ const DOMAIN = 'https://doctruyen3q.com/'
 const method = 'GET'
 
 export const Doctruyen3QInfo: SourceInfo = {
-    version: '2.0.0',
+    version: '2.0.1',
     name: 'Doctruyen3Q',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -76,7 +77,24 @@ export class Doctruyen3Q extends Source {
     getMangaShareUrl(mangaId: string): string { return mangaId };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -431,17 +449,4 @@ export class Doctruyen3Q extends Source {
         ]
         return tagSections;
     }
-
-    override globalRequestHeaders(): RequestHeaders {
-        return {
-            referer: DOMAIN
-        }
-    }
-
-    // override getCloudflareBypassRequest(): Request {
-    //     return createRequestObject({ //https://lxhentai.com/
-    //         url: 'https://manhuarock.net/',
-    //         method: 'GET',
-    //     }) //dit buoi lam lxhentai nua dkm, ti fix thanh medoctruyen
-    // }
 }

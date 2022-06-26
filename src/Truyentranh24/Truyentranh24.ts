@@ -15,16 +15,18 @@ import {
     MangaTile,
     Tag,
     LanguageCode,
-    HomeSectionType
+    HomeSectionType,
+    Request,
+    Response
 } from "paperback-extensions-common"
 
 import { parseSearch, parseViewMore, isLastPage } from "./Truyentranh24Parser"
 
-const DOMAIN = 'https://truyentranh24.com/'
+const DOMAIN = 'https://truyentranh24z.com/'
 const method = 'GET'
 
 export const Truyentranh24Info: SourceInfo = {
-    version: '1.5.0',
+    version: '1.5.1',
     name: 'Truyentranh24',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -44,7 +46,24 @@ export class Truyentranh24 extends Source {
     getMangaShareUrl(mangaId: string): string { return (DOMAIN + mangaId.split("::")[0]) };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -86,11 +105,11 @@ export class Truyentranh24 extends Source {
     }
     async getChapters(mangaId: string): Promise<Chapter[]> {
         const request = createRequestObject({
-            url: 'https://truyentranh24.com/api/mangas/' + mangaId.split("::")[1] + '/chapters?offset=0&limit=0',
+            url: 'https://truyentranh24z.com/api/mangas/' + mangaId.split("::")[1] + '/chapters?offset=0&limit=0',
             method,
             headers: {
                 'x-requested-with': 'XMLHttpRequest',
-                'referer': 'https://truyentranh24.com'
+                'referer': 'https://truyentranh24z.com'
             }
         });
         const data = await this.requestManager.schedule(request, 1);
@@ -185,7 +204,7 @@ export class Truyentranh24 extends Source {
         ///Get the section data
         // featured
         let request = createRequestObject({
-            url: 'https://truyentranh24.com',
+            url: 'https://truyentranh24z.com',
             method: "GET",
         });
         let featuredItems: MangaTile[] = [];
@@ -209,7 +228,7 @@ export class Truyentranh24 extends Source {
 
         // Hot
         request = createRequestObject({
-            url: 'https://truyentranh24.com/top-ngay',
+            url: 'https://truyentranh24z.com/top-ngay',
             method: "GET",
         });
         let popular: MangaTile[] = [];
@@ -256,7 +275,7 @@ export class Truyentranh24 extends Source {
 
         //view
         request = createRequestObject({
-            url: 'https://truyentranh24.com/truyen-hot',
+            url: 'https://truyentranh24z.com/truyen-hot',
             method: "GET",
         });
         let viewItems: MangaTile[] = [];
@@ -279,7 +298,7 @@ export class Truyentranh24 extends Source {
 
         //add
         request = createRequestObject({
-            url: 'https://truyentranh24.com/',
+            url: 'https://truyentranh24z.com/',
             method: "GET",
         });
         let addItems: MangaTile[] = [];
@@ -302,7 +321,7 @@ export class Truyentranh24 extends Source {
 
         //top
         request = createRequestObject({
-            url: 'https://truyentranh24.com/',
+            url: 'https://truyentranh24z.com/',
             method: "GET",
         });
         let topItems: MangaTile[] = [];
@@ -325,7 +344,7 @@ export class Truyentranh24 extends Source {
 
         //miss
         request = createRequestObject({
-            url: 'https://truyentranh24.com/',
+            url: 'https://truyentranh24z.com/',
             method: "GET",
         });
         let missItems: MangaTile[] = [];
@@ -353,15 +372,15 @@ export class Truyentranh24 extends Source {
         let select = 1;
         switch (homepageSectionId) {
             case "hot":
-                url = `https://truyentranh24.com/top-ngay?p=${page}`;
+                url = `https://truyentranh24z.com/top-ngay?p=${page}`;
                 select = 1;
                 break;
             case "new_updated":
-                url = `https://truyentranh24.com/chap-moi-nhat`;
+                url = `https://truyentranh24z.com/chap-moi-nhat`;
                 select = 2;
                 break;
             case "view":
-                url = `https://truyentranh24.com/truyen-hot?p=${page}`;
+                url = `https://truyentranh24z.com/truyen-hot?p=${page}`;
                 select = 1;
                 break;
             default:
@@ -387,7 +406,7 @@ export class Truyentranh24 extends Source {
         let page = metadata?.page ?? 1;
         const tags = query.includedTags?.map(tag => tag.id) ?? [];
         const request = createRequestObject({
-            url: query.title ? encodeURI(`https://truyentranh24.com/tim-kiem/${query.title}?p=${page}`) : (`https://truyentranh24.com/` + tags[0] + `?p=${page}`),
+            url: query.title ? encodeURI(`https://truyentranh24z.com/tim-kiem/${query.title}?p=${page}`) : (`https://truyentranh24z.com/` + tags[0] + `?p=${page}`),
             method: "GET",
         });
 
@@ -429,11 +448,4 @@ export class Truyentranh24 extends Source {
         ]
         return tagSections;
     }
-
-    override globalRequestHeaders(): RequestHeaders {
-        return {
-            referer: DOMAIN
-        }
-    }
-
 }

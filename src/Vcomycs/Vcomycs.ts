@@ -14,6 +14,8 @@ import {
     MangaTile,
     Tag,
     LanguageCode,
+    Request,
+    Response
 } from "paperback-extensions-common"
 
 import { parseSearch, parseViewMore, decryptImages, decodeHTMLEntity } from "./VcomycsParser"
@@ -21,7 +23,7 @@ import { parseSearch, parseViewMore, decryptImages, decodeHTMLEntity } from "./V
 const method = 'GET'
 
 export const VcomycsInfo: SourceInfo = {
-    version: '1.0.0',
+    version: '1.0.1',
     name: 'Vcomycs',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -41,7 +43,24 @@ export class Vcomycs extends Source {
     getMangaShareUrl(mangaId: string): string { return `${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': 'https://vcomycs.com/'
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -312,11 +331,5 @@ export class Vcomycs extends Source {
             createTagSection({ id: '1', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
         ]
         return tagSections;
-    }
-
-    globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
-        return {
-            referer: 'https://vcomycs.com/'
-        }
     }
 }

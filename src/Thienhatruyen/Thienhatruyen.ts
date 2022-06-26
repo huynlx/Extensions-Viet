@@ -14,6 +14,8 @@ import {
     MangaTile,
     Tag,
     LanguageCode,
+    Request,
+    Response
 } from "paperback-extensions-common"
 import { parseSearch, isLastPage, parseViewMore, decodeHTMLEntity } from "./ThienhatruyenParser"
 
@@ -21,7 +23,7 @@ const DOMAIN = 'https://thienhatruyen.com/'
 const method = 'GET'
 
 export const ThienhatruyenInfo: SourceInfo = {
-    version: '2.0.0',
+    version: '2.0.1',
     name: 'Thienhatruyen',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -41,7 +43,24 @@ export class Thienhatruyen extends Source {
     getMangaShareUrl(mangaId: string): string { return `${DOMAIN}${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 2,
-        requestTimeout: 10000
+        requestTimeout: 10000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -404,11 +423,5 @@ export class Thienhatruyen extends Source {
             createTagSection({ id: '4', label: 'Sắp xếp', tags: arrayTags5.map(x => createTag(x)) }),
         ]
         return tagSections;
-    }
-
-    globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
-        return {
-            referer: DOMAIN
-        }
     }
 }

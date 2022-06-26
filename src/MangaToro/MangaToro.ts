@@ -11,7 +11,9 @@ import {
     TagSection,
     HomeSectionType,
     ContentRating,
-    MangaUpdates
+    MangaUpdates,
+    Request,
+    Response
 } from "paperback-extensions-common"
 import { Parser } from './MangaToroParser';
 
@@ -29,7 +31,7 @@ export const isLastPage = ($: CheerioStatic): boolean => {
 }
 
 export const MangaToroInfo: SourceInfo = {
-    version: '3.0.0',
+    version: '3.0.1',
     name: 'MangaToro',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -54,7 +56,24 @@ export class MangaToro extends Source {
     getMangaShareUrl(mangaId: string): string { return `${DOMAIN}truyen-tranh/${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -310,11 +329,5 @@ export class MangaToro extends Source {
         const $ = this.cheerio.load(response.data);
         const returnObject = this.parser.parseUpdatedManga($, time, ids)
         mangaUpdatesFoundCallback(createMangaUpdates(returnObject))
-    }
-
-    globalRequestHeaders(): RequestHeaders { //ko có cái này ko load đc page truyện (load ảnh)
-        return {
-            referer: DOMAIN
-        }
     }
 }

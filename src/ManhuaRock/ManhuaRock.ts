@@ -15,7 +15,8 @@ import {
     MangaTile,
     Tag,
     LanguageCode,
-    Request
+    Request,
+    Response
 } from "paperback-extensions-common"
 
 import { parseSearch, parseViewMore, isLastPage } from "./ManhuaRockParser"
@@ -24,7 +25,7 @@ const DOMAIN = 'https://manhuarock.net/'
 const method = 'GET'
 
 export const ManhuaRockInfo: SourceInfo = {
-    version: '1.5.0',
+    version: '1.5.1',
     name: 'ManhuaRock',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -73,7 +74,24 @@ export class ManhuaRock extends Source {
     getMangaShareUrl(mangaId: string): string { return (DOMAIN + mangaId) };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -450,17 +468,4 @@ export class ManhuaRock extends Source {
         ]
         return tagSections;
     }
-
-    override globalRequestHeaders(): RequestHeaders {
-        return {
-            referer: DOMAIN
-        }
-    }
-
-    // override getCloudflareBypassRequest(): Request {
-    //     return createRequestObject({ //https://lxhentai.com/
-    //         url: 'https://manhuarock.net/',
-    //         method: 'GET',
-    //     }) //dit buoi lam lxhentai nua dkm, ti fix thanh medoctruyen
-    // }
 }

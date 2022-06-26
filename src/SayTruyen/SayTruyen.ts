@@ -10,10 +10,11 @@ import {
     TagType,
     TagSection,
     ContentRating,
-    RequestHeaders,
     MangaTile,
     Tag,
     LanguageCode,
+    Request,
+    Response
 } from "paperback-extensions-common"
 import { parseSearch, isLastPage, parseViewMore } from "./SayTruyenParser"
 
@@ -21,7 +22,7 @@ const DOMAIN = 'https://saytruyen.net/'
 const method = 'GET'
 
 export const SayTruyenInfo: SourceInfo = {
-    version: '2.0.0',
+    version: '2.0.1',
     name: 'SayTruyen',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -41,7 +42,24 @@ export class SayTruyen extends Source {
     getMangaShareUrl(mangaId: string): string { return `${DOMAIN}${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -567,11 +585,5 @@ export class SayTruyen extends Source {
             createTagSection({ id: '2', label: 'Xếp Theo', tags: tags2.map(x => createTag(x)) }),
         ]
         return tagSections;
-    }
-
-    globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
-        return {
-            referer: DOMAIN
-        }
     }
 }

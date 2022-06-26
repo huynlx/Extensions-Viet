@@ -14,7 +14,9 @@ import {
     MangaTile,
     Tag,
     LanguageCode,
-    HomeSectionType
+    HomeSectionType,
+    Request,
+    Response
 } from "paperback-extensions-common"
 
 import { parseSearch, parseViewMore, isLastPage, decodeHTMLEntity } from "./qMangaParser"
@@ -22,7 +24,7 @@ import { parseSearch, parseViewMore, isLastPage, decodeHTMLEntity } from "./qMan
 const method = 'GET'
 
 export const qMangaInfo: SourceInfo = {
-    version: '2.0.0',
+    version: '2.0.1',
     name: 'qManga',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -42,7 +44,24 @@ export class qManga extends Source {
     getMangaShareUrl(mangaId: string): string { return `${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 0.5,
-        requestTimeout: 15000
+        requestTimeout: 15000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': 'https://qmanga.co/'
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -397,11 +416,5 @@ export class qManga extends Source {
             // createTagSection({ id: '5', label: 'Sắp xếp', tags: tags6.map(x => createTag(x)) }),
         ]
         return tagSections;
-    }
-
-    globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
-        return {
-            referer: 'https://qmanga.co/'
-        }
     }
 }

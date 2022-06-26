@@ -13,7 +13,9 @@ import {
     RequestHeaders,
     MangaTile,
     Tag,
-    LanguageCode
+    LanguageCode,
+    Response,
+    Request
 } from "paperback-extensions-common"
 
 import { parseSearch, parseViewMore, isLastPage } from "./VlogTruyenParser"
@@ -21,7 +23,7 @@ import { parseSearch, parseViewMore, isLastPage } from "./VlogTruyenParser"
 const method = 'GET'
 
 export const VlogTruyenInfo: SourceInfo = {
-    version: '2.6.0',
+    version: '2.6.1',
     name: 'VlogTruyen',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -41,7 +43,24 @@ export class VlogTruyen extends Source {
     getMangaShareUrl(mangaId: string): string { return `${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': 'https://vlogtruyen.net/'
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -375,11 +394,5 @@ export class VlogTruyen extends Source {
         createTagSection({ id: '5', label: 'Sắp xếp', tags: tags6.map(x => createTag(x)) }),
         ]
         return tagSections;
-    }
-
-    globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
-        return {
-            referer: 'https://vlogtruyen.net/'
-        }
     }
 }
