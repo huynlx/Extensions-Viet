@@ -21,7 +21,7 @@ import tagsArr from './tag.json';
 
 import { parseSearch, isLastPage, parseViewMore } from "./SayHentaiParser";
 
-const DOMAIN = 'https://truyentranhlh.net/'
+const DOMAIN = 'https://sayhentai.net/'
 const method = 'GET'
 
 export const SayHentaiInfo: SourceInfo = {

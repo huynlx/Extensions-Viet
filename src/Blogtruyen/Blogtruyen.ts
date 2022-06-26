@@ -19,7 +19,7 @@ import {
 } from "paperback-extensions-common"
 import { parseSearch, isLastPage, parseViewMore, decodeHTMLEntity } from "./BlogtruyenParser"
 
-const DOMAIN = 'https://truyentranhlh.net/'
+const DOMAIN = 'https://blogtruyen.vn'
 const method = 'GET'
 
 export const BlogtruyenInfo: SourceInfo = {
