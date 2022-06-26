@@ -10,7 +10,8 @@ import {
     TagType,
     TagSection,
     ContentRating,
-    RequestHeaders,
+    Request,
+    Response,
     MangaTile,
     Tag,
     LanguageCode,
@@ -18,11 +19,11 @@ import {
 } from "paperback-extensions-common"
 import { parseSearch, isLastPage, parseViewMore, decodeHTMLEntity } from "./BlogtruyenParser"
 
-const DOMAIN = 'https://truyentranhlh.net/'
+const DOMAIN = 'https://blogtruyen.vn'
 const method = 'GET'
 
 export const BlogtruyenInfo: SourceInfo = {
-    version: '2.0.0',
+    version: '2.0.1',
     name: 'Blogtruyen',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -42,7 +43,24 @@ export class Blogtruyen extends Source {
     getMangaShareUrl(mangaId: string): string { return `https://blogtruyen.vn${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -477,11 +495,5 @@ export class Blogtruyen extends Source {
         }
         const tagSections: TagSection[] = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) })]
         return tagSections;
-    }
-
-    override globalRequestHeaders(): RequestHeaders {
-        return {
-            referer: 'https://blogtruyen.vn/'
-        }
     }
 }

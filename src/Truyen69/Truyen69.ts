@@ -13,7 +13,9 @@ import {
     RequestHeaders,
     MangaTile,
     Tag,
-    LanguageCode
+    LanguageCode,
+    Request,
+    Response
 } from "paperback-extensions-common"
 
 import { parseSearch, isLastPage, parseViewMore } from "./Truyen69Parser"
@@ -22,7 +24,7 @@ const DOMAIN = 'https://www.truyen69.ml/'
 const method = 'GET'
 
 export const Truyen69Info: SourceInfo = {
-    version: '1.0.0',
+    version: '1.0.1',
     name: 'Truyen69',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -42,7 +44,24 @@ export class Truyen69 extends Source {
     getMangaShareUrl(mangaId: string): string { return `${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 3,
-        requestTimeout: 3000
+        requestTimeout: 3000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
     Slg = '';
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -325,11 +344,5 @@ export class Truyen69 extends Source {
             createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) }),
         ]
         return tagSections;
-    }
-
-    globalRequestHeaders(): RequestHeaders {
-        return {
-            referer: `${DOMAIN}`
-        }
     }
 }

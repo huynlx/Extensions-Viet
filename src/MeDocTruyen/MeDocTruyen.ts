@@ -15,7 +15,9 @@ import {
     MangaTile,
     Tag,
     LanguageCode,
-    HomeSectionType
+    HomeSectionType,
+    Request,
+    Response
 } from "paperback-extensions-common"
 
 import { parseSearch, parseViewMore, isLastPage, ChangeToSlug } from "./MeDocTruyenParser"
@@ -23,7 +25,7 @@ import { parseSearch, parseViewMore, isLastPage, ChangeToSlug } from "./MeDocTru
 const method = 'GET'
 
 export const MeDocTruyenInfo: SourceInfo = {
-    version: '2.5.0',
+    version: '2.5.1',
     name: 'MeDocTruyen',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -43,7 +45,24 @@ export class MeDocTruyen extends Source {
     getMangaShareUrl(mangaId: string): string { return (mangaId) };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': 'https://m.medoctruyentranh.net/'
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -455,11 +474,5 @@ export class MeDocTruyen extends Source {
             createTagSection({ id: '4', label: 'Trạng thái', tags: tags5.map(x => createTag(x)) }),
         ]
         return tagSections;
-    }
-
-    override globalRequestHeaders(): RequestHeaders {
-        return {
-            referer: 'https://www.medoctruyentranh.net/'
-        }
     }
 }

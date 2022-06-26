@@ -10,11 +10,12 @@ import {
     TagType,
     TagSection,
     ContentRating,
-    RequestHeaders,
     MangaTile,
     Tag,
     LanguageCode,
-    HomeSectionType
+    HomeSectionType,
+    Request,
+    Response
 } from "paperback-extensions-common"
 import { parseSearch, isLastPage, parseViewMore } from "./HentaiVVParser"
 
@@ -22,7 +23,7 @@ const DOMAIN = 'https://hentaicube.net/'
 const method = 'GET'
 
 export const HentaiVVInfo: SourceInfo = {
-    version: '2.5.0',
+    version: '2.5.1',
     name: 'HentaiVV',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -42,7 +43,24 @@ export class HentaiVV extends Source {
     getMangaShareUrl(mangaId: string): string { return `${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -485,11 +503,5 @@ export class HentaiVV extends Source {
         createTagSection({ id: '1', label: 'Tình Trạng Truyện', tags: tags2.map(x => createTag(x)) }),
         createTagSection({ id: '2', label: 'Thời Gian', tags: tags3.map(x => createTag(x)) })]
         return tagSections;
-    }
-
-    globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
-        return {
-            referer: 'https://hentaivv.com/'
-        }
     }
 }

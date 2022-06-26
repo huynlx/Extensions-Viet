@@ -11,11 +11,13 @@ import {
     TagSection,
     HomeSectionType,
     ContentRating,
-    MangaUpdates
+    MangaUpdates,
+    Request,
+    Response
 } from "paperback-extensions-common"
 import { Parser } from './NhatTruyenParser';
 
-const DOMAIN = 'http://nhattruyengo.com/'
+const DOMAIN = 'http://nhattruyenmoi.com/'
 
 export const isLastPage = ($: CheerioStatic): boolean => {
     const current = $('ul.pagination > li.active > a').text();
@@ -29,7 +31,7 @@ export const isLastPage = ($: CheerioStatic): boolean => {
 }
 
 export const NhatTruyenInfo: SourceInfo = {
-    version: '3.0.1',
+    version: '3.0.2',
     name: 'NhatTruyen',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -54,7 +56,24 @@ export class NhatTruyen extends Source {
     getMangaShareUrl(mangaId: string): string { return `${DOMAIN}truyen-tranh/${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -322,11 +341,5 @@ export class NhatTruyen extends Source {
 
         const returnObject = this.parser.parseUpdatedManga(updateManga, time, ids)
         mangaUpdatesFoundCallback(createMangaUpdates(returnObject))
-    }
-
-    globalRequestHeaders(): RequestHeaders {
-        return {
-            referer: DOMAIN
-        }
     }
 }

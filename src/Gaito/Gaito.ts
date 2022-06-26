@@ -10,7 +10,8 @@ import {
     TagType,
     TagSection,
     ContentRating,
-    RequestHeaders,
+    Request,
+    Response,
     MangaTile,
     Tag,
     LanguageCode
@@ -21,13 +22,13 @@ import { parseSearch, parseViewMore } from "./GaitoParser"
 const method = 'GET'
 
 export const GaitoInfo: SourceInfo = {
-    version: '1.0.0',
+    version: '1.0.1',
     name: 'Gai.to',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from Gai.to',
-    websiteBaseURL: `https://www.gaito.me/truyen-hentai/`,
+    websiteBaseURL: `https://www.gaito.us/truyen-hentai/`,
     contentRating: ContentRating.ADULT,
     sourceTags: [
         {
@@ -38,14 +39,31 @@ export const GaitoInfo: SourceInfo = {
 }
 
 export class Gaito extends Source {
-    getMangaShareUrl(mangaId: string): string { return `https://www.gaito.me/truyen-hentai/comic/${mangaId}` };
+    getMangaShareUrl(mangaId: string): string { return `https://www.gaito.us/truyen-hentai/comic/${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': 'https://www.gaito.us/'
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
-        const url = `https://api.gaito.me/manga/comics/${mangaId}`;
+        const url = `https://api.gaito.us/manga/comics/${mangaId}`;
         const request = createRequestObject({
             url: url,
             method: "GET",
@@ -78,7 +96,7 @@ export class Gaito extends Source {
     }
     async getChapters(mangaId: string): Promise<Chapter[]> {
         const request = createRequestObject({
-            url: `https://api.gaito.me/manga/chapters?comicId=${mangaId}&mode=by-comic&orderBy=bySortOrderDown`,
+            url: `https://api.gaito.us/manga/chapters?comicId=${mangaId}&mode=by-comic&orderBy=bySortOrderDown`,
             method,
         });
         const data = await this.requestManager.schedule(request, 1);
@@ -102,7 +120,7 @@ export class Gaito extends Source {
 
     async getChapterDetails(mangaId: string, chapterId: string): Promise<ChapterDetails> {
         const request = createRequestObject({
-            url: `https://api.gaito.me/manga/pages?chapterId=${chapterId}&mode=by-chapter`,
+            url: `https://api.gaito.us/manga/pages?chapterId=${chapterId}&mode=by-chapter`,
             method
         });
 
@@ -143,7 +161,7 @@ export class Gaito extends Source {
 
         //New Updates
         let request = createRequestObject({
-            url: 'https://api.gaito.me/manga/comics?limit=20&offset=0&sort=latest', // get JSON not HTML
+            url: 'https://api.gaito.us/manga/comics?limit=20&offset=0&sort=latest', // get JSON not HTML
             method: "GET",
         });
         let newUpdatedItems: MangaTile[] = [];
@@ -171,7 +189,7 @@ export class Gaito extends Source {
 
         //view
         request = createRequestObject({
-            url: 'https://api.gaito.me/manga/comics?limit=20&offset=0&sort=top-rated', // get JSON not HTML
+            url: 'https://api.gaito.us/manga/comics?limit=20&offset=0&sort=top-rated', // get JSON not HTML
             method: "GET",
         });
         let newAddItems: MangaTile[] = [];
@@ -204,11 +222,11 @@ export class Gaito extends Source {
         let select = 1;
         switch (homepageSectionId) {
             case "new_updated":
-                url = `https://api.gaito.me/manga/comics?limit=20&offset=${page}&sort=latest`;
+                url = `https://api.gaito.us/manga/comics?limit=20&offset=${page}&sort=latest`;
                 select = 1;
                 break;
             case "view":
-                url = `https://api.gaito.me/manga/comics?limit=20&offset=${page}&sort=top-rated`;
+                url = `https://api.gaito.us/manga/comics?limit=20&offset=${page}&sort=top-rated`;
                 select = 2;
                 break;
             default:
@@ -234,7 +252,7 @@ export class Gaito extends Source {
         let page = metadata?.page ?? 0;
         const tags = query.includedTags?.map(tag => tag.id) ?? [];
         const request = createRequestObject({
-            url: encodeURI(`https://api.gaito.me/manga/comics?genreId=${tags[0]}&limit=20&offset=${page}&sort=latest`),
+            url: encodeURI(`https://api.gaito.us/manga/comics?genreId=${tags[0]}&limit=20&offset=${page}&sort=latest`),
             method: "GET",
         });
 
@@ -252,7 +270,7 @@ export class Gaito extends Source {
 
     async getSearchTags(): Promise<TagSection[]> {
         const tags: Tag[] = [];
-        const url = `https://api.gaito.me/ext/genres?plugin=manga`
+        const url = `https://api.gaito.us/ext/genres?plugin=manga`
         const request = createRequestObject({
             url: url,
             method: "GET",
@@ -269,11 +287,5 @@ export class Gaito extends Source {
         }
         const tagSections: TagSection[] = [createTagSection({ id: '0', label: 'Thể Loại Hentai', tags: tags.map(x => createTag(x)) })]
         return tagSections;
-    }
-
-    globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
-        return {
-            referer: 'https://www.gaito.me/'
-        }
     }
 }

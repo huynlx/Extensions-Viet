@@ -14,7 +14,9 @@ import {
     MangaTile,
     Tag,
     LanguageCode,
-    HomeSectionType
+    HomeSectionType,
+    Request,
+    Response
 } from "paperback-extensions-common"
 
 import { parseSearch, isLastPage, parseViewMore, convertTime } from "./MangaiiParser"
@@ -23,7 +25,7 @@ const DOMAIN = 'https://mangaii.com/'
 const method = 'GET'
 
 export const MangaiiInfo: SourceInfo = {
-    version: '1.0.0',
+    version: '1.0.1',
     name: 'Mangaii',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -43,7 +45,24 @@ export class Mangaii extends Source {
     getMangaShareUrl(mangaId: string): string { return `${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -338,7 +357,7 @@ export class Mangaii extends Source {
         var dt = $.html().match(/<script.*?type=\"application\/json\">(.*?)<\/script>/);
         const json = JSON.parse(dt[1]).props.pageProps.genres;
         const arrayTags: Tag[] = [];
-        
+
         //the loai
         for (const tag of json) {
             arrayTags.push({ id: tag.slug, label: tag.name });
@@ -347,11 +366,5 @@ export class Mangaii extends Source {
             createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) }),
         ]
         return tagSections;
-    }
-
-    globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
-        return {
-            referer: `${DOMAIN}`
-        }
     }
 }

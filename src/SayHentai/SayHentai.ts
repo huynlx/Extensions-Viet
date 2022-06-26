@@ -10,18 +10,22 @@ import {
     TagType,
     TagSection,
     ContentRating,
-    RequestHeaders,
     MangaTile,
     Tag,
     LanguageCode,
-} from "paperback-extensions-common"
-import { parseSearch, isLastPage, parseViewMore } from "./SayHentaiParser"
+    Request,
+    Response
+} from "paperback-extensions-common";
 
-const DOMAIN = 'https://truyentranhlh.net/'
+import tagsArr from './tag.json';
+
+import { parseSearch, isLastPage, parseViewMore } from "./SayHentaiParser";
+
+const DOMAIN = 'https://sayhentai.net/'
 const method = 'GET'
 
 export const SayHentaiInfo: SourceInfo = {
-    version: '2.0.0',
+    version: '2.0.1',
     name: 'SayHentai',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -41,7 +45,24 @@ export class SayHentai extends Source {
     getMangaShareUrl(mangaId: string): string { return `https://sayhentai.net/${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -316,216 +337,7 @@ export class SayHentai extends Source {
     }
 
     async getSearchTags(): Promise<TagSection[]> {
-        const tags: Tag[] = [
-            {
-                "id": "all",
-                "label": "Tất cả"
-            },
-            {
-                "id": "18",
-                "label": "18+"
-            },
-            {
-                "id": "action",
-                "label": "Action"
-            },
-            {
-                "id": "adult",
-                "label": "Adult"
-            },
-            {
-                "id": "adventure",
-                "label": "Adventure"
-            },
-            {
-                "id": "anime",
-                "label": "Anime"
-            },
-            {
-                "id": "chuyển sinh",
-                "label": "Chuyển Sinh"
-            },
-            {
-                "id": "comedy",
-                "label": "Comedy"
-            },
-            {
-                "id": "comic",
-                "label": "Comic"
-            },
-            {
-                "id": "cooking",
-                "label": "Cooking"
-            },
-            {
-                "id": "cổ đại",
-                "label": "Cổ Đại"
-            },
-            {
-                "id": "doujinshi",
-                "label": "Doujinshi"
-            },
-            {
-                "id": "drama",
-                "label": "Drama"
-            },
-            {
-                "id": "đam mỹ",
-                "label": "Đam Mỹ"
-            },
-            {
-                "id": "ecchi",
-                "label": "Ecchi"
-            },
-            {
-                "id": "fantasy",
-                "label": "Fantasy"
-            },
-            {
-                "id": "gender bender",
-                "label": "Gender Bender"
-            },
-            {
-                "id": "harem",
-                "label": "Harem"
-            },
-            {
-                "id": "historical",
-                "label": "Historical"
-            },
-            {
-                "id": "horror",
-                "label": "Horror"
-            },
-            {
-                "id": "isekai",
-                "label": "Isekai"
-            },
-            {
-                "id": "josei",
-                "label": "Josei"
-            },
-            {
-                "id": "live action",
-                "label": "Live action"
-            },
-            {
-                "id": "manga",
-                "label": "Manga"
-            },
-            {
-                "id": "manhua",
-                "label": "Manhua"
-            },
-            {
-                "id": "manhwa",
-                "label": "Manhwa"
-            },
-            {
-                "id": "martial arts",
-                "label": "Martial Arts"
-            },
-            {
-                "id": "mature",
-                "label": "Mature"
-            },
-            {
-                "id": "mecha",
-                "label": "Mecha"
-            },
-            {
-                "id": "mystery",
-                "label": "Mystery"
-            },
-            {
-                "id": "ngôn tình",
-                "label": "Ngôn Tình"
-            },
-            {
-                "id": "one shot",
-                "label": "One shot"
-            },
-            {
-                "id": "psychological",
-                "label": "Psychological"
-            },
-            {
-                "id": "romance",
-                "label": "Romance"
-            },
-            {
-                "id": "school life",
-                "label": "School Life"
-            },
-            {
-                "id": "sci-fi",
-                "label": "Sci-fi"
-            },
-            {
-                "id": "seinen",
-                "label": "Seinen"
-            },
-            {
-                "id": "shoujo",
-                "label": "Shoujo"
-            },
-            {
-                "id": "shoujo ai",
-                "label": "Shoujo Ai"
-            },
-            {
-                "id": "shounen",
-                "label": "Shounen"
-            },
-            {
-                "id": "shounen ai",
-                "label": "Shounen Ai"
-            },
-            {
-                "id": "slice of life",
-                "label": "Slice of Life"
-            },
-            {
-                "id": "smut",
-                "label": "Smut"
-            },
-            {
-                "id": "soft yaoi",
-                "label": "Soft Yaoi"
-            },
-            {
-                "id": "soft yuri",
-                "label": "Soft Yuri"
-            },
-            {
-                "id": "sports",
-                "label": "Sports"
-            },
-            {
-                "id": "supernatural",
-                "label": "Supernatural"
-            },
-            {
-                "id": "tragedy",
-                "label": "Tragedy"
-            },
-            {
-                "id": "trinh thám",
-                "label": "Trinh Thám"
-            },
-            {
-                "id": "truyện màu",
-                "label": "Truyện Màu"
-            },
-            {
-                "id": "webtoon",
-                "label": "Webtoon"
-            },
-            {
-                "id": "xuyên không",
-                "label": "Xuyên Không"
-            }
-        ];
+        const tags: Tag[] = tagsArr;
         const tags1: Tag[] = [
             {
                 "id": "status.0",
@@ -566,11 +378,5 @@ export class SayHentai extends Source {
             createTagSection({ id: '2', label: 'Xếp Theo', tags: tags2.map(x => createTag(x)) }),
         ]
         return tagSections;
-    }
-
-    globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
-        return {
-            referer: 'https://sayhentai.net/'
-        }
     }
 }

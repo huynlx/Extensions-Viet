@@ -10,17 +10,32 @@ import {
     TagType,
     TagSection,
     ContentRating,
-    RequestHeaders,
+    Request,
+    Response,
     HomeSectionType
-} from "paperback-extensions-common"
-import { parseRandomSections, parseSearch, isLastPage, parseChapterDetails, parseChapters, parseFullSections, parseHomeSections, parseMangaDetails, parseViewMore, parseAddedSections, parsePopularSections } from "./HentaiVNParser"
+} from "paperback-extensions-common";
+
+import {
+    parseRandomSections,
+    parseSearch,
+    isLastPage,
+    parseChapterDetails,
+    parseChapters,
+    parseFullSections,
+    parseHomeSections,
+    parseMangaDetails,
+    parseViewMore,
+    parseAddedSections,
+    parsePopularSections
+} from "./HentaiVNParser";
+
 import tags from './tags.json';
 
 const DOMAIN = `https://hentaivn.moe/`
 const method = 'GET'
 
 export const HentaiVNInfo: SourceInfo = {
-    version: '2.8.0',
+    version: '2.8.1',
     name: 'HentaiVN',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -40,7 +55,24 @@ export class HentaiVN extends Source {
     getMangaShareUrl(mangaId: string): string { return `${DOMAIN}${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
     async getMangaDetails(mangaId: string): Promise<Manga> {
         const request = createRequestObject({
@@ -307,11 +339,5 @@ export class HentaiVN extends Source {
             createTagSection({ id: '1', label: 'Thể Loại', tags: tags.map(x => createTag(x)) })
         ]
         return tagSections;
-    }
-
-    globalRequestHeaders(): RequestHeaders {
-        return {
-            referer: `${DOMAIN}` + '/'
-        }
     }
 }

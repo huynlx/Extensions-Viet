@@ -14,7 +14,9 @@ import {
     HomeSectionType,
     Tag,
     LanguageCode,
-    MangaTile
+    MangaTile,
+    Response,
+    Request
 } from "paperback-extensions-common"
 import { parseSearch, parseViewMore, decodeHTMLEntity, parseManga, ucFirstAllWords } from "./MangaXYParser"
 
@@ -22,7 +24,7 @@ const DOMAIN = 'https://mangaxy.com/'
 const method = 'GET'
 
 export const MangaXYInfo: SourceInfo = {
-    version: '1.0.0',
+    version: '1.0.1',
     name: 'MangaXY (TT8)',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -42,7 +44,24 @@ export class MangaXY extends Source {
     getMangaShareUrl(mangaId: string): string { return `${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 3,
-        requestTimeout: 15000
+        requestTimeout: 15000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -348,10 +367,4 @@ export class MangaXY extends Source {
         ]
         return tagSections;
     }
-
-    // globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
-    //     return {
-    //         referer: DOMAIN
-    //     }
-    // }
 }

@@ -10,19 +10,18 @@ import {
     TagType,
     TagSection,
     ContentRating,
-    RequestHeaders,
-    // MangaTile,
+    Request,
+    Response,
     Tag,
     LanguageCode,
-    // HomeSectionType
 } from "paperback-extensions-common"
 import { parseSearch, parseViewMore, decodeHTMLEntity, convertTime } from "./GocTruyenTranhParser"
 
-const DOMAIN = 'https://goctruyentranh.com/'
+const DOMAIN = 'https://goctruyentranhhay.com/'
 const method = 'GET'
 
 export const GocTruyenTranhInfo: SourceInfo = {
-    version: '1.0.0',
+    version: '1.0.1',
     name: 'GocTruyenTranh',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -42,7 +41,24 @@ export class GocTruyenTranh extends Source {
     getMangaShareUrl(mangaId: string): string { return `${mangaId.split("::")[0]}` };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -92,7 +108,7 @@ export class GocTruyenTranh extends Source {
     }
     async getChapters(mangaId: string): Promise<Chapter[]> { //mangaId của getChapters là id trong createManga
         const request = createRequestObject({
-            url: `https://goctruyentranh.com/api/comic/${mangaId.split("::")[1]}/chapter?offset=0&limit=-1`,
+            url: `https://goctruyentranhhay.com/api/comic/${mangaId.split("::")[1]}/chapter?offset=0&limit=-1`,
             method,
         });
 
@@ -166,7 +182,7 @@ export class GocTruyenTranh extends Source {
         //Hot
         let url = '';
         let request = createRequestObject({
-            url: 'https://goctruyentranh.com/api/comic/search/view?p=0',
+            url: 'https://goctruyentranhhay.com/api/comic/search/view?p=0',
             method: "GET",
         });
         let data = await this.requestManager.schedule(request, 1);
@@ -177,7 +193,7 @@ export class GocTruyenTranh extends Source {
         //New Updates
         url = '';
         request = createRequestObject({
-            url: 'https://goctruyentranh.com/api/comic/search/recent?p=0',
+            url: 'https://goctruyentranhhay.com/api/comic/search/recent?p=0',
             method: "GET",
         });
         data = await this.requestManager.schedule(request, 1);
@@ -188,7 +204,7 @@ export class GocTruyenTranh extends Source {
         //New Added
         url = DOMAIN
         request = createRequestObject({
-            url: 'https://goctruyentranh.com/api/comic/search/new?p=0',
+            url: 'https://goctruyentranhhay.com/api/comic/search/new?p=0',
             method: "GET",
         });
         data = await this.requestManager.schedule(request, 1);
@@ -199,7 +215,7 @@ export class GocTruyenTranh extends Source {
         // //Featured
         // url = '';
         // request = createRequestObject({
-        //     url: 'https://goctruyentranh.com/trang-chu',
+        //     url: 'https://goctruyentranhhay.com/trang-chu',
         //     method: "GET",
         // });
         // let featuredItems: MangaTile[] = [];
@@ -229,13 +245,13 @@ export class GocTruyenTranh extends Source {
         let url = '';
         switch (homepageSectionId) {
             case "hot":
-                url = `https://goctruyentranh.com/api/comic/search/view?p=${page}`;
+                url = `https://goctruyentranhhay.com/api/comic/search/view?p=${page}`;
                 break;
             case "new_updated":
-                url = `https://goctruyentranh.com/api/comic/search/recent?p=${page}`;
+                url = `https://goctruyentranhhay.com/api/comic/search/recent?p=${page}`;
                 break;
             case "new_added":
-                url = `https://goctruyentranh.com/api/comic/search/new?p=${page}`;
+                url = `https://goctruyentranhhay.com/api/comic/search/new?p=${page}`;
                 break;
             default:
                 return Promise.resolve(createPagedResults({ results: [] }))
@@ -262,7 +278,7 @@ export class GocTruyenTranh extends Source {
         let page = metadata?.page ?? 0;
         const tags = query.includedTags?.map(tag => tag.id) ?? [];
         const request = createRequestObject({
-            url: query.title ? encodeURI(`https://goctruyentranh.com/api/comic/search?name=${query.title}`) : `https://goctruyentranh.com/api/comic/search/category?p=${page}&value=${tags[0]}`,
+            url: query.title ? encodeURI(`https://goctruyentranhhay.com/api/comic/search?name=${query.title}`) : `https://goctruyentranhhay.com/api/comic/search/category?p=${page}&value=${tags[0]}`,
             method: "GET",
         });
 
@@ -279,7 +295,7 @@ export class GocTruyenTranh extends Source {
     }
 
     async getSearchTags(): Promise<TagSection[]> {
-        const url = `https://goctruyentranh.com/api/category`
+        const url = `https://goctruyentranhhay.com/api/category`
         const request = createRequestObject({
             url: url,
             method: "GET",
@@ -301,11 +317,5 @@ export class GocTruyenTranh extends Source {
             createTagSection({ id: '0', label: 'Thể loại', tags: arrayTags.map(x => createTag(x)) }),
         ]
         return tagSections;
-    }
-
-    globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
-        return {
-            referer: 'https://goctruyentranh.com/'
-        }
     }
 }

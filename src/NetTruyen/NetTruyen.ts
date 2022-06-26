@@ -3,7 +3,8 @@ import {
     ChapterDetails, HomeSection,
     Manga,
     PagedResults,
-    RequestHeaders,
+    Response,
+    Request,
     SearchRequest,
     Source,
     SourceInfo,
@@ -29,7 +30,7 @@ export const isLastPage = ($: CheerioStatic): boolean => {
 }
 
 export const NetTruyenInfo: SourceInfo = {
-    version: '3.0.1',
+    version: '3.0.2',
     name: 'NetTruyen',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -54,7 +55,24 @@ export class NetTruyen extends Source {
     getMangaShareUrl(mangaId: string): string { return `${DOMAIN}truyen-tranh/${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -351,11 +369,5 @@ export class NetTruyen extends Source {
 
         const returnObject = this.parser.parseUpdatedManga(updateManga, time, ids)
         mangaUpdatesFoundCallback(createMangaUpdates(returnObject))
-    }
-
-    globalRequestHeaders(): RequestHeaders { //ko có cái này ko load đc page truyện (load ảnh)
-        return {
-            referer: DOMAIN
-        }
     }
 }

@@ -3,7 +3,8 @@ import {
     ChapterDetails, HomeSection,
     Manga,
     PagedResults,
-    RequestHeaders,
+    Request,
+    Response,
     SearchRequest,
     Source,
     SourceInfo,
@@ -15,14 +16,14 @@ import {
 } from "paperback-extensions-common"
 import { Parser } from './HorrorFCParser';
 
-const DOMAIN = 'https://horrorfc.net/'
+const DOMAIN = 'https://horrorfc.com/'
 
 export const isLastPage = ($: CheerioStatic): boolean => {
     return true;
 }
 
 export const HorrorFCInfo: SourceInfo = {
-    version: '1.0.0',
+    version: '1.0.1',
     name: 'HorrorFC',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -47,7 +48,23 @@ export class HorrorFC extends Source {
     getMangaShareUrl(mangaId: string): string { return `${mangaId.split("::")[0]}` };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -173,14 +190,8 @@ export class HorrorFC extends Source {
         let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         let count = $('a.item > span:nth-child(2)').text().trim();
-        const tags: Tag[] = [{ 'id': 'https://horrorfc.net/', 'label': 'Tất Cả (' + count + ')' }];
+        const tags: Tag[] = [{ 'id': 'https://horrorfc.com/', 'label': 'Tất Cả (' + count + ')' }];
         const tagSections: TagSection[] = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) })]
         return tagSections;
-    }
-
-    globalRequestHeaders(): RequestHeaders { //ko có cái này ko load đc page truyện (load ảnh)
-        return {
-            referer: DOMAIN
-        }
     }
 }

@@ -15,7 +15,9 @@ import {
     Tag,
     LanguageCode,
     HomeSectionType,
-    MangaUpdates
+    MangaUpdates,
+    Request,
+    Response
 } from "paperback-extensions-common"
 import { parseSearch, isLastPage, parseViewMore, parseUpdatedManga } from "./Truyen48Parser"
 
@@ -23,7 +25,7 @@ const DOMAIN = 'http://truyen48.com/'
 const method = 'GET'
 
 export const Truyen48Info: SourceInfo = {
-    version: '3.0.0',
+    version: '3.0.1',
     name: 'Truyen48',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -47,7 +49,24 @@ export class Truyen48 extends Source {
     getMangaShareUrl(mangaId: string): string { return `${DOMAIN}truyen-tranh/${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -508,11 +527,5 @@ export class Truyen48 extends Source {
         const $ = this.cheerio.load(response.data);
         const returnObject = parseUpdatedManga($, time, ids)
         mangaUpdatesFoundCallback(createMangaUpdates(returnObject))
-    }
-
-    globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
-        return {
-            referer: `${DOMAIN} `
-        }
     }
 }

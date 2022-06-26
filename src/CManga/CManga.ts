@@ -10,7 +10,8 @@ import {
     TagType,
     TagSection,
     ContentRating,
-    RequestHeaders,
+    Response,
+    Request,
     MangaTile,
     Tag,
     LanguageCode
@@ -18,11 +19,11 @@ import {
 
 import { parseSearch, parseViewMore, decodeHTMLEntity, decrypt_data, titleCase, change_alias } from "./CMangaParser"
 
-export const DOMAIN = 'https://cmanganew.com/'
+export const DOMAIN = 'https://cmangac.com/'
 const method = 'GET'
 
 export const CMangaInfo: SourceInfo = {
-    version: '2.1.0',
+    version: '2.1.1',
     name: 'CManga',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -42,7 +43,24 @@ export class CManga extends Source {
     getMangaShareUrl(mangaId: string): string { return DOMAIN + mangaId.split("::")[0] };
     requestManager = createRequestManager({
         requestsPerSecond: 2,
-        requestTimeout: 15000
+        requestTimeout: 15000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -373,11 +391,5 @@ export class CManga extends Source {
             createTagSection({ id: '3', label: 'Num chapter', tags: arrayTags4.map(x => createTag(x)) })
         ]
         return tagSections;
-    }
-
-    globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
-        return {
-            referer: `${DOMAIN}`
-        }
     }
 }

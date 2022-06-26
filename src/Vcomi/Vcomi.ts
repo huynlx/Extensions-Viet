@@ -15,7 +15,8 @@ import {
     MangaTile,
     Tag,
     LanguageCode,
-    Request
+    Request,
+    Response
 } from "paperback-extensions-common"
 
 import { parseSearch, parseViewMore, isLastPage } from "./VcomiParser"
@@ -24,7 +25,7 @@ const DOMAIN = 'https://vcomi.co/'
 const method = 'GET'
 
 export const VcomiInfo: SourceInfo = {
-    version: '2.0.0',
+    version: '2.0.1',
     name: 'Vcomi',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -77,7 +78,24 @@ export class Vcomi extends Source {
     getMangaShareUrl(mangaId: string): string { return (DOMAIN + mangaId) };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -456,17 +474,4 @@ export class Vcomi extends Source {
         ]
         return tagSections;
     }
-
-    override globalRequestHeaders(): RequestHeaders {
-        return {
-            referer: DOMAIN
-        }
-    }
-
-    // override getCloudflareBypassRequest(): Request {
-    //     return createRequestObject({ //https://lxhentai.com/
-    //         url: 'https://manhuarock.net/',
-    //         method: 'GET',
-    //     }) //dit buoi lam lxhentai nua dkm, ti fix thanh medoctruyen
-    // }
 }

@@ -15,7 +15,8 @@ import {
     Tag,
     LanguageCode,
     Request,
-    HomeSectionType
+    HomeSectionType,
+    Response
 } from "paperback-extensions-common"
 
 import { parseSearch, parseViewMore, isLastPage, decodeHTMLEntity } from "./TruyengihotParser"
@@ -24,7 +25,7 @@ const DOMAIN = 'https://truyengihot.net/'
 const method = 'GET'
 
 export const TruyengihotInfo: SourceInfo = {
-    version: '1.5.0',
+    version: '1.5.1',
     name: 'Truyengihot',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -77,7 +78,24 @@ export class Truyengihot extends Source {
     getMangaShareUrl(mangaId: string): string { return (mangaId) };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -381,11 +399,5 @@ export class Truyengihot extends Source {
             createTagSection({ id: '5', label: 'Loại sắp xếp', tags: tags5.map(x => createTag(x)) }),
         ]
         return tagSections;
-    }
-
-    override globalRequestHeaders(): RequestHeaders {
-        return {
-            referer: DOMAIN
-        }
     }
 }

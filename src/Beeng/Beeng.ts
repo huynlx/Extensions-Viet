@@ -10,7 +10,8 @@ import {
     TagType,
     TagSection,
     ContentRating,
-    RequestHeaders,
+    Request,
+    Response,
     MangaTile,
     Tag,
     LanguageCode,
@@ -21,7 +22,7 @@ const DOMAIN = 'https://beeng.org/'
 const method = 'GET'
 
 export const BeengInfo: SourceInfo = {
-    version: '2.0.0',
+    version: '2.0.1',
     name: 'Beeng',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -41,7 +42,24 @@ export class Beeng extends Source {
     getMangaShareUrl(mangaId: string): string { return `${DOMAIN}${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 2,
-        requestTimeout: 10000
+        requestTimeout: 10000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -398,11 +416,5 @@ export class Beeng extends Source {
             createTagSection({ id: '4', label: 'Sắp xếp', tags: arrayTags5.map(x => createTag(x)) }),
         ]
         return tagSections;
-    }
-
-    globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
-        return {
-            referer: DOMAIN
-        }
     }
 }

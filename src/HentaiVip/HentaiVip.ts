@@ -10,7 +10,8 @@ import {
     TagType,
     TagSection,
     ContentRating,
-    RequestHeaders,
+    Request,
+    Response,
     MangaTile,
     Tag,
     LanguageCode
@@ -21,7 +22,7 @@ import { parseSearch, parseViewMore, isLastPage } from "./HentaiVipParser"
 const method = 'GET'
 
 export const HentaiVipInfo: SourceInfo = {
-    version: '1.0.0',
+    version: '1.0.1',
     name: 'HentaiVip',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -41,7 +42,24 @@ export class HentaiVip extends Source {
     getMangaShareUrl(mangaId: string): string { return `${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': 'https://hentaivn.vip/'
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -299,11 +317,5 @@ export class HentaiVip extends Source {
             createTagSection({ id: '1', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
         ]
         return tagSections;
-    }
-
-    globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
-        return {
-            referer: 'https://hentaivn.vip/'
-        }
     }
 }

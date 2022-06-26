@@ -10,7 +10,8 @@ import {
     TagType,
     TagSection,
     ContentRating,
-    RequestHeaders,
+    Request,
+    Response,
     MangaTile,
     Tag,
     LanguageCode,
@@ -22,7 +23,7 @@ const DOMAIN = 'https://hentaicb.top/'
 const method = 'GET'
 
 export const HentaiCubeInfo: SourceInfo = {
-    version: '2.7.0',
+    version: '2.7.1',
     name: 'HentaiCube',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -42,7 +43,24 @@ export class HentaiCube extends Source {
     getMangaShareUrl(mangaId: string): string { return `${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -571,11 +589,5 @@ export class HentaiCube extends Source {
         createTagSection({ id: '3', label: 'Xếp theo', tags: tags4.map(x => createTag(x)) })
         ]
         return tagSections;
-    }
-
-    globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
-        return {
-            referer: 'https://hentaicb.top/'
-        }
     }
 }

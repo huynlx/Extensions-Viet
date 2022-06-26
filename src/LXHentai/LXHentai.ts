@@ -14,7 +14,9 @@ import {
     MangaTile,
     Tag,
     LanguageCode,
-    HomeSectionType
+    HomeSectionType,
+    Request,
+    Response
 } from "paperback-extensions-common"
 
 import { parseSearch, isLastPage, parseViewMore } from "./LXHentaiParser"
@@ -23,7 +25,7 @@ const DOMAIN = 'https://lxhentai.com/'
 const method = 'GET'
 
 export const LXHentaiInfo: SourceInfo = {
-    version: '2.0.1',
+    version: '2.0.2',
     name: 'LXHentai',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -43,7 +45,24 @@ export class LXHentai extends Source {
     getMangaShareUrl(mangaId: string): string { return `${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -327,11 +346,5 @@ export class LXHentai extends Source {
             createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) }),
         ]
         return tagSections;
-    }
-
-    globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh trong page thôi, ko load đc hết thì đéo phải do cái này
-        return {
-            referer: 'https://lxhentai.com/'
-        }
     }
 }

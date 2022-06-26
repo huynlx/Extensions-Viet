@@ -12,7 +12,8 @@ import {
     HomeSectionType,
     ContentRating,
     MangaUpdates,
-    Request
+    Request,
+    Response
 } from "paperback-extensions-common"
 import { Parser } from './TruyenChonParser';
 
@@ -31,7 +32,7 @@ export const isLastPage = ($: CheerioStatic): boolean => {
 }
 
 export const TruyenChonInfo: SourceInfo = {
-    version: '3.0.0',
+    version: '3.0.1',
     name: 'TruyenChon',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -60,7 +61,24 @@ export class TruyenChon extends Source {
     getMangaShareUrl(mangaId: string): string { return `${DOMAIN}truyen-tranh/${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -346,5 +364,4 @@ export class TruyenChon extends Source {
             throw new Error('CLOUDFLARE BYPASS ERROR:\nPlease go to Settings > Sources > \<\The name of this source\> and press Cloudflare Bypass')
         }
     }
-
 }

@@ -14,7 +14,9 @@ import {
     MangaTile,
     Tag,
     LanguageCode,
-    HomeSectionType
+    HomeSectionType,
+    Request,
+    Response
 } from "paperback-extensions-common"
 import { parseSearch, isLastPage, parseViewMore, decodeHTMLEntity } from "./TruyenVNParser"
 
@@ -22,7 +24,7 @@ const DOMAIN = 'https://truyenvn.tv/'
 const method = 'GET'
 
 export const TruyenVNInfo: SourceInfo = {
-    version: '1.0.0',
+    version: '1.0.1',
     name: 'TruyenVN',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -42,7 +44,24 @@ export class TruyenVN extends Source {
     getMangaShareUrl(mangaId: string): string { return encodeURI(`${mangaId}`) };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -380,11 +399,5 @@ export class TruyenVN extends Source {
             createTagSection({ id: '1', label: 'Bảng Xếp Hạng', tags: tags1.map(x => createTag(x)) })
         ]
         return tagSections;
-    }
-
-    globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
-        return {
-            referer: DOMAIN
-        }
     }
 }

@@ -13,7 +13,9 @@ import {
     RequestHeaders,
     MangaTile,
     Tag,
-    LanguageCode
+    LanguageCode,
+    Request,
+    Response
 } from "paperback-extensions-common"
 
 import { parseSearch, isLastPage, parseViewMore, convertTime } from "./TruyentranhAudioParser"
@@ -22,7 +24,7 @@ const DOMAIN = 'https://truyentranhaudio.online/'
 const method = 'GET'
 
 export const TruyentranhAudioInfo: SourceInfo = {
-    version: '1.0.0',
+    version: '1.0.1',
     name: 'TruyentranhAudio',
     icon: 'icon.png',
     author: 'Huynhzip3',
@@ -42,7 +44,24 @@ export class TruyentranhAudio extends Source {
     getMangaShareUrl(mangaId: string): string { return `${DOMAIN}${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
-        requestTimeout: 20000
+        requestTimeout: 20000,
+        interceptor: {
+            interceptRequest: async (request: Request): Promise<Request> => {
+
+                request.headers = {
+                    ...(request.headers ?? {}),
+                    ...{
+                        'referer': DOMAIN
+                    }
+                }
+
+                return request
+            },
+
+            interceptResponse: async (response: Response): Promise<Response> => {
+                return response
+            }
+        }
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
@@ -324,11 +343,5 @@ export class TruyentranhAudio extends Source {
             createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) }),
         ]
         return tagSections;
-    }
-
-    globalRequestHeaders(): RequestHeaders { //cái này chỉ fix load ảnh thôi, ko load đc hết thì đéo phải do cái này
-        return {
-            referer: `${DOMAIN}`
-        }
     }
 }
