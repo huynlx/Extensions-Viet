@@ -31,8 +31,8 @@ import {
 
 import tags from './tags.json';
 
-const DOMAIN = `https://hentaivn.moe/`
-const method = 'GET'
+const DOMAIN = `https://hentaivn.la/`;
+const method = 'GET';
 
 export const HentaiVNInfo: SourceInfo = {
     version: '2.8.1',
@@ -49,10 +49,10 @@ export const HentaiVNInfo: SourceInfo = {
             type: TagType.YELLOW
         }
     ]
-}
+};
 
 export class HentaiVN extends Source {
-    getMangaShareUrl(mangaId: string): string { return `${DOMAIN}${mangaId}` };
+    getMangaShareUrl(mangaId: string): string { return `${DOMAIN}${mangaId}`; };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
         requestTimeout: 20000,
@@ -64,16 +64,16 @@ export class HentaiVN extends Source {
                     ...{
                         'referer': DOMAIN
                     }
-                }
+                };
 
-                return request
+                return request;
             },
 
             interceptResponse: async (response: Response): Promise<Response> => {
-                return response
+                return response;
             }
         }
-    })
+    });
     async getMangaDetails(mangaId: string): Promise<Manga> {
         const request = createRequestObject({
             url: `${DOMAIN}`,
@@ -90,7 +90,7 @@ export class HentaiVN extends Source {
         const idchapshow = mangaId.split("::")[0].split('-doc-truyen-')[0];
         const idlinkanime = mangaId.split("::")[0].split('-doc-truyen-')[1];
         const request = createRequestObject({
-            url: `${DOMAIN}`, //https://hentaivn.moe/list-showchapter.php?idchapshow=12378&idlinkanime=ban-cung-phong-bat-dac-di
+            url: `${DOMAIN}`, //https://hentaivn.la/list-showchapter.php?idchapshow=12378&idlinkanime=ban-cung-phong-bat-dac-di
             method,
             param: `list-showchapter.php?idchapshow=${idchapshow}&idlinkanime=${idlinkanime}`,
         });
@@ -142,7 +142,7 @@ export class HentaiVN extends Source {
         request = createRequestObject({
             url: DOMAIN + 'list-random.php',
             method: 'GET'
-        })
+        });
         response = await this.requestManager.schedule(request, 1);
         $ = this.cheerio.load(response.data);
         parseRandomSections($, sections, sectionCallback);
@@ -202,7 +202,7 @@ export class HentaiVN extends Source {
                 select = 3;
                 break;
             default:
-                return Promise.resolve(createPagedResults({ results: [] }))
+                return Promise.resolve(createPagedResults({ results: [] }));
         }
 
         const request = createRequestObject({
@@ -258,7 +258,7 @@ export class HentaiVN extends Source {
                     data: {
                         'idviewtop': tag[0].split('?')[1]
                     }
-                })
+                });
             } else {
                 request = createRequestObject({
                     url,
@@ -333,11 +333,11 @@ export class HentaiVN extends Source {
                 label: 'Top View All',
                 id: DOMAIN + 'list-top.php?4'
             }
-        ]
+        ];
         const tagSections: TagSection[] = [
             createTagSection({ id: '0', label: 'Bảng Xếp Hạng', tags: topView.map(x => createTag(x)) }),
             createTagSection({ id: '1', label: 'Thể Loại', tags: tags.map(x => createTag(x)) })
-        ]
+        ];
         return tagSections;
     }
 }

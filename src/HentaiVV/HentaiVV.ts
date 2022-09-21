@@ -16,11 +16,11 @@ import {
     HomeSectionType,
     Request,
     Response
-} from "paperback-extensions-common"
-import { parseSearch, isLastPage, parseViewMore } from "./HentaiVVParser"
+} from "paperback-extensions-common";
+import { parseSearch, isLastPage, parseViewMore } from "./HentaiVVParser";
 
-const DOMAIN = 'https://hentaicube.net/'
-const method = 'GET'
+const DOMAIN = 'https://hentaivv.com/';
+const method = 'GET';
 
 export const HentaiVVInfo: SourceInfo = {
     version: '2.5.1',
@@ -37,10 +37,10 @@ export const HentaiVVInfo: SourceInfo = {
             type: TagType.YELLOW
         }
     ]
-}
+};
 
 export class HentaiVV extends Source {
-    getMangaShareUrl(mangaId: string): string { return `${mangaId}` };
+    getMangaShareUrl(mangaId: string): string { return `${mangaId}`; };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
         requestTimeout: 20000,
@@ -52,16 +52,16 @@ export class HentaiVV extends Source {
                     ...{
                         'referer': DOMAIN
                     }
-                }
+                };
 
-                return request
+                return request;
             },
 
             interceptResponse: async (response: Response): Promise<Response> => {
-                return response
+                return response;
             }
         }
-    })
+    });
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
         const url = `${mangaId}`;
@@ -76,8 +76,8 @@ export class HentaiVV extends Source {
         let status = 1; //completed, 1 = Ongoing
         let desc = $('.gioi_thieu').text().trim();
         for (const t of $('.text-center > .btn-primary-border > a').toArray()) {
-            const genre = $(t).text().trim()
-            const id = $(t).attr('href') ?? genre
+            const genre = $(t).text().trim();
+            const id = $(t).attr('href') ?? genre;
             tags.push(createTag({ label: genre, id }));
         }
         if ($('#thong_tin tbody > tr:nth-child(1) > td:nth-child(1)').text().trim() === 'Tên Khác:') {
@@ -123,7 +123,7 @@ export class HentaiVV extends Source {
                 'action': 'all_chap',
                 'id': id
             }
-        })
+        });
         const response2 = await this.requestManager.schedule(request2, 1);
         const $2 = this.cheerio.load(response2.data);
         const test = $("#dsc > .listchap > li:nth-child(1) a").first().text().trim();
@@ -249,7 +249,7 @@ export class HentaiVV extends Source {
 
         ///Get the section data
         //Featured
-        let url = ``
+        let url = ``;
         let request = createRequestObject({
             url: 'https://hentaivv.com/',
             method: "GET",
@@ -267,7 +267,7 @@ export class HentaiVV extends Source {
                 title: createIconText({
                     text: title,
                 })
-            }))
+            }));
         }
         featured.items = featuredItems;
         sectionCallback(featured);
@@ -291,7 +291,7 @@ export class HentaiVV extends Source {
                 title: createIconText({
                     text: title ?? ""
                 })
-            }))
+            }));
         }
         hot.items = hotItems;
         sectionCallback(hot);
@@ -319,13 +319,13 @@ export class HentaiVV extends Source {
                 // subtitleText: createIconText({
                 //     text: subtitle
                 // }),
-            }))
+            }));
         }
         newUpdated.items = newUpdatedItems;
         sectionCallback(newUpdated);
 
         //ngau nhien
-        url = DOMAIN
+        url = DOMAIN;
         request = createRequestObject({
             url: 'https://hentaivv.com/tim-kiem/?title=&status=all&time=rand',
             method: "GET",
@@ -347,7 +347,7 @@ export class HentaiVV extends Source {
                 // subtitleText: createIconText({
                 //     text: (subtitle),
                 // }),
-            }))
+            }));
         }
         view.items = newAddItems;
         sectionCallback(view);
@@ -375,7 +375,7 @@ export class HentaiVV extends Source {
                 // subtitleText: createIconText({
                 //     text: subtitle
                 // }),
-            }))
+            }));
         }
         newest.items = newItems;
         sectionCallback(newest);
@@ -399,7 +399,7 @@ export class HentaiVV extends Source {
                 select = 2;
                 break;
             default:
-                return Promise.resolve(createPagedResults({ results: [] }))
+                return Promise.resolve(createPagedResults({ results: [] }));
         }
 
         const request = createRequestObject({
@@ -430,13 +430,13 @@ export class HentaiVV extends Source {
                 switch (value.split(".")[0]) {
                     case 'status':
                         status.push(value.split(".")[1]);
-                        break
+                        break;
                     case 'time':
                         time.push(value.split(".")[1]);
-                        break
+                        break;
                 }
             }
-        })
+        });
         var genresFinal = '';
         const convertGenres = (genre: any[]) => {///genre=['ahegao','anal'] => cate%5B%5D=ahegao&cate%5B%5D=anal
             let y = [];
@@ -446,7 +446,7 @@ export class HentaiVV extends Source {
             }
             genresFinal = (y ?? []).join("&");
             return genresFinal;
-        }
+        };
         const request = createRequestObject({
             url: (`https://hentaivv.com/tim-kiem/page/${page}/?title=${query.title ? encodeURI(query.title) : ""}&${convertGenres(genre)}&status=${status[0] ?? 'all'}&time=${time[0] ?? 'update'}`),
             method: "GET"
@@ -468,13 +468,13 @@ export class HentaiVV extends Source {
         const tags: Tag[] = [];
         const tags2: Tag[] = [];
         const tags3: Tag[] = [];
-        const url = `https://hentaivv.com/tim-kiem/?title=`
+        const url = `https://hentaivv.com/tim-kiem/?title=`;
         const request = createRequestObject({
             url: url,
             method: "GET",
         });
 
-        const response = await this.requestManager.schedule(request, 1)
+        const response = await this.requestManager.schedule(request, 1);
         const $ = this.cheerio.load(response.data);
         //the loai
         for (const tag of $('label', '#category > div:nth-child(2)').toArray()) {
@@ -501,7 +501,7 @@ export class HentaiVV extends Source {
         }
         const tagSections: TagSection[] = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
         createTagSection({ id: '1', label: 'Tình Trạng Truyện', tags: tags2.map(x => createTag(x)) }),
-        createTagSection({ id: '2', label: 'Thời Gian', tags: tags3.map(x => createTag(x)) })]
+        createTagSection({ id: '2', label: 'Thời Gian', tags: tags3.map(x => createTag(x)) })];
         return tagSections;
     }
 }
