@@ -377,7 +377,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.NhatTruyen = exports.NhatTruyenInfo = exports.isLastPage = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const NhatTruyenParser_1 = require("./NhatTruyenParser");
-const DOMAIN = 'https://nhattruyenmin.com/';
+const DOMAIN = 'https://nhattruyenn.com/';
 exports.isLastPage = ($) => {
     const current = $('ul.pagination > li.active > a').text();
     let total = $('ul.pagination > li.PagerSSCCells:last-child').text();
@@ -388,7 +388,7 @@ exports.isLastPage = ($) => {
     return true;
 };
 exports.NhatTruyenInfo = {
-    version: '3.0.2',
+    version: '3.0.3',
     name: 'NhatTruyen',
     icon: 'icon.png',
     author: 'Huynhzip3',

@@ -597,7 +597,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.HentaiCube = exports.HentaiCubeInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const HentaiCubeParser_1 = require("./HentaiCubeParser");
-const DOMAIN = 'https://hentaicb.top/';
+const DOMAIN = 'https://hentaicb.xyz/';
 const method = 'GET';
 exports.HentaiCubeInfo = {
     version: '2.7.1',
@@ -786,7 +786,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             //Featured
             let url = ``;
             let request = createRequestObject({
-                url: 'https://hentaicb.top/',
+                url: 'https://hentaicb.xyz/',
                 method: "GET",
             });
             let featuredItems = [];
@@ -813,7 +813,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             //top
             url = '';
             request = createRequestObject({
-                url: 'https://hentaicb.top/',
+                url: 'https://hentaicb.xyz/',
                 method: "GET",
             });
             let topItems = [];
@@ -836,7 +836,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             //Hot
             url = '';
             request = createRequestObject({
-                url: 'https://hentaicb.top/',
+                url: 'https://hentaicb.xyz/',
                 method: "GET",
             });
             let hotItems = [];
@@ -859,7 +859,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             //New Updates
             url = '';
             request = createRequestObject({
-                url: 'https://hentaicb.top/?s&post_type=wp-manga&m_orderby=latest',
+                url: 'https://hentaicb.xyz/?s&post_type=wp-manga&m_orderby=latest',
                 method: "GET",
             });
             let newUpdatedItems = [];
@@ -886,7 +886,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             //view
             url = DOMAIN;
             request = createRequestObject({
-                url: 'https://hentaicb.top/?s&post_type=wp-manga&m_orderby=views',
+                url: 'https://hentaicb.xyz/?s&post_type=wp-manga&m_orderby=views',
                 method: "GET",
             });
             let newAddItems = [];
@@ -913,7 +913,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             //Newest
             url = '';
             request = createRequestObject({
-                url: 'https://hentaicb.top/?s&post_type=wp-manga&m_orderby=new-manga',
+                url: 'https://hentaicb.xyz/?s&post_type=wp-manga&m_orderby=new-manga',
                 method: "GET",
             });
             let newItems = [];
@@ -948,18 +948,18 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             let select = 1;
             switch (homepageSectionId) {
                 case "new":
-                    url = `https://hentaicb.top/page/${page}/?s&post_type=wp-manga&m_orderby=new-manga`;
-                    url2 = `https://hentaicb.top/page/${page + 1}/?s&post_type=wp-manga&m_orderby=new-manga`;
+                    url = `https://hentaicb.xyz/page/${page}/?s&post_type=wp-manga&m_orderby=new-manga`;
+                    url2 = `https://hentaicb.xyz/page/${page + 1}/?s&post_type=wp-manga&m_orderby=new-manga`;
                     select = 0;
                     break;
                 case "new_updated":
-                    url = `https://hentaicb.top/page/${page}/?s&post_type=wp-manga&m_orderby=latest`;
-                    url2 = `https://hentaicb.top/page/${page + 1}/?s&post_type=wp-manga&m_orderby=latest`;
+                    url = `https://hentaicb.xyz/page/${page}/?s&post_type=wp-manga&m_orderby=latest`;
+                    url2 = `https://hentaicb.xyz/page/${page + 1}/?s&post_type=wp-manga&m_orderby=latest`;
                     select = 1;
                     break;
                 case "view":
-                    url = `https://hentaicb.top/page/${page}/?s&post_type=wp-manga&m_orderby=views`;
-                    url2 = `https://hentaicb.top/page/${page + 1}/?s&post_type=wp-manga&m_orderby=views`;
+                    url = `https://hentaicb.xyz/page/${page}/?s&post_type=wp-manga&m_orderby=views`;
+                    url2 = `https://hentaicb.xyz/page/${page + 1}/?s&post_type=wp-manga&m_orderby=views`;
                     select = 2;
                     break;
                 default:
@@ -1050,14 +1050,14 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                         }
                         else {
                             set = 1;
-                            url = encodeURI(`https://hentaicb.top/page/${page}/?s&post_type=wp-manga&${sort[0]}`);
+                            url = encodeURI(`https://hentaicb.xyz/page/${page}/?s&post_type=wp-manga&${sort[0]}`);
                         }
                     }
                 }
             }
             else { //keyword + genre + status + sort
                 set = 1;
-                url = encodeURI(`https://hentaicb.top/page/${page}/?s=${(_d = query.title) !== null && _d !== void 0 ? _d : ""}&post_type=wp-manga&${convertGenres(genre)}&op=&author=&artist=&release=&adult=&${convertStatus(status)}&${sort[0]}`);
+                url = encodeURI(`https://hentaicb.xyz/page/${page}/?s=${(_d = query.title) !== null && _d !== void 0 ? _d : ""}&post_type=wp-manga&${convertGenres(genre)}&op=&author=&artist=&release=&adult=&${convertStatus(status)}&${sort[0]}`);
             }
             const request = createRequestObject({
                 url,
@@ -1089,14 +1089,14 @@ class HentaiCube extends paperback_extensions_common_1.Source {
             const tags3 = [];
             const tags4 = [];
             const counts = [];
-            let url = `https://hentaicb.top/?s=&post_type=wp-manga`;
+            let url = `https://hentaicb.xyz/?s=&post_type=wp-manga`;
             let request = createRequestObject({
                 url: url,
                 method: "GET",
             });
             let response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
-            let url2 = `https://hentaicb.top/manga/`;
+            let url2 = `https://hentaicb.xyz/manga/`;
             let request2 = createRequestObject({
                 url: url2,
                 method: "GET",
@@ -1133,7 +1133,7 @@ class HentaiCube extends paperback_extensions_common_1.Source {
                     continue;
                 tags4.push({ id: id, label: label });
             }
-            url = `https://hentaicb.top/manga/`;
+            url = `https://hentaicb.xyz/manga/`;
             request = createRequestObject({
                 url: url,
                 method: "GET",

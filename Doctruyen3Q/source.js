@@ -597,14 +597,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Doctruyen3Q = exports.Doctruyen3QInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const Doctruyen3QParser_1 = require("./Doctruyen3QParser");
-const DOMAIN = 'https://doctruyen3q.com/';
+const DOMAIN = 'https://doctruyen3q.site/';
 const method = 'GET';
 exports.Doctruyen3QInfo = {
     version: '2.0.1',
     name: 'Doctruyen3Q',
     icon: 'icon.png',
     author: 'Huynhzip3',
-    authorWebsite: 'https://github.com/huynh12345678',
+    authorWebsite: 'https://github.site/huynh12345678',
     description: 'Extension that pulls manga from Doctruyen3Q',
     websiteBaseURL: DOMAIN,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
@@ -827,7 +827,7 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
             sectionCallback(featured);
             // Hot
             request = createRequestObject({
-                url: 'https://doctruyen3q.com/hot',
+                url: 'https://doctruyen3q.site/hot',
                 method: "GET",
             });
             let popular = [];
@@ -849,7 +849,7 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
             sectionCallback(hot);
             //update
             request = createRequestObject({
-                url: 'https://doctruyen3q.com/',
+                url: 'https://doctruyen3q.site/',
                 method: "GET",
             });
             data = yield this.requestManager.schedule(request, 1);
@@ -871,7 +871,7 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             //boy
             request = createRequestObject({
-                url: 'https://doctruyen3q.com/truyen-con-trai',
+                url: 'https://doctruyen3q.site/truyen-con-trai',
                 method: "GET",
             });
             data = yield this.requestManager.schedule(request, 1);
@@ -893,7 +893,7 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
             sectionCallback(boy);
             //girl
             request = createRequestObject({
-                url: 'https://doctruyen3q.com/truyen-con-gai',
+                url: 'https://doctruyen3q.site/truyen-con-gai',
                 method: "GET",
             });
             data = yield this.requestManager.schedule(request, 1);
@@ -922,16 +922,16 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
             let url = '';
             switch (homepageSectionId) {
                 case "hot":
-                    url = `https://doctruyen3q.com/hot?page=${page}`;
+                    url = `https://doctruyen3q.site/hot?page=${page}`;
                     break;
                 case "new_updated":
-                    url = `https://doctruyen3q.com/?page=${page}`;
+                    url = `https://doctruyen3q.site/?page=${page}`;
                     break;
                 case "boy":
-                    url = `https://doctruyen3q.com/truyen-con-trai?page=${page}`;
+                    url = `https://doctruyen3q.site/truyen-con-trai?page=${page}`;
                     break;
                 case "girl":
-                    url = `https://doctruyen3q.com/truyen-con-gai?page=${page}`;
+                    url = `https://doctruyen3q.site/truyen-con-gai?page=${page}`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
@@ -974,7 +974,7 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
                 }
             });
             const request = createRequestObject({
-                url: encodeURI(`https://doctruyen3q.com/tim-truyen/${search.cate}?keyword=${(_d = query.title) !== null && _d !== void 0 ? _d : ""}&sort=${search.sort}&status=${search.status}&page=${page}`),
+                url: encodeURI(`https://doctruyen3q.site/tim-truyen/${search.cate}?keyword=${(_d = query.title) !== null && _d !== void 0 ? _d : ""}&sort=${search.sort}&status=${search.status}&page=${page}`),
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
@@ -992,7 +992,7 @@ class Doctruyen3Q extends paperback_extensions_common_1.Source {
             const tags = [];
             const tags2 = [];
             const tags5 = [];
-            const url = 'https://doctruyen3q.com/tim-truyen';
+            const url = 'https://doctruyen3q.site/tim-truyen';
             const request = createRequestObject({
                 url: url,
                 method: "GET",
