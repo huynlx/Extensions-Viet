@@ -597,7 +597,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TruyenVN = exports.TruyenVNInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const TruyenVNParser_1 = require("./TruyenVNParser");
-const DOMAIN = 'https://truyenvn.tv/';
+const DOMAIN = 'https://truyenvnhot.net/';
 const method = 'GET';
 exports.TruyenVNInfo = {
     version: '1.0.1',
@@ -808,7 +808,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             //New Updates
             url = '';
             request = createRequestObject({
-                url: 'https://truyenvn.tv/danh-sach-truyen',
+                url: 'https://truyenvnhot.net/danh-sach-truyen',
                 method: "GET",
             });
             let newUpdatedItems = [];
@@ -836,7 +836,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             //New Added
             url = DOMAIN;
             request = createRequestObject({
-                url: 'https://truyenvn.tv/truyen-hoan-thanh',
+                url: 'https://truyenvnhot.net/truyen-hoan-thanh',
                 method: "GET",
             });
             let newAddItems = [];
@@ -871,10 +871,10 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             let url = '';
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `https://truyenvn.tv/danh-sach-truyen/page/${page}`;
+                    url = `https://truyenvnhot.net/danh-sach-truyen/page/${page}`;
                     break;
                 case "new_added":
-                    url = `https://truyenvn.tv/truyen-hoan-thanh/page/${page}`;
+                    url = `https://truyenvnhot.net/truyen-hoan-thanh/page/${page}`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
@@ -906,7 +906,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             search.genres = tags[0];
             var url = '';
             if (search.name) {
-                url = `https://truyenvn.tv/danh-sach-truyen/page/${page}?q=${search.name}`;
+                url = `https://truyenvnhot.net/danh-sach-truyen/page/${page}?q=${search.name}`;
             }
             else {
                 url = search.genres + `/page/${page}`;
@@ -930,7 +930,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             const tags = [];
             const request = createRequestObject({
-                url: 'https://truyenvn.tv/the-loai-truyen',
+                url: 'https://truyenvnhot.net/the-loai-truyen',
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
@@ -944,23 +944,23 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             }
             const tags1 = [
                 {
-                    "id": "https://truyenvn.tv/truyen-hot",
+                    "id": "https://truyenvnhot.net/truyen-hot",
                     "label": "Top All"
                 },
                 {
-                    "id": "https://truyenvn.tv/top-ngay",
+                    "id": "https://truyenvnhot.net/top-ngay",
                     "label": "Top Ngày"
                 },
                 {
-                    "id": "https://truyenvn.tv/top-tuan",
+                    "id": "https://truyenvnhot.net/top-tuan",
                     "label": "Top Tuần"
                 },
                 {
-                    "id": "https://truyenvn.tv/top-thang",
+                    "id": "https://truyenvnhot.net/top-thang",
                     "label": "Top Tháng"
                 },
                 {
-                    "id": "https://truyenvn.tv/top-nam",
+                    "id": "https://truyenvnhot.net/top-nam",
                     "label": "Top Năm"
                 }
             ];

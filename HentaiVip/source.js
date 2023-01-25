@@ -605,7 +605,7 @@ exports.HentaiVipInfo = {
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from HentaiVip',
-    websiteBaseURL: `https://hentaivn.vip/`,
+    websiteBaseURL: `https://hentaivnhot.net/`,
     contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
         {
@@ -624,7 +624,7 @@ class HentaiVip extends paperback_extensions_common_1.Source {
                 interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
                     var _a;
                     request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
-                        'referer': 'https://hentaivn.vip/'
+                        'referer': 'https://hentaivnhot.net/'
                     });
                     return request;
                 }),
@@ -748,7 +748,7 @@ class HentaiVip extends paperback_extensions_common_1.Source {
             ///Get the section data
             //New Updates
             let request = createRequestObject({
-                url: 'https://hentaivn.vip/truyen-hentai-moi/',
+                url: 'https://hentaivnhot.net/truyen-hentai-moi/',
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
@@ -770,7 +770,7 @@ class HentaiVip extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             //hot
             request = createRequestObject({
-                url: 'https://hentaivn.vip/truyen-hot/truyen-hot-nam/',
+                url: 'https://hentaivnhot.net/truyen-hot/truyen-hot-nam/',
                 method: "GET",
             });
             let hotItems = [];
@@ -792,7 +792,7 @@ class HentaiVip extends paperback_extensions_common_1.Source {
             sectionCallback(hot);
             //đề cử
             request = createRequestObject({
-                url: 'https://hentaivn.vip/',
+                url: 'https://hentaivnhot.net/',
                 method: "GET",
             });
             let viewItems = [];
@@ -822,11 +822,11 @@ class HentaiVip extends paperback_extensions_common_1.Source {
             let select = 1;
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `https://hentaivn.vip/truyen-hentai-moi/page/${page}/`;
+                    url = `https://hentaivnhot.net/truyen-hentai-moi/page/${page}/`;
                     select = 1;
                     break;
                 case "hot":
-                    url = `https://hentaivn.vip/truyen-hot/truyen-hot-nam/page/${page}/`;
+                    url = `https://hentaivnhot.net/truyen-hot/truyen-hot-nam/page/${page}/`;
                     select = 2;
                     break;
                 // case "view":
@@ -856,7 +856,7 @@ class HentaiVip extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: query.title ? encodeURI(`https://hentaivn.vip/truyen-hentai-moi/page/${page}/?q=${query.title}`) :
+                url: query.title ? encodeURI(`https://hentaivnhot.net/truyen-hentai-moi/page/${page}/?q=${query.title}`) :
                     tags[0] + `page/${page}/`,
                 method: "GET",
             });
@@ -873,7 +873,7 @@ class HentaiVip extends paperback_extensions_common_1.Source {
     getSearchTags() {
         return __awaiter(this, void 0, void 0, function* () {
             const tags = [];
-            const url = `https://hentaivn.vip/`;
+            const url = `https://hentaivnhot.net/`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
