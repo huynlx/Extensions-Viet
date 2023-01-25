@@ -126,9 +126,7 @@ function fromByteArray (uint8) {
 
   // go through the array every three bytes, we'll deal with trailing stuff later
   for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
-    parts.push(encodeChunk(
-      uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)
-    ))
+    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
   }
 
   // pad the end with zeros, but make sure to not forget the extra bytes
@@ -1934,6 +1932,7 @@ function numberIsNaN (obj) {
 
 }).call(this)}).call(this,require("buffer").Buffer)
 },{"base64-js":1,"buffer":2,"ieee754":3}],3:[function(require,module,exports){
+/*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = (nBytes * 8) - mLen - 1
@@ -2126,7 +2125,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./base"), exports);
 __exportStar(require("./models"), exports);
 
-},{"./base":6,"./models":49}],8:[function(require,module,exports){
+},{"./base":6,"./models":50}],8:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 
@@ -2193,7 +2192,7 @@ __exportStar(require("./WebViewButton"), exports);
 __exportStar(require("./FormRow"), exports);
 __exportStar(require("./Stepper"), exports);
 
-},{"./Button":11,"./Form":13,"./FormRow":12,"./Header":14,"./InputField":15,"./Label":16,"./Link":17,"./MultilineLabel":18,"./NavigationButton":19,"./OAuthButton":20,"./Section":21,"./Select":22,"./Stepper":23,"./Switch":24,"./WebViewButton":25}],27:[function(require,module,exports){
+},{"./Button":11,"./Form":12,"./FormRow":13,"./Header":14,"./InputField":15,"./Label":16,"./Link":17,"./MultilineLabel":18,"./NavigationButton":19,"./OAuthButton":20,"./Section":21,"./Select":22,"./Stepper":23,"./Switch":24,"./WebViewButton":25}],27:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HomeSectionType = void 0;
@@ -2254,10 +2253,6 @@ var LanguageCode;
 })(LanguageCode = exports.LanguageCode || (exports.LanguageCode = {}));
 
 },{}],29:[function(require,module,exports){
-arguments[4][8][0].apply(exports,arguments)
-},{"dup":8}],30:[function(require,module,exports){
-arguments[4][8][0].apply(exports,arguments)
-},{"dup":8}],31:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MangaStatus = void 0;
@@ -2270,7 +2265,11 @@ var MangaStatus;
     MangaStatus[MangaStatus["HIATUS"] = 4] = "HIATUS";
 })(MangaStatus = exports.MangaStatus || (exports.MangaStatus = {}));
 
-},{}],32:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
+arguments[4][8][0].apply(exports,arguments)
+},{"dup":8}],31:[function(require,module,exports){
+arguments[4][8][0].apply(exports,arguments)
+},{"dup":8}],32:[function(require,module,exports){
 arguments[4][8][0].apply(exports,arguments)
 },{"dup":8}],33:[function(require,module,exports){
 arguments[4][8][0].apply(exports,arguments)
@@ -2287,6 +2286,8 @@ arguments[4][8][0].apply(exports,arguments)
 },{"dup":8}],39:[function(require,module,exports){
 arguments[4][8][0].apply(exports,arguments)
 },{"dup":8}],40:[function(require,module,exports){
+arguments[4][8][0].apply(exports,arguments)
+},{"dup":8}],41:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SearchOperator = void 0;
@@ -2296,7 +2297,7 @@ var SearchOperator;
     SearchOperator["OR"] = "OR";
 })(SearchOperator = exports.SearchOperator || (exports.SearchOperator = {}));
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContentRating = void 0;
@@ -2310,11 +2311,11 @@ var ContentRating;
     ContentRating["ADULT"] = "ADULT";
 })(ContentRating = exports.ContentRating || (exports.ContentRating = {}));
 
-},{}],42:[function(require,module,exports){
-arguments[4][8][0].apply(exports,arguments)
-},{"dup":8}],43:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 arguments[4][8][0].apply(exports,arguments)
 },{"dup":8}],44:[function(require,module,exports){
+arguments[4][8][0].apply(exports,arguments)
+},{"dup":8}],45:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TagType = void 0;
@@ -2332,15 +2333,15 @@ var TagType;
     TagType["RED"] = "danger";
 })(TagType = exports.TagType || (exports.TagType = {}));
 
-},{}],45:[function(require,module,exports){
-arguments[4][8][0].apply(exports,arguments)
-},{"dup":8}],46:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 arguments[4][8][0].apply(exports,arguments)
 },{"dup":8}],47:[function(require,module,exports){
 arguments[4][8][0].apply(exports,arguments)
 },{"dup":8}],48:[function(require,module,exports){
 arguments[4][8][0].apply(exports,arguments)
 },{"dup":8}],49:[function(require,module,exports){
+arguments[4][8][0].apply(exports,arguments)
+},{"dup":8}],50:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -2354,8 +2355,9 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./Chapter"), exports);
-__exportStar(require("./ChapterDetails"), exports);
 __exportStar(require("./HomeSection"), exports);
+__exportStar(require("./DynamicUI"), exports);
+__exportStar(require("./ChapterDetails"), exports);
 __exportStar(require("./Manga"), exports);
 __exportStar(require("./MangaTile"), exports);
 __exportStar(require("./RequestObject"), exports);
@@ -2372,15 +2374,15 @@ __exportStar(require("./RequestHeaders"), exports);
 __exportStar(require("./SourceInfo"), exports);
 __exportStar(require("./SourceStateManager"), exports);
 __exportStar(require("./RequestInterceptor"), exports);
-__exportStar(require("./DynamicUI"), exports);
 __exportStar(require("./TrackedManga"), exports);
 __exportStar(require("./SourceManga"), exports);
 __exportStar(require("./TrackedMangaChapterReadAction"), exports);
 __exportStar(require("./TrackerActionQueue"), exports);
 __exportStar(require("./SearchField"), exports);
 __exportStar(require("./RawData"), exports);
+__exportStar(require("./SearchFilter"), exports);
 
-},{"./Chapter":9,"./ChapterDetails":8,"./Constants":10,"./DynamicUI":26,"./HomeSection":27,"./Languages":28,"./Manga":31,"./MangaTile":29,"./MangaUpdate":30,"./PagedResults":32,"./RawData":33,"./RequestHeaders":34,"./RequestInterceptor":35,"./RequestManager":36,"./RequestObject":37,"./ResponseObject":38,"./SearchField":39,"./SearchRequest":40,"./SourceInfo":41,"./SourceManga":42,"./SourceStateManager":43,"./SourceTag":44,"./TagSection":45,"./TrackedManga":47,"./TrackedMangaChapterReadAction":46,"./TrackerActionQueue":48}],50:[function(require,module,exports){
+},{"./Chapter":8,"./ChapterDetails":9,"./Constants":10,"./DynamicUI":26,"./HomeSection":27,"./Languages":28,"./Manga":29,"./MangaTile":30,"./MangaUpdate":31,"./PagedResults":32,"./RawData":33,"./RequestHeaders":34,"./RequestInterceptor":35,"./RequestManager":36,"./RequestObject":37,"./ResponseObject":38,"./SearchField":39,"./SearchFilter":40,"./SearchRequest":41,"./SourceInfo":42,"./SourceManga":43,"./SourceStateManager":44,"./SourceTag":45,"./TagSection":46,"./TrackedManga":47,"./TrackedMangaChapterReadAction":48,"./TrackerActionQueue":49}],51:[function(require,module,exports){
 (function (Buffer){(function (){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -2723,7 +2725,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
 exports.LXHentai = LXHentai;
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"./LXHentaiParser":51,"buffer":2,"paperback-extensions-common":7}],51:[function(require,module,exports){
+},{"./LXHentaiParser":52,"buffer":2,"paperback-extensions-common":7}],52:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isLastPage = exports.parseTags = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
@@ -2822,5 +2824,5 @@ exports.isLastPage = ($) => {
 //     return entities.decodeHTML(str);
 // }
 
-},{}]},{},[50])(50)
+},{}]},{},[51])(51)
 });

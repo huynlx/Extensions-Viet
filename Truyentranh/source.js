@@ -325,7 +325,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./base"), exports);
 __exportStar(require("./models"), exports);
 
-},{"./base":11,"./models":54}],13:[function(require,module,exports){
+},{"./base":11,"./models":55}],13:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 
@@ -392,7 +392,7 @@ __exportStar(require("./WebViewButton"), exports);
 __exportStar(require("./FormRow"), exports);
 __exportStar(require("./Stepper"), exports);
 
-},{"./Button":16,"./Form":18,"./FormRow":17,"./Header":19,"./InputField":20,"./Label":21,"./Link":22,"./MultilineLabel":23,"./NavigationButton":24,"./OAuthButton":25,"./Section":26,"./Select":27,"./Stepper":28,"./Switch":29,"./WebViewButton":30}],32:[function(require,module,exports){
+},{"./Button":16,"./Form":17,"./FormRow":18,"./Header":19,"./InputField":20,"./Label":21,"./Link":22,"./MultilineLabel":23,"./NavigationButton":24,"./OAuthButton":25,"./Section":26,"./Select":27,"./Stepper":28,"./Switch":29,"./WebViewButton":30}],32:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HomeSectionType = void 0;
@@ -453,10 +453,6 @@ var LanguageCode;
 })(LanguageCode = exports.LanguageCode || (exports.LanguageCode = {}));
 
 },{}],34:[function(require,module,exports){
-arguments[4][13][0].apply(exports,arguments)
-},{"dup":13}],35:[function(require,module,exports){
-arguments[4][13][0].apply(exports,arguments)
-},{"dup":13}],36:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MangaStatus = void 0;
@@ -469,7 +465,11 @@ var MangaStatus;
     MangaStatus[MangaStatus["HIATUS"] = 4] = "HIATUS";
 })(MangaStatus = exports.MangaStatus || (exports.MangaStatus = {}));
 
-},{}],37:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
+arguments[4][13][0].apply(exports,arguments)
+},{"dup":13}],36:[function(require,module,exports){
+arguments[4][13][0].apply(exports,arguments)
+},{"dup":13}],37:[function(require,module,exports){
 arguments[4][13][0].apply(exports,arguments)
 },{"dup":13}],38:[function(require,module,exports){
 arguments[4][13][0].apply(exports,arguments)
@@ -486,6 +486,8 @@ arguments[4][13][0].apply(exports,arguments)
 },{"dup":13}],44:[function(require,module,exports){
 arguments[4][13][0].apply(exports,arguments)
 },{"dup":13}],45:[function(require,module,exports){
+arguments[4][13][0].apply(exports,arguments)
+},{"dup":13}],46:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SearchOperator = void 0;
@@ -495,7 +497,7 @@ var SearchOperator;
     SearchOperator["OR"] = "OR";
 })(SearchOperator = exports.SearchOperator || (exports.SearchOperator = {}));
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContentRating = void 0;
@@ -509,11 +511,11 @@ var ContentRating;
     ContentRating["ADULT"] = "ADULT";
 })(ContentRating = exports.ContentRating || (exports.ContentRating = {}));
 
-},{}],47:[function(require,module,exports){
-arguments[4][13][0].apply(exports,arguments)
-},{"dup":13}],48:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 arguments[4][13][0].apply(exports,arguments)
 },{"dup":13}],49:[function(require,module,exports){
+arguments[4][13][0].apply(exports,arguments)
+},{"dup":13}],50:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TagType = void 0;
@@ -531,15 +533,15 @@ var TagType;
     TagType["RED"] = "danger";
 })(TagType = exports.TagType || (exports.TagType = {}));
 
-},{}],50:[function(require,module,exports){
-arguments[4][13][0].apply(exports,arguments)
-},{"dup":13}],51:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 arguments[4][13][0].apply(exports,arguments)
 },{"dup":13}],52:[function(require,module,exports){
 arguments[4][13][0].apply(exports,arguments)
 },{"dup":13}],53:[function(require,module,exports){
 arguments[4][13][0].apply(exports,arguments)
 },{"dup":13}],54:[function(require,module,exports){
+arguments[4][13][0].apply(exports,arguments)
+},{"dup":13}],55:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -553,8 +555,9 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./Chapter"), exports);
-__exportStar(require("./ChapterDetails"), exports);
 __exportStar(require("./HomeSection"), exports);
+__exportStar(require("./DynamicUI"), exports);
+__exportStar(require("./ChapterDetails"), exports);
 __exportStar(require("./Manga"), exports);
 __exportStar(require("./MangaTile"), exports);
 __exportStar(require("./RequestObject"), exports);
@@ -571,15 +574,15 @@ __exportStar(require("./RequestHeaders"), exports);
 __exportStar(require("./SourceInfo"), exports);
 __exportStar(require("./SourceStateManager"), exports);
 __exportStar(require("./RequestInterceptor"), exports);
-__exportStar(require("./DynamicUI"), exports);
 __exportStar(require("./TrackedManga"), exports);
 __exportStar(require("./SourceManga"), exports);
 __exportStar(require("./TrackedMangaChapterReadAction"), exports);
 __exportStar(require("./TrackerActionQueue"), exports);
 __exportStar(require("./SearchField"), exports);
 __exportStar(require("./RawData"), exports);
+__exportStar(require("./SearchFilter"), exports);
 
-},{"./Chapter":14,"./ChapterDetails":13,"./Constants":15,"./DynamicUI":31,"./HomeSection":32,"./Languages":33,"./Manga":36,"./MangaTile":34,"./MangaUpdate":35,"./PagedResults":37,"./RawData":38,"./RequestHeaders":39,"./RequestInterceptor":40,"./RequestManager":41,"./RequestObject":42,"./ResponseObject":43,"./SearchField":44,"./SearchRequest":45,"./SourceInfo":46,"./SourceManga":47,"./SourceStateManager":48,"./SourceTag":49,"./TagSection":50,"./TrackedManga":52,"./TrackedMangaChapterReadAction":51,"./TrackerActionQueue":53}],55:[function(require,module,exports){
+},{"./Chapter":13,"./ChapterDetails":14,"./Constants":15,"./DynamicUI":31,"./HomeSection":32,"./Languages":33,"./Manga":34,"./MangaTile":35,"./MangaUpdate":36,"./PagedResults":37,"./RawData":38,"./RequestHeaders":39,"./RequestInterceptor":40,"./RequestManager":41,"./RequestObject":42,"./ResponseObject":43,"./SearchField":44,"./SearchFilter":45,"./SearchRequest":46,"./SourceInfo":47,"./SourceManga":48,"./SourceStateManager":49,"./SourceTag":50,"./TagSection":51,"./TrackedManga":52,"./TrackedMangaChapterReadAction":53,"./TrackerActionQueue":54}],56:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -896,7 +899,7 @@ class Truyentranh extends paperback_extensions_common_1.Source {
 }
 exports.Truyentranh = Truyentranh;
 
-},{"./TruyentranhParser":56,"paperback-extensions-common":12}],56:[function(require,module,exports){
+},{"./TruyentranhParser":57,"paperback-extensions-common":12}],57:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.convertTime = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
@@ -1029,5 +1032,5 @@ function convertTime(timeAgo) {
 }
 exports.convertTime = convertTime;
 
-},{"entities":1}]},{},[55])(55)
+},{"entities":1}]},{},[56])(56)
 });

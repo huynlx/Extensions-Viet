@@ -126,9 +126,7 @@ function fromByteArray (uint8) {
 
   // go through the array every three bytes, we'll deal with trailing stuff later
   for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
-    parts.push(encodeChunk(
-      uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)
-    ))
+    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
   }
 
   // pad the end with zeros, but make sure to not forget the extra bytes
@@ -2154,6 +2152,7 @@ module.exports={"Aacute":"\u00C1","aacute":"\u00E1","Acirc":"\u00C2","acirc":"\u
 module.exports={"amp":"&","apos":"'","gt":">","lt":"<","quot":"\""}
 
 },{}],11:[function(require,module,exports){
+/*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = (nBytes * 8) - mLen - 1
@@ -2346,7 +2345,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./base"), exports);
 __exportStar(require("./models"), exports);
 
-},{"./base":14,"./models":57}],16:[function(require,module,exports){
+},{"./base":14,"./models":58}],16:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 
@@ -2413,7 +2412,7 @@ __exportStar(require("./WebViewButton"), exports);
 __exportStar(require("./FormRow"), exports);
 __exportStar(require("./Stepper"), exports);
 
-},{"./Button":19,"./Form":21,"./FormRow":20,"./Header":22,"./InputField":23,"./Label":24,"./Link":25,"./MultilineLabel":26,"./NavigationButton":27,"./OAuthButton":28,"./Section":29,"./Select":30,"./Stepper":31,"./Switch":32,"./WebViewButton":33}],35:[function(require,module,exports){
+},{"./Button":19,"./Form":20,"./FormRow":21,"./Header":22,"./InputField":23,"./Label":24,"./Link":25,"./MultilineLabel":26,"./NavigationButton":27,"./OAuthButton":28,"./Section":29,"./Select":30,"./Stepper":31,"./Switch":32,"./WebViewButton":33}],35:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HomeSectionType = void 0;
@@ -2474,10 +2473,6 @@ var LanguageCode;
 })(LanguageCode = exports.LanguageCode || (exports.LanguageCode = {}));
 
 },{}],37:[function(require,module,exports){
-arguments[4][16][0].apply(exports,arguments)
-},{"dup":16}],38:[function(require,module,exports){
-arguments[4][16][0].apply(exports,arguments)
-},{"dup":16}],39:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MangaStatus = void 0;
@@ -2490,7 +2485,11 @@ var MangaStatus;
     MangaStatus[MangaStatus["HIATUS"] = 4] = "HIATUS";
 })(MangaStatus = exports.MangaStatus || (exports.MangaStatus = {}));
 
-},{}],40:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
+arguments[4][16][0].apply(exports,arguments)
+},{"dup":16}],39:[function(require,module,exports){
+arguments[4][16][0].apply(exports,arguments)
+},{"dup":16}],40:[function(require,module,exports){
 arguments[4][16][0].apply(exports,arguments)
 },{"dup":16}],41:[function(require,module,exports){
 arguments[4][16][0].apply(exports,arguments)
@@ -2507,6 +2506,8 @@ arguments[4][16][0].apply(exports,arguments)
 },{"dup":16}],47:[function(require,module,exports){
 arguments[4][16][0].apply(exports,arguments)
 },{"dup":16}],48:[function(require,module,exports){
+arguments[4][16][0].apply(exports,arguments)
+},{"dup":16}],49:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SearchOperator = void 0;
@@ -2516,7 +2517,7 @@ var SearchOperator;
     SearchOperator["OR"] = "OR";
 })(SearchOperator = exports.SearchOperator || (exports.SearchOperator = {}));
 
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContentRating = void 0;
@@ -2530,11 +2531,11 @@ var ContentRating;
     ContentRating["ADULT"] = "ADULT";
 })(ContentRating = exports.ContentRating || (exports.ContentRating = {}));
 
-},{}],50:[function(require,module,exports){
-arguments[4][16][0].apply(exports,arguments)
-},{"dup":16}],51:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 arguments[4][16][0].apply(exports,arguments)
 },{"dup":16}],52:[function(require,module,exports){
+arguments[4][16][0].apply(exports,arguments)
+},{"dup":16}],53:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TagType = void 0;
@@ -2552,15 +2553,15 @@ var TagType;
     TagType["RED"] = "danger";
 })(TagType = exports.TagType || (exports.TagType = {}));
 
-},{}],53:[function(require,module,exports){
-arguments[4][16][0].apply(exports,arguments)
-},{"dup":16}],54:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 arguments[4][16][0].apply(exports,arguments)
 },{"dup":16}],55:[function(require,module,exports){
 arguments[4][16][0].apply(exports,arguments)
 },{"dup":16}],56:[function(require,module,exports){
 arguments[4][16][0].apply(exports,arguments)
 },{"dup":16}],57:[function(require,module,exports){
+arguments[4][16][0].apply(exports,arguments)
+},{"dup":16}],58:[function(require,module,exports){
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -2574,8 +2575,9 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./Chapter"), exports);
-__exportStar(require("./ChapterDetails"), exports);
 __exportStar(require("./HomeSection"), exports);
+__exportStar(require("./DynamicUI"), exports);
+__exportStar(require("./ChapterDetails"), exports);
 __exportStar(require("./Manga"), exports);
 __exportStar(require("./MangaTile"), exports);
 __exportStar(require("./RequestObject"), exports);
@@ -2592,15 +2594,15 @@ __exportStar(require("./RequestHeaders"), exports);
 __exportStar(require("./SourceInfo"), exports);
 __exportStar(require("./SourceStateManager"), exports);
 __exportStar(require("./RequestInterceptor"), exports);
-__exportStar(require("./DynamicUI"), exports);
 __exportStar(require("./TrackedManga"), exports);
 __exportStar(require("./SourceManga"), exports);
 __exportStar(require("./TrackedMangaChapterReadAction"), exports);
 __exportStar(require("./TrackerActionQueue"), exports);
 __exportStar(require("./SearchField"), exports);
 __exportStar(require("./RawData"), exports);
+__exportStar(require("./SearchFilter"), exports);
 
-},{"./Chapter":17,"./ChapterDetails":16,"./Constants":18,"./DynamicUI":34,"./HomeSection":35,"./Languages":36,"./Manga":39,"./MangaTile":37,"./MangaUpdate":38,"./PagedResults":40,"./RawData":41,"./RequestHeaders":42,"./RequestInterceptor":43,"./RequestManager":44,"./RequestObject":45,"./ResponseObject":46,"./SearchField":47,"./SearchRequest":48,"./SourceInfo":49,"./SourceManga":50,"./SourceStateManager":51,"./SourceTag":52,"./TagSection":53,"./TrackedManga":55,"./TrackedMangaChapterReadAction":54,"./TrackerActionQueue":56}],58:[function(require,module,exports){
+},{"./Chapter":16,"./ChapterDetails":17,"./Constants":18,"./DynamicUI":34,"./HomeSection":35,"./Languages":36,"./Manga":37,"./MangaTile":38,"./MangaUpdate":39,"./PagedResults":40,"./RawData":41,"./RequestHeaders":42,"./RequestInterceptor":43,"./RequestManager":44,"./RequestObject":45,"./ResponseObject":46,"./SearchField":47,"./SearchFilter":48,"./SearchRequest":49,"./SourceInfo":50,"./SourceManga":51,"./SourceStateManager":52,"./SourceTag":53,"./TagSection":54,"./TrackedManga":55,"./TrackedMangaChapterReadAction":56,"./TrackerActionQueue":57}],59:[function(require,module,exports){
 (function (Buffer){(function (){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -2940,7 +2942,7 @@ class Truyen86 extends paperback_extensions_common_1.Source {
 exports.Truyen86 = Truyen86;
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"./Truyen86Parser":59,"buffer":2,"paperback-extensions-common":15}],59:[function(require,module,exports){
+},{"./Truyen86Parser":60,"buffer":2,"paperback-extensions-common":15}],60:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.convertTime = exports.isLastPage = exports.parseViewMore = exports.parseSearch = exports.generateSearch = void 0;
@@ -3079,5 +3081,5 @@ function convertTime(timeAgo) {
 }
 exports.convertTime = convertTime;
 
-},{"entities":3}]},{},[58])(58)
+},{"entities":3}]},{},[59])(59)
 });
