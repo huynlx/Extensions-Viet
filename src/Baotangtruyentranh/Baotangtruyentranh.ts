@@ -21,7 +21,7 @@ import {
 
 import { parseSearch, parseViewMore, isLastPage, decodeHTMLEntity } from "./BaotangtruyentranhParser"
 
-const DOMAIN = 'https://baotangtruyentranh.com/'
+const DOMAIN = 'https://baotangtruyen2.com/'
 const method = 'GET'
 
 export const BaotangtruyentranhInfo: SourceInfo = {
@@ -207,7 +207,7 @@ export class Baotangtruyentranh extends Source {
 
         //New Updates
         let request = createRequestObject({
-            url: 'https://baotangtruyentranh.com/?page=1&typegroup=0',
+            url: 'https://baotangtruyen2.com/?page=1&typegroup=0',
             method: "GET",
         });
         let data = await this.requestManager.schedule(request, 1);
@@ -253,7 +253,7 @@ export class Baotangtruyentranh extends Source {
 
         //trans
         request = createRequestObject({
-            url: 'https://baotangtruyentranh.com/?page=1&typegroup=1',
+            url: 'https://baotangtruyen2.com/?page=1&typegroup=1',
             method: "GET",
         });
         let transItems: MangaTile[] = [];
@@ -281,11 +281,11 @@ export class Baotangtruyentranh extends Source {
         let select = 1;
         switch (homepageSectionId) {
             case "new_updated":
-                url = `https://baotangtruyentranh.com/?page=${page}&typegroup=0`;
+                url = `https://baotangtruyen2.com/?page=${page}&typegroup=0`;
                 select = 1;
                 break;
             case "trans":
-                url = `https://baotangtruyentranh.com/?page=${page}&typegroup=1`;
+                url = `https://baotangtruyen2.com/?page=${page}&typegroup=1`;
                 select = 1;
                 break;
             default:
@@ -329,8 +329,8 @@ export class Baotangtruyentranh extends Source {
             }
         })
         const request = createRequestObject({
-            url: query.title ? encodeURI(`https://baotangtruyentranh.com/tim-truyen?keyword=${query.title}&page=${page}`)
-                : encodeURI(`https://baotangtruyentranh.com/tim-truyen/${search.cate}?status=${search.status}&sort=${search.sort}&page=${page}`),
+            url: query.title ? encodeURI(`https://baotangtruyen2.com/tim-truyen?keyword=${query.title}&page=${page}`)
+                : encodeURI(`https://baotangtruyen2.com/tim-truyen/${search.cate}?status=${search.status}&sort=${search.sort}&page=${page}`),
             method: "GET",
         });
 

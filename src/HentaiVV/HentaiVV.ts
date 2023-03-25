@@ -19,7 +19,7 @@ import {
 } from "paperback-extensions-common";
 import { parseSearch, isLastPage, parseViewMore } from "./HentaiVVParser";
 
-const DOMAIN = 'https://hentaivv.com/';
+const DOMAIN = 'https://hentaivv1.com/';
 const method = 'GET';
 
 export const HentaiVVInfo: SourceInfo = {
@@ -29,7 +29,7 @@ export const HentaiVVInfo: SourceInfo = {
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from HentaiVV',
-    websiteBaseURL: `https://hentaivv.com/`,
+    websiteBaseURL: `https://hentaivv1.com/`,
     contentRating: ContentRating.ADULT,
     sourceTags: [
         {
@@ -114,7 +114,7 @@ export class HentaiVV extends Source {
         const page = $('#id_pagination > li.active > a').text().trim();
         const id = $("#views").attr('data-id');
         const request2 = createRequestObject({
-            url: 'https://hentaivv.com/wp-admin/admin-ajax.php',
+            url: 'https://hentaivv1.com/wp-admin/admin-ajax.php',
             method: 'POST',
             headers: {
                 'content-type': 'application/x-www-form-urlencoded'
@@ -251,7 +251,7 @@ export class HentaiVV extends Source {
         //Featured
         let url = ``;
         let request = createRequestObject({
-            url: 'https://hentaivv.com/',
+            url: 'https://hentaivv1.com/',
             method: "GET",
         });
         let featuredItems: MangaTile[] = [];
@@ -275,7 +275,7 @@ export class HentaiVV extends Source {
         //Hot
         url = '';
         request = createRequestObject({
-            url: 'https://hentaivv.com/truyen/',
+            url: 'https://hentaivv1.com/truyen/',
             method: "GET",
         });
         let hotItems: MangaTile[] = [];
@@ -299,7 +299,7 @@ export class HentaiVV extends Source {
         //New Updates
         url = '';
         request = createRequestObject({
-            url: 'https://hentaivv.com/tim-kiem/?title=&status=all&time=update',
+            url: 'https://hentaivv1.com/tim-kiem/?title=&status=all&time=update',
             method: "GET",
         });
         let newUpdatedItems: MangaTile[] = [];
@@ -327,7 +327,7 @@ export class HentaiVV extends Source {
         //ngau nhien
         url = DOMAIN;
         request = createRequestObject({
-            url: 'https://hentaivv.com/tim-kiem/?title=&status=all&time=rand',
+            url: 'https://hentaivv1.com/tim-kiem/?title=&status=all&time=rand',
             method: "GET",
         });
         let newAddItems: MangaTile[] = [];
@@ -355,7 +355,7 @@ export class HentaiVV extends Source {
         //Newest
         url = '';
         request = createRequestObject({
-            url: 'https://hentaivv.com/tim-kiem/?title=&status=all&time=new',
+            url: 'https://hentaivv1.com/tim-kiem/?title=&status=all&time=new',
             method: "GET",
         });
         let newItems: MangaTile[] = [];
@@ -387,15 +387,15 @@ export class HentaiVV extends Source {
         let select = 1;
         switch (homepageSectionId) {
             case "new":
-                url = `https://hentaivv.com/tim-kiem/page/${page}/?title=&status=all&time=new`;
+                url = `https://hentaivv1.com/tim-kiem/page/${page}/?title=&status=all&time=new`;
                 select = 0;
                 break;
             case "new_updated":
-                url = `https://hentaivv.com/tim-kiem/page/${page}/?title&status=all&time=update`;
+                url = `https://hentaivv1.com/tim-kiem/page/${page}/?title&status=all&time=update`;
                 select = 1;
                 break;
             case "view":
-                url = `https://hentaivv.com/tim-kiem/page/${page}/?title=&status=all&time=rand`;
+                url = `https://hentaivv1.com/tim-kiem/page/${page}/?title=&status=all&time=rand`;
                 select = 2;
                 break;
             default:
@@ -448,7 +448,7 @@ export class HentaiVV extends Source {
             return genresFinal;
         };
         const request = createRequestObject({
-            url: (`https://hentaivv.com/tim-kiem/page/${page}/?title=${query.title ? encodeURI(query.title) : ""}&${convertGenres(genre)}&status=${status[0] ?? 'all'}&time=${time[0] ?? 'update'}`),
+            url: (`https://hentaivv1.com/tim-kiem/page/${page}/?title=${query.title ? encodeURI(query.title) : ""}&${convertGenres(genre)}&status=${status[0] ?? 'all'}&time=${time[0] ?? 'update'}`),
             method: "GET"
         });
 
@@ -468,7 +468,7 @@ export class HentaiVV extends Source {
         const tags: Tag[] = [];
         const tags2: Tag[] = [];
         const tags3: Tag[] = [];
-        const url = `https://hentaivv.com/tim-kiem/?title=`;
+        const url = `https://hentaivv1.com/tim-kiem/?title=`;
         const request = createRequestObject({
             url: url,
             method: "GET",

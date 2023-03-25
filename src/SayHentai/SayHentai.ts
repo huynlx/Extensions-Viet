@@ -21,7 +21,7 @@ import tagsArr from './tag.json';
 
 import { parseSearch, isLastPage, parseViewMore } from "./SayHentaiParser";
 
-const DOMAIN = 'https://sayhentai.net/'
+const DOMAIN = 'https://sayhentai.me/'
 const method = 'GET'
 
 export const SayHentaiInfo: SourceInfo = {
@@ -31,7 +31,7 @@ export const SayHentaiInfo: SourceInfo = {
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from SayHentai',
-    websiteBaseURL: `https://sayhentai.net/`,
+    websiteBaseURL: `https://sayhentai.me/`,
     contentRating: ContentRating.ADULT,
     sourceTags: [
         {
@@ -42,7 +42,7 @@ export const SayHentaiInfo: SourceInfo = {
 }
 
 export class SayHentai extends Source {
-    getMangaShareUrl(mangaId: string): string { return `https://sayhentai.net/${mangaId}` };
+    getMangaShareUrl(mangaId: string): string { return `https://sayhentai.me/${mangaId}` };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
         requestTimeout: 20000,
@@ -66,7 +66,7 @@ export class SayHentai extends Source {
     })
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
-        const url = `https://sayhentai.net/${mangaId}`;
+        const url = `https://sayhentai.me/${mangaId}`;
         const request = createRequestObject({
             url: url,
             method: "GET",
@@ -91,7 +91,7 @@ export class SayHentai extends Source {
             artist: creator,
             desc: desc,
             titles: [$('.wrap-content-info > h1').text().trim()],
-            image: image?.includes('http') ? image : (image?.includes('//') ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://sayhentai.net/' + image)),
+            image: image?.includes('http') ? image : (image?.includes('//') ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://sayhentai.me/' + image)),
             status,
             // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
             hentai: true,
@@ -101,7 +101,7 @@ export class SayHentai extends Source {
     }
     async getChapters(mangaId: string): Promise<Chapter[]> {
         const request = createRequestObject({
-            url: `https://sayhentai.net/${mangaId}`,
+            url: `https://sayhentai.me/${mangaId}`,
             method,
         });
 
@@ -126,7 +126,7 @@ export class SayHentai extends Source {
 
     async getChapterDetails(mangaId: string, chapterId: string): Promise<ChapterDetails> {
         const request = createRequestObject({
-            url: `https://sayhentai.net/${chapterId}`,
+            url: `https://sayhentai.me/${chapterId}`,
             method
         });
 
@@ -136,7 +136,7 @@ export class SayHentai extends Source {
         for (let obj of $('#lst_content > img').toArray()) {
             if (!obj.attribs['data-src']) continue;
             let link = obj.attribs['data-src'].includes('http') ?
-                (obj.attribs['data-src']).trim() : ('https://sayhentai.net/' + obj.attribs['data-src']).trim();
+                (obj.attribs['data-src']).trim() : ('https://sayhentai.me/' + obj.attribs['data-src']).trim();
             pages.push(encodeURI(link));
         }
 
@@ -175,7 +175,7 @@ export class SayHentai extends Source {
         //Hot
         let url = '';
         let request = createRequestObject({
-            url: 'https://sayhentai.net/',
+            url: 'https://sayhentai.me/',
             method: "GET",
         });
         let hotItems: MangaTile[] = [];
@@ -189,7 +189,7 @@ export class SayHentai extends Source {
             // if (!id || !subtitle) continue;
             hotItems.push(createMangaTile({
                 id: id,
-                image: image?.includes('http') ? image : (image?.includes('//') ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://sayhentai.net/' + image)),
+                image: image?.includes('http') ? image : (image?.includes('//') ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://sayhentai.me/' + image)),
                 title: createIconText({
                     text: title,
                 }),
@@ -204,7 +204,7 @@ export class SayHentai extends Source {
         //New Updates
         url = '';
         request = createRequestObject({
-            url: 'https://sayhentai.net/',
+            url: 'https://sayhentai.me/',
             method: "GET",
         });
         let newUpdatedItems: MangaTile[] = [];
@@ -218,7 +218,7 @@ export class SayHentai extends Source {
             // if (!id || !subtitle) continue;
             newUpdatedItems.push(createMangaTile({
                 id: id,
-                image: image?.includes('http') ? image : (image?.includes('//') ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://sayhentai.net/' + image)),
+                image: image?.includes('http') ? image : (image?.includes('//') ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://sayhentai.me/' + image)),
                 title: createIconText({
                     text: title,
                 }),
@@ -233,7 +233,7 @@ export class SayHentai extends Source {
         //New Added
         url = DOMAIN
         request = createRequestObject({
-            url: 'https://sayhentai.net/',
+            url: 'https://sayhentai.me/',
             method: "GET",
         });
         let newAddItems: MangaTile[] = [];
@@ -247,7 +247,7 @@ export class SayHentai extends Source {
             // if (!id || !subtitle) continue;
             newAddItems.push(createMangaTile({
                 id: id,
-                image: image?.includes('http') ? image : (image?.includes('//') ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://sayhentai.net/' + image)),
+                image: image?.includes('http') ? image : (image?.includes('//') ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://sayhentai.me/' + image)),
                 title: createIconText({
                     text: title,
                 }),
@@ -266,13 +266,13 @@ export class SayHentai extends Source {
         let url = '';
         switch (homepageSectionId) {
             case "hot":
-                url = `https://sayhentai.net/danh-sach-truyen.html?status=0&sort=views&page=${page}`;
+                url = `https://sayhentai.me/danh-sach-truyen.html?status=0&sort=views&page=${page}`;
                 break;
             case "new_updated":
-                url = `https://sayhentai.net/danh-sach-truyen.html?page=${page}`;
+                url = `https://sayhentai.me/danh-sach-truyen.html?page=${page}`;
                 break;
             case "new_added":
-                url = `https://sayhentai.net/danh-sach-truyen.html?status=0&sort=id&page=${page}`;
+                url = `https://sayhentai.me/danh-sach-truyen.html?status=0&sort=id&page=${page}`;
                 break;
             default:
                 return Promise.resolve(createPagedResults({ results: [] }))
@@ -319,7 +319,7 @@ export class SayHentai extends Source {
             }
         })
         const request = createRequestObject({
-            url: (tags[0] === 'all' ? 'https://sayhentai.net/danh-sach-truyen.html?' : encodeURI(`https://sayhentai.net/danh-sach-truyen.html?status=${search.status}&name=${search.name}&genre=${search.genres}&sort=${search.sort}`)),
+            url: (tags[0] === 'all' ? 'https://sayhentai.me/danh-sach-truyen.html?' : encodeURI(`https://sayhentai.me/danh-sach-truyen.html?status=${search.status}&name=${search.name}&genre=${search.genres}&sort=${search.sort}`)),
             method: "GET",
             param: encodeURI(`&page=${page}`)
         });

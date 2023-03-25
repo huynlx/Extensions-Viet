@@ -18,7 +18,7 @@ import {
 } from "paperback-extensions-common"
 import { parseSearch, isLastPage, parseViewMore } from "./SayTruyenParser"
 
-const DOMAIN = 'https://saytruyen.net/'
+const DOMAIN = 'https://saytruyen.us/'
 const method = 'GET'
 
 export const SayTruyenInfo: SourceInfo = {
@@ -28,7 +28,7 @@ export const SayTruyenInfo: SourceInfo = {
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from SayTruyen',
-    websiteBaseURL: `https://saytruyen.net/`,
+    websiteBaseURL: `https://saytruyen.us/`,
     contentRating: ContentRating.MATURE,
     sourceTags: [
         {
@@ -88,7 +88,7 @@ export class SayTruyen extends Source {
             artist: creator,
             desc: desc,
             titles: [$('.wrap-content-info > h1').text().trim()],
-            image: image?.includes('http') ? image : (image?.includes('//') ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://saytruyen.net/' + image)),
+            image: image?.includes('http') ? image : (image?.includes('//') ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://saytruyen.us/' + image)),
             status,
             // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
             hentai: false,
@@ -186,7 +186,7 @@ export class SayTruyen extends Source {
             // if (!id || !subtitle) continue;
             hotItems.push(createMangaTile({
                 id: id,
-                image: image?.includes('http') ? image : (image?.includes('//') ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://saytruyen.net/' + image)),
+                image: image?.includes('http') ? image : (image?.includes('//') ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://saytruyen.us/' + image)),
                 title: createIconText({
                     text: title,
                 }),
@@ -215,7 +215,7 @@ export class SayTruyen extends Source {
             // if (!id || !subtitle) continue;
             newUpdatedItems.push(createMangaTile({
                 id: id,
-                image: image?.includes('http') ? image : (image?.includes('//') ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://saytruyen.net/' + image)),
+                image: image?.includes('http') ? image : (image?.includes('//') ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://saytruyen.us/' + image)),
                 title: createIconText({
                     text: title,
                 }),
@@ -244,7 +244,7 @@ export class SayTruyen extends Source {
             // if (!id || !subtitle) continue;
             newAddItems.push(createMangaTile({
                 id: id,
-                image: image?.includes('http') ? image : (image?.includes('//') ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://saytruyen.net/' + image)),
+                image: image?.includes('http') ? image : (image?.includes('//') ? ('https:' + image.replace('//st.truyenchon.com', '//st.imageinstant.net')) : ('https://saytruyen.us/' + image)),
                 title: createIconText({
                     text: title,
                 }),
