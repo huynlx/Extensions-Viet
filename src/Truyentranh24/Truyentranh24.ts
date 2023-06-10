@@ -22,16 +22,16 @@ import {
 
 import { parseSearch, parseViewMore, isLastPage } from "./Truyentranh24Parser"
 
-const DOMAIN = 'https://truyentranh24z.com/'
+const DOMAIN = 'https://truyennhanh1.com/'
 const method = 'GET'
 
 export const Truyentranh24Info: SourceInfo = {
     version: '1.5.1',
-    name: 'Truyentranh24',
+    name: 'Truyentranh1',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from Truyentranh24',
+    description: 'Extension that pulls manga from Truyentranh1',
     websiteBaseURL: DOMAIN,
     contentRating: ContentRating.MATURE,
     sourceTags: [
@@ -105,11 +105,11 @@ export class Truyentranh24 extends Source {
     }
     async getChapters(mangaId: string): Promise<Chapter[]> {
         const request = createRequestObject({
-            url: 'https://truyentranh24z.com/api/mangas/' + mangaId.split("::")[1] + '/chapters?offset=0&limit=0',
+            url: 'https://truyennhanh1.com/api/mangas/' + mangaId.split("::")[1] + '/chapters?offset=0&limit=0',
             method,
             headers: {
                 'x-requested-with': 'XMLHttpRequest',
-                'referer': 'https://truyentranh24z.com'
+                'referer': 'https://truyennhanh1.com'
             }
         });
         const data = await this.requestManager.schedule(request, 1);
@@ -204,7 +204,7 @@ export class Truyentranh24 extends Source {
         ///Get the section data
         // featured
         let request = createRequestObject({
-            url: 'https://truyentranh24z.com',
+            url: 'https://truyennhanh1.com/',
             method: "GET",
         });
         let featuredItems: MangaTile[] = [];
@@ -228,7 +228,7 @@ export class Truyentranh24 extends Source {
 
         // Hot
         request = createRequestObject({
-            url: 'https://truyentranh24z.com/top-ngay',
+            url: 'https://truyennhanh1.com/top-ngay',
             method: "GET",
         });
         let popular: MangaTile[] = [];
@@ -275,7 +275,7 @@ export class Truyentranh24 extends Source {
 
         //view
         request = createRequestObject({
-            url: 'https://truyentranh24z.com/truyen-hot',
+            url: 'https://truyennhanh1.com/truyen-hot',
             method: "GET",
         });
         let viewItems: MangaTile[] = [];
@@ -298,7 +298,7 @@ export class Truyentranh24 extends Source {
 
         //add
         request = createRequestObject({
-            url: 'https://truyentranh24z.com/',
+            url: 'https://truyennhanh1.com/',
             method: "GET",
         });
         let addItems: MangaTile[] = [];
@@ -321,7 +321,7 @@ export class Truyentranh24 extends Source {
 
         //top
         request = createRequestObject({
-            url: 'https://truyentranh24z.com/',
+            url: 'https://truyennhanh1.com/',
             method: "GET",
         });
         let topItems: MangaTile[] = [];
@@ -344,7 +344,7 @@ export class Truyentranh24 extends Source {
 
         //miss
         request = createRequestObject({
-            url: 'https://truyentranh24z.com/',
+            url: 'https://truyennhanh1.com/',
             method: "GET",
         });
         let missItems: MangaTile[] = [];
@@ -372,15 +372,15 @@ export class Truyentranh24 extends Source {
         let select = 1;
         switch (homepageSectionId) {
             case "hot":
-                url = `https://truyentranh24z.com/top-ngay?p=${page}`;
+                url = `https://truyennhanh1.com/top-ngay?p=${page}`;
                 select = 1;
                 break;
             case "new_updated":
-                url = `https://truyentranh24z.com/chap-moi-nhat`;
+                url = `https://truyennhanh1.com/chap-moi-nhat`;
                 select = 2;
                 break;
             case "view":
-                url = `https://truyentranh24z.com/truyen-hot?p=${page}`;
+                url = `https://truyennhanh1.com/truyen-hot?p=${page}`;
                 select = 1;
                 break;
             default:
@@ -406,7 +406,7 @@ export class Truyentranh24 extends Source {
         let page = metadata?.page ?? 1;
         const tags = query.includedTags?.map(tag => tag.id) ?? [];
         const request = createRequestObject({
-            url: query.title ? encodeURI(`https://truyentranh24z.com/tim-kiem/${query.title}?p=${page}`) : (`https://truyentranh24z.com/` + tags[0] + `?p=${page}`),
+            url: query.title ? encodeURI(`hhttps://truyennhanh1.com/tim-kiem/${query.title}?p=${page}`) : (`https://truyennhanh1.com/` + tags[0] + `?p=${page}`),
             method: "GET",
         });
 
