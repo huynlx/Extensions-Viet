@@ -21,7 +21,7 @@ import {
 
 import { parseSearch, parseViewMore, isLastPage, decodeHTMLEntity } from "./TruyengihotParser"
 
-const DOMAIN = 'https://truyengihot.net/'
+const DOMAIN = 'https://truyengihotne.com/'
 const method = 'GET'
 
 export const TruyengihotInfo: SourceInfo = {
