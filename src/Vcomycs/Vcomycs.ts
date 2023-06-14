@@ -29,7 +29,7 @@ export const VcomycsInfo: SourceInfo = {
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from Vcomycs',
-    websiteBaseURL: `https://vcomycs.com/`,
+    websiteBaseURL: `https://vivicomi.info/`,
     contentRating: ContentRating.MATURE,
     sourceTags: [
         {
