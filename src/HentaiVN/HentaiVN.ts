@@ -31,7 +31,7 @@ import {
 
 import tags from './tags.json';
 
-const DOMAIN = `https://hentaivn.la/`;
+const DOMAIN = `https://hentaivn.site/`;
 const method = 'GET';
 
 export const HentaiVNInfo: SourceInfo = {
@@ -90,7 +90,7 @@ export class HentaiVN extends Source {
         const idchapshow = mangaId.split("::")[0].split('-doc-truyen-')[0];
         const idlinkanime = mangaId.split("::")[0].split('-doc-truyen-')[1];
         const request = createRequestObject({
-            url: `${DOMAIN}`, //https://hentaivn.la/list-showchapter.php?idchapshow=12378&idlinkanime=ban-cung-phong-bat-dac-di
+            url: `${DOMAIN}`, //https://hentaivn.site/list-showchapter.php?idchapshow=12378&idlinkanime=ban-cung-phong-bat-dac-di
             method,
             param: `list-showchapter.php?idchapshow=${idchapshow}&idlinkanime=${idlinkanime}`,
         });
