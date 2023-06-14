@@ -29,7 +29,7 @@ export const VlogTruyenInfo: SourceInfo = {
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from VlogTruyen',
-    websiteBaseURL: `https://vlogtruyen.net/`,
+    websiteBaseURL: `https://vlogtruyen3.com/`,
     contentRating: ContentRating.MATURE,
     sourceTags: [
         {
