@@ -605,7 +605,7 @@ exports.VlogTruyenInfo = {
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from VlogTruyen',
-    websiteBaseURL: `https://vlogtruyen.net/`,
+    websiteBaseURL: `https://vlogtruyen3.com/`,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
         {

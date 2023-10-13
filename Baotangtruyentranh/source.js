@@ -597,7 +597,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Baotangtruyentranh = exports.BaotangtruyentranhInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const BaotangtruyentranhParser_1 = require("./BaotangtruyentranhParser");
-const DOMAIN = 'https://baotangtruyentranh.com/';
+const DOMAIN = 'https://baotangtruyengo.com/';
 const method = 'GET';
 exports.BaotangtruyentranhInfo = {
     version: '1.0.1',

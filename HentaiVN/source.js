@@ -602,22 +602,22 @@ const paperback_extensions_common_1 = require("paperback-extensions-common");
 const HentaiVNParser_1 = require("./HentaiVNParser");
 const tags_json_1 = __importDefault(require("./tags.json"));
 const DOMAIN = `https://hentaivn.de/`;
-const method = 'GET';
+const method = "GET";
 exports.HentaiVNInfo = {
-    version: '2.8.1',
-    name: 'HentaiVN',
-    icon: 'icon.png',
-    author: 'Huynhzip3',
-    authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from HentaiVN',
-    websiteBaseURL: '',
+    version: "2.8.1",
+    name: "HentaiVN",
+    icon: "icon.png",
+    author: "Huynhzip3",
+    authorWebsite: "https://github.com/huynh12345678",
+    description: "Extension that pulls manga from HentaiVN",
+    websiteBaseURL: "",
     contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
         {
             text: "18+",
-            type: paperback_extensions_common_1.TagType.YELLOW
-        }
-    ]
+            type: paperback_extensions_common_1.TagType.YELLOW,
+        },
+    ],
 };
 class HentaiVN extends paperback_extensions_common_1.Source {
     constructor() {
@@ -629,18 +629,19 @@ class HentaiVN extends paperback_extensions_common_1.Source {
                 interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
                     var _a;
                     request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
-                        'referer': DOMAIN
+                        referer: DOMAIN,
                     });
                     return request;
                 }),
                 interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
                     return response;
-                })
-            }
+                }),
+            },
         });
     }
-    getMangaShareUrl(mangaId) { return `${DOMAIN}${mangaId}`; }
-    ;
+    getMangaShareUrl(mangaId) {
+        return `${DOMAIN}${mangaId}`;
+    }
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
@@ -655,8 +656,9 @@ class HentaiVN extends paperback_extensions_common_1.Source {
     }
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const idchapshow = mangaId.split("::")[0].split('-doc-truyen-')[0];
-            const idlinkanime = mangaId.split("::")[0].split('-doc-truyen-')[1];
+            // mangaId.split("::")[0] => 29680-doc-truyen-caffenny-hobaku.html
+            const idchapshow = mangaId.split("::")[0].split("-doc-truyen-")[0];
+            const idlinkanime = mangaId.split("::")[0].split("-doc-truyen-")[1];
             const request = createRequestObject({
                 url: `${DOMAIN}`,
                 method,
@@ -681,12 +683,36 @@ class HentaiVN extends paperback_extensions_common_1.Source {
     }
     getHomePageSections(sectionCallback) {
         return __awaiter(this, void 0, void 0, function* () {
-            const section0 = createHomeSection({ id: 'featured', title: 'Tiêu điểm', type: paperback_extensions_common_1.HomeSectionType.featured });
-            const section5 = createHomeSection({ id: 'random', title: 'Truyện ngẫu nhiên', view_more: false });
-            const section1 = createHomeSection({ id: 'recently-updated', title: 'Mới cập nhật', view_more: true });
-            const section2 = createHomeSection({ id: 'popular', title: 'Tiêu điểm', view_more: true });
-            const section3 = createHomeSection({ id: 'recently_added', title: 'Truyện mới đăng', view_more: true });
-            const section4 = createHomeSection({ id: 'full', title: 'Truyện đã hoàn thành', view_more: true });
+            const section0 = createHomeSection({
+                id: "featured",
+                title: "Tiêu điểm",
+                type: paperback_extensions_common_1.HomeSectionType.featured,
+            });
+            const section5 = createHomeSection({
+                id: "random",
+                title: "Truyện ngẫu nhiên",
+                view_more: false,
+            });
+            const section1 = createHomeSection({
+                id: "recently-updated",
+                title: "Mới cập nhật",
+                view_more: true,
+            });
+            const section2 = createHomeSection({
+                id: "popular",
+                title: "Tiêu điểm",
+                view_more: true,
+            });
+            const section3 = createHomeSection({
+                id: "recently_added",
+                title: "Truyện mới đăng",
+                view_more: true,
+            });
+            const section4 = createHomeSection({
+                id: "full",
+                title: "Truyện đã hoàn thành",
+                view_more: true,
+            });
             const sections = [section0, section5, section1, section3, section4];
             let request = createRequestObject({
                 url: `${DOMAIN}`,
@@ -703,8 +729,8 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             HentaiVNParser_1.parseHomeSections($, $2, sections, sectionCallback);
             //random
             request = createRequestObject({
-                url: DOMAIN + 'list-random.php',
-                method: 'GET'
+                url: DOMAIN + "list-random.php",
+                method: "GET",
             });
             response = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(response.data);
@@ -718,13 +744,13 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             $ = this.cheerio.load(response.data);
             HentaiVNParser_1.parseAddedSections($, sections, sectionCallback);
             /*   //popular
-              request = createRequestObject({
-                  url: `${DOMAIN}tieu-diem.html`,
-                  method
-              });
-              response = await this.requestManager.schedule(request, 1);
-              $ = this.cheerio.load(response.data);
-              parsePopularSections($, sections, sectionCallback); */
+                  request = createRequestObject({
+                      url: `${DOMAIN}tieu-diem.html`,
+                      method
+                  });
+                  response = await this.requestManager.schedule(request, 1);
+                  $ = this.cheerio.load(response.data);
+                  parsePopularSections($, sections, sectionCallback); */
             //full
             request = createRequestObject({
                 url: `${DOMAIN}da-hoan-thanh.html`,
@@ -740,8 +766,8 @@ class HentaiVN extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             let select = 1;
-            let param = '';
-            let url = '';
+            let param = "";
+            let url = "";
             switch (homepageSectionId) {
                 case "recently-updated":
                     url = `${DOMAIN}`;
@@ -769,7 +795,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             const request = createRequestObject({
                 url,
                 method,
-                param
+                param,
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
@@ -785,48 +811,49 @@ class HentaiVN extends paperback_extensions_common_1.Source {
         var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            const tag = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
-            var url = '';
+            const tag = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map((tag) => tag.id)) !== null && _c !== void 0 ? _c : [];
+            var url = "";
             if (query.title) {
                 url = `${DOMAIN}tim-kiem-truyen.html?key=${encodeURI(query.title)}`; //encodeURI để search được chữ có dấu
             }
             else {
-                if (tag[0].includes('https')) {
-                    url = tag[0].split('?')[0];
+                if (tag[0].includes("https")) {
+                    url = tag[0].split("?")[0];
                 }
                 else {
                     url = `${DOMAIN}${tag[0]}?`;
                 }
             }
             var request = createRequestObject({
+                //temp
                 url,
-                method
+                method,
             });
             if (query.title) {
                 request = createRequestObject({
                     url,
                     method,
-                    param: `&page=${page}`
+                    param: `&page=${page}`,
                 });
             }
             else {
-                if (tag[0].includes('https')) {
+                if (tag[0].includes("https")) {
                     request = createRequestObject({
                         url,
-                        method: 'POST',
+                        method: "POST",
                         headers: {
-                            'content-type': 'application/x-www-form-urlencoded'
+                            "content-type": "application/x-www-form-urlencoded",
                         },
                         data: {
-                            'idviewtop': tag[0].split('?')[1]
-                        }
+                            idviewtop: tag[0].split("?")[1],
+                        },
                     });
                 }
                 else {
                     request = createRequestObject({
                         url,
                         method,
-                        param: `&page=${page}`
+                        param: `&page=${page}`,
                     });
                 }
             }
@@ -837,18 +864,19 @@ class HentaiVN extends paperback_extensions_common_1.Source {
                 manga = HentaiVNParser_1.parseSearch($);
             }
             else {
-                if (tag[0].includes('https')) {
-                    for (let obj of $('li').toArray()) {
-                        const id = (_e = (_d = $('.view-top-1 > a', obj).attr('href')) === null || _d === void 0 ? void 0 : _d.split('/').pop()) !== null && _e !== void 0 ? _e : "";
-                        const title = $('.view-top-1 > a', obj).text();
+                if (tag[0].includes("https")) {
+                    for (let obj of $("li").toArray()) {
+                        const id = (_e = (_d = $(".view-top-1 > a", obj).attr("href")) === null || _d === void 0 ? void 0 : _d.split("/").pop()) !== null && _e !== void 0 ? _e : "";
+                        const title = $(".view-top-1 > a", obj).text();
                         const subtitle = $(".view-top-2", obj).text().trim();
                         let request2 = createRequestObject({
+                            //có thể lỗi ở đoạn lấy image này (đm cái top ngày => lúc nào rảnh thì fix sau)
                             url: DOMAIN + id,
                             method,
                         });
                         let response = yield this.requestManager.schedule(request2, 1);
                         let $2 = this.cheerio.load(response.data);
-                        let image = $2('.page-ava > img').attr('src');
+                        let image = $2(".page-ava > img").attr("src");
                         manga.push(createMangaTile({
                             id: encodeURIComponent(id) + "::" + image,
                             image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
@@ -865,7 +893,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
                 metadata = !HentaiVNParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             }
             else {
-                if (tag[0].includes('https')) {
+                if (tag[0].includes("https")) {
                     metadata = undefined;
                 }
                 else {
@@ -874,7 +902,7 @@ class HentaiVN extends paperback_extensions_common_1.Source {
             }
             return createPagedResults({
                 results: manga,
-                metadata
+                metadata,
             });
         });
     }
@@ -882,25 +910,33 @@ class HentaiVN extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             const topView = [
                 {
-                    label: 'Top View Ngày',
-                    id: DOMAIN + 'list-top.php?1'
+                    label: "Top View Ngày",
+                    id: DOMAIN + "list-top.php?1",
                 },
                 {
-                    label: 'Top View Tuần',
-                    id: DOMAIN + 'list-top.php?2'
+                    label: "Top View Tuần",
+                    id: DOMAIN + "list-top.php?2",
                 },
                 {
-                    label: 'Top View Tháng',
-                    id: DOMAIN + 'list-top.php?3'
+                    label: "Top View Tháng",
+                    id: DOMAIN + "list-top.php?3",
                 },
                 {
-                    label: 'Top View All',
-                    id: DOMAIN + 'list-top.php?4'
-                }
+                    label: "Top View All",
+                    id: DOMAIN + "list-top.php?4",
+                },
             ];
             const tagSections = [
-                createTagSection({ id: '0', label: 'Bảng Xếp Hạng', tags: topView.map(x => createTag(x)) }),
-                createTagSection({ id: '1', label: 'Thể Loại', tags: tags_json_1.default.map(x => createTag(x)) })
+                createTagSection({
+                    id: "0",
+                    label: "Bảng Xếp Hạng",
+                    tags: topView.map((x) => createTag(x)),
+                }),
+                createTagSection({
+                    id: "1",
+                    label: "Thể Loại",
+                    tags: tags_json_1.default.map((x) => createTag(x)),
+                }),
             ];
             return tagSections;
         });

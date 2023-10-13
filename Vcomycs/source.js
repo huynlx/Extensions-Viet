@@ -7443,7 +7443,7 @@ exports.VcomycsInfo = {
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from Vcomycs',
-    websiteBaseURL: `https://vcomycs.com/`,
+    websiteBaseURL: `https://vivicomi.info/`,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
         {

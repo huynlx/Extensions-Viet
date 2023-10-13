@@ -377,35 +377,35 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.NetTruyen = exports.NetTruyenInfo = exports.isLastPage = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const NetTruyenParser_1 = require("./NetTruyenParser");
-const DOMAIN = 'https://www.nettruyen.uk/';
+const DOMAIN = "https://www.nettruyenus.com/";
 exports.isLastPage = ($) => {
-    const current = $('ul.pagination > li.active > a').text();
-    let total = $('ul.pagination > li.PagerSSCCells:last-child').text();
+    const current = $("ul.pagination > li.active > a").text();
+    let total = $("ul.pagination > li.PagerSSCCells:last-child").text();
     if (current) {
-        total = total !== null && total !== void 0 ? total : '';
-        return (+total) === (+current); //+ => convert value to number
+        total = total !== null && total !== void 0 ? total : "";
+        return +total === +current; //+ => convert value to number
     }
     return true;
 };
 exports.NetTruyenInfo = {
-    version: '3.0.3',
-    name: 'NetTruyen',
-    icon: 'icon.png',
-    author: 'Huynhzip3',
-    authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from NetTruyen.',
+    version: "3.0.4",
+    name: "NetTruyen",
+    icon: "icon.png",
+    author: "Huynhzip3",
+    authorWebsite: "https://github.com/huynh12345678",
+    description: "Extension that pulls manga from NetTruyen.",
     websiteBaseURL: DOMAIN,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
         {
             text: "Recommended",
-            type: paperback_extensions_common_1.TagType.BLUE
+            type: paperback_extensions_common_1.TagType.BLUE,
         },
         {
-            text: 'Notifications',
-            type: paperback_extensions_common_1.TagType.GREEN
-        }
-    ]
+            text: "Notifications",
+            type: paperback_extensions_common_1.TagType.GREEN,
+        },
+    ],
 };
 class NetTruyen extends paperback_extensions_common_1.Source {
     constructor() {
@@ -418,18 +418,19 @@ class NetTruyen extends paperback_extensions_common_1.Source {
                 interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
                     var _a;
                     request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
-                        'referer': DOMAIN
+                        referer: DOMAIN,
                     });
                     return request;
                 }),
                 interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
                     return response;
-                })
-            }
+                }),
+            },
         });
     }
-    getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh/${mangaId}`; }
-    ;
+    getMangaShareUrl(mangaId) {
+        return `${DOMAIN}truyen-tranh/${mangaId}`;
+    }
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const url = `${DOMAIN}truyen-tranh/${mangaId}`;
@@ -476,31 +477,31 @@ class NetTruyen extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const search = {
-                genres: '',
+                genres: "",
                 gender: "-1",
                 status: "-1",
                 minchapter: "1",
-                sort: "0"
+                sort: "0",
             };
-            const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
+            const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map((tag) => tag.id)) !== null && _c !== void 0 ? _c : [];
             const genres = [];
             tags.map((value) => {
-                if (value.indexOf('.') === -1) {
+                if (value.indexOf(".") === -1) {
                     genres.push(value);
                 }
                 else {
                     switch (value.split(".")[0]) {
-                        case 'minchapter':
-                            search.minchapter = (value.split(".")[1]);
+                        case "minchapter":
+                            search.minchapter = value.split(".")[1];
                             break;
-                        case 'gender':
-                            search.gender = (value.split(".")[1]);
+                        case "gender":
+                            search.gender = value.split(".")[1];
                             break;
-                        case 'sort':
-                            search.sort = (value.split(".")[1]);
+                        case "sort":
+                            search.sort = value.split(".")[1];
                             break;
-                        case 'status':
-                            search.status = (value.split(".")[1]);
+                        case "status":
+                            search.status = value.split(".")[1];
                             break;
                     }
                 }
@@ -508,9 +509,9 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             search.genres = (genres !== null && genres !== void 0 ? genres : []).join(",");
             const url = `${DOMAIN}`;
             const request = createRequestObject({
-                url: query.title ? (url + '/tim-truyen') : (url + '/tim-truyen-nang-cao'),
+                url: query.title ? url + "/tim-truyen" : url + "/tim-truyen-nang-cao",
                 method: "GET",
-                param: encodeURI(`?keyword=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&genres=${search.genres}&gender=${search.gender}&status=${search.status}&minchapter=${search.minchapter}&sort=${search.sort}&page=${page}`)
+                param: encodeURI(`?keyword=${(_d = query.title) !== null && _d !== void 0 ? _d : ""}&genres=${search.genres}&gender=${search.gender}&status=${search.status}&minchapter=${search.minchapter}&sort=${search.sort}&page=${page}`),
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
@@ -518,39 +519,39 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             metadata = !exports.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: tiles,
-                metadata
+                metadata,
             });
         });
     }
     getHomePageSections(sectionCallback) {
         return __awaiter(this, void 0, void 0, function* () {
             let featured = createHomeSection({
-                id: 'featured',
+                id: "featured",
                 title: "Truyện Đề Cử",
-                type: paperback_extensions_common_1.HomeSectionType.featured
+                type: paperback_extensions_common_1.HomeSectionType.featured,
             });
             let viewest = createHomeSection({
-                id: 'viewest',
+                id: "viewest",
                 title: "Truyện Xem Nhiều Nhất",
                 view_more: true,
             });
             let hot = createHomeSection({
-                id: 'hot',
+                id: "hot",
                 title: "Truyện Hot Nhất",
                 view_more: true,
             });
             let newUpdated = createHomeSection({
-                id: 'new_updated',
+                id: "new_updated",
                 title: "Truyện Mới Cập Nhật",
                 view_more: true,
             });
             let newAdded = createHomeSection({
-                id: 'new_added',
+                id: "new_added",
                 title: "Truyện Mới Thêm Gần Đây",
                 view_more: true,
             });
             let full = createHomeSection({
-                id: 'full',
+                id: "full",
                 title: "Truyện Đã Hoàn Thành",
                 view_more: true,
             });
@@ -656,17 +657,16 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             }
             const request = createRequestObject({
                 url,
-                method: 'GET',
+                method: "GET",
                 param,
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const manga = this.parser.parseViewMoreItems($);
-            ;
             metadata = exports.isLastPage($) ? undefined : { page: page + 1 };
             return createPagedResults({
                 results: manga,
-                metadata
+                metadata,
             });
         });
     }
@@ -689,8 +689,8 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             const pages = 10;
             for (let i = 1; i < pages + 1; i++) {
                 const request = createRequestObject({
-                    url: DOMAIN + '?page=' + i,
-                    method: 'GET',
+                    url: DOMAIN + "?page=" + i,
+                    method: "GET",
                 });
                 const response = yield this.requestManager.schedule(request, 1);
                 const $ = this.cheerio.load(response.data);
@@ -702,13 +702,17 @@ class NetTruyen extends paperback_extensions_common_1.Source {
                 //     id: item,
                 //     time: timeUpdate
                 // })
-                for (let manga of $('div.item', 'div.row').toArray()) {
-                    const id = (_a = $('figure.clearfix > div.image > a', manga).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop();
-                    const time = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > i", manga).last().text().trim();
-                    updateManga.push(({
+                for (let manga of $("div.item", "div.row").toArray()) {
+                    const id = (_a = $("figure.clearfix > div.image > a", manga)
+                        .attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop();
+                    const time = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > i", manga)
+                        .last()
+                        .text()
+                        .trim();
+                    updateManga.push({
                         id: id,
-                        time: time
-                    }));
+                        time: time,
+                    });
                 }
             }
             const returnObject = this.parser.parseUpdatedManga(updateManga, time, ids);

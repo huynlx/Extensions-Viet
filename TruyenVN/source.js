@@ -597,23 +597,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TruyenVN = exports.TruyenVNInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const TruyenVNParser_1 = require("./TruyenVNParser");
-const DOMAIN = 'https://truyenvnhot.net/';
-const method = 'GET';
+const DOMAIN = "https://truyenvnhot.net/";
+const method = "GET";
 exports.TruyenVNInfo = {
-    version: '1.0.1',
-    name: 'TruyenVN',
-    icon: 'icon.png',
-    author: 'Huynhzip3',
-    authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from TruyenVN',
+    version: "1.0.1",
+    name: "TruyenVN",
+    icon: "icon.png",
+    author: "Huynhzip3",
+    authorWebsite: "https://github.com/huynh12345678",
+    description: "Extension that pulls manga from TruyenVN",
     websiteBaseURL: DOMAIN,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
         {
             text: "Recommended",
-            type: paperback_extensions_common_1.TagType.BLUE
-        }
-    ]
+            type: paperback_extensions_common_1.TagType.BLUE,
+        },
+    ],
 };
 class TruyenVN extends paperback_extensions_common_1.Source {
     constructor() {
@@ -625,18 +625,19 @@ class TruyenVN extends paperback_extensions_common_1.Source {
                 interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
                     var _a;
                     request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
-                        'referer': DOMAIN
+                        referer: DOMAIN,
                     });
                     return request;
                 }),
                 interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
                     return response;
-                })
-            }
+                }),
+            },
         });
     }
-    getMangaShareUrl(mangaId) { return encodeURI(`${mangaId}`); }
-    ;
+    getMangaShareUrl(mangaId) {
+        return encodeURI(`${mangaId}`);
+    }
     getMangaDetails(mangaId) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
@@ -648,28 +649,38 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let tags = [];
-            let creator = '';
+            let creator = "";
             let status = 1; //completed, 1 = Ongoing
-            let desc = $('.comic-description > .inner').text();
-            for (const t of $('.genre > a').toArray()) {
+            let desc = $(".comic-description > .inner").text();
+            for (const t of $(".genre > a").toArray()) {
                 const genre = $(t).text().trim();
-                const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
+                const id = (_a = $(t).attr("href")) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            creator = $('.author > a').text().trim();
-            status = $('.status').clone().children().remove().end().text().trim().toLowerCase().includes("hoàn thành") ? 0 : 1;
-            const image = $('.book  > img').attr('src');
+            creator = $(".author > a").text().trim();
+            status = $(".status")
+                .clone()
+                .children()
+                .remove()
+                .end()
+                .text()
+                .trim()
+                .toLowerCase()
+                .includes("hoàn thành")
+                ? 0
+                : 1;
+            const image = $(".book  > img").attr("src");
             return createManga({
                 id: mangaId,
                 author: creator,
                 artist: creator,
                 desc: desc,
-                titles: [TruyenVNParser_1.decodeHTMLEntity($('h1.name').text().trim())],
+                titles: [TruyenVNParser_1.decodeHTMLEntity($("h1.name").text().trim())],
                 image: image,
                 status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
-                tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
+                tags: [createTagSection({ label: "genres", tags: tags, id: "0" })],
             });
         });
     }
@@ -683,15 +694,15 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             const chapters = [];
             for (const obj of $("#chapterList a").toArray()) {
-                var chapNum = parseFloat($('span:first-child', obj).text().trim().split(' ')[1]);
-                var time = $('span:last-child', obj).text().trim().split('/');
+                var chapNum = parseFloat($("span:first-child", obj).text().trim().split(" ")[1]);
+                var time = $("span:last-child", obj).text().trim().split("/");
                 chapters.push(createChapter({
-                    id: $(obj).first().attr('href'),
+                    id: $(obj).first().attr("href"),
                     chapNum: chapNum,
-                    name: $('span:first-child', obj).text().trim(),
+                    name: $("span:first-child", obj).text().trim(),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: new Date(time[1] + '/' + time[0] + '/' + time[2])
+                    time: new Date(time[1] + "/" + time[0] + "/" + time[2]),
                 }));
             }
             return chapters;
@@ -701,22 +712,22 @@ class TruyenVN extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
                 url: `${chapterId}`,
-                method
+                method,
             });
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
-            for (let obj of $('.chapter-content img').toArray()) {
-                if (!obj.attribs['src'])
+            for (let obj of $(".chapter-content img").toArray()) {
+                if (!obj.attribs["src"])
                     continue;
-                let link = obj.attribs['src'];
+                let link = obj.attribs["src"];
                 pages.push(link);
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
                 mangaId: mangaId,
                 pages: pages,
-                longStrip: false
+                longStrip: false,
             });
             return chapterDetails;
         });
@@ -725,22 +736,22 @@ class TruyenVN extends paperback_extensions_common_1.Source {
         var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
             let featured = createHomeSection({
-                id: 'featured',
+                id: "featured",
                 title: "On Top",
-                type: paperback_extensions_common_1.HomeSectionType.featured
+                type: paperback_extensions_common_1.HomeSectionType.featured,
             });
             let hot = createHomeSection({
-                id: 'hot',
+                id: "hot",
                 title: "Truyện Đề Cử",
                 view_more: false,
             });
             let newUpdated = createHomeSection({
-                id: 'new_updated',
+                id: "new_updated",
                 title: "Truyện Mới Cập Nhật",
                 view_more: true,
             });
             let newAdded = createHomeSection({
-                id: 'new_added',
+                id: "new_added",
                 title: "Truyện Full (Đã hoàn thành)",
                 view_more: true,
             });
@@ -751,7 +762,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             sectionCallback(newAdded);
             ///Get the section data
             //Hot
-            let url = '';
+            let url = "";
             let request = createRequestObject({
                 url: DOMAIN,
                 method: "GET",
@@ -759,10 +770,10 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             let hotItems = [];
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            for (let obj of $('.entry', '.container > section:nth-child(2) .form-row').toArray()) {
+            for (let obj of $(".entry", ".container > section:nth-child(2) .form-row").toArray()) {
                 let title = $(`h3.name > a`, obj).text().trim();
                 let subtitle = $(`span.link`, obj).text().trim();
-                const image = $(`a > img`, obj).attr('data-src');
+                const image = $(`a > img`, obj).attr("data-src");
                 let id = (_a = $(`a`, obj).attr("href")) !== null && _a !== void 0 ? _a : title;
                 // if (!id || !subtitle) continue;
                 hotItems.push(createMangaTile({
@@ -786,11 +797,11 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             let topItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('a', '.container > section#home').toArray()) {
+            for (let obj of $("a", ".container > section#home").toArray()) {
                 let title = $(`h2.name > span`, obj).text().trim();
                 let subtitle = $(`.badge > h3`, obj).text().trim();
-                const image = $(obj).css('background-image');
-                const bg = image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+                const image = $(obj).css("background-image");
+                const bg = image === null || image === void 0 ? void 0 : image.replace("url(", "").replace(")", "").replace(/\"/gi, "");
                 let id = (_b = $(obj).attr("href")) !== null && _b !== void 0 ? _b : title;
                 topItems.push(createMangaTile({
                     id: id,
@@ -806,18 +817,18 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             featured.items = topItems;
             sectionCallback(featured);
             //New Updates
-            url = '';
+            url = "";
             request = createRequestObject({
-                url: 'https://truyenvnhot.net/danh-sach-truyen',
+                url: "https://truyenvnhot.net/danh-sach-truyen",
                 method: "GET",
             });
             let newUpdatedItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('.entry ', '.form-row').toArray().splice(0, 15)) {
-                let title = $(`a`, obj).attr('title');
+            for (let obj of $(".entry ", ".form-row").toArray().splice(0, 15)) {
+                let title = $(`a`, obj).attr("title");
                 let subtitle = $(`span.link`, obj).text().trim();
-                const image = $(`a > img`, obj).attr('data-src');
+                const image = $(`a > img`, obj).attr("data-src");
                 let id = (_c = $(`a`, obj).attr("href")) !== null && _c !== void 0 ? _c : title;
                 // if (!id || !subtitle) continue;
                 newUpdatedItems.push(createMangaTile({
@@ -836,16 +847,16 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             //New Added
             url = DOMAIN;
             request = createRequestObject({
-                url: 'https://truyenvnhot.net/truyen-hoan-thanh',
+                url: "https://truyenvnhot.net/truyen-hoan-thanh",
                 method: "GET",
             });
             let newAddItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('.entry ', '.form-row').toArray().splice(0, 15)) {
-                let title = $(`a`, obj).attr('title');
+            for (let obj of $(".entry ", ".form-row").toArray().splice(0, 15)) {
+                let title = $(`a`, obj).attr("title");
                 let subtitle = $(`span.link`, obj).text().trim();
-                const image = $(`a > img`, obj).attr('data-src');
+                const image = $(`a > img`, obj).attr("data-src");
                 let id = (_d = $(`a`, obj).attr("href")) !== null && _d !== void 0 ? _d : title;
                 // if (!id || !subtitle) continue;
                 newAddItems.push(createMangaTile({
@@ -867,8 +878,8 @@ class TruyenVN extends paperback_extensions_common_1.Source {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            let param = '';
-            let url = '';
+            let param = "";
+            let url = "";
             switch (homepageSectionId) {
                 case "new_updated":
                     url = `https://truyenvnhot.net/danh-sach-truyen/page/${page}`;
@@ -882,7 +893,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             const request = createRequestObject({
                 url,
                 method,
-                param
+                param,
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
@@ -898,13 +909,13 @@ class TruyenVN extends paperback_extensions_common_1.Source {
         var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
+            const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map((tag) => tag.id)) !== null && _c !== void 0 ? _c : [];
             const search = {
-                name: (_d = query.title) !== null && _d !== void 0 ? _d : '',
-                genres: ''
+                name: (_d = query.title) !== null && _d !== void 0 ? _d : "",
+                genres: "",
             };
             search.genres = tags[0];
-            var url = '';
+            var url = "";
             if (search.name) {
                 url = `https://truyenvnhot.net/danh-sach-truyen/page/${page}?q=${search.name}`;
             }
@@ -913,7 +924,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             }
             const request = createRequestObject({
                 url,
-                method: "GET"
+                method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
@@ -921,7 +932,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             metadata = !TruyenVNParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: tiles,
-                metadata
+                metadata,
             });
         });
     }
@@ -930,43 +941,51 @@ class TruyenVN extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             const tags = [];
             const request = createRequestObject({
-                url: 'https://truyenvnhot.net/the-loai-truyen',
+                url: "https://truyenvnhot.net/the-loai-truyen",
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            for (const tag of $('.theloai a').toArray()) {
+            for (const tag of $(".theloai a").toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_a = $(tag).attr('href')) !== null && _a !== void 0 ? _a : label;
+                const id = (_a = $(tag).attr("href")) !== null && _a !== void 0 ? _a : label;
                 if (!id || !label)
                     continue;
                 tags.push({ id: id, label: label });
             }
             const tags1 = [
                 {
-                    "id": "https://truyenvnhot.net/truyen-hot",
-                    "label": "Top All"
+                    id: "https://truyenvnhot.net/truyen-hot",
+                    label: "Top All",
                 },
                 {
-                    "id": "https://truyenvnhot.net/top-ngay",
-                    "label": "Top Ngày"
+                    id: "https://truyenvnhot.net/top-ngay",
+                    label: "Top Ngày",
                 },
                 {
-                    "id": "https://truyenvnhot.net/top-tuan",
-                    "label": "Top Tuần"
+                    id: "https://truyenvnhot.net/top-tuan",
+                    label: "Top Tuần",
                 },
                 {
-                    "id": "https://truyenvnhot.net/top-thang",
-                    "label": "Top Tháng"
+                    id: "https://truyenvnhot.net/top-thang",
+                    label: "Top Tháng",
                 },
                 {
-                    "id": "https://truyenvnhot.net/top-nam",
-                    "label": "Top Năm"
-                }
+                    id: "https://truyenvnhot.net/top-nam",
+                    label: "Top Năm",
+                },
             ];
             const tagSections = [
-                createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
-                createTagSection({ id: '1', label: 'Bảng Xếp Hạng', tags: tags1.map(x => createTag(x)) })
+                createTagSection({
+                    id: "0",
+                    label: "Thể Loại",
+                    tags: tags.map((x) => createTag(x)),
+                }),
+                createTagSection({
+                    id: "1",
+                    label: "Bảng Xếp Hạng",
+                    tags: tags1.map((x) => createTag(x)),
+                }),
             ];
             return tagSections;
         });

@@ -597,7 +597,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Truyengihot = exports.TruyengihotInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const TruyengihotParser_1 = require("./TruyengihotParser");
-const DOMAIN = 'https://truyengihot.net/';
+const DOMAIN = 'https://truyengihotne.com/';
 const method = 'GET';
 exports.TruyengihotInfo = {
     version: '1.5.1',

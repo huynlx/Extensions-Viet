@@ -377,35 +377,35 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.NhatTruyen = exports.NhatTruyenInfo = exports.isLastPage = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const NhatTruyenParser_1 = require("./NhatTruyenParser");
-const DOMAIN = 'https://nhattruyenn.com/';
+const DOMAIN = "https://nhattruyenplus.com/";
 exports.isLastPage = ($) => {
-    const current = $('ul.pagination > li.active > a').text();
-    let total = $('ul.pagination > li.PagerSSCCells:last-child').text();
+    const current = $("ul.pagination > li.active > a").text();
+    let total = $("ul.pagination > li.PagerSSCCells:last-child").text();
     if (current) {
-        total = total !== null && total !== void 0 ? total : '';
-        return (+total) === (+current); //+ => convert value to number
+        total = total !== null && total !== void 0 ? total : "";
+        return +total === +current; //+ => convert value to number
     }
     return true;
 };
 exports.NhatTruyenInfo = {
-    version: '3.0.3',
-    name: 'NhatTruyen',
-    icon: 'icon.png',
-    author: 'Huynhzip3',
-    authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from NhatTruyen.',
+    version: "3.0.3",
+    name: "NhatTruyen",
+    icon: "icon.png",
+    author: "Huynhzip3",
+    authorWebsite: "https://github.com/huynh12345678",
+    description: "Extension that pulls manga from NhatTruyen.",
     websiteBaseURL: DOMAIN,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
         {
             text: "Recommended",
-            type: paperback_extensions_common_1.TagType.BLUE
+            type: paperback_extensions_common_1.TagType.BLUE,
         },
         {
-            text: 'Notifications',
-            type: paperback_extensions_common_1.TagType.GREEN
-        }
-    ]
+            text: "Notifications",
+            type: paperback_extensions_common_1.TagType.GREEN,
+        },
+    ],
 };
 class NhatTruyen extends paperback_extensions_common_1.Source {
     constructor() {
@@ -418,18 +418,19 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
                 interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
                     var _a;
                     request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
-                        'referer': DOMAIN
+                        referer: DOMAIN,
                     });
                     return request;
                 }),
                 interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
                     return response;
-                })
-            }
+                }),
+            },
         });
     }
-    getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh/${mangaId}`; }
-    ;
+    getMangaShareUrl(mangaId) {
+        return `${DOMAIN}truyen-tranh/${mangaId}`;
+    }
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const url = `${DOMAIN}truyen-tranh/${mangaId}`;
@@ -476,31 +477,31 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const search = {
-                genres: '',
+                genres: "",
                 gender: "-1",
                 status: "-1",
                 minchapter: "1",
-                sort: "0"
+                sort: "0",
             };
-            const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
+            const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map((tag) => tag.id)) !== null && _c !== void 0 ? _c : [];
             const genres = [];
             tags.map((value) => {
-                if (value.indexOf('.') === -1) {
+                if (value.indexOf(".") === -1) {
                     genres.push(value);
                 }
                 else {
                     switch (value.split(".")[0]) {
-                        case 'minchapter':
-                            search.minchapter = (value.split(".")[1]);
+                        case "minchapter":
+                            search.minchapter = value.split(".")[1];
                             break;
-                        case 'gender':
-                            search.gender = (value.split(".")[1]);
+                        case "gender":
+                            search.gender = value.split(".")[1];
                             break;
-                        case 'sort':
-                            search.sort = (value.split(".")[1]);
+                        case "sort":
+                            search.sort = value.split(".")[1];
                             break;
-                        case 'status':
-                            search.status = (value.split(".")[1]);
+                        case "status":
+                            search.status = value.split(".")[1];
                             break;
                     }
                 }
@@ -508,9 +509,9 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             search.genres = (genres !== null && genres !== void 0 ? genres : []).join(",");
             const url = `${DOMAIN}`;
             const request = createRequestObject({
-                url: query.title ? (url + '/the-loai') : (url + '/tim-truyen-nang-cao'),
+                url: query.title ? url + "/the-loai" : url + "/tim-truyen-nang-cao",
                 method: "GET",
-                param: encodeURI(`?keyword=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&genres=${search.genres}&gender=${search.gender}&status=${search.status}&minchapter=${search.minchapter}&sort=${search.sort}&page=${page}`)
+                param: encodeURI(`?keyword=${(_d = query.title) !== null && _d !== void 0 ? _d : ""}&genres=${search.genres}&gender=${search.gender}&status=${search.status}&minchapter=${search.minchapter}&sort=${search.sort}&page=${page}`),
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
@@ -518,34 +519,34 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             metadata = !exports.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: tiles,
-                metadata
+                metadata,
             });
         });
     }
     getHomePageSections(sectionCallback) {
         return __awaiter(this, void 0, void 0, function* () {
             let featured = createHomeSection({
-                id: 'featured',
+                id: "featured",
                 title: "Truyện Đề Cử",
-                type: paperback_extensions_common_1.HomeSectionType.featured
+                type: paperback_extensions_common_1.HomeSectionType.featured,
             });
             let viewest = createHomeSection({
-                id: 'viewest',
+                id: "viewest",
                 title: "Truyện Xem Nhiều Nhất",
                 view_more: true,
             });
             let hot = createHomeSection({
-                id: 'hot',
+                id: "hot",
                 title: "Truyện Hot Nhất",
                 view_more: true,
             });
             let newUpdated = createHomeSection({
-                id: 'new_updated',
+                id: "new_updated",
                 title: "Truyện Mới Cập Nhật",
                 view_more: true,
             });
             let newAdded = createHomeSection({
-                id: 'new_added',
+                id: "new_added",
                 title: "Truyện Mới Thêm Gần Đây",
                 view_more: true,
             });
@@ -636,17 +637,16 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             }
             const request = createRequestObject({
                 url,
-                method: 'GET',
+                method: "GET",
                 param,
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const manga = this.parser.parseViewMoreItems($);
-            ;
             metadata = exports.isLastPage($) ? undefined : { page: page + 1 };
             return createPagedResults({
                 results: manga,
-                metadata
+                metadata,
             });
         });
     }
@@ -667,18 +667,18 @@ class NhatTruyen extends paperback_extensions_common_1.Source {
             const updateManga = [];
             for (let item of ids) {
                 const request = createRequestObject({
-                    url: DOMAIN + 'truyen-tranh/' + item,
-                    method: 'GET',
+                    url: DOMAIN + "truyen-tranh/" + item,
+                    method: "GET",
                 });
                 const response = yield this.requestManager.schedule(request, 1);
                 const $ = this.cheerio.load(response.data);
-                let x = $('time.small').text().trim();
-                let y = x.split("lúc:")[1].replace(']', '').trim().split(' ');
-                let z = y[1].split('/');
-                const timeUpdate = new Date(z[1] + '/' + z[0] + '/' + z[2] + ' ' + y[0]);
+                let x = $("time.small").text().trim();
+                let y = x.split("lúc:")[1].replace("]", "").trim().split(" ");
+                let z = y[1].split("/");
+                const timeUpdate = new Date(z[1] + "/" + z[0] + "/" + z[2] + " " + y[0]);
                 updateManga.push({
                     id: item,
-                    time: timeUpdate
+                    time: timeUpdate,
                 });
             }
             const returnObject = this.parser.parseUpdatedManga(updateManga, time, ids);

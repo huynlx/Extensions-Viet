@@ -597,27 +597,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TruyenQQ = exports.TruyenQQInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const TruyenQQParser_1 = require("./TruyenQQParser");
-const DOMAIN = 'https://truyenqqq.com/';
-const method = 'GET';
+const DOMAIN = "https://truyenqqq.com/";
+const method = "GET";
 exports.TruyenQQInfo = {
-    version: '3.0.1',
-    name: 'TruyenQQ',
-    icon: 'icon.png',
-    author: 'Huynhzip3',
-    authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from TruyenQQ',
+    version: "3.0.1",
+    name: "TruyenQQ",
+    icon: "icon.png",
+    author: "Huynhzip3",
+    authorWebsite: "https://github.com/huynh12345678",
+    description: "Extension that pulls manga from TruyenQQ",
     websiteBaseURL: `${DOMAIN}`,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
         {
             text: "Recommended",
-            type: paperback_extensions_common_1.TagType.BLUE
+            type: paperback_extensions_common_1.TagType.BLUE,
         },
         {
-            text: 'Notifications',
-            type: paperback_extensions_common_1.TagType.GREEN
-        }
-    ]
+            text: "Notifications",
+            type: paperback_extensions_common_1.TagType.GREEN,
+        },
+    ],
 };
 class TruyenQQ extends paperback_extensions_common_1.Source {
     constructor() {
@@ -629,18 +629,19 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
                 interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
                     var _a;
                     request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
-                        'referer': DOMAIN
+                        referer: DOMAIN,
                     });
                     return request;
                 }),
                 interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
                     return response;
-                })
-            }
+                }),
+            },
         });
     }
-    getMangaShareUrl(mangaId) { return `${DOMAIN}truyen-tranh/${mangaId}`; }
-    ;
+    getMangaShareUrl(mangaId) {
+        return `${DOMAIN}truyen-tranh/${mangaId}`;
+    }
     getMangaDetails(mangaId) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
@@ -654,29 +655,34 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             let tags = [];
             let creator = [];
             let status = 1; //completed, 1 = Ongoing
-            let desc = $('.story-detail-info').text();
-            for (const t of $('a', '.list01').toArray()) {
+            let desc = $(".story-detail-info").text();
+            for (const t of $("a", ".list01").toArray()) {
                 const genre = $(t).text().trim();
-                const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
+                const id = (_a = $(t).attr("href")) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            for (const c of $('a', '.txt > p:nth-of-type(1)').toArray()) {
+            for (const c of $("a", ".txt > p:nth-of-type(1)").toArray()) {
                 const name = $(c).text().trim();
                 creator.push(name);
             }
-            status = $('.txt > p:nth-of-type(2)').text().toLowerCase().includes("đang cập nhật") ? 1 : 0;
-            const image = (_b = $('.left > img').attr('src')) !== null && _b !== void 0 ? _b : "";
+            status = $(".txt > p:nth-of-type(2)")
+                .text()
+                .toLowerCase()
+                .includes("đang cập nhật")
+                ? 1
+                : 0;
+            const image = (_b = $(".left > img").attr("src")) !== null && _b !== void 0 ? _b : "";
             return createManga({
                 id: mangaId,
-                author: creator.join(', '),
-                artist: creator.join(', '),
-                desc: desc === "" ? 'Không có mô tả' : desc,
-                titles: [$('.center > h1').text().trim()],
+                author: creator.join(", "),
+                artist: creator.join(", "),
+                desc: desc === "" ? "Không có mô tả" : desc,
+                titles: [$(".center > h1").text().trim()],
                 image: image,
                 status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
-                tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
+                tags: [createTagSection({ label: "genres", tags: tags, id: "0" })],
             });
         });
     }
@@ -690,18 +696,24 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const chapters = [];
-            for (const obj of $(".works-chapter-list > .works-chapter-item").toArray().reverse()) {
-                const timeStr = $('.col-md-2.col-sm-2.col-xs-4', obj).text().trim().split(/\//); //mm/dd/yyyy
-                const time = new Date([timeStr[1], timeStr[0], timeStr[2]].join('/'));
+            for (const obj of $(".works-chapter-list > .works-chapter-item")
+                .toArray()
+                .reverse()) {
+                const timeStr = $(".col-md-2.col-sm-2.col-xs-4", obj)
+                    .text()
+                    .trim()
+                    .split(/\//); //mm/dd/yyyy
+                const time = new Date([timeStr[1], timeStr[0], timeStr[2]].join("/"));
                 // time.setDate(time.getDate() + 1);
                 // const time = new Date("09/18/2021");
                 chapters.push(createChapter({
-                    id: (_a = $('.col-md-10.col-sm-10.col-xs-8 > a', obj).attr('href')) === null || _a === void 0 ? void 0 : _a.split('/').pop(),
-                    chapNum: parseFloat($('.col-md-10.col-sm-10.col-xs-8 > a', obj).text().split(' ')[1]),
-                    name: $('.col-md-10.col-sm-10.col-xs-8 > a', obj).text(),
+                    id: (_a = $(".col-md-10.col-sm-10.col-xs-8 > a", obj)
+                        .attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop(),
+                    chapNum: parseFloat($(".col-md-10.col-sm-10.col-xs-8 > a", obj).text().split(" ")[1]),
+                    name: $(".col-md-10.col-sm-10.col-xs-8 > a", obj).text(),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time
+                    time,
                 }));
             }
             return chapters;
@@ -711,22 +723,22 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
                 url: `${DOMAIN}truyen-tranh/${chapterId}`,
-                method
+                method,
             });
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
-            for (let obj of $('.story-see-content > img').toArray()) {
-                if (!obj.attribs['src'])
+            for (let obj of $(".story-see-content > img").toArray()) {
+                if (!obj.attribs["src"])
                     continue;
-                let link = obj.attribs['src'];
+                let link = obj.attribs["src"];
                 pages.push(link);
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
                 mangaId: mangaId,
                 pages: pages,
-                longStrip: false
+                longStrip: false,
             });
             return chapterDetails;
         });
@@ -735,32 +747,32 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t;
         return __awaiter(this, void 0, void 0, function* () {
             let featured = createHomeSection({
-                id: 'featured',
+                id: "featured",
                 title: "Truyện Đề Cử",
-                type: paperback_extensions_common_1.HomeSectionType.featured
+                type: paperback_extensions_common_1.HomeSectionType.featured,
             });
             let hot = createHomeSection({
-                id: 'hot',
+                id: "hot",
                 title: "Truyện Yêu Thích",
                 view_more: true,
             });
             let newUpdated = createHomeSection({
-                id: 'new_updated',
+                id: "new_updated",
                 title: "Truyện Vừa Cập Nhật",
                 view_more: true,
             });
             let newAdded = createHomeSection({
-                id: 'new_added',
+                id: "new_added",
                 title: "Truyện Mới",
                 view_more: true,
             });
             let boy = createHomeSection({
-                id: 'boy',
+                id: "boy",
                 title: "Truyện Con Trai",
                 view_more: true,
             });
             let girl = createHomeSection({
-                id: 'girl',
+                id: "girl",
                 title: "Truyện Con Gái",
                 view_more: true,
             });
@@ -781,15 +793,17 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             let cc = [];
             let data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
-            for (let manga of $('div.is-child', '.container').toArray()) {
+            for (let manga of $("div.is-child", ".container").toArray()) {
                 let title = $(`.captions > h3`, manga).text().trim();
                 let subtitle = $(`.chapter`, manga).text().trim();
                 let image = (_a = $(`img.cover`, manga).attr("src")) !== null && _a !== void 0 ? _a : "";
                 let id = (_c = (_b = $(`a`, manga).attr("href")) === null || _b === void 0 ? void 0 : _b.split("/").pop()) !== null && _c !== void 0 ? _c : title;
                 // if (!id || !title) continue;
                 cc.push(createMangaTile({
-                    id: id.split("-chap")[0] + '.html',
-                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : image.replace("290x191", "583x386"),
+                    id: id.split("-chap")[0] + ".html",
+                    image: !image
+                        ? "https://i.imgur.com/GYUxEX8.png"
+                        : image.replace("290x191", "583x386"),
                     title: createIconText({ text: title }),
                     subtitleText: createIconText({ text: subtitle }),
                 }));
@@ -805,7 +819,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             let popular = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let manga of $('li', '.list-stories').toArray().splice(0, 20)) {
+            for (let manga of $("li", ".list-stories").toArray().splice(0, 20)) {
                 let title = $(`h3.title-book > a`, manga).text().trim();
                 let subtitle = $(`.episode-book > a`, manga).text().trim();
                 let image = (_d = $(`a > img`, manga).attr("src")) !== null && _d !== void 0 ? _d : "";
@@ -829,7 +843,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             let newUpdatedItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let obj of $('li', '.latest').toArray().splice(0, 20)) {
+            for (let obj of $("li", ".latest").toArray().splice(0, 20)) {
                 let title = $(`h3.title-book > a`, obj).text().trim();
                 let subtitle = $(`.episode-book > a`, obj).text().trim();
                 let image = (_g = $(`a > img`, obj).attr("src")) !== null && _g !== void 0 ? _g : "";
@@ -857,7 +871,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             let newAddItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let manga of $('li', '.list-stories').toArray().splice(0, 20)) {
+            for (let manga of $("li", ".list-stories").toArray().splice(0, 20)) {
                 let title = $(`h3.title-book > a`, manga).text().trim();
                 let subtitle = $(`.episode-book > a`, manga).text().trim();
                 let image = (_k = $(`a > img`, manga).attr("src")) !== null && _k !== void 0 ? _k : "";
@@ -885,7 +899,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             let boyItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let manga of $('li', '.list-stories').toArray().splice(0, 12)) {
+            for (let manga of $("li", ".list-stories").toArray().splice(0, 12)) {
                 let title = $(`h3.title-book > a`, manga).text().trim();
                 let subtitle = $(`.episode-book > a`, manga).text().trim();
                 let image = (_o = $(`a > img`, manga).attr("src")) !== null && _o !== void 0 ? _o : "";
@@ -913,7 +927,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             let girlItems = [];
             data = yield this.requestManager.schedule(request, 1);
             $ = this.cheerio.load(data.data);
-            for (let manga of $('li', '.list-stories').toArray().splice(0, 12)) {
+            for (let manga of $("li", ".list-stories").toArray().splice(0, 12)) {
                 let title = $(`h3.title-book > a`, manga).text().trim();
                 let subtitle = $(`.episode-book > a`, manga).text().trim();
                 let image = (_r = $(`a > img`, manga).attr("src")) !== null && _r !== void 0 ? _r : "";
@@ -938,8 +952,8 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            let param = '';
-            let url = '';
+            let param = "";
+            let url = "";
             switch (homepageSectionId) {
                 case "new_updated":
                     url = `${DOMAIN}truyen-moi-cap-nhat/trang-${page}.html`;
@@ -962,7 +976,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             const request = createRequestObject({
                 url,
                 method,
-                param
+                param,
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
@@ -979,40 +993,42 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const search = {
-                category: '',
+                category: "",
                 country: "0",
                 status: "-1",
                 minchapter: "0",
-                sort: "0"
+                sort: "0",
             };
-            const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
+            const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map((tag) => tag.id)) !== null && _c !== void 0 ? _c : [];
             const category = [];
             tags.map((value) => {
-                if (value.indexOf('.') === -1) {
+                if (value.indexOf(".") === -1) {
                     category.push(value);
                 }
                 else {
                     switch (value.split(".")[0]) {
-                        case 'minchapter':
-                            search.minchapter = (value.split(".")[1]);
+                        case "minchapter":
+                            search.minchapter = value.split(".")[1];
                             break;
-                        case 'country':
-                            search.country = (value.split(".")[1]);
+                        case "country":
+                            search.country = value.split(".")[1];
                             break;
-                        case 'sort':
-                            search.sort = (value.split(".")[1]);
+                        case "sort":
+                            search.sort = value.split(".")[1];
                             break;
-                        case 'status':
-                            search.status = (value.split(".")[1]);
+                        case "status":
+                            search.status = value.split(".")[1];
                             break;
                     }
                 }
             });
             search.category = (category !== null && category !== void 0 ? category : []).join(",");
             const request = createRequestObject({
-                url: query.title ? `${DOMAIN}tim-kiem/trang-${page}.html` : `${DOMAIN}tim-kiem-nang-cao/trang-${page}.html`,
+                url: query.title
+                    ? `${DOMAIN}tim-kiem/trang-${page}.html`
+                    : `${DOMAIN}tim-kiem-nang-cao/trang-${page}.html`,
                 method: "GET",
-                param: encodeURI(`?q=${(_d = query.title) !== null && _d !== void 0 ? _d : ''}&category=${search.category}&country=${search.country}&status=${search.status}&minchapter=${search.minchapter}&sort=${search.sort}`)
+                param: encodeURI(`?q=${(_d = query.title) !== null && _d !== void 0 ? _d : ""}&category=${search.category}&country=${search.country}&status=${search.status}&minchapter=${search.minchapter}&sort=${search.sort}`),
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
@@ -1020,7 +1036,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             metadata = !TruyenQQParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: tiles,
-                metadata
+                metadata,
             });
         });
     }
@@ -1040,51 +1056,71 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             const arrayTags4 = [];
             const arrayTags5 = [];
             //the loai
-            for (const tag of $('div.genre-item', 'div.col-sm-10').toArray()) {
+            for (const tag of $("div.genre-item", "div.col-sm-10").toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_a = $('span', tag).attr('data-id')) !== null && _a !== void 0 ? _a : label;
+                const id = (_a = $("span", tag).attr("data-id")) !== null && _a !== void 0 ? _a : label;
                 if (!id || !label)
                     continue;
                 arrayTags.push({ id: id, label: label });
             }
             //quoc gia
-            for (const tag of $('option', 'select#country').toArray()) {
+            for (const tag of $("option", "select#country").toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_b = 'country.' + $(tag).attr('value')) !== null && _b !== void 0 ? _b : label;
+                const id = (_b = "country." + $(tag).attr("value")) !== null && _b !== void 0 ? _b : label;
                 if (!id || !label)
                     continue;
                 arrayTags2.push({ id: id, label: label });
             }
             //tinh trang
-            for (const tag of $('option', 'select#status').toArray()) {
+            for (const tag of $("option", "select#status").toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_c = 'status.' + $(tag).attr('value')) !== null && _c !== void 0 ? _c : label;
+                const id = (_c = "status." + $(tag).attr("value")) !== null && _c !== void 0 ? _c : label;
                 if (!id || !label)
                     continue;
                 arrayTags3.push({ id: id, label: label });
             }
             //so luong chuong
-            for (const tag of $('option', 'select#minchapter').toArray()) {
+            for (const tag of $("option", "select#minchapter").toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_d = 'minchapter.' + $(tag).attr('value')) !== null && _d !== void 0 ? _d : label;
+                const id = (_d = "minchapter." + $(tag).attr("value")) !== null && _d !== void 0 ? _d : label;
                 if (!id || !label)
                     continue;
                 arrayTags4.push({ id: id, label: label });
             }
             //sap xep
-            for (const tag of $('option', 'select#sort').toArray()) {
+            for (const tag of $("option", "select#sort").toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_e = 'sort.' + $(tag).attr('value')) !== null && _e !== void 0 ? _e : label;
+                const id = (_e = "sort." + $(tag).attr("value")) !== null && _e !== void 0 ? _e : label;
                 if (!id || !label)
                     continue;
                 arrayTags5.push({ id: id, label: label });
             }
             const tagSections = [
-                createTagSection({ id: '0', label: 'Thể Loại Truyện', tags: arrayTags.map(x => createTag(x)) }),
-                createTagSection({ id: '1', label: 'Quốc Gia (Chỉ chọn 1)', tags: arrayTags2.map(x => createTag(x)) }),
-                createTagSection({ id: '2', label: 'Tình Trạng (Chỉ chọn 1)', tags: arrayTags3.map(x => createTag(x)) }),
-                createTagSection({ id: '3', label: 'Số Lượng Chương (Chỉ chọn 1)', tags: arrayTags4.map(x => createTag(x)) }),
-                createTagSection({ id: '4', label: 'Sắp xếp (Chỉ chọn 1)', tags: arrayTags5.map(x => createTag(x)) }),
+                createTagSection({
+                    id: "0",
+                    label: "Thể Loại Truyện",
+                    tags: arrayTags.map((x) => createTag(x)),
+                }),
+                createTagSection({
+                    id: "1",
+                    label: "Quốc Gia (Chỉ chọn 1)",
+                    tags: arrayTags2.map((x) => createTag(x)),
+                }),
+                createTagSection({
+                    id: "2",
+                    label: "Tình Trạng (Chỉ chọn 1)",
+                    tags: arrayTags3.map((x) => createTag(x)),
+                }),
+                createTagSection({
+                    id: "3",
+                    label: "Số Lượng Chương (Chỉ chọn 1)",
+                    tags: arrayTags4.map((x) => createTag(x)),
+                }),
+                createTagSection({
+                    id: "4",
+                    label: "Sắp xếp (Chỉ chọn 1)",
+                    tags: arrayTags5.map((x) => createTag(x)),
+                }),
             ];
             return tagSections;
         });
@@ -1093,7 +1129,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
                 url: DOMAIN,
-                method: 'GET',
+                method: "GET",
             });
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);

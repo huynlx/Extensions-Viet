@@ -7435,23 +7435,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CManga = exports.CMangaInfo = exports.DOMAIN = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const CMangaParser_1 = require("./CMangaParser");
-exports.DOMAIN = 'https://cmangaac.com/';
-const method = 'GET';
+exports.DOMAIN = "https://cmangaaz.com/";
+const method = "GET";
 exports.CMangaInfo = {
-    version: '2.1.2',
-    name: 'CManga',
-    icon: 'icon.png',
-    author: 'Huynhzip3',
-    authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from CManga',
+    version: "2.1.2",
+    name: "CManga",
+    icon: "icon.png",
+    author: "Huynhzip3",
+    authorWebsite: "https://github.com/huynh12345678",
+    description: "Extension that pulls manga from CManga",
     websiteBaseURL: `${exports.DOMAIN}`,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
         {
             text: "Recommended",
-            type: paperback_extensions_common_1.TagType.BLUE
-        }
-    ]
+            type: paperback_extensions_common_1.TagType.BLUE,
+        },
+    ],
 };
 class CManga extends paperback_extensions_common_1.Source {
     constructor() {
@@ -7463,18 +7463,19 @@ class CManga extends paperback_extensions_common_1.Source {
                 interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
                     var _a;
                     request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
-                        'referer': exports.DOMAIN
+                        referer: exports.DOMAIN,
                     });
                     return request;
                 }),
                 interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
                     return response;
-                })
-            }
+                }),
+            },
         });
     }
-    getMangaShareUrl(mangaId) { return exports.DOMAIN + mangaId.split("::")[0]; }
-    ;
+    getMangaShareUrl(mangaId) {
+        return exports.DOMAIN + mangaId.split("::")[0];
+    }
     getMangaDetails(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
@@ -7492,7 +7493,9 @@ class CManga extends paperback_extensions_common_1.Source {
             // var json = JSON.parse(decrypt_data(JSON.parse(data2.data)))[0];
             // let tags: Tag[] = [];
             let status = $(".status").first().text().indexOf("Đang") != -1 ? 1 : 0;
-            let desc = $("#book_detail").first().text() === '' ? $("#book_more").first().text() : $("#book_detail").first().text();
+            let desc = $("#book_detail").first().text() === ""
+                ? $("#book_more").first().text()
+                : $("#book_detail").first().text();
             // for (const t of json.tags.split(",")) {
             //     if (t === '') continue;
             //     const genre = t;
@@ -7500,7 +7503,7 @@ class CManga extends paperback_extensions_common_1.Source {
             //     tags.push(createTag({ label: titleCase(genre), id }));
             // }
             const image = $(".book_avatar img").first().attr("src");
-            const creator = $(".profile a").text() || 'Unknown';
+            const creator = $(".profile a").text() || "Unknown";
             return createManga({
                 id: mangaId + "::" + book_id,
                 author: creator,
@@ -7523,18 +7526,25 @@ class CManga extends paperback_extensions_common_1.Source {
             var json = JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data2.data)));
             const chapters = [];
             for (const obj of json) {
-                const time = obj.last_update.split(' ');
-                const d = time[0].split('-');
-                const t = time[1].split(':');
-                const d2 = d[1] + '/' + d[2] + '/' + d[0];
+                const time = obj.last_update.split(" ");
+                const d = time[0].split("-");
+                const t = time[1].split(":");
+                const d2 = d[1] + "/" + d[2] + "/" + d[0];
                 const t2 = t[0] + ":" + t[1];
                 chapters.push(createChapter({
-                    id: exports.DOMAIN + mangaId.split("::")[1] + '/' + CMangaParser_1.change_alias(obj.chapter_name) + '/' + obj.id_chapter,
+                    id: exports.DOMAIN +
+                        mangaId.split("::")[1] +
+                        "/" +
+                        CMangaParser_1.change_alias(obj.chapter_name) +
+                        "/" +
+                        obj.id_chapter,
                     chapNum: parseFloat(obj.chapter_num),
-                    name: CMangaParser_1.titleCase(obj.chapter_name) === ('Chapter ' + obj.chapter_num) ? '' : CMangaParser_1.titleCase(obj.chapter_name),
+                    name: CMangaParser_1.titleCase(obj.chapter_name) === "Chapter " + obj.chapter_num
+                        ? ""
+                        : CMangaParser_1.titleCase(obj.chapter_name),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: new Date(d2 + " " + t2)
+                    time: new Date(d2 + " " + t2),
                 }));
             }
             return chapters;
@@ -7543,23 +7553,23 @@ class CManga extends paperback_extensions_common_1.Source {
     getChapterDetails(mangaId, chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
             const url = `${exports.DOMAIN}${chapterId}`;
-            const chapID = url.split('/').pop();
+            const chapID = url.split("/").pop();
             const request = createRequestObject({
                 url: `${exports.DOMAIN}api/chapter_content?opt1=` + chapID,
-                method
+                method,
             });
             const data = yield this.requestManager.schedule(request, 1);
             var chapter_content = JSON.parse(JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data)))[0].content);
             var pages = [];
             for (const img of chapter_content) {
                 // pages.push(img);
-                pages.push(img.replace('.net', '.com').replace('?v=1&', '?v=9999&')); //1,01,11,21,31,41,...
+                pages.push(img.replace(".net", ".com").replace("?v=1&", "?v=9999&")); //1,01,11,21,31,41,...
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
                 mangaId: mangaId,
                 pages: pages,
-                longStrip: false
+                longStrip: false,
             });
             return chapterDetails;
         });
@@ -7567,12 +7577,12 @@ class CManga extends paperback_extensions_common_1.Source {
     getHomePageSections(sectionCallback) {
         return __awaiter(this, void 0, void 0, function* () {
             let newUpdated = createHomeSection({
-                id: 'new_updated',
+                id: "new_updated",
                 title: "Truyện mới cập nhật",
                 view_more: true,
             });
             let newAdded = createHomeSection({
-                id: 'new_added',
+                id: "new_added",
                 title: "VIP Truyện Siêu Hay",
                 view_more: true,
             });
@@ -7584,7 +7594,7 @@ class CManga extends paperback_extensions_common_1.Source {
             let request = createRequestObject({
                 url: `${exports.DOMAIN}api/list_item`,
                 method: "GET",
-                param: '?page=1&limit=20&sort=new&type=all&tag=&child=off&status=all&num_chapter=0'
+                param: "?page=1&limit=20&sort=new&type=all&tag=&child=off&status=all&num_chapter=0",
             });
             let newUpdatedItems = [];
             let data = yield this.requestManager.schedule(request, 1);
@@ -7594,13 +7604,13 @@ class CManga extends paperback_extensions_common_1.Source {
                 if (!item.name)
                     continue;
                 newUpdatedItems.push(createMangaTile({
-                    id: item.url + '-' + item.id_book + "::" + item.url,
-                    image: exports.DOMAIN + 'assets/tmp/book/avatar/' + item.avatar + '.jpg',
+                    id: item.url + "-" + item.id_book + "::" + item.url,
+                    image: exports.DOMAIN + "assets/tmp/book/avatar/" + item.avatar + ".jpg",
                     title: createIconText({
                         text: CMangaParser_1.titleCase(item.name),
                     }),
                     subtitleText: createIconText({
-                        text: 'Chap ' + item.last_chapter,
+                        text: "Chap " + item.last_chapter,
                     }),
                 }));
             }
@@ -7621,13 +7631,13 @@ class CManga extends paperback_extensions_common_1.Source {
                 if (!item.name)
                     continue;
                 newAddItems.push(createMangaTile({
-                    id: item.url + '-' + item.id_book + "::" + item.url,
-                    image: exports.DOMAIN + 'assets/tmp/book/avatar/' + item.avatar + '.jpg',
+                    id: item.url + "-" + item.id_book + "::" + item.url,
+                    image: exports.DOMAIN + "assets/tmp/book/avatar/" + item.avatar + ".jpg",
                     title: createIconText({
                         text: CMangaParser_1.titleCase(item.name),
                     }),
                     subtitleText: createIconText({
-                        text: 'Chap ' + item.last_chapter,
+                        text: "Chap " + item.last_chapter,
                     }),
                 }));
             }
@@ -7639,8 +7649,8 @@ class CManga extends paperback_extensions_common_1.Source {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            let param = '';
-            let url = '';
+            let param = "";
+            let url = "";
             let method = "GET";
             switch (homepageSectionId) {
                 case "new_updated":
@@ -7657,13 +7667,13 @@ class CManga extends paperback_extensions_common_1.Source {
             const request = createRequestObject({
                 url,
                 method,
-                param
+                param,
             });
             let data = yield this.requestManager.schedule(request, 1);
             var json = JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data))); // object not array
             const manga = CMangaParser_1.parseViewMore(json);
-            var allPage = (json['total'] / 40);
-            metadata = (page < allPage) ? { page: page + 1 } : undefined;
+            var allPage = json["total"] / 40;
+            metadata = page < allPage ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: manga,
                 metadata,
@@ -7674,46 +7684,52 @@ class CManga extends paperback_extensions_common_1.Source {
         var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
+            const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map((tag) => tag.id)) !== null && _c !== void 0 ? _c : [];
             const search = {
                 status: "all",
                 num_chapter: "0",
                 sort: "new",
                 tag: "",
-                top: ""
+                top: "",
             };
             tags.map((value) => {
                 switch (value.split(".")[0]) {
-                    case 'sort':
-                        search.sort = (value.split(".")[1]);
+                    case "sort":
+                        search.sort = value.split(".")[1];
                         break;
-                    case 'status':
-                        search.status = (value.split(".")[1]);
+                    case "status":
+                        search.status = value.split(".")[1];
                         break;
-                    case 'num':
-                        search.num_chapter = (value.split(".")[1]);
+                    case "num":
+                        search.num_chapter = value.split(".")[1];
                         break;
-                    case 'tag':
-                        search.tag = (value.split(".")[1]);
+                    case "tag":
+                        search.tag = value.split(".")[1];
                         break;
-                    case 'top':
-                        search.top = (value.split(".")[1]);
+                    case "top":
+                        search.top = value.split(".")[1];
                         break;
                 }
             });
             const request = createRequestObject({
-                url: query.title ? encodeURI(exports.DOMAIN + 'api/search?opt1=' + (query.title))
-                    : (search.top !== '' ? exports.DOMAIN + "api/top?data=book_top" : encodeURI(exports.DOMAIN + `api/list_item?page=${page}&limit=40&sort=${search.sort}&type=all&tag=${search.tag}&child=off&status=${search.status}&num_chapter=${search.num_chapter}`)),
+                url: query.title
+                    ? encodeURI(exports.DOMAIN + "api/search?opt1=" + query.title)
+                    : search.top !== ""
+                        ? exports.DOMAIN + "api/top?data=book_top"
+                        : encodeURI(exports.DOMAIN +
+                            `api/list_item?page=${page}&limit=40&sort=${search.sort}&type=all&tag=${search.tag}&child=off&status=${search.status}&num_chapter=${search.num_chapter}`),
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
-            var json = (query.title || search.top !== "") ? JSON.parse(data.data) : JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data))); // object not array
+            var json = query.title || search.top !== ""
+                ? JSON.parse(data.data)
+                : JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data))); // object not array
             const tiles = CMangaParser_1.parseSearch(json, search);
-            var allPage = (json['total'] / 40);
-            metadata = (page < allPage) ? { page: page + 1 } : undefined;
+            var allPage = json["total"] / 40;
+            metadata = page < allPage ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: tiles,
-                metadata
+                metadata,
             });
         });
     }
@@ -7729,76 +7745,96 @@ class CManga extends paperback_extensions_common_1.Source {
             const arrayTags = [];
             const arrayTags2 = [
                 {
-                    label: 'Ngày đăng',
-                    id: 'sort.new'
+                    label: "Ngày đăng",
+                    id: "sort.new",
                 },
                 {
-                    label: 'Lượt xem',
-                    id: 'sort.view'
+                    label: "Lượt xem",
+                    id: "sort.view",
                 },
                 {
-                    label: 'Lượt theo dõi',
-                    id: 'sort.follow'
-                }
+                    label: "Lượt theo dõi",
+                    id: "sort.follow",
+                },
             ];
             const arrayTags3 = [
                 {
-                    label: 'Tất cả',
-                    id: 'status.all'
+                    label: "Tất cả",
+                    id: "status.all",
                 },
                 {
-                    label: 'Hoàn thành',
-                    id: 'status.completed'
-                }
+                    label: "Hoàn thành",
+                    id: "status.completed",
+                },
             ];
             const arrayTags4 = [
                 {
-                    label: '>= 100',
-                    id: 'num.100'
+                    label: ">= 100",
+                    id: "num.100",
                 },
                 {
-                    label: '>= 200',
-                    id: 'num.200'
+                    label: ">= 200",
+                    id: "num.200",
                 },
                 {
-                    label: '>= 300',
-                    id: 'num.300'
+                    label: ">= 300",
+                    id: "num.300",
                 },
                 {
-                    label: '>= 400',
-                    id: 'num.400'
+                    label: ">= 400",
+                    id: "num.400",
                 },
                 {
-                    label: '>= 500',
-                    id: 'num.500'
-                }
+                    label: ">= 500",
+                    id: "num.500",
+                },
             ];
             const arrayTags5 = [
                 {
-                    label: 'Top Ngày',
-                    id: 'top.day'
+                    label: "Top Ngày",
+                    id: "top.day",
                 },
                 {
-                    label: 'Top Tuần',
-                    id: 'top.week'
+                    label: "Top Tuần",
+                    id: "top.week",
                 },
                 {
-                    label: 'Top Tổng',
-                    id: 'top.month'
-                }
+                    label: "Top Tổng",
+                    id: "top.month",
+                },
             ];
             //the loai
-            for (const tag of $('.book_tags_content a').toArray()) {
+            for (const tag of $(".book_tags_content a").toArray()) {
                 const label = $(tag).text().trim();
-                const id = 'tag.' + label;
+                const id = "tag." + label;
                 arrayTags.push({ id: id, label: label });
             }
             const tagSections = [
-                createTagSection({ id: '4', label: 'Rank', tags: arrayTags5.map(x => createTag(x)) }),
-                createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) }),
-                createTagSection({ id: '1', label: 'Sắp xếp theo', tags: arrayTags2.map(x => createTag(x)) }),
-                createTagSection({ id: '2', label: 'Tình trạng', tags: arrayTags3.map(x => createTag(x)) }),
-                createTagSection({ id: '3', label: 'Num chapter', tags: arrayTags4.map(x => createTag(x)) })
+                createTagSection({
+                    id: "4",
+                    label: "Rank",
+                    tags: arrayTags5.map((x) => createTag(x)),
+                }),
+                createTagSection({
+                    id: "0",
+                    label: "Thể Loại",
+                    tags: arrayTags.map((x) => createTag(x)),
+                }),
+                createTagSection({
+                    id: "1",
+                    label: "Sắp xếp theo",
+                    tags: arrayTags2.map((x) => createTag(x)),
+                }),
+                createTagSection({
+                    id: "2",
+                    label: "Tình trạng",
+                    tags: arrayTags3.map((x) => createTag(x)),
+                }),
+                createTagSection({
+                    id: "3",
+                    label: "Num chapter",
+                    tags: arrayTags4.map((x) => createTag(x)),
+                }),
             ];
             return tagSections;
         });

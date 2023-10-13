@@ -597,15 +597,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Truyentranh24 = exports.Truyentranh24Info = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const Truyentranh24Parser_1 = require("./Truyentranh24Parser");
-const DOMAIN = 'https://truyentranh24z.com/';
+const DOMAIN = 'https://truyennhanh1.com/';
 const method = 'GET';
 exports.Truyentranh24Info = {
     version: '1.5.1',
-    name: 'Truyentranh24',
+    name: 'Truyentranh1',
     icon: 'icon.png',
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from Truyentranh24',
+    description: 'Extension that pulls manga from Truyentranh1',
     websiteBaseURL: DOMAIN,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
@@ -677,11 +677,11 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
-                url: 'https://truyentranh24z.com/api/mangas/' + mangaId.split("::")[1] + '/chapters?offset=0&limit=0',
+                url: 'https://truyennhanh1.com/api/mangas/' + mangaId.split("::")[1] + '/chapters?offset=0&limit=0',
                 method,
                 headers: {
                     'x-requested-with': 'XMLHttpRequest',
-                    'referer': 'https://truyentranh24z.com'
+                    'referer': 'https://truyennhanh1.com'
                 }
             });
             const data = yield this.requestManager.schedule(request, 1);
@@ -777,7 +777,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             ///Get the section data
             // featured
             let request = createRequestObject({
-                url: 'https://truyentranh24z.com',
+                url: 'https://truyennhanh1.com/',
                 method: "GET",
             });
             let featuredItems = [];
@@ -800,7 +800,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             sectionCallback(featured);
             // Hot
             request = createRequestObject({
-                url: 'https://truyentranh24z.com/top-ngay',
+                url: 'https://truyennhanh1.com/top-ngay',
                 method: "GET",
             });
             let popular = [];
@@ -845,7 +845,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             //view
             request = createRequestObject({
-                url: 'https://truyentranh24z.com/truyen-hot',
+                url: 'https://truyennhanh1.com/truyen-hot',
                 method: "GET",
             });
             let viewItems = [];
@@ -867,7 +867,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             sectionCallback(view);
             //add
             request = createRequestObject({
-                url: 'https://truyentranh24z.com/',
+                url: 'https://truyennhanh1.com/',
                 method: "GET",
             });
             let addItems = [];
@@ -889,7 +889,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             sectionCallback(add);
             //top
             request = createRequestObject({
-                url: 'https://truyentranh24z.com/',
+                url: 'https://truyennhanh1.com/',
                 method: "GET",
             });
             let topItems = [];
@@ -911,7 +911,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             sectionCallback(top);
             //miss
             request = createRequestObject({
-                url: 'https://truyentranh24z.com/',
+                url: 'https://truyennhanh1.com/',
                 method: "GET",
             });
             let missItems = [];
@@ -941,15 +941,15 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             let select = 1;
             switch (homepageSectionId) {
                 case "hot":
-                    url = `https://truyentranh24z.com/top-ngay?p=${page}`;
+                    url = `https://truyennhanh1.com/top-ngay?p=${page}`;
                     select = 1;
                     break;
                 case "new_updated":
-                    url = `https://truyentranh24z.com/chap-moi-nhat`;
+                    url = `https://truyennhanh1.com/chap-moi-nhat`;
                     select = 2;
                     break;
                 case "view":
-                    url = `https://truyentranh24z.com/truyen-hot?p=${page}`;
+                    url = `https://truyennhanh1.com/truyen-hot?p=${page}`;
                     select = 1;
                     break;
                 default:
@@ -975,7 +975,7 @@ class Truyentranh24 extends paperback_extensions_common_1.Source {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: query.title ? encodeURI(`https://truyentranh24z.com/tim-kiem/${query.title}?p=${page}`) : (`https://truyentranh24z.com/` + tags[0] + `?p=${page}`),
+                url: query.title ? encodeURI(`hhttps://truyennhanh1.com/tim-kiem/${query.title}?p=${page}`) : (`https://truyennhanh1.com/` + tags[0] + `?p=${page}`),
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
