@@ -15,11 +15,11 @@ import {
     MangaTile,
     Tag,
     LanguageCode
-} from "paperback-extensions-common"
-import { parseSearch, isLastPage, parseViewMore, capitalizeFirstLetter } from "./HentaiVLParser"
+} from "paperback-extensions-common";
+import { parseSearch, isLastPage, parseViewMore, capitalizeFirstLetter } from "./HentaiVLParser";
 
-const DOMAIN = 'https://hentaivl.com/'
-const method = 'GET'
+const DOMAIN = 'https://hentaivnhot.net/';
+const method = 'GET';
 
 export const HentaiVLInfo: SourceInfo = {
     version: '1.0.1',
@@ -28,7 +28,7 @@ export const HentaiVLInfo: SourceInfo = {
     author: 'Huynhzip3',
     authorWebsite: 'https://github.com/huynh12345678',
     description: 'Extension that pulls manga from HentaiVL',
-    websiteBaseURL: `https://hentaivl.com/`,
+    websiteBaseURL: `https://hentaivnhot.net/`,
     contentRating: ContentRating.ADULT,
     sourceTags: [
         {
@@ -36,10 +36,10 @@ export const HentaiVLInfo: SourceInfo = {
             type: TagType.YELLOW
         }
     ]
-}
+};
 
 export class HentaiVL extends Source {
-    getMangaShareUrl(mangaId: string): string { return `https://hentaivl.com${mangaId}` };
+    getMangaShareUrl(mangaId: string): string { return `https://hentaivl.com${mangaId}`; };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
         requestTimeout: 20000,
@@ -51,16 +51,16 @@ export class HentaiVL extends Source {
                     ...{
                         'referer': DOMAIN
                     }
-                }
+                };
 
-                return request
+                return request;
             },
 
             interceptResponse: async (response: Response): Promise<Response> => {
-                return response
+                return response;
             }
         }
-    })
+    });
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
         const url = `https://hentaivl.com${mangaId}`;
@@ -75,8 +75,8 @@ export class HentaiVL extends Source {
         let status = 1; //completed, 1 = Ongoing
         let desc = $('.ep-content-story').text();
         for (const t of $('.type_box > .type > a.cate-itm').toArray()) {
-            const genre = $(t).text().trim()
-            const id = $(t).attr('href') ?? genre
+            const genre = $(t).text().trim();
+            const id = $(t).attr('href') ?? genre;
             tags.push(createTag({ label: genre, id }));
         }
         creator = $('.info > p:nth-child(1) > span').text();
@@ -174,7 +174,7 @@ export class HentaiVL extends Source {
         //Hot
         let url = '';
         let request = createRequestObject({
-            url: 'https://hentaivl.com/',
+            url: 'https://hentaivnhot.net/',
             method: "GET",
         });
         let hotItems: MangaTile[] = [];
@@ -194,7 +194,7 @@ export class HentaiVL extends Source {
                 subtitleText: createIconText({
                     text: capitalizeFirstLetter(subtitle),
                 }),
-            }))
+            }));
         }
         hot.items = hotItems;
         sectionCallback(hot);
@@ -202,7 +202,7 @@ export class HentaiVL extends Source {
         //New Updates
         url = '';
         request = createRequestObject({
-            url: 'https://hentaivl.com/',
+            url: 'https://hentaivnhot.net/',
             method: "GET",
         });
         let newUpdatedItems: MangaTile[] = [];
@@ -223,15 +223,15 @@ export class HentaiVL extends Source {
                 subtitleText: createIconText({
                     text: capitalizeFirstLetter(subtitle),
                 }),
-            }))
+            }));
         }
         newUpdated.items = newUpdatedItems;
         sectionCallback(newUpdated);
 
         //New Added
-        url = DOMAIN
+        url = DOMAIN;
         request = createRequestObject({
-            url: 'https://hentaivl.com/',
+            url: 'https://hentaivnhot.net/',
             method: "GET",
         });
         let newAddItems: MangaTile[] = [];
@@ -252,7 +252,7 @@ export class HentaiVL extends Source {
                 subtitleText: createIconText({
                     text: capitalizeFirstLetter(subtitle),
                 }),
-            }))
+            }));
         }
         newAdded.items = newAddItems;
         sectionCallback(newAdded);
@@ -264,19 +264,19 @@ export class HentaiVL extends Source {
         let select = 1;
         switch (homepageSectionId) {
             case "hot":
-                url = `https://hentaivl.com/`;
+                url = `https://hentaivnhot.net/`;
                 select = 0;
                 break;
             case "new_updated":
-                url = `https://hentaivl.com/`;
+                url = `https://hentaivnhot.net/`;
                 select = 1;
                 break;
             case "new_added":
-                url = `https://hentaivl.com/`;
+                url = `https://hentaivnhot.net/`;
                 select = 2;
                 break;
             default:
-                return Promise.resolve(createPagedResults({ results: [] }))
+                return Promise.resolve(createPagedResults({ results: [] }));
         }
 
         const request = createRequestObject({
@@ -318,13 +318,13 @@ export class HentaiVL extends Source {
 
     async getSearchTags(): Promise<TagSection[]> {
         const tags: Tag[] = [];
-        const url = `https://hentaivl.com/`
+        const url = `https://hentaivnhot.net/`;
         const request = createRequestObject({
             url: url,
             method: "GET",
         });
 
-        const response = await this.requestManager.schedule(request, 1)
+        const response = await this.requestManager.schedule(request, 1);
         const $ = this.cheerio.load(response.data);
         //the loai
         for (const tag of $('a', '#glo_gnb > ul > li:first-child > .sub-menu > li:not(:first-child)').toArray()) {
@@ -333,7 +333,7 @@ export class HentaiVL extends Source {
             if (!id || !label) continue;
             tags.push({ id: id, label: label });
         }
-        const tagSections: TagSection[] = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) })]
+        const tagSections: TagSection[] = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) })];
         return tagSections;
     }
 }

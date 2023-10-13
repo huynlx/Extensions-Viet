@@ -16,19 +16,19 @@ import {
     Tag,
     HomeSectionType,
     LanguageCode
-} from "paperback-extensions-common"
+} from "paperback-extensions-common";
 
-import { parseSearch, parseViewMore, isLastPage } from "./Doctruyen3QParser"
+import { parseSearch, parseViewMore, isLastPage } from "./Doctruyen3QParser";
 
-const DOMAIN = 'https://doctruyen3q.com/'
-const method = 'GET'
+const DOMAIN = 'https://doctruyen3q.site/';
+const method = 'GET';
 
 export const Doctruyen3QInfo: SourceInfo = {
     version: '2.0.1',
     name: 'Doctruyen3Q',
     icon: 'icon.png',
     author: 'Huynhzip3',
-    authorWebsite: 'https://github.com/huynh12345678',
+    authorWebsite: 'https://github.site/huynh12345678',
     description: 'Extension that pulls manga from Doctruyen3Q',
     websiteBaseURL: DOMAIN,
     contentRating: ContentRating.MATURE,
@@ -38,27 +38,27 @@ export const Doctruyen3QInfo: SourceInfo = {
             type: TagType.BLUE
         }
     ]
-}
+};
 
 export class Doctruyen3Q extends Source {
     protected convertTime(timeAgo: string): Date {
-        let time: Date
-        let trimmed: number = Number((/\d*/.exec(timeAgo) ?? [])[0])
-        trimmed = (trimmed == 0 && timeAgo.includes('a')) ? 1 : trimmed
+        let time: Date;
+        let trimmed: number = Number((/\d*/.exec(timeAgo) ?? [])[0]);
+        trimmed = (trimmed == 0 && timeAgo.includes('a')) ? 1 : trimmed;
         if (timeAgo.includes('giây') || timeAgo.includes('secs')) {
-            time = new Date(Date.now() - trimmed * 1000) // => mili giây (1000 ms = 1s)
+            time = new Date(Date.now() - trimmed * 1000); // => mili giây (1000 ms = 1s)
         } else if (timeAgo.includes('phút')) {
-            time = new Date(Date.now() - trimmed * 60000)
+            time = new Date(Date.now() - trimmed * 60000);
         } else if (timeAgo.includes('giờ')) {
-            time = new Date(Date.now() - trimmed * 3600000)
+            time = new Date(Date.now() - trimmed * 3600000);
         } else if (timeAgo.includes('ngày')) {
-            time = new Date(Date.now() - trimmed * 86400000)
+            time = new Date(Date.now() - trimmed * 86400000);
         } else if (timeAgo.includes('tuần')) {
-            time = new Date(Date.now() - trimmed * 86400000 * 7)
+            time = new Date(Date.now() - trimmed * 86400000 * 7);
         } else if (timeAgo.includes('tháng')) {
-            time = new Date(Date.now() - trimmed * 86400000 * 7 * 4)
+            time = new Date(Date.now() - trimmed * 86400000 * 7 * 4);
         } else if (timeAgo.includes('năm')) {
-            time = new Date(Date.now() - trimmed * 31556952000)
+            time = new Date(Date.now() - trimmed * 31556952000);
         } else {
             if (timeAgo.includes(":")) {
                 let split = timeAgo.split(' ');
@@ -72,9 +72,9 @@ export class Doctruyen3Q extends Source {
                 time = new Date(split[1] + '/' + split[0] + '/' + split[2]);
             }
         }
-        return time
+        return time;
     }
-    getMangaShareUrl(mangaId: string): string { return mangaId };
+    getMangaShareUrl(mangaId: string): string { return mangaId; };
     requestManager = createRequestManager({
         requestsPerSecond: 5,
         requestTimeout: 20000,
@@ -86,16 +86,16 @@ export class Doctruyen3Q extends Source {
                     ...{
                         'referer': DOMAIN
                     }
-                }
+                };
 
-                return request
+                return request;
             },
 
             interceptResponse: async (response: Response): Promise<Response> => {
-                return response
+                return response;
             }
         }
-    })
+    });
 
     async getMangaDetails(mangaId: string): Promise<Manga> {
         const url = mangaId;
@@ -241,7 +241,7 @@ export class Doctruyen3Q extends Source {
 
         // Hot
         request = createRequestObject({
-            url: 'https://doctruyen3q.com/hot',
+            url: 'https://doctruyen3q.site/hot',
             method: "GET",
         });
         let popular: MangaTile[] = [];
@@ -264,7 +264,7 @@ export class Doctruyen3Q extends Source {
 
         //update
         request = createRequestObject({
-            url: 'https://doctruyen3q.com/',
+            url: 'https://doctruyen3q.site/',
             method: "GET",
         });
         data = await this.requestManager.schedule(request, 1);
@@ -280,14 +280,14 @@ export class Doctruyen3Q extends Source {
                 image: img ?? "",
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
-            }))
+            }));
         }
         newUpdated.items = newUpdatedItems;
         sectionCallback(newUpdated);
 
         //boy
         request = createRequestObject({
-            url: 'https://doctruyen3q.com/truyen-con-trai',
+            url: 'https://doctruyen3q.site/truyen-con-trai',
             method: "GET",
         });
         data = await this.requestManager.schedule(request, 1);
@@ -303,14 +303,14 @@ export class Doctruyen3Q extends Source {
                 image: img ?? "",
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
-            }))
+            }));
         }
         boy.items = boyItems;
         sectionCallback(boy);
 
         //girl
         request = createRequestObject({
-            url: 'https://doctruyen3q.com/truyen-con-gai',
+            url: 'https://doctruyen3q.site/truyen-con-gai',
             method: "GET",
         });
         data = await this.requestManager.schedule(request, 1);
@@ -326,7 +326,7 @@ export class Doctruyen3Q extends Source {
                 image: img ?? "",
                 title: createIconText({ text: title }),
                 subtitleText: createIconText({ text: subtitle }),
-            }))
+            }));
         }
         girl.items = girlItems;
         sectionCallback(girl);
@@ -337,19 +337,19 @@ export class Doctruyen3Q extends Source {
         let url = '';
         switch (homepageSectionId) {
             case "hot":
-                url = `https://doctruyen3q.com/hot?page=${page}`;
+                url = `https://doctruyen3q.site/hot?page=${page}`;
                 break;
             case "new_updated":
-                url = `https://doctruyen3q.com/?page=${page}`;
+                url = `https://doctruyen3q.site/?page=${page}`;
                 break;
             case "boy":
-                url = `https://doctruyen3q.com/truyen-con-trai?page=${page}`;
+                url = `https://doctruyen3q.site/truyen-con-trai?page=${page}`;
                 break;
             case "girl":
-                url = `https://doctruyen3q.com/truyen-con-gai?page=${page}`;
+                url = `https://doctruyen3q.site/truyen-con-gai?page=${page}`;
                 break;
             default:
-                return Promise.resolve(createPagedResults({ results: [] }))
+                return Promise.resolve(createPagedResults({ results: [] }));
         }
 
         const request = createRequestObject({
@@ -379,17 +379,17 @@ export class Doctruyen3Q extends Source {
             switch (value.split(".")[0]) {
                 case 'cate':
                     search.cate = (value.split(".")[1]);
-                    break
+                    break;
                 case 'status':
                     search.status = (value.split(".")[1]);
-                    break
+                    break;
                 case 'sort':
                     search.sort = (value.split(".")[1]);
-                    break
+                    break;
             }
-        })
+        });
         const request = createRequestObject({
-            url: encodeURI(`https://doctruyen3q.com/tim-truyen/${search.cate}?keyword=${query.title ?? ""}&sort=${search.sort}&status=${search.status}&page=${page}`),
+            url: encodeURI(`https://doctruyen3q.site/tim-truyen/${search.cate}?keyword=${query.title ?? ""}&sort=${search.sort}&status=${search.status}&page=${page}`),
             method: "GET",
         });
 
@@ -410,7 +410,7 @@ export class Doctruyen3Q extends Source {
         const tags2: Tag[] = [];
         const tags5: Tag[] = [];
 
-        const url = 'https://doctruyen3q.com/tim-truyen'
+        const url = 'https://doctruyen3q.site/tim-truyen';
         const request = createRequestObject({
             url: url,
             method: "GET",
@@ -446,7 +446,7 @@ export class Doctruyen3Q extends Source {
             createTagSection({ id: '3', label: 'Sắp xếp theo', tags: tags2.map(x => createTag(x)) }),
 
             // createTagSection({ id: '5', label: 'Nhóm dịch', tags: tags6.map(x => createTag(x)) }),
-        ]
+        ];
         return tagSections;
     }
 }
