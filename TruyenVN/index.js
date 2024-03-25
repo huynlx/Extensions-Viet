@@ -597,7 +597,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TruyenVN = exports.TruyenVNInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const TruyenVNParser_1 = require("./TruyenVNParser");
-const DOMAIN = "https://truyenvnhot.net/";
+const DOMAIN = "https://truyenvn.club/";
 const method = "GET";
 exports.TruyenVNInfo = {
     version: "1.0.1",
@@ -819,7 +819,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             //New Updates
             url = "";
             request = createRequestObject({
-                url: "https://truyenvnhot.net/danh-sach-truyen",
+                url: "https://truyenvn.club/truyen-tranh/",
                 method: "GET",
             });
             let newUpdatedItems = [];
@@ -845,33 +845,6 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
             //New Added
-            url = DOMAIN;
-            request = createRequestObject({
-                url: "https://truyenvnhot.net/truyen-hoan-thanh",
-                method: "GET",
-            });
-            let newAddItems = [];
-            data = yield this.requestManager.schedule(request, 1);
-            $ = this.cheerio.load(data.data);
-            for (let obj of $(".entry ", ".form-row").toArray().splice(0, 15)) {
-                let title = $(`a`, obj).attr("title");
-                let subtitle = $(`span.link`, obj).text().trim();
-                const image = $(`a > img`, obj).attr("data-src");
-                let id = (_d = $(`a`, obj).attr("href")) !== null && _d !== void 0 ? _d : title;
-                // if (!id || !subtitle) continue;
-                newAddItems.push(createMangaTile({
-                    id: id,
-                    image: image,
-                    title: createIconText({
-                        text: title,
-                    }),
-                    subtitleText: createIconText({
-                        text: subtitle,
-                    }),
-                }));
-            }
-            newAdded.items = newAddItems;
-            sectionCallback(newAdded);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
@@ -882,10 +855,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             let url = "";
             switch (homepageSectionId) {
                 case "new_updated":
-                    url = `https://truyenvnhot.net/danh-sach-truyen/page/${page}`;
-                    break;
-                case "new_added":
-                    url = `https://truyenvnhot.net/truyen-hoan-thanh/page/${page}`;
+                    url = `https://truyenvn.club/truyen-tranh/page/${page}`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
@@ -917,7 +887,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             search.genres = tags[0];
             var url = "";
             if (search.name) {
-                url = `https://truyenvnhot.net/danh-sach-truyen/page/${page}?q=${search.name}`;
+                url = `https://truyenvn.club/truyen-tranh/page/${page}?q=${search.name}`;
             }
             else {
                 url = search.genres + `/page/${page}`;
@@ -941,7 +911,7 @@ class TruyenVN extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             const tags = [];
             const request = createRequestObject({
-                url: "https://truyenvnhot.net/the-loai-truyen",
+                url: "https://truyenvn.club/the-loai",
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
@@ -955,24 +925,20 @@ class TruyenVN extends paperback_extensions_common_1.Source {
             }
             const tags1 = [
                 {
-                    id: "https://truyenvnhot.net/truyen-hot",
-                    label: "Top All",
+                    id: "https://truyenvn.club/?m_orderby=views",
+                    label: "Đọc nhiều",
                 },
                 {
-                    id: "https://truyenvnhot.net/top-ngay",
-                    label: "Top Ngày",
+                    id: "https://truyenvn.club/?m_orderby=trending",
+                    label: "Xu hướng",
                 },
                 {
-                    id: "https://truyenvnhot.net/top-tuan",
-                    label: "Top Tuần",
+                    id: "https://truyenvn.club/?m_orderby=new-manga",
+                    label: "Truyện mới",
                 },
                 {
-                    id: "https://truyenvnhot.net/top-thang",
-                    label: "Top Tháng",
-                },
-                {
-                    id: "https://truyenvnhot.net/top-nam",
-                    label: "Top Năm",
+                    id: "https://truyenvn.club/?m_orderby=latest",
+                    label: "Mới cập nhật",
                 },
             ];
             const tagSections = [
