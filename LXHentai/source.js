@@ -2611,8 +2611,8 @@ class LXHentai extends paperback_extensions_common_1.Source {
             });
             let newUpdatedItems = [];
             let data = yield this.requestManager.schedule(request, 1);
-            // let html = Buffer.from(createByteArray(data.rawData)).toString();
-            let $ = this.cheerio.load(data.data);
+            let html = Buffer.from(createByteArray(data.rawData)).toString();
+            let $ = this.cheerio.load(html);
             for (let manga of $("div.manga-vertical", ".grid")
                 .toArray()
                 .splice(0, 15)) {
@@ -2756,8 +2756,8 @@ class LXHentai extends paperback_extensions_common_1.Source {
                 param,
             });
             let data = yield this.requestManager.schedule(request, 1);
-            let html = Buffer.from(createByteArray(data.rawData)).toString();
-            let $ = this.cheerio.load(html);
+            // let html = Buffer.from(createByteArray(data.rawData)).toString();
+            let $ = this.cheerio.load(data.data);
             const manga = LXHentaiParser_1.parseViewMore($);
             metadata = !LXHentaiParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
