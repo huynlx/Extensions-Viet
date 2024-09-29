@@ -746,6 +746,9 @@ class Parser {
         else if (timeAgo.includes("ngày")) {
             time = new Date(Date.now() - trimmed * 86400000);
         }
+        else if (timeAgo.includes("tháng")) {
+            time = new Date(Date.now() - trimmed * 30 * 86400000); // approx. 30 days per month
+        }
         else if (timeAgo.includes("năm")) {
             time = new Date(Date.now() - trimmed * 31556952000);
         }

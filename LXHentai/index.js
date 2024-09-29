@@ -2453,6 +2453,9 @@ class LXHentai extends paperback_extensions_common_1.Source {
         else if (timeAgo.includes("ngày")) {
             time = new Date(Date.now() - trimmed * 86400000);
         }
+        else if (timeAgo.includes("tháng")) {
+            time = new Date(Date.now() - trimmed * 30 * 86400000); // approx. 30 days per month
+        }
         else if (timeAgo.includes("năm")) {
             time = new Date(Date.now() - trimmed * 31556952000);
         }
@@ -2533,15 +2536,19 @@ class LXHentai extends paperback_extensions_common_1.Source {
                 .toArray()
                 .reverse()) {
                 i++;
-                let time = $(".hidden > span", obj).last().text();
+                let time = $(".hidden > span.timeago", obj).attr("datetime");
                 let view = $(".hidden > span", obj).first().text();
+                console.log("cc", {
+                    time,
+                    view,
+                });
                 chapters.push(createChapter({
                     id: "https://lxmanga.click" + $(obj).attr("href"),
                     chapNum: parseFloat($(".text-ellipsis", obj).text().split(" ")[1]),
                     name: "",
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: this.convertTime(time),
+                    time: new Date(time),
                     group: view + " lượt xem",
                 }));
             }
@@ -2560,7 +2567,6 @@ class LXHentai extends paperback_extensions_common_1.Source {
             const list = $(".text-center > #image-container").toArray();
             for (let obj of list) {
                 let link = $(obj).attr("data-src");
-                console.log("🚀 ⮕ LXHentai ⮕ link:", link);
                 pages.push(encodeURI(link));
             }
             const chapterDetails = createChapterDetails({
