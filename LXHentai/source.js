@@ -2566,7 +2566,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
             sectionCallback(hot);
             //New Updates
             let request = createRequestObject({
-                url: "https://lxmanga.click/danh-sach?page=1",
+                url: "https://lxmanga.click/tim-kiem?sort=-updated_at&filter[status]=2,1&page=1",
                 method: "GET",
             });
             let newUpdatedItems = [];
@@ -2600,24 +2600,27 @@ class LXHentai extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             //Hot
             request = createRequestObject({
-                url: "https://lxmanga.click/story/index.php?hot",
+                url: "https://lxmanga.click/tim-kiem?sort=-views&page=1&filter[status]=2,1&page=1",
                 method: "GET",
             });
             let hotItems = [];
             data = yield this.requestManager.schedule(request, 1);
             html = Buffer.from(createByteArray(data.rawData)).toString();
             $ = this.cheerio.load(html);
-            for (let manga of $("div.col-md-3", ".main .col-md-8 > .row")
+            for (let manga of $("div.manga-vertical", ".grid")
                 .toArray()
                 .splice(0, 15)) {
-                const title = $("a", manga).last().text().trim();
-                const id = (_b = $("a", manga).last().attr("href")) !== null && _b !== void 0 ? _b : title;
-                const image = $("div", manga).first().css("background");
+                console.log("🚀 ⮕ LXHentai ⮕ manga:", manga);
+                const title = $("div.p-2.w-full.truncate > a.text-ellipsis", manga)
+                    .text()
+                    .trim();
+                const id = (_b = $("div.p-2.w-full.truncate > a.text-ellipsis", manga).attr("href")) !== null && _b !== void 0 ? _b : title;
+                const image = $("div.cover-frame > div.cover", manga).css("background-image");
                 const bg = image === null || image === void 0 ? void 0 : image.replace("url(", "").replace(")", "").replace(/\"/gi, "").replace(/['"]+/g, "");
-                const sub = $("a", manga).first().text().trim();
+                const sub = $("div.latest-chapter > a", manga).first().text().trim();
                 hotItems.push(createMangaTile({
                     id: "https://lxmanga.click" + id,
-                    image: "https://lxmanga.click" + bg,
+                    image: bg,
                     title: createIconText({
                         text: title,
                     }),
@@ -2637,15 +2640,20 @@ class LXHentai extends paperback_extensions_common_1.Source {
             data = yield this.requestManager.schedule(request, 1);
             html = Buffer.from(createByteArray(data.rawData)).toString();
             $ = this.cheerio.load(html);
-            for (let manga of $(".truyenHot .gridSlide > div").toArray()) {
-                const title = $(".slideName > a", manga).text().trim();
-                const id = (_c = $(".slideName > a", manga).attr("href")) !== null && _c !== void 0 ? _c : title;
-                const image = $(".itemSlide", manga).first().css("background");
+            for (let manga of $("li.glide__slide > div.manga-vertical", "ul.glide__slides")
+                .toArray()
+                .splice(0, 15)) {
+                console.log("🚀 ⮕ LXHentai ⮕ manga:", manga);
+                const title = $("div.p-2.w-full.truncate > a.text-ellipsis", manga)
+                    .text()
+                    .trim();
+                const id = (_c = $("div.p-2.w-full.truncate > a.text-ellipsis", manga).attr("href")) !== null && _c !== void 0 ? _c : title;
+                const image = $("div.cover-frame > div.cover", manga).css("background-image");
                 const bg = image === null || image === void 0 ? void 0 : image.replace("url(", "").replace(")", "").replace(/\"/gi, "").replace(/['"]+/g, "");
-                const sub = $(".newestChapter", manga).text().trim();
+                const sub = $("div.latest-chapter > a", manga).first().text().trim();
                 featuredItems.push(createMangaTile({
                     id: "https://lxmanga.click" + id,
-                    image: "https://lxmanga.click" + bg,
+                    image: bg,
                     title: createIconText({
                         text: title,
                     }),
