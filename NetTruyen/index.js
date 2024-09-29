@@ -943,7 +943,7 @@ class Parser {
         for (let manga of $("div.item", "div.altcontent1").toArray()) {
             const title = $(".slide-caption > h3 > a", manga).text();
             const id = (_a = $("a", manga).attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop();
-            const image = $("a > img.lazyOwl", manga).attr("data-src");
+            const image = $("a > img.image-thumb", manga).attr("data-original");
             const subtitle = $(".slide-caption > a", manga).text().trim() +
                 " - " +
                 $(".slide-caption > .time", manga).text().trim();
