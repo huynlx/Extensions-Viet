@@ -2597,6 +2597,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
                 }));
             }
             newUpdated.items = newUpdatedItems;
+            sectionCallback(newUpdated);
             //Hot
             request = createRequestObject({
                 url: "https://lxmanga.click",
@@ -2628,6 +2629,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
                 }));
             }
             hot.items = hotItems;
+            sectionCallback(hot);
             //Most Viewed
             request = createRequestObject({
                 url: "https://lxmanga.click/tim-kiem?sort=-views&filter[status]=2,1&page=1",
@@ -2659,6 +2661,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
                 }));
             }
             mostViewed.items = mostViewedItems;
+            sectionCallback(mostViewed);
             //Có thể bạn muốn đọc
             request = createRequestObject({
                 url: "https://lxmanga.click/",
@@ -2690,6 +2693,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
                 }));
             }
             featured.items = featuredItems;
+            sectionCallback(featured);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
