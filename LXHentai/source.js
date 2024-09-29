@@ -2452,35 +2452,30 @@ class LXHentai extends paperback_extensions_common_1.Source {
             let creator = "";
             let status = 1; //completed, 1 = Ongoing
             let artist = "";
-            let desc = $(".detail-content > p").text();
-            for (const a of $(".row.mt-2 > .col-4.py-1").toArray()) {
-                switch ($(a).text().trim()) {
-                    case "Tác giả":
-                        creator = $(a).next().text();
-                        break;
-                    case "Tình trạng":
-                        status = $(a).next().text().toLowerCase().includes("đã") ? 0 : 1;
-                        break;
-                    case "Thể loại":
-                        for (const t of $("a", $(a).next()).toArray()) {
-                            const genre = $(t).text().trim();
-                            const id = (_a = $(t).attr("href")) !== null && _a !== void 0 ? _a : genre;
-                            tags.push(createTag({ label: genre, id }));
-                        }
-                        break;
-                    case "Thực hiện":
-                        artist = $(a).next().text();
-                        break;
-                }
+            let desc = $(".py-4.border-t.border-gray-200 > p:nth-last-child(2)").text();
+            creator = $("div:contains('Tác giả:')").next("a").text();
+            status = $("div:contains('Tình trạng:')")
+                .next()
+                .text()
+                .toLowerCase()
+                .includes("đã")
+                ? 0
+                : 1;
+            for (const t of $("a", $("div:contains('Thể loại:')").next()).toArray()) {
+                const genre = $(t).text().trim();
+                const id = (_a = $(t).attr("href")) !== null && _a !== void 0 ? _a : genre;
+                tags.push(createTag({ label: genre, id }));
             }
+            artist = $("div:contains('Nhóm dịch:')").next().text();
+            const image = $("div.cover-frame").css("background-image");
+            const bg = image === null || image === void 0 ? void 0 : image.replace("url(", "").replace(")", "").replace(/\"/gi, "").replace(/['"]+/g, "");
             return createManga({
                 id: mangaId,
                 author: creator,
                 artist: artist,
                 desc: desc,
-                titles: [$("h1.title-detail").text()],
-                image: "https://lxmanga.click" +
-                    $(".col-md-8 > .row > .col-md-4 > img").attr("src"),
+                titles: [$(".grow.text-lg.ml-1.text-ellipsis.font-semibold").text()],
+                image: bg,
                 status: status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: true,
@@ -2569,6 +2564,8 @@ class LXHentai extends paperback_extensions_common_1.Source {
             });
             sectionCallback(newUpdated);
             sectionCallback(hot);
+            sectionCallback(mostViewed);
+            sectionCallback(featured);
             //New Updates
             let request = createRequestObject({
                 url: "https://lxmanga.click/tim-kiem?sort=-updated_at&filter[status]=2,1&page=1",
@@ -2599,9 +2596,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
                     }),
                 }));
             }
-            console.log("🚀 ⮕ LXHentai ⮕ newUpdatedItems:", newUpdatedItems);
             newUpdated.items = newUpdatedItems;
-            sectionCallback(newUpdated);
             //Hot
             request = createRequestObject({
                 url: "https://lxmanga.click",
@@ -2633,7 +2628,6 @@ class LXHentai extends paperback_extensions_common_1.Source {
                 }));
             }
             hot.items = hotItems;
-            sectionCallback(hot);
             //Most Viewed
             request = createRequestObject({
                 url: "https://lxmanga.click/tim-kiem?sort=-views&filter[status]=2,1&page=1",
@@ -2665,7 +2659,6 @@ class LXHentai extends paperback_extensions_common_1.Source {
                 }));
             }
             mostViewed.items = mostViewedItems;
-            sectionCallback(mostViewed);
             //Có thể bạn muốn đọc
             request = createRequestObject({
                 url: "https://lxmanga.click/",
@@ -2697,7 +2690,6 @@ class LXHentai extends paperback_extensions_common_1.Source {
                 }));
             }
             featured.items = featuredItems;
-            sectionCallback(featured);
         });
     }
     getViewMoreItems(homepageSectionId, metadata) {
