@@ -380,7 +380,7 @@ const NetTruyenParser_1 = require("./NetTruyenParser");
 const DOMAIN = "https://nettruyenww.com/";
 exports.isLastPage = ($) => {
     const current = $("ul.pagination > li.active > span.page-link").text();
-    let total = $("ul.pagination > li:nth-last-child(2)").text();
+    let total = $("ul.pagination > li:nth-last-child(2) > a").text();
     if (current) {
         total = total !== null && total !== void 0 ? total : "";
         return +total === +current; //+ => convert value to number
