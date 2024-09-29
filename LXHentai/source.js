@@ -2479,7 +2479,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
                 artist: artist,
                 desc: desc,
                 titles: [$("h1.title-detail").text()],
-                image: "https://lxhentai.com" +
+                image: "https://lxmanga.click" +
                     $(".col-md-8 > .row > .col-md-4 > img").attr("src"),
                 status: status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
@@ -2506,7 +2506,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
                 let day = time[1].split("/");
                 let h = time[0];
                 chapters.push(createChapter({
-                    id: "https://lxhentai.com" + $("a", obj).attr("href"),
+                    id: "https://lxmanga.click" + $("a", obj).attr("href"),
                     chapNum: i,
                     name: $("a", obj).text(),
                     mangaId: mangaId,
@@ -2566,24 +2566,24 @@ class LXHentai extends paperback_extensions_common_1.Source {
             sectionCallback(hot);
             //New Updates
             let request = createRequestObject({
-                url: "https://lxmanga.click/story/index.php",
+                url: "https://lxmanga.click/danh-sach?page=1",
                 method: "GET",
             });
             let newUpdatedItems = [];
             let data = yield this.requestManager.schedule(request, 1);
             let html = Buffer.from(createByteArray(data.rawData)).toString();
             let $ = this.cheerio.load(html);
-            for (let manga of $("div.col-md-3", ".main .col-md-8 > .row")
-                .toArray()
-                .splice(0, 15)) {
-                const title = $("a", manga).last().text().trim();
-                const id = (_a = $("a", manga).last().attr("href")) !== null && _a !== void 0 ? _a : title;
-                const image = $("div", manga).first().css("background");
+            for (let manga of $("div.w-full", ".grid").toArray().splice(0, 15)) {
+                const title = $("div.p-2.w-full.truncate > a.text-ellipsis", manga)
+                    .text()
+                    .trim();
+                const id = (_a = $("div.p-2.w-full.truncate > a.text-ellipsis", manga).attr("href")) !== null && _a !== void 0 ? _a : title;
+                const image = $("div.cover-frame > div.cover", manga).css("background-image");
                 const bg = image === null || image === void 0 ? void 0 : image.replace("url(", "").replace(")", "").replace(/\"/gi, "").replace(/['"]+/g, "");
-                const sub = $("a", manga).first().text().trim();
+                const sub = $("div.latest-chapter > a", manga).first().text().trim();
                 newUpdatedItems.push(createMangaTile({
-                    id: "https://lxhentai.com" + id,
-                    image: "https://lxhentai.com" + bg,
+                    id: "https://lxmanga.click" + id,
+                    image: "https://lxmanga.click" + bg,
                     title: createIconText({
                         text: title,
                     }),
@@ -2612,8 +2612,8 @@ class LXHentai extends paperback_extensions_common_1.Source {
                 const bg = image === null || image === void 0 ? void 0 : image.replace("url(", "").replace(")", "").replace(/\"/gi, "").replace(/['"]+/g, "");
                 const sub = $("a", manga).first().text().trim();
                 hotItems.push(createMangaTile({
-                    id: "https://lxhentai.com" + id,
-                    image: "https://lxhentai.com" + bg,
+                    id: "https://lxmanga.click" + id,
+                    image: "https://lxmanga.click" + bg,
                     title: createIconText({
                         text: title,
                     }),
@@ -2640,8 +2640,8 @@ class LXHentai extends paperback_extensions_common_1.Source {
                 const bg = image === null || image === void 0 ? void 0 : image.replace("url(", "").replace(")", "").replace(/\"/gi, "").replace(/['"]+/g, "");
                 const sub = $(".newestChapter", manga).text().trim();
                 featuredItems.push(createMangaTile({
-                    id: "https://lxhentai.com" + id,
-                    image: "https://lxhentai.com" + bg,
+                    id: "https://lxmanga.click" + id,
+                    image: "https://lxmanga.click" + bg,
                     title: createIconText({
                         text: title,
                     }),
@@ -2723,7 +2723,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
             //the loai
             for (const tag of $(".col-sm-3 a", "#showTheLoai").toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_a = "https://lxhentai.com" + $(tag).attr("href")) !== null && _a !== void 0 ? _a : label;
+                const id = (_a = "https://lxmanga.click" + $(tag).attr("href")) !== null && _a !== void 0 ? _a : label;
                 if (!id || !label)
                     continue;
                 arrayTags.push({ id: id, label: label });
