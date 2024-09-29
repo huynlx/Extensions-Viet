@@ -380,7 +380,7 @@ const NetTruyenParser_1 = require("./NetTruyenParser");
 const DOMAIN = "https://nettruyenww.com/";
 exports.isLastPage = ($) => {
     const current = $("ul.pagination > li.active > span.page-link").text();
-    let total = $("ul.pagination > li:nth-last-child(2) > a").text();
+    let total = $("ul.pagination > li:nth-last-child(2) > a.page-link").text();
     if (current) {
         total = total !== null && total !== void 0 ? total : "";
         return +total === +current; //+ => convert value to number
@@ -388,7 +388,7 @@ exports.isLastPage = ($) => {
     return true;
 };
 exports.NetTruyenInfo = {
-    version: "3.0.5",
+    version: "3.0.6",
     name: "NetTruyen",
     icon: "icon.png",
     author: "Huynhzip3",
@@ -663,7 +663,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const manga = this.parser.parseViewMoreItems($);
-            metadata = exports.isLastPage($) ? undefined : { page: page + 1 };
+            metadata = exports.isLastPage($) ? { page: page + 1 } : { page: page + 1 };
             return createPagedResults({
                 results: manga,
                 metadata,
