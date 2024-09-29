@@ -20,8 +20,8 @@ import { Parser } from "./NetTruyenParser";
 const DOMAIN = "https://nettruyenww.com/";
 
 export const isLastPage = ($: CheerioStatic): boolean => {
-  const current = $("ul.pagination > li.active > a").text();
-  let total = $("ul.pagination > li.PagerSSCCells:last-child").text();
+  const current = $("ul.pagination > li.active > span.page-link").text();
+  let total = $("ul.pagination > li:nth-last-child(2) > a.page-link").text();
 
   if (current) {
     total = total ?? "";
@@ -31,7 +31,7 @@ export const isLastPage = ($: CheerioStatic): boolean => {
 };
 
 export const NetTruyenInfo: SourceInfo = {
-  version: "3.0.5",
+  version: "3.0.6",
   name: "NetTruyen",
   icon: "icon.png",
   author: "Huynhzip3",
@@ -248,7 +248,7 @@ export class NetTruyen extends Source {
     sectionCallback(viewest);
 
     //Hot
-    url = `${DOMAIN}hot`;
+    url = `${DOMAIN}truyen-tranh-hot`;
     request = createRequestObject({
       url: url,
       method: "GET",
@@ -310,7 +310,7 @@ export class NetTruyen extends Source {
         break;
       case "hot":
         param = `?page=${page}`;
-        url = `${DOMAIN}hot`;
+        url = `${DOMAIN}truyen-tranh-hot`;
         break;
       case "new_updated":
         param = `?page=${page}`;
@@ -340,7 +340,8 @@ export class NetTruyen extends Source {
     const $ = this.cheerio.load(response.data);
 
     const manga = this.parser.parseViewMoreItems($);
-    metadata = isLastPage($) ? undefined : { page: page + 1 };
+    const isLastPage = this.parser.parseIsLastPage($);
+    metadata = isLastPage ? undefined : { page: page + 1 };
 
     return createPagedResults({
       results: manga,

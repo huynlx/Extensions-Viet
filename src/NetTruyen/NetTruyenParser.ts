@@ -58,7 +58,7 @@ export class Parser {
       id: mangaId,
       author: creator,
       artist: creator,
-      desc: $("div.detail-content > p").text(),
+      desc: $("div.detail-content > div").text(),
       titles: [$("h1.title-detail").text()],
       image: image ?? "",
       status: $("li.status > p.col-xs-8")
@@ -237,7 +237,7 @@ export class Parser {
     for (let manga of $("div.item", "div.altcontent1").toArray()) {
       const title = $(".slide-caption > h3 > a", manga).text();
       const id = $("a", manga).attr("href")?.split("/").pop();
-      const image = $("a > img.lazyOwl", manga).attr("data-src");
+      const image = $("a > img.image-thumb", manga).attr("data-original");
       const subtitle =
         $(".slide-caption > a", manga).text().trim() +
         " - " +
@@ -488,5 +488,16 @@ export class Parser {
         returnObject.ids.push(elem.id);
     }
     return returnObject;
+  }
+
+  parseIsLastPage($: any): boolean {
+    const current = $("ul.pagination > li.active > span.page-link").text();
+    let total = $("ul.pagination > li:nth-last-child(2) > a.page-link").text();
+
+    if (current) {
+      total = total ?? "";
+      return +total === +current; //+ => convert value to number
+    }
+    return true;
   }
 }
