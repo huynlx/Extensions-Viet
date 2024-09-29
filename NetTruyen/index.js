@@ -782,7 +782,7 @@ class Parser {
             id: mangaId,
             author: creator,
             artist: creator,
-            desc: $("div.detail-content > div").text(),
+            desc: $(".detail-content").text(),
             titles: [$("h1.title-detail").text()],
             image: image !== null && image !== void 0 ? image : "",
             status: $("li.status > p.col-xs-8")
