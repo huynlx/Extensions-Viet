@@ -2538,10 +2538,11 @@ class LXHentai extends paperback_extensions_common_1.Source {
                 i++;
                 let time = $(".hidden > span.timeago", obj).attr("datetime");
                 let view = $(".hidden > span", obj).first().text();
+                let name = $(".text-ellipsis", obj).text().split(" ")[1];
                 chapters.push(createChapter({
                     id: "https://lxmanga.click" + $(obj).attr("href"),
-                    chapNum: parseFloat($(".text-ellipsis", obj).text().split(" ")[1]),
-                    name: "",
+                    chapNum: parseFloat(name) || i,
+                    name: parseFloat(name) ? "" : name,
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
                     time: new Date(time),
