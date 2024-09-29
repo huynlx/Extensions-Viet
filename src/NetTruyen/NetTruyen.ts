@@ -349,7 +349,7 @@ export class NetTruyen extends Source {
   }
 
   async getSearchTags(): Promise<TagSection[]> {
-    const url = `${DOMAIN}tim-truyen-nang-cao`;
+    const url = `${DOMAIN}tim-truyen`;
     const request = createRequestObject({
       url: url,
       method: "GET",

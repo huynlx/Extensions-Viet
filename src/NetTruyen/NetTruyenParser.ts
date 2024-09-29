@@ -53,7 +53,7 @@ export class Parser {
     }
 
     const creator = $("ul.list-info > li.author > p.col-xs-8").text();
-    const image = "http:" + $("div.col-image > img").attr("src");
+    const image = $("div.col-image > img").attr("src");
     return createManga({
       id: mangaId,
       author: creator,
@@ -112,7 +112,7 @@ export class Parser {
       let link = obj.attribs["data-src"];
       if (link.indexOf("http") === -1) {
         //nếu link ko có 'http'
-        pages.push("http:" + obj.attribs["data-src"]);
+        pages.push(obj.attribs["data-src"]);
       } else {
         pages.push(link);
       }
@@ -146,7 +146,7 @@ export class Parser {
       tiles.push(
         createMangaTile({
           id: id,
-          image: !image ? "https://i.imgur.com/GYUxEX8.png" : "http:" + image,
+          image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
           title: createIconText({ text: title }),
           subtitleText: createIconText({ text: subtitle }),
         })
@@ -246,7 +246,7 @@ export class Parser {
       featuredItems.push(
         createMangaTile({
           id: id,
-          image: !image ? "https://i.imgur.com/GYUxEX8.png" : "http:" + image,
+          image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
           title: createIconText({ text: title }),
           subtitleText: createIconText({
             text: subtitle,
@@ -283,7 +283,7 @@ export class Parser {
       viewestItems.push(
         createMangaTile({
           id: id,
-          image: !image ? "https://i.imgur.com/GYUxEX8.png" : "http:" + image,
+          image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
           title: createIconText({ text: title }),
           subtitleText: createIconText({ text: subtitle }),
         })
@@ -317,7 +317,7 @@ export class Parser {
       TopWeek.push(
         createMangaTile({
           id: id,
-          image: !image ? "https://i.imgur.com/GYUxEX8.png" : "http:" + image,
+          image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
           title: createIconText({ text: title }),
           subtitleText: createIconText({ text: subtitle }),
         })
@@ -351,7 +351,7 @@ export class Parser {
       newUpdatedItems.push(
         createMangaTile({
           id: id,
-          image: !image ? "https://i.imgur.com/GYUxEX8.png" : "http:" + image,
+          image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
           title: createIconText({ text: title }),
           subtitleText: createIconText({ text: subtitle }),
         })
@@ -385,7 +385,7 @@ export class Parser {
       newAddedItems.push(
         createMangaTile({
           id: id,
-          image: !image ? "https://i.imgur.com/GYUxEX8.png" : "http:" + image,
+          image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
           title: createIconText({ text: title }),
           subtitleText: createIconText({ text: subtitle }),
         })
@@ -419,7 +419,7 @@ export class Parser {
       fullItems.push(
         createMangaTile({
           id: id,
-          image: !image ? "https://i.imgur.com/GYUxEX8.png" : "http:" + image,
+          image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
           title: createIconText({ text: title }),
           subtitleText: createIconText({ text: subtitle }),
         })
@@ -456,7 +456,7 @@ export class Parser {
         mangas.push(
           createMangaTile({
             id: id,
-            image: !image ? "https://i.imgur.com/GYUxEX8.png" : "http:" + image,
+            image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
             title: createIconText({ text: title }),
             subtitleText: createIconText({ text: subtitle }),
           })
