@@ -10,9 +10,10 @@
     "coverage": "nyc -r lcov -e .ts -x \"*.test.ts\" npm run test",
     "bundle": "paperback bundle",
     "serve": "paperback serve -p 8000",
-    "deploy": "gh-pages -d bundles",
-    "predeploy": "paperback bundle",
-    "deploy2": "gh-pages -d bundles",
+    "predeployWithBundle": "paperback bundle && cp core/index.html bundles",
+    "deployWithBundle": "gh-pages -d bundles",
+    "predeployWithoutBundle": "",
+    "deployWithoutBundle": "gh-pages -d bundles",
     "test-src": "npx paperback test"
   },
   "author": "Huynhzip3",
