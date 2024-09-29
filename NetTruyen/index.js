@@ -672,7 +672,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
     }
     getSearchTags() {
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `${DOMAIN}tim-truyen-nang-cao`;
+            const url = `${DOMAIN}tim-truyen`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -1118,7 +1118,7 @@ class Parser {
                 //ko push truyện trùng nhau
                 mangas.push(createMangaTile({
                     id: id,
-                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : "http:" + image,
+                    image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
                     title: createIconText({ text: title }),
                     subtitleText: createIconText({ text: subtitle }),
                 }));
