@@ -2559,7 +2559,8 @@ class LXHentai extends paperback_extensions_common_1.Source {
             const pages = [];
             const list = $(".text-center > #image-container").toArray();
             for (let obj of list) {
-                let link = $("img", obj).last().attr("src");
+                let link = $(obj).attr("data-src");
+                console.log("🚀 ⮕ LXHentai ⮕ link:", link);
                 pages.push(encodeURI(link));
             }
             const chapterDetails = createChapterDetails({
