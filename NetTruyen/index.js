@@ -663,7 +663,8 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             const response = yield this.requestManager.schedule(request, 1);
             const $ = this.cheerio.load(response.data);
             const manga = this.parser.parseViewMoreItems($);
-            metadata = exports.isLastPage($) ? { page: page + 1 } : { page: page + 1 };
+            const isLastPage = this.parser.parseIsLastPage($);
+            metadata = isLastPage ? undefined : { page: page + 1 };
             return createPagedResults({
                 results: manga,
                 metadata,
@@ -1147,6 +1148,15 @@ class Parser {
                 returnObject.ids.push(elem.id);
         }
         return returnObject;
+    }
+    parseIsLastPage($) {
+        const current = $("ul.pagination > li.active > span.page-link").text();
+        let total = $("ul.pagination > li:nth-last-child(2) > a.page-link").text();
+        if (current) {
+            total = total !== null && total !== void 0 ? total : "";
+            return +total === +current; //+ => convert value to number
+        }
+        return true;
     }
 }
 exports.Parser = Parser;
