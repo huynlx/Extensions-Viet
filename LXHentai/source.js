@@ -2576,7 +2576,6 @@ class LXHentai extends paperback_extensions_common_1.Source {
             for (let manga of $("div.manga-vertical", ".grid")
                 .toArray()
                 .splice(0, 15)) {
-                console.log("🚀 ⮕ LXHentai ⮕ manga:", manga);
                 const title = $("div.p-2.w-full.truncate > a.text-ellipsis", manga)
                     .text()
                     .trim();
@@ -2610,7 +2609,6 @@ class LXHentai extends paperback_extensions_common_1.Source {
             for (let manga of $("div.manga-vertical", ".grid")
                 .toArray()
                 .splice(0, 15)) {
-                console.log("🚀 ⮕ LXHentai ⮕ manga:", manga);
                 const title = $("div.p-2.w-full.truncate > a.text-ellipsis", manga)
                     .text()
                     .trim();
@@ -2640,10 +2638,9 @@ class LXHentai extends paperback_extensions_common_1.Source {
             data = yield this.requestManager.schedule(request, 1);
             html = Buffer.from(createByteArray(data.rawData)).toString();
             $ = this.cheerio.load(html);
-            for (let manga of $("li.glide__slide > div.manga-vertical", "ul.glide__slides")
+            for (let manga of $("div.manga-vertical", "ul.glide__slides")
                 .toArray()
                 .splice(0, 15)) {
-                console.log("🚀 ⮕ LXHentai ⮕ manga:", manga);
                 const title = $("div.p-2.w-full.truncate > a.text-ellipsis", manga)
                     .text()
                     .trim();
