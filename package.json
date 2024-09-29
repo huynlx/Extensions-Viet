@@ -13,7 +13,7 @@
     "deploy": "gh-pages -d bundles",
     "predeploy": "paperback bundle",
     "deploy2": "gh-pages -d bundles",
-    "test2": "npx paperback test"
+    "test-src": "npx paperback test"
   },
   "author": "Huynhzip3",
   "license": "MIT",
