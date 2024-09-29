@@ -388,7 +388,7 @@ exports.isLastPage = ($) => {
     return true;
 };
 exports.NetTruyenInfo = {
-    version: "3.0.6",
+    version: "3.0.7",
     name: "NetTruyen",
     icon: "icon.png",
     author: "Huynhzip3",
@@ -1097,33 +1097,25 @@ class Parser {
         return fullItems;
     }
     parseViewMoreItems($) {
-        var _a;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
         const mangas = [];
         const collectedIds = [];
-        for (const manga of $("div.item", "div.row").toArray()) {
-            const title = $("figure.clearfix > figcaption > h3 > a", manga)
-                .first()
-                .text();
-            const id = (_a = $("figure.clearfix > div.image > a", manga)
-                .attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop();
-            const image = $("figure.clearfix > div.image > a > img", manga)
-                .first()
-                .attr("data-original");
-            const subtitle = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga)
-                .last()
-                .text()
-                .trim();
+        for (const manga of (_a = $("div.item", "div.row")) === null || _a === void 0 ? void 0 : _a.toArray()) {
+            const title = (_c = (_b = $("figure.clearfix > figcaption > h3 > a", manga)) === null || _b === void 0 ? void 0 : _b.first()) === null || _c === void 0 ? void 0 : _c.text();
+            const id = (_f = (_e = (_d = $("figure.clearfix > div.image > a", manga)) === null || _d === void 0 ? void 0 : _d.attr("href")) === null || _e === void 0 ? void 0 : _e.split("/")) === null || _f === void 0 ? void 0 : _f.pop();
+            const image = (_h = (_g = $("figure.clearfix > div.image > a > img", manga)) === null || _g === void 0 ? void 0 : _g.first()) === null || _h === void 0 ? void 0 : _h.attr("data-original");
+            const subtitle = (_l = (_k = (_j = $("figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a", manga)) === null || _j === void 0 ? void 0 : _j.last()) === null || _k === void 0 ? void 0 : _k.text()) === null || _l === void 0 ? void 0 : _l.trim();
             if (!id || !title)
                 continue;
-            if (!collectedIds.includes(id)) {
+            if (!(collectedIds === null || collectedIds === void 0 ? void 0 : collectedIds.includes(id))) {
                 //ko push truyện trùng nhau
-                mangas.push(createMangaTile({
+                mangas === null || mangas === void 0 ? void 0 : mangas.push(createMangaTile({
                     id: id,
                     image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
-                    title: createIconText({ text: title }),
-                    subtitleText: createIconText({ text: subtitle }),
+                    title: createIconText({ text: title || "" }),
+                    subtitleText: createIconText({ text: subtitle || "" }),
                 }));
-                collectedIds.push(id);
+                collectedIds === null || collectedIds === void 0 ? void 0 : collectedIds.push(id);
             }
         }
         return mangas;
@@ -1152,11 +1144,12 @@ class Parser {
     parseIsLastPage($) {
         const current = $("ul.pagination > li.active > span.page-link").text();
         let total = $("ul.pagination > li:nth-last-child(2) > a.page-link").text();
-        if (current) {
-            total = total !== null && total !== void 0 ? total : "";
-            return +total === +current; //+ => convert value to number
-        }
-        return true;
+        // if (current) {
+        //   total = total ?? "";
+        //   return +total === +current; //+ => convert value to number
+        // }
+        // return true;
+        return false;
     }
 }
 exports.Parser = Parser;
