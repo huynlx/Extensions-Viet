@@ -2866,7 +2866,7 @@ exports.parseViewMore = ($) => {
     var _a;
     const manga = [];
     // const collectedIds: string[] = [];
-    for (let manga of $("div.manga-vertical", ".grid").toArray()) {
+    for (let manga of $("div.manga-vertical", ".grid").toArray().splice(0, 15)) {
         const title = $("div.p-2.w-full.truncate > a.text-ellipsis", manga)
             .text()
             .trim();
@@ -2874,7 +2874,6 @@ exports.parseViewMore = ($) => {
         const image = $("div.cover-frame > div.cover", manga).css("background-image");
         const bg = image === null || image === void 0 ? void 0 : image.replace("url(", "").replace(")", "").replace(/\"/gi, "").replace(/['"]+/g, "");
         const sub = $("div.latest-chapter > a", manga).first().text().trim();
-        // if (!id || !subtitle) continue;
         manga.push(createMangaTile({
             id: "https://lxmanga.click" + id,
             image: bg,
@@ -2912,17 +2911,15 @@ exports.parseTags = ($) => {
 };
 exports.isLastPage = ($) => {
     let isLast = false;
-    const pages = [];
-    for (const page of $("li", "ul.pagination").toArray()) {
-        const p = Number($("a", page).text().trim());
-        if (isNaN(p))
-            continue;
-        pages.push(p);
-    }
-    const lastPage = Math.max(...pages);
-    const currentPage = Number($("li.active > a").text().trim());
-    if (currentPage >= lastPage)
-        isLast = true;
+    // const pages = [];
+    // for (const page of $("li", "ul.pagination").toArray()) {
+    //   const p = Number($("a", page).text().trim());
+    //   if (isNaN(p)) continue;
+    //   pages.push(p);
+    // }
+    // const lastPage = Math.max(...pages);
+    // const currentPage = Number($("li.active > a").text().trim());
+    // if (currentPage >= lastPage) isLast = true;
     return isLast;
 };
 // const decodeHTMLEntity = (str: string): string => {
