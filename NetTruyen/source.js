@@ -638,7 +638,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
                     break;
                 case "hot":
                     param = `?page=${page}`;
-                    url = `${DOMAIN}hot`;
+                    url = `${DOMAIN}truyen-tranh-hot`;
                     break;
                 case "new_updated":
                     param = `?page=${page}`;
