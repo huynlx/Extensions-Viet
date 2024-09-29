@@ -2545,12 +2545,17 @@ class LXHentai extends paperback_extensions_common_1.Source {
         });
     }
     getHomePageSections(sectionCallback) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
             let featured = createHomeSection({
                 id: "featured",
                 title: "Truyện Đề Cử",
                 type: paperback_extensions_common_1.HomeSectionType.featured,
+            });
+            let mostViewed = createHomeSection({
+                id: "most_viewed",
+                title: "Xem nhiều nhất",
+                view_more: true,
             });
             let newUpdated = createHomeSection({
                 id: "new_updated",
@@ -2599,14 +2604,14 @@ class LXHentai extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             //Hot
             request = createRequestObject({
-                url: "https://lxmanga.click/tim-kiem?sort=-views&page=1&filter[status]=2,1&page=1",
+                url: "https://lxmanga.click/tim-kiem?sort=-views&filter[status]=2,1&page=1",
                 method: "GET",
             });
             let hotItems = [];
             data = yield this.requestManager.schedule(request, 1);
             html = Buffer.from(createByteArray(data.rawData)).toString();
             $ = this.cheerio.load(html);
-            for (let manga of $("div.manga-vertical", ".grid")
+            for (let manga of $("div.manga-vertical", "ul.glide__slides")
                 .toArray()
                 .splice(0, 15)) {
                 const title = $("div.p-2.w-full.truncate > a.text-ellipsis", manga)
@@ -2629,7 +2634,39 @@ class LXHentai extends paperback_extensions_common_1.Source {
             }
             hot.items = hotItems;
             sectionCallback(hot);
-            //Featured
+            //Most Viewed
+            request = createRequestObject({
+                url: "https://lxmanga.click/tim-kiem?sort=-views&filter[status]=2,1&page=1",
+                method: "GET",
+            });
+            let mostViewedItems = [];
+            data = yield this.requestManager.schedule(request, 1);
+            html = Buffer.from(createByteArray(data.rawData)).toString();
+            $ = this.cheerio.load(html);
+            for (let manga of $("div.manga-vertical", ".grid")
+                .toArray()
+                .splice(0, 15)) {
+                const title = $("div.p-2.w-full.truncate > a.text-ellipsis", manga)
+                    .text()
+                    .trim();
+                const id = (_c = $("div.p-2.w-full.truncate > a.text-ellipsis", manga).attr("href")) !== null && _c !== void 0 ? _c : title;
+                const image = $("div.cover-frame > div.cover", manga).css("background-image");
+                const bg = image === null || image === void 0 ? void 0 : image.replace("url(", "").replace(")", "").replace(/\"/gi, "").replace(/['"]+/g, "");
+                const sub = $("div.latest-chapter > a", manga).first().text().trim();
+                mostViewedItems.push(createMangaTile({
+                    id: "https://lxmanga.click" + id,
+                    image: bg,
+                    title: createIconText({
+                        text: title,
+                    }),
+                    subtitleText: createIconText({
+                        text: sub,
+                    }),
+                }));
+            }
+            mostViewed.items = mostViewedItems;
+            sectionCallback(mostViewed);
+            //Có thể bạn muốn đọc
             request = createRequestObject({
                 url: "https://lxmanga.click/",
                 method: "GET",
@@ -2638,13 +2675,13 @@ class LXHentai extends paperback_extensions_common_1.Source {
             data = yield this.requestManager.schedule(request, 1);
             html = Buffer.from(createByteArray(data.rawData)).toString();
             $ = this.cheerio.load(html);
-            for (let manga of $("div.manga-vertical", "ul.glide__slides")
+            for (let manga of $("div.manga-vertical", ".lg:grid-cols-6.gap-3")
                 .toArray()
                 .splice(0, 15)) {
                 const title = $("div.p-2.w-full.truncate > a.text-ellipsis", manga)
                     .text()
                     .trim();
-                const id = (_c = $("div.p-2.w-full.truncate > a.text-ellipsis", manga).attr("href")) !== null && _c !== void 0 ? _c : title;
+                const id = (_d = $("div.p-2.w-full.truncate > a.text-ellipsis", manga).attr("href")) !== null && _d !== void 0 ? _d : title;
                 const image = $("div.cover-frame > div.cover", manga).css("background-image");
                 const bg = image === null || image === void 0 ? void 0 : image.replace("url(", "").replace(")", "").replace(/\"/gi, "").replace(/['"]+/g, "");
                 const sub = $("div.latest-chapter > a", manga).first().text().trim();
