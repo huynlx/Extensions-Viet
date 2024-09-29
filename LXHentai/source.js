@@ -753,7 +753,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
             const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map((tag) => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
                 url: query.title
-                    ? `https://lxmanga.click/story/search.php?key=${encodeURI(query.title)}&p=${page}`
+                    ? `https://lxmanga.click/tim-kiem?sort=-updated_at&filter[name]=${encodeURI(query.title)}&filter[status]=2,1&page=${page}`
                     : `${tags[0]}&p=${page}`,
                 method: "GET",
             });
@@ -771,7 +771,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
     getSearchTags() {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://lxmanga.click/`;
+            const url = `https://lxmanga.click`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -813,24 +813,17 @@ exports.generateSearch = (query) => {
 exports.parseSearch = ($, query) => {
     var _a;
     const manga = [];
-    // const collectedIds: string[] = [];
-    var loop = [];
-    if (query.title) {
-        loop = $("div.py-2", ".row").toArray();
-    }
-    else {
-        loop = $("div.py-2", ".col-md-8 .row").toArray();
-    }
-    for (let obj of loop) {
-        const title = $("a", obj).last().text().trim();
-        const id = (_a = $("a", obj).last().attr("href")) !== null && _a !== void 0 ? _a : title;
-        const image = $("div", obj).first().css("background");
+    for (let obj of $("div.manga-vertical", ".grid").toArray()) {
+        const title = $("div.p-2.w-full.truncate > a.text-ellipsis", obj)
+            .text()
+            .trim();
+        const id = (_a = $("div.p-2.w-full.truncate > a.text-ellipsis", obj).attr("href")) !== null && _a !== void 0 ? _a : title;
+        const image = $("div.cover-frame > div.cover", obj).css("background-image");
         const bg = image === null || image === void 0 ? void 0 : image.replace("url(", "").replace(")", "").replace(/\"/gi, "").replace(/['"]+/g, "");
-        const sub = $("a", obj).first().text().trim();
-        // if (!id || !subtitle) continue;
+        const sub = $("div.latest-chapter > a", obj).first().text().trim();
         manga.push(createMangaTile({
-            id: "https://lxmanga.click/" + id,
-            image: "https://lxmanga.click/" + bg,
+            id: "https://lxmanga.click" + id,
+            image: bg,
             title: createIconText({
                 text: title,
             }),
@@ -845,7 +838,7 @@ exports.parseViewMore = ($) => {
     var _a;
     const manga = [];
     // const collectedIds: string[] = [];
-    for (let obj of $("div.manga-vertical", ".grid").toArray().splice(0, 15)) {
+    for (let obj of $("div.manga-vertical", ".grid").toArray()) {
         const title = $("div.p-2.w-full.truncate > a.text-ellipsis", obj)
             .text()
             .trim();
