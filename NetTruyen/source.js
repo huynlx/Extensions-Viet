@@ -379,8 +379,8 @@ const paperback_extensions_common_1 = require("paperback-extensions-common");
 const NetTruyenParser_1 = require("./NetTruyenParser");
 const DOMAIN = "https://nettruyenww.com/";
 exports.isLastPage = ($) => {
-    const current = $("ul.pagination > li.active > a").text();
-    let total = $("ul.pagination > li.PagerSSCCells:last-child").text();
+    const current = $("ul.pagination > li.active > span.page-link").text();
+    let total = $("ul.pagination > li:nth-last-child(2)").text();
     if (current) {
         total = total !== null && total !== void 0 ? total : "";
         return +total === +current; //+ => convert value to number
@@ -584,7 +584,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
             viewest.items = this.parser.parsePopularSection($);
             sectionCallback(viewest);
             //Hot
-            url = `${DOMAIN}hot`;
+            url = `${DOMAIN}truyen-tranh-hot`;
             request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -781,7 +781,7 @@ class Parser {
             id: mangaId,
             author: creator,
             artist: creator,
-            desc: $("div.detail-content > p").text(),
+            desc: $("div.detail-content > div").text(),
             titles: [$("h1.title-detail").text()],
             image: image !== null && image !== void 0 ? image : "",
             status: $("li.status > p.col-xs-8")
