@@ -2537,7 +2537,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
                 let view = $(".hidden > span", obj).first().text();
                 chapters.push(createChapter({
                     id: "https://lxmanga.click" + $(obj).attr("href"),
-                    chapNum: parseFloat($(".text-ellipsis", obj).text()),
+                    chapNum: parseFloat($(".text-ellipsis", obj).text().split(" ")[1]),
                     name: "",
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
