@@ -604,7 +604,7 @@ const tags_json_1 = __importDefault(require("./tags.json"));
 const DOMAIN = `https://hentaihvn.tv/`;
 const method = "GET";
 exports.HentaiVNInfo = {
-    version: "2.8.1",
+    version: "2.9.0",
     name: "HentaiVN",
     icon: "icon.png",
     author: "Huynhzip3",

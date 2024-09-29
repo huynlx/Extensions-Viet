@@ -2398,23 +2398,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.LXHentai = exports.LXHentaiInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const LXHentaiParser_1 = require("./LXHentaiParser");
-const DOMAIN = 'https://lxhentai.com/';
-const method = 'GET';
+const DOMAIN = "https://lxmanga.click/";
+const method = "GET";
 exports.LXHentaiInfo = {
-    version: '2.0.2',
-    name: 'LXHentai',
-    icon: 'icon.png',
-    author: 'Huynhzip3',
-    authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from LXHentai',
+    version: "2.0.2",
+    name: "LXHentai",
+    icon: "icon.png",
+    author: "Huynhzip3",
+    authorWebsite: "https://github.com/huynh12345678",
+    description: "Extension that pulls manga from LXHentai",
     websiteBaseURL: DOMAIN,
     contentRating: paperback_extensions_common_1.ContentRating.ADULT,
     sourceTags: [
         {
             text: "18+",
-            type: paperback_extensions_common_1.TagType.YELLOW
-        }
-    ]
+            type: paperback_extensions_common_1.TagType.YELLOW,
+        },
+    ],
 };
 class LXHentai extends paperback_extensions_common_1.Source {
     constructor() {
@@ -2426,18 +2426,19 @@ class LXHentai extends paperback_extensions_common_1.Source {
                 interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
                     var _a;
                     request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
-                        'referer': DOMAIN
+                        referer: DOMAIN,
                     });
                     return request;
                 }),
                 interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
                     return response;
-                })
-            }
+                }),
+            },
         });
     }
-    getMangaShareUrl(mangaId) { return `${mangaId}`; }
-    ;
+    getMangaShareUrl(mangaId) {
+        return `${mangaId}`;
+    }
     getMangaDetails(mangaId) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
@@ -2448,11 +2449,11 @@ class LXHentai extends paperback_extensions_common_1.Source {
             const data = yield this.requestManager.schedule(request, 10);
             let $ = this.cheerio.load(data.data);
             let tags = [];
-            let creator = '';
+            let creator = "";
             let status = 1; //completed, 1 = Ongoing
-            let artist = '';
-            let desc = $('.detail-content > p').text();
-            for (const a of $('.row.mt-2 > .col-4.py-1').toArray()) {
+            let artist = "";
+            let desc = $(".detail-content > p").text();
+            for (const a of $(".row.mt-2 > .col-4.py-1").toArray()) {
                 switch ($(a).text().trim()) {
                     case "Tác giả":
                         creator = $(a).next().text();
@@ -2461,9 +2462,9 @@ class LXHentai extends paperback_extensions_common_1.Source {
                         status = $(a).next().text().toLowerCase().includes("đã") ? 0 : 1;
                         break;
                     case "Thể loại":
-                        for (const t of $('a', $(a).next()).toArray()) {
+                        for (const t of $("a", $(a).next()).toArray()) {
                             const genre = $(t).text().trim();
-                            const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
+                            const id = (_a = $(t).attr("href")) !== null && _a !== void 0 ? _a : genre;
                             tags.push(createTag({ label: genre, id }));
                         }
                         break;
@@ -2477,12 +2478,13 @@ class LXHentai extends paperback_extensions_common_1.Source {
                 author: creator,
                 artist: artist,
                 desc: desc,
-                titles: [$('h1.title-detail').text()],
-                image: 'https://lxhentai.com' + $('.col-md-8 > .row > .col-md-4 > img').attr('src'),
+                titles: [$("h1.title-detail").text()],
+                image: "https://lxhentai.com" +
+                    $(".col-md-8 > .row > .col-md-4 > img").attr("src"),
                 status: status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: true,
-                tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
+                tags: [createTagSection({ label: "genres", tags: tags, id: "0" })],
             });
         });
     }
@@ -2496,18 +2498,20 @@ class LXHentai extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             const chapters = [];
             var i = 0;
-            for (const obj of $("#listChuong > ul > .row:not(:first-child) > div.col-5").toArray().reverse()) {
+            for (const obj of $("#listChuong > ul > .row:not(:first-child) > div.col-5")
+                .toArray()
+                .reverse()) {
                 i++;
-                let time = $($(obj).next()).text().trim().split(' ');
-                let day = time[1].split('/');
+                let time = $($(obj).next()).text().trim().split(" ");
+                let day = time[1].split("/");
                 let h = time[0];
                 chapters.push(createChapter({
-                    id: 'https://lxhentai.com' + $('a', obj).attr('href'),
+                    id: "https://lxhentai.com" + $("a", obj).attr("href"),
                     chapNum: i,
-                    name: $('a', obj).text(),
+                    name: $("a", obj).text(),
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: new Date(day[1] + '/' + day[0] + '/' + day[2] + ' ' + h)
+                    time: new Date(day[1] + "/" + day[0] + "/" + day[2] + " " + h),
                 }));
             }
             return chapters;
@@ -2517,22 +2521,25 @@ class LXHentai extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
                 url: chapterId,
-                method
+                method,
             });
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
-            const list = $('#content_chap p img').toArray().length === 0 ? $('#content_chap div:not(.text-center) img').toArray()
-                : $('#content_chap p img').toArray();
+            const list = $("#content_chap p img").toArray().length === 0
+                ? $("#content_chap div:not(.text-center) img").toArray()
+                : $("#content_chap p img").toArray();
             for (let obj of list) {
-                let link = obj.attribs['src'].includes('http') ? obj.attribs['src'] : 'https:' + obj.attribs['src'];
+                let link = obj.attribs["src"].includes("http")
+                    ? obj.attribs["src"]
+                    : "https:" + obj.attribs["src"];
                 pages.push(encodeURI(link));
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
                 mangaId: mangaId,
                 pages: pages,
-                longStrip: false
+                longStrip: false,
             });
             return chapterDetails;
         });
@@ -2541,17 +2548,17 @@ class LXHentai extends paperback_extensions_common_1.Source {
         var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             let featured = createHomeSection({
-                id: 'featured',
+                id: "featured",
                 title: "Truyện Đề Cử",
-                type: paperback_extensions_common_1.HomeSectionType.featured
+                type: paperback_extensions_common_1.HomeSectionType.featured,
             });
             let newUpdated = createHomeSection({
-                id: 'new_updated',
+                id: "new_updated",
                 title: "Mới cập nhật",
                 view_more: true,
             });
             let hot = createHomeSection({
-                id: 'hot',
+                id: "hot",
                 title: "Hot nhất",
                 view_more: true,
             });
@@ -2559,22 +2566,24 @@ class LXHentai extends paperback_extensions_common_1.Source {
             sectionCallback(hot);
             //New Updates
             let request = createRequestObject({
-                url: 'https://lxhentai.com/story/index.php',
+                url: "https://lxmanga.click/story/index.php",
                 method: "GET",
             });
             let newUpdatedItems = [];
             let data = yield this.requestManager.schedule(request, 1);
             let html = Buffer.from(createByteArray(data.rawData)).toString();
             let $ = this.cheerio.load(html);
-            for (let manga of $('div.col-md-3', '.main .col-md-8 > .row').toArray().splice(0, 15)) {
-                const title = $('a', manga).last().text().trim();
-                const id = (_a = $('a', manga).last().attr('href')) !== null && _a !== void 0 ? _a : title;
-                const image = $('div', manga).first().css('background');
-                const bg = image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
-                const sub = $('a', manga).first().text().trim();
+            for (let manga of $("div.col-md-3", ".main .col-md-8 > .row")
+                .toArray()
+                .splice(0, 15)) {
+                const title = $("a", manga).last().text().trim();
+                const id = (_a = $("a", manga).last().attr("href")) !== null && _a !== void 0 ? _a : title;
+                const image = $("div", manga).first().css("background");
+                const bg = image === null || image === void 0 ? void 0 : image.replace("url(", "").replace(")", "").replace(/\"/gi, "").replace(/['"]+/g, "");
+                const sub = $("a", manga).first().text().trim();
                 newUpdatedItems.push(createMangaTile({
-                    id: 'https://lxhentai.com' + id,
-                    image: 'https://lxhentai.com' + bg,
+                    id: "https://lxhentai.com" + id,
+                    image: "https://lxhentai.com" + bg,
                     title: createIconText({
                         text: title,
                     }),
@@ -2587,22 +2596,24 @@ class LXHentai extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             //Hot
             request = createRequestObject({
-                url: 'https://lxhentai.com/story/index.php?hot',
+                url: "https://lxmanga.click/story/index.php?hot",
                 method: "GET",
             });
             let hotItems = [];
             data = yield this.requestManager.schedule(request, 1);
             html = Buffer.from(createByteArray(data.rawData)).toString();
             $ = this.cheerio.load(html);
-            for (let manga of $('div.col-md-3', '.main .col-md-8 > .row').toArray().splice(0, 15)) {
-                const title = $('a', manga).last().text().trim();
-                const id = (_b = $('a', manga).last().attr('href')) !== null && _b !== void 0 ? _b : title;
-                const image = $('div', manga).first().css('background');
-                const bg = image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
-                const sub = $('a', manga).first().text().trim();
+            for (let manga of $("div.col-md-3", ".main .col-md-8 > .row")
+                .toArray()
+                .splice(0, 15)) {
+                const title = $("a", manga).last().text().trim();
+                const id = (_b = $("a", manga).last().attr("href")) !== null && _b !== void 0 ? _b : title;
+                const image = $("div", manga).first().css("background");
+                const bg = image === null || image === void 0 ? void 0 : image.replace("url(", "").replace(")", "").replace(/\"/gi, "").replace(/['"]+/g, "");
+                const sub = $("a", manga).first().text().trim();
                 hotItems.push(createMangaTile({
-                    id: 'https://lxhentai.com' + id,
-                    image: 'https://lxhentai.com' + bg,
+                    id: "https://lxhentai.com" + id,
+                    image: "https://lxhentai.com" + bg,
                     title: createIconText({
                         text: title,
                     }),
@@ -2615,22 +2626,22 @@ class LXHentai extends paperback_extensions_common_1.Source {
             sectionCallback(hot);
             //Featured
             request = createRequestObject({
-                url: 'https://lxhentai.com/',
+                url: "https://lxmanga.click/",
                 method: "GET",
             });
             let featuredItems = [];
             data = yield this.requestManager.schedule(request, 1);
             html = Buffer.from(createByteArray(data.rawData)).toString();
             $ = this.cheerio.load(html);
-            for (let manga of $('.truyenHot .gridSlide > div').toArray()) {
-                const title = $('.slideName > a', manga).text().trim();
-                const id = (_c = $('.slideName > a', manga).attr('href')) !== null && _c !== void 0 ? _c : title;
-                const image = $('.itemSlide', manga).first().css('background');
-                const bg = image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
-                const sub = $('.newestChapter', manga).text().trim();
+            for (let manga of $(".truyenHot .gridSlide > div").toArray()) {
+                const title = $(".slideName > a", manga).text().trim();
+                const id = (_c = $(".slideName > a", manga).attr("href")) !== null && _c !== void 0 ? _c : title;
+                const image = $(".itemSlide", manga).first().css("background");
+                const bg = image === null || image === void 0 ? void 0 : image.replace("url(", "").replace(")", "").replace(/\"/gi, "").replace(/['"]+/g, "");
+                const sub = $(".newestChapter", manga).text().trim();
                 featuredItems.push(createMangaTile({
-                    id: 'https://lxhentai.com' + id,
-                    image: 'https://lxhentai.com' + bg,
+                    id: "https://lxhentai.com" + id,
+                    image: "https://lxhentai.com" + bg,
                     title: createIconText({
                         text: title,
                     }),
@@ -2647,14 +2658,14 @@ class LXHentai extends paperback_extensions_common_1.Source {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            let param = '';
-            let url = '';
+            let param = "";
+            let url = "";
             switch (homepageSectionId) {
                 case "hot":
-                    url = `https://lxhentai.com/story/index.php?hot&p=${page}`;
+                    url = `https://lxmanga.click/story/index.php?hot&p=${page}`;
                     break;
                 case "new_updated":
-                    url = `https://lxhentai.com/story/index.php?p=${page}`;
+                    url = `https://lxmanga.click/story/index.php?p=${page}`;
                     break;
                 default:
                     return Promise.resolve(createPagedResults({ results: [] }));
@@ -2662,7 +2673,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
             const request = createRequestObject({
                 url,
                 method,
-                param
+                param,
             });
             const response = yield this.requestManager.schedule(request, 1);
             const html = Buffer.from(createByteArray(response.rawData)).toString();
@@ -2679,9 +2690,11 @@ class LXHentai extends paperback_extensions_common_1.Source {
         var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
-            const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
+            const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map((tag) => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: query.title ? `https://lxhentai.com/story/search.php?key=${encodeURI(query.title)}&p=${page}` : `${tags[0]}&p=${page}`,
+                url: query.title
+                    ? `https://lxmanga.click/story/search.php?key=${encodeURI(query.title)}&p=${page}`
+                    : `${tags[0]}&p=${page}`,
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
@@ -2691,14 +2704,14 @@ class LXHentai extends paperback_extensions_common_1.Source {
             metadata = !LXHentaiParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
                 results: tiles,
-                metadata
+                metadata,
             });
         });
     }
     getSearchTags() {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `https://lxhentai.com/`;
+            const url = `https://lxmanga.click/`;
             const request = createRequestObject({
                 url: url,
                 method: "GET",
@@ -2708,15 +2721,19 @@ class LXHentai extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(html);
             const arrayTags = [];
             //the loai
-            for (const tag of $('.col-sm-3 a', '#showTheLoai').toArray()) {
+            for (const tag of $(".col-sm-3 a", "#showTheLoai").toArray()) {
                 const label = $(tag).text().trim();
-                const id = (_a = 'https://lxhentai.com' + $(tag).attr('href')) !== null && _a !== void 0 ? _a : label;
+                const id = (_a = "https://lxhentai.com" + $(tag).attr("href")) !== null && _a !== void 0 ? _a : label;
                 if (!id || !label)
                     continue;
                 arrayTags.push({ id: id, label: label });
             }
             const tagSections = [
-                createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) }),
+                createTagSection({
+                    id: "0",
+                    label: "Thể Loại",
+                    tags: arrayTags.map((x) => createTag(x)),
+                }),
             ];
             return tagSections;
         });
@@ -2740,21 +2757,21 @@ exports.parseSearch = ($, query) => {
     // const collectedIds: string[] = [];
     var loop = [];
     if (query.title) {
-        loop = $('div.py-2', '.row').toArray();
+        loop = $("div.py-2", ".row").toArray();
     }
     else {
-        loop = $('div.py-2', '.col-md-8 .row').toArray();
+        loop = $("div.py-2", ".col-md-8 .row").toArray();
     }
     for (let obj of loop) {
-        const title = $('a', obj).last().text().trim();
-        const id = (_a = $('a', obj).last().attr('href')) !== null && _a !== void 0 ? _a : title;
-        const image = $('div', obj).first().css('background');
-        const bg = image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
-        const sub = $('a', obj).first().text().trim();
+        const title = $("a", obj).last().text().trim();
+        const id = (_a = $("a", obj).last().attr("href")) !== null && _a !== void 0 ? _a : title;
+        const image = $("div", obj).first().css("background");
+        const bg = image === null || image === void 0 ? void 0 : image.replace("url(", "").replace(")", "").replace(/\"/gi, "").replace(/['"]+/g, "");
+        const sub = $("a", obj).first().text().trim();
         // if (!id || !subtitle) continue;
         manga.push(createMangaTile({
-            id: 'https://lxhentai.com' + id,
-            image: 'https://lxhentai.com' + bg,
+            id: "https://lxmanga.click/" + id,
+            image: "https://lxmanga.click/" + bg,
             title: createIconText({
                 text: title,
             }),
@@ -2769,16 +2786,16 @@ exports.parseViewMore = ($) => {
     var _a;
     const manga = [];
     // const collectedIds: string[] = [];
-    for (let obj of $('div.col-md-3', '.main .col-md-8 > .row').toArray()) {
-        const title = $('a', obj).last().text().trim();
-        const id = (_a = $('a', obj).last().attr('href')) !== null && _a !== void 0 ? _a : title;
-        const image = $('div', obj).first().css('background');
-        const bg = image === null || image === void 0 ? void 0 : image.replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(/['"]+/g, '');
-        const sub = $('a', obj).first().text().trim();
+    for (let obj of $("div.col-md-3", ".main .col-md-8 > .row").toArray()) {
+        const title = $("a", obj).last().text().trim();
+        const id = (_a = $("a", obj).last().attr("href")) !== null && _a !== void 0 ? _a : title;
+        const image = $("div", obj).first().css("background");
+        const bg = image === null || image === void 0 ? void 0 : image.replace("url(", "").replace(")", "").replace(/\"/gi, "").replace(/['"]+/g, "");
+        const sub = $("a", obj).first().text().trim();
         // if (!id || !subtitle) continue;
         manga.push(createMangaTile({
-            id: 'https://lxhentai.com' + id,
-            image: 'https://lxhentai.com' + bg,
+            id: "https://lxmanga.click/" + id,
+            image: "https://lxmanga.click/" + bg,
             title: createIconText({
                 text: title,
             }),
@@ -2793,8 +2810,8 @@ exports.parseTags = ($) => {
     var _a;
     const arrayTags = [];
     for (const obj of $("li", "ul").toArray()) {
-        const label = ($("a", obj).text().trim());
-        const id = (_a = $('a', obj).attr('href')) !== null && _a !== void 0 ? _a : "";
+        const label = $("a", obj).text().trim();
+        const id = (_a = $("a", obj).attr("href")) !== null && _a !== void 0 ? _a : "";
         if (id == "")
             continue;
         arrayTags.push({
@@ -2802,14 +2819,20 @@ exports.parseTags = ($) => {
             label: label,
         });
     }
-    const tagSections = [createTagSection({ id: '0', label: 'Thể Loại', tags: arrayTags.map(x => createTag(x)) })];
+    const tagSections = [
+        createTagSection({
+            id: "0",
+            label: "Thể Loại",
+            tags: arrayTags.map((x) => createTag(x)),
+        }),
+    ];
     return tagSections;
 };
 exports.isLastPage = ($) => {
     let isLast = false;
     const pages = [];
     for (const page of $("li", "ul.pagination").toArray()) {
-        const p = Number($('a', page).text().trim());
+        const p = Number($("a", page).text().trim());
         if (isNaN(p))
             continue;
         pages.push(p);
