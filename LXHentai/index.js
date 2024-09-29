@@ -2573,7 +2573,10 @@ class LXHentai extends paperback_extensions_common_1.Source {
             let data = yield this.requestManager.schedule(request, 1);
             let html = Buffer.from(createByteArray(data.rawData)).toString();
             let $ = this.cheerio.load(html);
-            for (let manga of $("div.w-full", ".grid").toArray().splice(0, 15)) {
+            for (let manga of $("div.manga-vertical", ".grid")
+                .toArray()
+                .splice(0, 15)) {
+                console.log("🚀 ⮕ LXHentai ⮕ manga:", manga);
                 const title = $("div.p-2.w-full.truncate > a.text-ellipsis", manga)
                     .text()
                     .trim();
@@ -2583,7 +2586,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
                 const sub = $("div.latest-chapter > a", manga).first().text().trim();
                 newUpdatedItems.push(createMangaTile({
                     id: "https://lxmanga.click" + id,
-                    image: "https://lxmanga.click" + bg,
+                    image: bg,
                     title: createIconText({
                         text: title,
                     }),
@@ -2592,6 +2595,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
                     }),
                 }));
             }
+            console.log("🚀 ⮕ LXHentai ⮕ newUpdatedItems:", newUpdatedItems);
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
             //Hot
