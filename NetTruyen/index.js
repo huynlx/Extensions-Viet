@@ -388,7 +388,7 @@ exports.isLastPage = ($) => {
     return true;
 };
 exports.NetTruyenInfo = {
-    version: "3.0.7",
+    version: "3.0.8",
     name: "NetTruyen",
     icon: "icon.png",
     author: "Huynhzip3",
@@ -782,7 +782,7 @@ class Parser {
             id: mangaId,
             author: creator,
             artist: creator,
-            desc: $(".detail-content").text(),
+            desc: $("div.detail-content > div > div:nth-last-child(2)").text(),
             titles: [$("h1.title-detail").text()],
             image: image !== null && image !== void 0 ? image : "",
             status: $("li.status > p.col-xs-8")
