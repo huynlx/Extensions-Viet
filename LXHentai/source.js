@@ -625,9 +625,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
             data = yield this.requestManager.schedule(request, 1);
             // html = Buffer.from(createByteArray(data.rawData)).toString();
             $ = this.cheerio.load(data.data);
-            for (let manga of $("div.manga-vertical", "ul.glide__slides")
-                .toArray()
-                .splice(0, 15)) {
+            for (let manga of $("div.manga-vertical", "ul.glide__slides").toArray()) {
                 const title = $("div.p-2.w-full.truncate > a.text-ellipsis", manga)
                     .text()
                     .trim();
@@ -689,9 +687,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
             data = yield this.requestManager.schedule(request, 1);
             // html = Buffer.from(createByteArray(data.rawData)).toString();
             $ = this.cheerio.load(data.data);
-            for (let manga of $("div.manga-vertical", ".mt-4.grid.gap-3")
-                .toArray()
-                .splice(0, 15)) {
+            for (let manga of $("div.manga-vertical", ".mt-4.grid.gap-3").toArray()) {
                 const title = $("div.p-2.w-full.truncate > a.text-ellipsis", manga)
                     .text()
                     .trim();
