@@ -2492,20 +2492,20 @@ class LXHentai extends paperback_extensions_common_1.Source {
             let status = 1; //completed, 1 = Ongoing
             let artist = "";
             let desc = $(".py-4.border-t.border-gray-200 > p:nth-last-child(2)").text();
-            creator = $("div:contains('Tác giả:')").next("a").text();
-            status = $("div:contains('Tình trạng:')")
+            creator = $("span:contains('Tác giả:')").next().text();
+            status = $("span:contains('Tình trạng:')")
                 .next()
                 .text()
                 .toLowerCase()
                 .includes("đã")
                 ? 0
                 : 1;
-            for (const t of $("a", $("div:contains('Thể loại:')").next()).toArray()) {
+            for (const t of $("a", $("span:contains('Thể loại:')").next()).toArray()) {
                 const genre = $(t).text().trim();
                 const id = (_a = $(t).attr("href")) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            artist = $("div:contains('Nhóm dịch:')").next().text();
+            artist = $("span:contains('Nhóm dịch:')").next().text();
             const image = $("div.cover-frame > .cover").css("background-image");
             const bg = image === null || image === void 0 ? void 0 : image.replace("url(", "").replace(")", "").replace(/\"/gi, "").replace(/['"]+/g, "");
             return createManga({
@@ -2538,10 +2538,6 @@ class LXHentai extends paperback_extensions_common_1.Source {
                 i++;
                 let time = $(".hidden > span.timeago", obj).attr("datetime");
                 let view = $(".hidden > span", obj).first().text();
-                console.log("cc", {
-                    time,
-                    view,
-                });
                 chapters.push(createChapter({
                     id: "https://lxmanga.click" + $(obj).attr("href"),
                     chapNum: parseFloat($(".text-ellipsis", obj).text().split(" ")[1]),
