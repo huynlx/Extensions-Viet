@@ -2755,9 +2755,9 @@ class LXHentai extends paperback_extensions_common_1.Source {
                 method,
                 param,
             });
-            const response = yield this.requestManager.schedule(request, 1);
-            const html = Buffer.from(createByteArray(response.rawData)).toString();
-            const $ = this.cheerio.load(html);
+            let data = yield this.requestManager.schedule(request, 1);
+            let html = Buffer.from(createByteArray(data.rawData)).toString();
+            let $ = this.cheerio.load(html);
             const manga = LXHentaiParser_1.parseViewMore($);
             metadata = !LXHentaiParser_1.isLastPage($) ? { page: page + 1 } : undefined;
             return createPagedResults({
@@ -2866,14 +2866,14 @@ exports.parseViewMore = ($) => {
     var _a;
     const manga = [];
     // const collectedIds: string[] = [];
-    for (let manga of $("div.manga-vertical", ".grid").toArray().splice(0, 15)) {
-        const title = $("div.p-2.w-full.truncate > a.text-ellipsis", manga)
+    for (let obj of $("div.manga-vertical", ".grid").toArray().splice(0, 15)) {
+        const title = $("div.p-2.w-full.truncate > a.text-ellipsis", obj)
             .text()
             .trim();
-        const id = (_a = $("div.p-2.w-full.truncate > a.text-ellipsis", manga).attr("href")) !== null && _a !== void 0 ? _a : title;
-        const image = $("div.cover-frame > div.cover", manga).css("background-image");
+        const id = (_a = $("div.p-2.w-full.truncate > a.text-ellipsis", obj).attr("href")) !== null && _a !== void 0 ? _a : title;
+        const image = $("div.cover-frame > div.cover", obj).css("background-image");
         const bg = image === null || image === void 0 ? void 0 : image.replace("url(", "").replace(")", "").replace(/\"/gi, "").replace(/['"]+/g, "");
-        const sub = $("div.latest-chapter > a", manga).first().text().trim();
+        const sub = $("div.latest-chapter > a", obj).first().text().trim();
         manga.push(createMangaTile({
             id: "https://lxmanga.click" + id,
             image: bg,
