@@ -2505,7 +2505,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
                 const id = (_a = $(t).attr("href")) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            artist = $("span:contains('Nhóm dịch:')").next().text();
+            artist = $("span:contains('Thực hiện:')").next().text();
             const image = $("div.cover-frame > .cover").css("background-image");
             const bg = image === null || image === void 0 ? void 0 : image.replace("url(", "").replace(")", "").replace(/\"/gi, "").replace(/['"]+/g, "");
             return createManga({
