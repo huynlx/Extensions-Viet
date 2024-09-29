@@ -2604,7 +2604,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
             sectionCallback(newUpdated);
             //Hot
             request = createRequestObject({
-                url: "https://lxmanga.click/tim-kiem?sort=-views&filter[status]=2,1&page=1",
+                url: "https://lxmanga.click",
                 method: "GET",
             });
             let hotItems = [];
@@ -2675,7 +2675,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
             data = yield this.requestManager.schedule(request, 1);
             html = Buffer.from(createByteArray(data.rawData)).toString();
             $ = this.cheerio.load(html);
-            for (let manga of $("div.manga-vertical", ".lg:grid-cols-6.gap-3")
+            for (let manga of $("div.manga-vertical", ".mt-4.grid.gap-3")
                 .toArray()
                 .splice(0, 15)) {
                 const title = $("div.p-2.w-full.truncate > a.text-ellipsis", manga)
