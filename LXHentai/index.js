@@ -2513,7 +2513,9 @@ class LXHentai extends paperback_extensions_common_1.Source {
                 author: creator,
                 artist: artist,
                 desc: desc,
-                titles: [$(".grow.text-lg.ml-1.text-ellipsis.font-semibold").text()],
+                titles: [
+                    $(".grow.text-lg.ml-1.text-ellipsis.font-semibold").first().text(),
+                ],
                 image: bg || "",
                 status: status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
