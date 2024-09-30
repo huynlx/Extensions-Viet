@@ -1137,6 +1137,17 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
             mangaUpdatesFoundCallback(createMangaUpdates(returnObject));
         });
     }
+    getCloudflareBypassRequest() {
+        return createRequestObject({
+            url: DOMAIN,
+            method: "GET",
+        });
+    }
+    CloudFlareError(status) {
+        if (status == 503) {
+            throw new Error("CLOUDFLARE BYPASS ERROR:\nPlease go to Settings > Sources > <The name of this source> and press Cloudflare Bypass");
+        }
+    }
 }
 exports.TruyenQQ = TruyenQQ;
 
