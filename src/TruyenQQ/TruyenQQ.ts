@@ -26,8 +26,10 @@ import {
   parseUpdatedManga,
 } from "./TruyenQQParser";
 
-const DOMAIN = "https://truyenqqq.com/";
+const DOMAIN = "https://truyenqqto.com/";
 const method = "GET";
+const userAgentRandomizer =
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36";
 
 export const TruyenQQInfo: SourceInfo = {
   version: "3.0.1",
@@ -608,5 +610,28 @@ export class TruyenQQ extends Source {
     const $ = this.cheerio.load(response.data);
     const returnObject = parseUpdatedManga($, time, ids);
     mangaUpdatesFoundCallback(createMangaUpdates(returnObject));
+  }
+
+  constructHeaders(headers?: any, refererPath?: string): any {
+    headers = headers ?? {};
+    headers["user-agent"] = userAgentRandomizer;
+    headers["referer"] = DOMAIN;
+    return headers;
+  }
+
+  override getCloudflareBypassRequest(): Request {
+    return createRequestObject({
+      url: DOMAIN,
+      method: "GET",
+      headers: this.constructHeaders(),
+    });
+  }
+
+  CloudFlareError(status: any) {
+    if (status == 503) {
+      throw new Error(
+        "CLOUDFLARE BYPASS ERROR:\nPlease go to Settings > Sources > <The name of this source> and press Cloudflare Bypass"
+      );
+    }
   }
 }

@@ -21,6 +21,8 @@ export class Parser {
       time = new Date(Date.now() - trimmed * 3600000);
     } else if (timeAgo.includes("ngày")) {
       time = new Date(Date.now() - trimmed * 86400000);
+    } else if (timeAgo.includes("tháng")) {
+      time = new Date(Date.now() - trimmed * 30 * 86400000); // approx. 30 days per month
     } else if (timeAgo.includes("năm")) {
       time = new Date(Date.now() - trimmed * 31556952000);
     } else {
@@ -58,7 +60,7 @@ export class Parser {
       id: mangaId,
       author: creator,
       artist: creator,
-      desc: $("div.detail-content > div").text(),
+      desc: $("div.detail-content > div > div:nth-last-child(2)").text(),
       titles: [$("h1.title-detail").text()],
       image: image ?? "",
       status: $("li.status > p.col-xs-8")
@@ -432,36 +434,36 @@ export class Parser {
   parseViewMoreItems($: any): MangaTile[] {
     const mangas: MangaTile[] = [];
     const collectedIds: string[] = [];
-    for (const manga of $("div.item", "div.row").toArray()) {
+    for (const manga of $("div.item", "div.row")?.toArray()) {
       const title = $("figure.clearfix > figcaption > h3 > a", manga)
-        .first()
-        .text();
+        ?.first()
+        ?.text();
       const id = $("figure.clearfix > div.image > a", manga)
-        .attr("href")
+        ?.attr("href")
         ?.split("/")
-        .pop();
+        ?.pop();
       const image = $("figure.clearfix > div.image > a > img", manga)
-        .first()
-        .attr("data-original");
+        ?.first()
+        ?.attr("data-original");
       const subtitle = $(
         "figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a",
         manga
       )
-        .last()
-        .text()
-        .trim();
+        ?.last()
+        ?.text()
+        ?.trim();
       if (!id || !title) continue;
-      if (!collectedIds.includes(id)) {
+      if (!collectedIds?.includes(id)) {
         //ko push truyện trùng nhau
-        mangas.push(
+        mangas?.push(
           createMangaTile({
             id: id,
             image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
-            title: createIconText({ text: title }),
-            subtitleText: createIconText({ text: subtitle }),
+            title: createIconText({ text: title || "" }),
+            subtitleText: createIconText({ text: subtitle || "" }),
           })
         );
-        collectedIds.push(id);
+        collectedIds?.push(id);
       }
     }
     return mangas;
@@ -494,10 +496,12 @@ export class Parser {
     const current = $("ul.pagination > li.active > span.page-link").text();
     let total = $("ul.pagination > li:nth-last-child(2) > a.page-link").text();
 
-    if (current) {
-      total = total ?? "";
-      return +total === +current; //+ => convert value to number
-    }
-    return true;
+    // if (current) {
+    //   total = total ?? "";
+    //   return +total === +current; //+ => convert value to number
+    // }
+    // return true;
+
+    return false;
   }
 }

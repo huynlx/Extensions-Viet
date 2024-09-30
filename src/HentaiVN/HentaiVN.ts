@@ -31,11 +31,11 @@ import {
 
 import tags from "./tags.json";
 
-const DOMAIN = `https://hentaivn.de/`;
+const DOMAIN = `https://hentaihvn.tv/`;
 const method = "GET";
 
 export const HentaiVNInfo: SourceInfo = {
-  version: "2.8.1",
+  version: "2.9.0",
   name: "HentaiVN",
   icon: "icon.png",
   author: "Huynhzip3",
