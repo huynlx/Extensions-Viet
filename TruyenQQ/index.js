@@ -599,7 +599,7 @@ const paperback_extensions_common_1 = require("paperback-extensions-common");
 const TruyenQQParser_1 = require("./TruyenQQParser");
 const DOMAIN = "https://truyenqqto.com/";
 const method = "GET";
-const userAgentRandomizer = `Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/78.0${Math.floor(Math.random() * 100000)}`;
+const userAgentRandomizer = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36";
 exports.TruyenQQInfo = {
     version: "3.0.1",
     name: "TruyenQQ",
@@ -1140,9 +1140,7 @@ class TruyenQQ extends paperback_extensions_common_1.Source {
     }
     constructHeaders(headers, refererPath) {
         headers = headers !== null && headers !== void 0 ? headers : {};
-        if (userAgentRandomizer !== "") {
-            headers["user-agent"] = userAgentRandomizer;
-        }
+        headers["user-agent"] = userAgentRandomizer;
         headers["referer"] = DOMAIN;
         return headers;
     }
