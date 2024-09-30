@@ -750,7 +750,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
             const request = createRequestObject({
                 url: query.title
                     ? `https://lxmanga.click/tim-kiem?sort=-updated_at&filter[name]=${encodeURI(query.title)}&filter[status]=2,1&page=${page}`
-                    : `${tags[0]}&p=${page}`,
+                    : `https://lxmanga.click/the-loai/${tags[0]}?page=${page}`,
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
@@ -777,7 +777,7 @@ class LXHentai extends paperback_extensions_common_1.Source {
             const $ = this.cheerio.load(response.data);
             const arrayTags = [];
             //the loai
-            for (const tag of $(".col-sm-3 a", "#showTheLoai").toArray()) {
+            for (const tag of $("a", ".absolute.w-full.text-black").toArray()) {
                 const label = $(tag).text().trim();
                 const id = (_a = "https://lxmanga.click" + $(tag).attr("href")) !== null && _a !== void 0 ? _a : label;
                 if (!id || !label)
