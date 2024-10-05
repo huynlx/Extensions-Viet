@@ -26,7 +26,7 @@ import {
   change_alias,
 } from "./CMangaParser";
 
-export const DOMAIN = "https://cmangaaz.com/";
+export const DOMAIN = "https://cmanga01.com/";
 const method = "GET";
 
 export const CMangaInfo: SourceInfo = {
@@ -199,26 +199,30 @@ export class CManga extends Source {
     ///Get the section data
     //New Updates
     let request = createRequestObject({
-      url: `${DOMAIN}api/list_item`,
+      url: `${DOMAIN}`,
       method: "GET",
-      param:
-        "?page=1&limit=20&sort=new&type=all&tag=&child=off&status=all&num_chapter=0",
+      param: "",
     });
     let newUpdatedItems: MangaTile[] = [];
     let data = await this.requestManager.schedule(request, 1);
-    let json = JSON.parse(decrypt_data(JSON.parse(data.data)));
-    for (var i of Object.keys(json)) {
-      var item = json[i];
-      if (!item.name) continue;
+    let $ = this.cheerio.load(data.data);
+    // let json = JSON.parse(decrypt_data(JSON.parse(data.data)));
+
+    for (let manga of $("li", "#list_new").toArray().splice(0, 15)) {
+      const title = $(".book_name a", manga).attr("title");
+      const id = $(".book_name a", manga).attr("href");
+      const image = DOMAIN + $(".book_avatar img", manga).attr("data-original");
+      const sub = $("div.last_chapter > a", manga).first().text().trim();
+
       newUpdatedItems.push(
         createMangaTile({
-          id: item.url + "-" + item.id_book + "::" + item.url,
-          image: DOMAIN + "assets/tmp/book/avatar/" + item.avatar + ".jpg",
+          id: id,
+          image: image,
           title: createIconText({
-            text: titleCase(item.name),
+            text: title,
           }),
           subtitleText: createIconText({
-            text: "Chap " + item.last_chapter,
+            text: sub,
           }),
         })
       );
@@ -227,34 +231,34 @@ export class CManga extends Source {
     sectionCallback(newUpdated);
 
     //New Added
-    request = createRequestObject({
-      url: DOMAIN + "api/list_item",
-      param:
-        "?page=1&limit=20&sort=new&type=all&tag=Truy%E1%BB%87n%20si%C3%AAu%20hay&child=off&status=all&num_chapter=0",
-      method: "GET",
-    });
-    let newAddItems: MangaTile[] = [];
-    data = await this.requestManager.schedule(request, 1);
-    json = JSON.parse(decrypt_data(JSON.parse(data.data)));
-    console.log(json);
+    // request = createRequestObject({
+    //   url: DOMAIN + "api/list_item",
+    //   param:
+    //     "?page=1&limit=20&sort=new&type=all&tag=Truy%E1%BB%87n%20si%C3%AAu%20hay&child=off&status=all&num_chapter=0",
+    //   method: "GET",
+    // });
+    // let newAddItems: MangaTile[] = [];
+    // data = await this.requestManager.schedule(request, 1);
+    // json = JSON.parse(decrypt_data(JSON.parse(data.data)));
+    // console.log(json);
 
-    for (var i of Object.keys(json)) {
-      var item = json[i];
-      if (!item.name) continue;
-      newAddItems.push(
-        createMangaTile({
-          id: item.url + "-" + item.id_book + "::" + item.url,
-          image: DOMAIN + "assets/tmp/book/avatar/" + item.avatar + ".jpg",
-          title: createIconText({
-            text: titleCase(item.name),
-          }),
-          subtitleText: createIconText({
-            text: "Chap " + item.last_chapter,
-          }),
-        })
-      );
-    }
-    newAdded.items = newAddItems;
+    // for (var i of Object.keys(json)) {
+    //   var item = json[i];
+    //   if (!item.name) continue;
+    //   newAddItems.push(
+    //     createMangaTile({
+    //       id: item.url + "-" + item.id_book + "::" + item.url,
+    //       image: DOMAIN + "assets/tmp/book/avatar/" + item.avatar + ".jpg",
+    //       title: createIconText({
+    //         text: titleCase(item.name),
+    //       }),
+    //       subtitleText: createIconText({
+    //         text: "Chap " + item.last_chapter,
+    //       }),
+    //     })
+    //   );
+    // }
+    // newAdded.items = newAddItems;
     sectionCallback(newAdded);
   }
 

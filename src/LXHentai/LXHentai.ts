@@ -21,7 +21,7 @@ import {
 
 import { parseSearch, isLastPage, parseViewMore } from "./LXHentaiParser";
 
-const DOMAIN = "https://lxmanga.click/";
+const DOMAIN = "https://lxmanga.ink/";
 const method = "GET";
 
 export const LXHentaiInfo: SourceInfo = {
