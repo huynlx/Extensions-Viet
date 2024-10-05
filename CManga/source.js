@@ -7435,7 +7435,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CManga = exports.CMangaInfo = exports.DOMAIN = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const CMangaParser_1 = require("./CMangaParser");
-exports.DOMAIN = "https://cmangaaz.com/";
+exports.DOMAIN = "https://cmanga01.com/";
 const method = "GET";
 exports.CMangaInfo = {
     version: "2.1.2",
@@ -7592,56 +7592,60 @@ class CManga extends paperback_extensions_common_1.Source {
             ///Get the section data
             //New Updates
             let request = createRequestObject({
-                url: `${exports.DOMAIN}api/list_item`,
+                url: `${exports.DOMAIN}`,
                 method: "GET",
-                param: "?page=1&limit=20&sort=new&type=all&tag=&child=off&status=all&num_chapter=0",
+                param: "",
             });
             let newUpdatedItems = [];
             let data = yield this.requestManager.schedule(request, 1);
-            let json = JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data)));
-            for (var i of Object.keys(json)) {
-                var item = json[i];
-                if (!item.name)
-                    continue;
+            let $ = this.cheerio.load(data.data);
+            // let json = JSON.parse(decrypt_data(JSON.parse(data.data)));
+            for (let manga of $("li", "#list_new").toArray().splice(0, 15)) {
+                const title = $(".book_name a", manga).attr("title");
+                const id = $(".book_name a", manga).attr("href");
+                const image = exports.DOMAIN + $(".book_avatar img", manga).attr("data-original");
+                const sub = $("div.last_chapter > a", manga).first().text().trim();
                 newUpdatedItems.push(createMangaTile({
-                    id: item.url + "-" + item.id_book + "::" + item.url,
-                    image: exports.DOMAIN + "assets/tmp/book/avatar/" + item.avatar + ".jpg",
+                    id: id,
+                    image: image,
                     title: createIconText({
-                        text: CMangaParser_1.titleCase(item.name),
+                        text: title,
                     }),
                     subtitleText: createIconText({
-                        text: "Chap " + item.last_chapter,
+                        text: sub,
                     }),
                 }));
             }
             newUpdated.items = newUpdatedItems;
             sectionCallback(newUpdated);
             //New Added
-            request = createRequestObject({
-                url: exports.DOMAIN + "api/list_item",
-                param: "?page=1&limit=20&sort=new&type=all&tag=Truy%E1%BB%87n%20si%C3%AAu%20hay&child=off&status=all&num_chapter=0",
-                method: "GET",
-            });
-            let newAddItems = [];
-            data = yield this.requestManager.schedule(request, 1);
-            json = JSON.parse(CMangaParser_1.decrypt_data(JSON.parse(data.data)));
-            console.log(json);
-            for (var i of Object.keys(json)) {
-                var item = json[i];
-                if (!item.name)
-                    continue;
-                newAddItems.push(createMangaTile({
-                    id: item.url + "-" + item.id_book + "::" + item.url,
-                    image: exports.DOMAIN + "assets/tmp/book/avatar/" + item.avatar + ".jpg",
-                    title: createIconText({
-                        text: CMangaParser_1.titleCase(item.name),
-                    }),
-                    subtitleText: createIconText({
-                        text: "Chap " + item.last_chapter,
-                    }),
-                }));
-            }
-            newAdded.items = newAddItems;
+            // request = createRequestObject({
+            //   url: DOMAIN + "api/list_item",
+            //   param:
+            //     "?page=1&limit=20&sort=new&type=all&tag=Truy%E1%BB%87n%20si%C3%AAu%20hay&child=off&status=all&num_chapter=0",
+            //   method: "GET",
+            // });
+            // let newAddItems: MangaTile[] = [];
+            // data = await this.requestManager.schedule(request, 1);
+            // json = JSON.parse(decrypt_data(JSON.parse(data.data)));
+            // console.log(json);
+            // for (var i of Object.keys(json)) {
+            //   var item = json[i];
+            //   if (!item.name) continue;
+            //   newAddItems.push(
+            //     createMangaTile({
+            //       id: item.url + "-" + item.id_book + "::" + item.url,
+            //       image: DOMAIN + "assets/tmp/book/avatar/" + item.avatar + ".jpg",
+            //       title: createIconText({
+            //         text: titleCase(item.name),
+            //       }),
+            //       subtitleText: createIconText({
+            //         text: "Chap " + item.last_chapter,
+            //       }),
+            //     })
+            //   );
+            // }
+            // newAdded.items = newAddItems;
             sectionCallback(newAdded);
         });
     }
