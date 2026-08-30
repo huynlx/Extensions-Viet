@@ -667,9 +667,12 @@ class NetTruyen extends paperback_extensions_common_1.Source {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const url = `${DOMAIN}`;
-            // Cần lấy thêm comicId nếu trang web yêu cầu, nhưng nếu API chỉ cần slug và các headers đi kèm:
+            // Tách chuỗi mangaId thành slug và comicId (ví dụ: "bach-luyen-thanh-than-1099")
+            const lastHyphenIndex = mangaId.lastIndexOf("-");
+            const slug = mangaId.substring(0, lastHyphenIndex);
+            const comicId = mangaId.substring(lastHyphenIndex + 1);
             const request = createRequestObject({
-                url: `${url}Comic/Services/ComicService.asmx/ChapterList?slug=${mangaId}`,
+                url: `${url}/Comic/Services/ComicService.asmx/ChapterList?slug=${slug}&comicId=${comicId}`,
                 method: "GET",
                 headers: {
                     accept: "*/*",
@@ -689,8 +692,12 @@ class NetTruyen extends paperback_extensions_common_1.Source {
     }
     getChapterDetails(mangaId, chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
+            // Tách chuỗi mangaId thành slug và comicId (ví dụ: "bach-luyen-thanh-than-1099")
+            const lastHyphenIndex = mangaId.lastIndexOf("-");
+            const slug = mangaId.substring(0, lastHyphenIndex);
+            const comicId = mangaId.substring(lastHyphenIndex + 1);
             const request = createRequestObject({
-                url: chapterId,
+                url: `${DOMAIN}truyen-tranh/${slug}/${chapterId}`,
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
@@ -1027,7 +1034,7 @@ class Parser {
             const rawName = item.chapter_name;
             const name = exports.decodeHTMLEntity(rawName);
             chapters.push(createChapter({
-                id: item.chapter_num.toString(),
+                id: `${item.chapter_num}/${item.chapter_id}`,
                 name: name,
                 chapNum: item.chapter_num,
                 mangaId: mangaId,
