@@ -50,7 +50,7 @@ export class Parser {
         createTag({
           label: label,
           id: id,
-        })
+        }),
       );
     }
 
@@ -79,7 +79,7 @@ export class Parser {
     const chapters: Chapter[] = [];
 
     for (let obj of $(
-      "div.list-chapter > nav > ul > li.row:not(.heading)"
+      "div.list-chapter > nav > ul > li.row:not(.heading)",
     ).toArray()) {
       let time = $("div.col-xs-4", obj).text();
       let group = $("div.col-xs-3", obj).text();
@@ -97,7 +97,7 @@ export class Parser {
           langCode: LanguageCode.VIETNAMESE,
           time: timeFinal,
           group: group + " lượt xem",
-        })
+        }),
       );
     }
 
@@ -108,7 +108,7 @@ export class Parser {
     const pages: string[] = [];
 
     for (let obj of $(
-      "div.reading-detail > div.page-chapter > img"
+      "div.reading-detail > div.page-chapter > img",
     ).toArray()) {
       if (!obj.attribs["data-src"]) continue;
       let link = obj.attribs["data-src"];
@@ -139,7 +139,7 @@ export class Parser {
         .attr("data-original");
       const subtitle = $(
         "figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a",
-        manga
+        manga,
       )
         .last()
         .text()
@@ -151,83 +151,38 @@ export class Parser {
           image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
           title: createIconText({ text: title }),
           subtitleText: createIconText({ text: subtitle }),
-        })
+        }),
       );
     }
     return tiles;
   }
 
   parseTags($: any): TagSection[] {
-    //id tag đéo đc trùng nhau
     const arrayTags: Tag[] = [];
-    const arrayTags2: Tag[] = [];
-    const arrayTags3: Tag[] = [];
-    const arrayTags4: Tag[] = [];
-    const arrayTags5: Tag[] = [];
+    const seenIds = new Set<string>();
 
-    //The loai
-    for (const tag of $(
-      "div.col-md-3.col-sm-4.col-xs-6.mrb10",
-      "div.col-sm-10 > div.row"
-    ).toArray()) {
-      const label = $("div.genre-item", tag).text().trim();
-      const id = $("div.genre-item > span", tag).attr("data-id") ?? label;
-      if (!id || !label) continue;
+    $(".box.genres ul.nav li a").each((_, element) => {
+      const $a = $(element);
+      const label = $a.text().trim();
+      const href = $a.attr("href") || "";
+
+      if (!label || label.toLowerCase() === "tất cả") return;
+
+      // Lấy phần đường dẫn sau domain (ví dụ: tim-truyen/action-95 hoặc tag/truyenqq)
+      let id = href.replace(/^https?:\/\/[^\/]+\//, "").trim();
+      if (!id) id = label;
+
+      if (seenIds.has(id)) return;
+      seenIds.add(id);
+
       arrayTags.push({ id: id, label: label });
-    }
-    //Số lượng chapter
-    for (const tag of $("option", "select.select-minchapter").toArray()) {
-      const label = $(tag).text().trim();
-      const id = "minchapter." + $(tag).attr("value") ?? label;
-      if (!id || !label) continue;
-      arrayTags2.push({ id: id, label: label });
-    }
-    //Tình trạng
-    for (const tag of $("option", ".select-status").toArray()) {
-      const label = $(tag).text().trim();
-      const id = "status." + $(tag).attr("value") ?? label;
-      if (!id || !label) continue;
-      arrayTags3.push({ id: id, label: label });
-    }
-    //Dành cho
-    for (const tag of $("option", ".select-gender").toArray()) {
-      const label = $(tag).text().trim();
-      const id = "gender." + $(tag).attr("value") ?? label;
-      if (!id || !label) continue;
-      arrayTags4.push({ id: id, label: label });
-    }
-    //Sắp xếp theo
-    for (const tag of $("option", ".select-sort").toArray()) {
-      const label = $(tag).text().trim();
-      const id = "sort." + $(tag).attr("value") ?? label;
-      if (!id || !label) continue;
-      arrayTags5.push({ id: id, label: label });
-    }
+    });
+
     const tagSections: TagSection[] = [
       createTagSection({
         id: "0",
         label: "Thể Loại (Có thể chọn nhiều hơn 1)",
         tags: arrayTags.map((x) => createTag(x)),
-      }),
-      createTagSection({
-        id: "1",
-        label: "Số Lượng Chapter (Chỉ chọn 1)",
-        tags: arrayTags2.map((x) => createTag(x)),
-      }),
-      createTagSection({
-        id: "2",
-        label: "Tình Trạng (Chỉ chọn 1)",
-        tags: arrayTags3.map((x) => createTag(x)),
-      }),
-      createTagSection({
-        id: "3",
-        label: "Dành Cho (Chỉ chọn 1)",
-        tags: arrayTags4.map((x) => createTag(x)),
-      }),
-      createTagSection({
-        id: "4",
-        label: "Sắp xếp theo (Chỉ chọn 1)",
-        tags: arrayTags5.map((x) => createTag(x)),
       }),
     ];
     return tagSections;
@@ -253,7 +208,7 @@ export class Parser {
           subtitleText: createIconText({
             text: subtitle,
           }),
-        })
+        }),
       );
     }
 
@@ -276,7 +231,7 @@ export class Parser {
         .attr("data-original");
       const subtitle = $(
         "figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a",
-        manga
+        manga,
       )
         .last()
         .text()
@@ -288,7 +243,7 @@ export class Parser {
           image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
           title: createIconText({ text: title }),
           subtitleText: createIconText({ text: subtitle }),
-        })
+        }),
       );
     }
 
@@ -310,7 +265,7 @@ export class Parser {
         .attr("data-original");
       const subtitle = $(
         "figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a",
-        manga
+        manga,
       )
         .last()
         .text()
@@ -322,7 +277,7 @@ export class Parser {
           image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
           title: createIconText({ text: title }),
           subtitleText: createIconText({ text: subtitle }),
-        })
+        }),
       );
     }
 
@@ -344,7 +299,7 @@ export class Parser {
         .attr("data-original");
       const subtitle = $(
         "figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a",
-        manga
+        manga,
       )
         .last()
         .text()
@@ -356,7 +311,7 @@ export class Parser {
           image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
           title: createIconText({ text: title }),
           subtitleText: createIconText({ text: subtitle }),
-        })
+        }),
       );
     }
 
@@ -378,7 +333,7 @@ export class Parser {
         .attr("data-original");
       const subtitle = $(
         "figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a",
-        manga
+        manga,
       )
         .last()
         .text()
@@ -390,7 +345,7 @@ export class Parser {
           image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
           title: createIconText({ text: title }),
           subtitleText: createIconText({ text: subtitle }),
-        })
+        }),
       );
     }
 
@@ -412,7 +367,7 @@ export class Parser {
         .attr("data-original");
       const subtitle = $(
         "figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a",
-        manga
+        manga,
       )
         .last()
         .text()
@@ -424,7 +379,7 @@ export class Parser {
           image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
           title: createIconText({ text: title }),
           subtitleText: createIconText({ text: subtitle }),
-        })
+        }),
       );
     }
 
@@ -447,7 +402,7 @@ export class Parser {
         ?.attr("data-original");
       const subtitle = $(
         "figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > a",
-        manga
+        manga,
       )
         ?.last()
         ?.text()
@@ -461,7 +416,7 @@ export class Parser {
             image: !image ? "https://i.imgur.com/GYUxEX8.png" : image,
             title: createIconText({ text: title || "" }),
             subtitleText: createIconText({ text: subtitle || "" }),
-          })
+          }),
         );
         collectedIds?.push(id);
       }

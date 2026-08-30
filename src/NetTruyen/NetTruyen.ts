@@ -31,7 +31,7 @@ export const isLastPage = ($: CheerioStatic): boolean => {
 };
 
 export const NetTruyenInfo: SourceInfo = {
-  version: "3.0.8",
+  version: "3.0.9",
   name: "NetTruyen",
   icon: "icon.png",
   author: "Huynhzip3",
@@ -154,18 +154,30 @@ export class NetTruyen extends Source {
         }
       }
     });
-    search.genres = (genres ?? []).join(",");
+
     const url = `${DOMAIN}`;
+    let requestUrl = url + "/tim-truyen-nang-cao";
+    let param = "";
+
+    if (query.title) {
+      requestUrl = url + "/tim-truyen";
+      param = encodeURI(`?keyword=${query.title}&page=${page}`);
+    } else if (genres.length > 0) {
+      // Nếu người dùng chọn tag/thể loại, sử dụng trực tiếp đường dẫn của tag (ví dụ: /tim-truyen/action-95)
+      requestUrl = `${url}/${genres[0]}`;
+      param = encodeURI(`?page=${page}`);
+    } else {
+      requestUrl = url + "/tim-truyen-nang-cao";
+      search.genres = genres.join(",");
+      param = encodeURI(
+        `?genres=${search.genres}&gender=${search.gender}&status=${search.status}&minchapter=${search.minchapter}&sort=${search.sort}&page=${page}`,
+      );
+    }
+
     const request = createRequestObject({
-      url: query.title ? url + "/tim-truyen" : url + "/tim-truyen-nang-cao",
+      url: requestUrl,
       method: "GET",
-      param: encodeURI(
-        `?keyword=${query.title ?? ""}&genres=${search.genres}&gender=${
-          search.gender
-        }&status=${search.status}&minchapter=${search.minchapter}&sort=${
-          search.sort
-        }&page=${page}`,
-      ),
+      param: param,
     });
 
     const data = await this.requestManager.schedule(request, 1);
