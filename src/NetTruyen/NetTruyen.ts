@@ -17,7 +17,7 @@ import {
 } from "paperback-extensions-common";
 import { Parser } from "./NetTruyenParser";
 
-const DOMAIN = "https://nettruyenww.com/";
+const DOMAIN = "https://nettruyenar.com/";
 
 export const isLastPage = ($: CheerioStatic): boolean => {
   const current = $("ul.pagination > li.active > span.page-link").text();
@@ -101,7 +101,7 @@ export class NetTruyen extends Source {
 
   async getChapterDetails(
     mangaId: string,
-    chapterId: string
+    chapterId: string,
   ): Promise<ChapterDetails> {
     const request = createRequestObject({
       url: chapterId,
@@ -120,7 +120,7 @@ export class NetTruyen extends Source {
 
   async getSearchResults(
     query: SearchRequest,
-    metadata: any
+    metadata: any,
   ): Promise<PagedResults> {
     let page = metadata?.page ?? 1;
 
@@ -164,7 +164,7 @@ export class NetTruyen extends Source {
           search.gender
         }&status=${search.status}&minchapter=${search.minchapter}&sort=${
           search.sort
-        }&page=${page}`
+        }&page=${page}`,
       ),
     });
 
@@ -181,7 +181,7 @@ export class NetTruyen extends Source {
   }
 
   async getHomePageSections(
-    sectionCallback: (section: HomeSection) => void
+    sectionCallback: (section: HomeSection) => void,
   ): Promise<void> {
     let featured: HomeSection = createHomeSection({
       id: "featured",
@@ -298,7 +298,7 @@ export class NetTruyen extends Source {
 
   async getViewMoreItems(
     homepageSectionId: string,
-    metadata: any
+    metadata: any,
   ): Promise<PagedResults> {
     let page: number = metadata?.page ?? 1;
     let param = "";
@@ -326,7 +326,7 @@ export class NetTruyen extends Source {
         break;
       default:
         throw new Error(
-          "Requested to getViewMoreItems for a section ID which doesn't exist"
+          "Requested to getViewMoreItems for a section ID which doesn't exist",
         );
     }
 
@@ -364,7 +364,7 @@ export class NetTruyen extends Source {
   override async filterUpdatedManga(
     mangaUpdatesFoundCallback: (updates: MangaUpdates) => void,
     time: Date,
-    ids: string[]
+    ids: string[],
   ): Promise<void> {
     const updateManga: any = [];
     const pages = 10;
@@ -390,7 +390,7 @@ export class NetTruyen extends Source {
           .pop();
         const time = $(
           "figure.clearfix > figcaption > ul > li.chapter:nth-of-type(1) > i",
-          manga
+          manga,
         )
           .last()
           .text()
