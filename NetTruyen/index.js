@@ -473,7 +473,7 @@ class NetTruyen extends paperback_extensions_common_1.Source {
         });
     }
     getSearchResults(query, metadata) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 1;
             const search = {
@@ -506,12 +506,27 @@ class NetTruyen extends paperback_extensions_common_1.Source {
                     }
                 }
             });
-            search.genres = (genres !== null && genres !== void 0 ? genres : []).join(",");
             const url = `${DOMAIN}`;
+            let requestUrl = url + "/tim-truyen-nang-cao";
+            let param = "";
+            if (query.title) {
+                requestUrl = url + "/tim-truyen";
+                param = encodeURI(`?keyword=${query.title}&page=${page}`);
+            }
+            else if (genres.length > 0) {
+                // Nếu người dùng chọn tag/thể loại, sử dụng trực tiếp đường dẫn của tag (ví dụ: /tim-truyen/action-95)
+                requestUrl = `${url}/${genres[0]}`;
+                param = encodeURI(`?page=${page}`);
+            }
+            else {
+                requestUrl = url + "/tim-truyen-nang-cao";
+                search.genres = genres.join(",");
+                param = encodeURI(`?genres=${search.genres}&gender=${search.gender}&status=${search.status}&minchapter=${search.minchapter}&sort=${search.sort}&page=${page}`);
+            }
             const request = createRequestObject({
-                url: query.title ? url + "/tim-truyen" : url + "/tim-truyen-nang-cao",
+                url: requestUrl,
                 method: "GET",
-                param: encodeURI(`?keyword=${(_d = query.title) !== null && _d !== void 0 ? _d : ""}&genres=${search.genres}&gender=${search.gender}&status=${search.status}&minchapter=${search.minchapter}&sort=${search.sort}&page=${page}`),
+                param: param,
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
@@ -867,16 +882,16 @@ class Parser {
     parseTags($) {
         const arrayTags = [];
         const seenIds = new Set();
-        // Quét các thẻ a nằm trong danh sách thể loại
         $(".box.genres ul.nav li a").each((_, element) => {
             const $a = $(element);
             const label = $a.text().trim();
             const href = $a.attr("href") || "";
             if (!label || label.toLowerCase() === "tất cả")
                 return;
-            // Lấy ID từ đoạn cuối của URL (ví dụ: /tim-truyen/action-95 -> action-95, hoặc /tag/truyenqq -> truyenqq)
-            let id = href.split("/").filter(Boolean).pop() || label;
-            // Đảm bảo id tag không bị trùng nhau
+            // Lấy phần đường dẫn sau domain (ví dụ: tim-truyen/action-95 hoặc tag/truyenqq)
+            let id = href.replace(/^https?:\/\/[^\/]+\//, "").trim();
+            if (!id)
+                id = label;
             if (seenIds.has(id))
                 return;
             seenIds.add(id);
