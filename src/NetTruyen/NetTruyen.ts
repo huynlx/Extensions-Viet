@@ -90,20 +90,23 @@ export class NetTruyen extends Source {
 
   async getChapters(mangaId: string): Promise<Chapter[]> {
     const url = `${DOMAIN}`;
-    // const request = createRequestObject({
-    //   url: `${url}Comic/Services/ComicService.asmx/ChapterList?slug=${mangaId}`,
-    //   method: "GET",
-    //   headers: {
-    //     referer: `${url}/truyen-tranh/${mangaId}`,
-    //     "x-requested-with": "XMLHttpRequest",
-    //     accept: "application/json, text/javascript, */*; q=0.01",
-    //   },
-    // });
-    // console.log("💀 ⮕ NetTruyen ⮕ getChapters ⮕ request:", request);
+
+    // Tách chuỗi mangaId thành slug và comicId (ví dụ: "bach-luyen-thanh-than-1099")
+    const lastHyphenIndex = mangaId.lastIndexOf("-");
+    const slug = mangaId.substring(0, lastHyphenIndex);
+    const comicId = mangaId.substring(lastHyphenIndex + 1);
 
     const request = createRequestObject({
-      url: `${url}Comic/Services/ComicService.asmx/ChapterList?slug=${mangaId}`,
+      url: `${url}/Comic/Services/ComicService.asmx/ChapterList?slug=${slug}&comicId=${comicId}`,
       method: "GET",
+      headers: {
+        accept: "*/*",
+        "accept-language": "vi,en-US;q=0.9,en;q=0.8,vi-VN;q=0.7",
+        "x-requested-with": "XMLHttpRequest",
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-origin",
+      },
     });
 
     const data = await this.requestManager.schedule(request, 1);
@@ -111,6 +114,7 @@ export class NetTruyen extends Source {
 
     const chapterList: any[] = json?.data ?? [];
     const chapters = this.parser.parseChapterList(chapterList, mangaId);
+
     return chapters;
   }
 
@@ -118,8 +122,13 @@ export class NetTruyen extends Source {
     mangaId: string,
     chapterId: string,
   ): Promise<ChapterDetails> {
+    // Tách chuỗi mangaId thành slug và comicId (ví dụ: "bach-luyen-thanh-than-1099")
+    const lastHyphenIndex = mangaId.lastIndexOf("-");
+    const slug = mangaId.substring(0, lastHyphenIndex);
+    const comicId = mangaId.substring(lastHyphenIndex + 1);
+
     const request = createRequestObject({
-      url: chapterId,
+      url: `${DOMAIN}truyen-tranh/${slug}/${chapterId}`,
       method: "GET",
     });
     const data = await this.requestManager.schedule(request, 1);

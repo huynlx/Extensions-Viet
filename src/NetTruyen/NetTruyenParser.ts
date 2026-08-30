@@ -98,7 +98,7 @@ export class Parser {
 
       chapters.push(
         createChapter({
-          id: item.chapter_num.toString(),
+          id: `${item.chapter_num}/${item.chapter_id}`,
           name: name,
           chapNum: item.chapter_num,
           mangaId: mangaId,
