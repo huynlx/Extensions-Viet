@@ -666,21 +666,23 @@ class NetTruyen extends paperback_extensions_common_1.Source {
     getChapters(mangaId) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            const url = `${DOMAIN}truyen-tranh/${mangaId}`;
+            const url = `${DOMAIN}`;
+            // const request = createRequestObject({
+            //   url: `${url}Comic/Services/ComicService.asmx/ChapterList?slug=${mangaId}`,
+            //   method: "GET",
+            //   headers: {
+            //     referer: `${url}/truyen-tranh/${mangaId}`,
+            //     "x-requested-with": "XMLHttpRequest",
+            //     accept: "application/json, text/javascript, */*; q=0.01",
+            //   },
+            // });
+            // console.log("💀 ⮕ NetTruyen ⮕ getChapters ⮕ request:", request);
             const request = createRequestObject({
-                url: `${url}/Comic/Services/ComicService.asmx/ChapterList?slug=${mangaId}`,
+                url: `${url}Comic/Services/ComicService.asmx/ChapterList?slug=${mangaId}`,
                 method: "GET",
-                headers: {
-                    referer: `${url}/truyen-tranh/${mangaId}`,
-                    "x-requested-with": "XMLHttpRequest",
-                    accept: "application/json, text/javascript, */*; q=0.01",
-                },
             });
-            const response = yield this.requestManager.schedule(request, 1);
-            // Parse dữ liệu JSON
-            const json = typeof response.data === "string"
-                ? JSON.parse(response.data)
-                : response.data;
+            const data = yield this.requestManager.schedule(request, 1);
+            const json = JSON.parse(data.data);
             const chapterList = (_a = json === null || json === void 0 ? void 0 : json.data) !== null && _a !== void 0 ? _a : [];
             const chapters = this.parser.parseChapterList(chapterList, mangaId);
             return chapters;

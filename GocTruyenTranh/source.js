@@ -597,23 +597,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GocTruyenTranh = exports.GocTruyenTranhInfo = void 0;
 const paperback_extensions_common_1 = require("paperback-extensions-common");
 const GocTruyenTranhParser_1 = require("./GocTruyenTranhParser");
-const DOMAIN = 'https://goctruyentranhhay.com/';
-const method = 'GET';
+const DOMAIN = "https://goctruyentranhhay.com/";
+const method = "GET";
 exports.GocTruyenTranhInfo = {
-    version: '1.0.1',
-    name: 'GocTruyenTranh',
-    icon: 'icon.png',
-    author: 'Huynhzip3',
-    authorWebsite: 'https://github.com/huynh12345678',
-    description: 'Extension that pulls manga from GocTruyenTranh',
+    version: "1.0.1",
+    name: "GocTruyenTranh",
+    icon: "icon.png",
+    author: "Huynhzip3",
+    authorWebsite: "https://github.com/huynh12345678",
+    description: "Extension that pulls manga from GocTruyenTranh",
     websiteBaseURL: DOMAIN,
     contentRating: paperback_extensions_common_1.ContentRating.MATURE,
     sourceTags: [
         {
             text: "Recommended",
-            type: paperback_extensions_common_1.TagType.BLUE
-        }
-    ]
+            type: paperback_extensions_common_1.TagType.BLUE,
+        },
+    ],
 };
 class GocTruyenTranh extends paperback_extensions_common_1.Source {
     constructor() {
@@ -625,18 +625,19 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
                 interceptRequest: (request) => __awaiter(this, void 0, void 0, function* () {
                     var _a;
                     request.headers = Object.assign(Object.assign({}, ((_a = request.headers) !== null && _a !== void 0 ? _a : {})), {
-                        'referer': DOMAIN
+                        referer: DOMAIN,
                     });
                     return request;
                 }),
                 interceptResponse: (response) => __awaiter(this, void 0, void 0, function* () {
                     return response;
-                })
-            }
+                }),
+            },
         });
     }
-    getMangaShareUrl(mangaId) { return `${mangaId.split("::")[0]}`; }
-    ;
+    getMangaShareUrl(mangaId) {
+        return `${mangaId.split("::")[0]}`;
+    }
     getMangaDetails(mangaId) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
@@ -648,60 +649,66 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
             let tags = [];
-            let creator = '';
+            let creator = "";
             let status = 1; //0 = completed, 1 = Ongoing
-            let desc = $('.detail-section .description .content').text();
-            creator = $('.detail-section .author')
+            let desc = $(".detail-section .description .content").text();
+            creator = $(".detail-section .author")
                 .clone() //clone the element
                 .children() //select all the children
                 .remove() //remove all the children
                 .end() //again go back to selected element
                 .text();
-            for (const t of $('.detail-section .category a').toArray()) {
+            for (const t of $(".detail-section .category a").toArray()) {
                 const genre = $(t).text().trim();
-                const id = (_a = $(t).attr('href')) !== null && _a !== void 0 ? _a : genre;
+                const id = (_a = $(t).attr("href")) !== null && _a !== void 0 ? _a : genre;
                 tags.push(createTag({ label: genre, id }));
             }
-            status = $('.detail-section .status')
+            status = $(".detail-section .status")
                 .clone() //clone the element
                 .children() //select all the children
                 .remove() //remove all the children
                 .end() //again go back to selected element
-                .text().includes('Đang') ? 1 : 0;
-            const image = $('.detail-section .photo > img').attr('src');
+                .text()
+                .includes("Đang")
+                ? 1
+                : 0;
+            const image = $(".detail-section .photo > img").attr("src");
             return createManga({
                 id: mangaId,
                 author: creator,
                 artist: creator,
                 desc: GocTruyenTranhParser_1.decodeHTMLEntity(desc),
-                titles: [GocTruyenTranhParser_1.decodeHTMLEntity($('.detail-section .title > h1').text().trim())],
+                titles: [
+                    GocTruyenTranhParser_1.decodeHTMLEntity($(".detail-section .title > h1").text().trim()),
+                ],
                 image: encodeURI(image),
                 status,
                 // rating: parseFloat($('span[itemprop="ratingValue"]').text()),
                 hentai: false,
-                tags: [createTagSection({ label: "genres", tags: tags, id: '0' })]
+                tags: [createTagSection({ label: "genres", tags: tags, id: "0" })],
             });
         });
     }
     getChapters(mangaId) {
         return __awaiter(this, void 0, void 0, function* () {
+            //mangaId của getChapters là id trong createManga
             const request = createRequestObject({
                 url: `https://goctruyentranhhay.com/api/comic/${mangaId.split("::")[1]}/chapter?offset=0&limit=-1`,
                 method,
             });
             const data = yield this.requestManager.schedule(request, 1);
-            const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
+            const json = typeof data.data === "string" ? JSON.parse(data.data) : data.data;
             const chapters = [];
             for (const obj of json.result.chapters) {
                 var chapNum = parseFloat(obj.numberChapter);
                 const timeStr = obj.stringUpdateTime;
                 chapters.push(createChapter({
-                    id: mangaId.split('::')[0] + '/chuong-' + obj.numberChapter,
+                    id: mangaId.split("::")[0] + "/chuong-" + obj.numberChapter,
                     chapNum: chapNum,
                     name: obj.name,
                     mangaId: mangaId,
                     langCode: paperback_extensions_common_1.LanguageCode.VIETNAMESE,
-                    time: GocTruyenTranhParser_1.convertTime(timeStr)
+                    time: GocTruyenTranhParser_1.convertTime(timeStr),
                 }));
             }
             return chapters;
@@ -711,22 +718,22 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             const request = createRequestObject({
                 url: `${chapterId}`,
-                method
+                method,
             });
             const response = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(response.data);
             const pages = [];
-            for (let obj of $('.view-section > .viewer > img').toArray()) {
-                if (!obj.attribs['src'])
+            for (let obj of $(".view-section > .viewer > img").toArray()) {
+                if (!obj.attribs["src"])
                     continue;
-                let link = obj.attribs['src'];
+                let link = obj.attribs["src"];
                 pages.push(encodeURI(link));
             }
             const chapterDetails = createChapterDetails({
                 id: chapterId,
                 mangaId: mangaId,
                 pages: pages,
-                longStrip: false
+                longStrip: false,
             });
             return chapterDetails;
         });
@@ -735,17 +742,17 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
         return __awaiter(this, void 0, void 0, function* () {
             // let featured = createHomeSection({ id: 'featured', title: 'Tiêu điểm', type: HomeSectionType.featured });
             let hot = createHomeSection({
-                id: 'hot',
+                id: "hot",
                 title: "Truyện Đề Xuất",
                 view_more: true,
             });
             let newUpdated = createHomeSection({
-                id: 'new_updated',
+                id: "new_updated",
                 title: "Cập Nhật Gần Đây",
                 view_more: true,
             });
             let newAdded = createHomeSection({
-                id: 'new_added',
+                id: "new_added",
                 title: "Truyện Mới",
                 view_more: true,
             });
@@ -755,33 +762,33 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
             sectionCallback(newAdded);
             ///Get the section data
             //Hot
-            let url = '';
+            let url = "";
             let request = createRequestObject({
-                url: 'https://goctruyentranhhay.com/api/comic/search/view?p=0',
+                url: "https://goctruyentranhhay.com/api/comic/search/view?p=0",
                 method: "GET",
             });
             let data = yield this.requestManager.schedule(request, 1);
-            let json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
+            let json = typeof data.data === "string" ? JSON.parse(data.data) : data.data;
             hot.items = GocTruyenTranhParser_1.parseViewMore(json).splice(0, 10);
             sectionCallback(hot);
             //New Updates
-            url = '';
+            url = "";
             request = createRequestObject({
-                url: 'https://goctruyentranhhay.com/api/comic/search/recent?p=0',
+                url: "https://goctruyentranhhay.com/api/comic/search/recent?p=0",
                 method: "GET",
             });
             data = yield this.requestManager.schedule(request, 1);
-            json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
+            json = typeof data.data === "string" ? JSON.parse(data.data) : data.data;
             newUpdated.items = GocTruyenTranhParser_1.parseViewMore(json).splice(0, 10);
             sectionCallback(newUpdated);
             //New Added
             url = DOMAIN;
             request = createRequestObject({
-                url: 'https://goctruyentranhhay.com/api/comic/search/new?p=0',
+                url: "https://goctruyentranhhay.com/api/comic/search/new?p=0",
                 method: "GET",
             });
             data = yield this.requestManager.schedule(request, 1);
-            json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
+            json = typeof data.data === "string" ? JSON.parse(data.data) : data.data;
             newAdded.items = GocTruyenTranhParser_1.parseViewMore(json).splice(0, 10);
             sectionCallback(newAdded);
             // //Featured
@@ -815,8 +822,8 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 0;
-            let param = '';
-            let url = '';
+            let param = "";
+            let url = "";
             switch (homepageSectionId) {
                 case "hot":
                     url = `https://goctruyentranhhay.com/api/comic/search/view?p=${page}`;
@@ -833,10 +840,10 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
             const request = createRequestObject({
                 url,
                 method,
-                param
+                param,
             });
             const data = yield this.requestManager.schedule(request, 1);
-            const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
+            const json = typeof data.data === "string" ? JSON.parse(data.data) : data.data;
             const manga = GocTruyenTranhParser_1.parseViewMore(json);
             metadata = { page: page + 1 };
             return createPagedResults({
@@ -849,18 +856,20 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
         var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             let page = (_a = metadata === null || metadata === void 0 ? void 0 : metadata.page) !== null && _a !== void 0 ? _a : 0;
-            const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map(tag => tag.id)) !== null && _c !== void 0 ? _c : [];
+            const tags = (_c = (_b = query.includedTags) === null || _b === void 0 ? void 0 : _b.map((tag) => tag.id)) !== null && _c !== void 0 ? _c : [];
             const request = createRequestObject({
-                url: query.title ? encodeURI(`https://goctruyentranhhay.com/api/comic/search?name=${query.title}`) : `https://goctruyentranhhay.com/api/comic/search/category?p=${page}&value=${tags[0]}`,
+                url: query.title
+                    ? encodeURI(`https://goctruyentranhhay.com/api/comic/search?name=${query.title}`)
+                    : `https://goctruyentranhhay.com/api/comic/search/category?p=${page}&value=${tags[0]}`,
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
-            const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
+            const json = typeof data.data === "string" ? JSON.parse(data.data) : data.data;
             const tiles = GocTruyenTranhParser_1.parseSearch(json);
             metadata = query.title ? undefined : { page: page + 1 };
             return createPagedResults({
                 results: tiles,
-                metadata
+                metadata,
             });
         });
     }
@@ -872,7 +881,7 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
                 method: "GET",
             });
             const data = yield this.requestManager.schedule(request, 1);
-            const json = (typeof data.data) === 'string' ? JSON.parse(data.data) : data.data;
+            const json = typeof data.data === "string" ? JSON.parse(data.data) : data.data;
             const arrayTags = [];
             //the loai
             for (const tag of json.result) {
@@ -883,7 +892,11 @@ class GocTruyenTranh extends paperback_extensions_common_1.Source {
                 arrayTags.push({ id: id, label: label });
             }
             const tagSections = [
-                createTagSection({ id: '0', label: 'Thể loại', tags: arrayTags.map(x => createTag(x)) }),
+                createTagSection({
+                    id: "0",
+                    label: "Thể loại",
+                    tags: arrayTags.map((x) => createTag(x)),
+                }),
             ];
             return tagSections;
         });
