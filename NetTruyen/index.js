@@ -717,14 +717,15 @@ class NetTruyen extends paperback_extensions_common_1.Source {
                 }
             });
             const url = `${DOMAIN}`;
-            const isTagSearch = genres.length === 1 && !query.title;
-            const genrePath = isTagSearch ? `${genres[0]}` : "";
+            const genrePath = genres.length === 1 ? `${genres[0]}` : "";
             const request = createRequestObject({
-                url: isTagSearch ? `${url}/tim-truyen/${genrePath}` : `${url}/tim-truyen`,
+                url: genres.length === 1 && !query.title
+                    ? `${url}/${genrePath}`
+                    : `${url}/tim-truyen`,
                 method: "GET",
-                param: encodeURI(isTagSearch
-                    ? `?page=${page}`
-                    : `?keyword=${(_d = query.title) !== null && _d !== void 0 ? _d : ""}&page=${page}`),
+                param: !query.title
+                    ? encodeURI(`?page=${page}`)
+                    : encodeURI(`?keyword=${(_d = query.title) !== null && _d !== void 0 ? _d : ""}&genres=${genres.join(",")}&page=${page}`),
             });
             const data = yield this.requestManager.schedule(request, 1);
             let $ = this.cheerio.load(data.data);
