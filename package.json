@@ -3,6 +3,7 @@
   "version": "2.0.0",
   "homepage": "https://github.com/Huynh12345678/Extensions-Viet/",
   "description": "Vietnamese sources for Paperback",
+  "baseURL": "https://huynlx.github.io/Extensions-Viet/",
   "scripts": {
     "start": "tsc && node dist/api.js",
     "build": "tsc",
