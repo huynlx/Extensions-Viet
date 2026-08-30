@@ -1,11 +1,13 @@
+const entities = require("entities"); //Import package for decoding HTML entities
+
 import {
   Chapter,
   LanguageCode,
   Manga,
   MangaTile,
+  MangaUpdates,
   Tag,
   TagSection,
-  MangaUpdates,
 } from "paperback-extensions-common";
 
 export class Parser {
@@ -75,28 +77,34 @@ export class Parser {
     });
   }
 
-  parseChapterList($: any, mangaId: string): Chapter[] {
+  parseChapterList(data: any[], mangaId: any): Chapter[] {
     const chapters: Chapter[] = [];
 
-    for (let obj of $(
-      "div.list-chapter > nav > ul > li.row:not(.heading)",
-    ).toArray()) {
-      let time = $("div.col-xs-4", obj).text();
-      let group = $("div.col-xs-3", obj).text();
-      let name = $("div.chapter a", obj).text();
-      let chapNum = parseFloat($("div.chapter a", obj).text().split(" ")[1]);
-      let timeFinal = this.convertTime(time);
+    for (const item of data) {
+      const formattedView = new Intl.NumberFormat("vi-VN").format(item.view);
+
+      // Dùng Date mặc định của JavaScript để xử lý và format ngày tháng
+      const dateObj = item.updated_at
+        ? new Date(item.updated_at.replace(" ", "T"))
+        : null;
+
+      const formattedTime =
+        dateObj && !isNaN(dateObj.getTime())
+          ? `${String(dateObj.getDate()).padStart(2, "0")}/${String(dateObj.getMonth() + 1).padStart(2, "0")}/${dateObj.getFullYear()}`
+          : "";
+
+      const rawName = item.chapter_name;
+      const name = decodeHTMLEntity(rawName);
+
       chapters.push(
-        createChapter(<Chapter>{
-          id: $("div.chapter a", obj).attr("href"),
-          chapNum: chapNum,
-          name: name.includes(":")
-            ? name.split("Chapter " + chapNum + ":")[1].trim()
-            : "",
+        createChapter({
+          id: item.chapter_num.toString(),
+          name: name,
+          chapNum: item.chapter_num,
           mangaId: mangaId,
           langCode: LanguageCode.VIETNAMESE,
-          time: timeFinal,
-          group: group + " lượt xem",
+          time: dateObj && !isNaN(dateObj.getTime()) ? dateObj : new Date(),
+          group: formattedTime + " • " + formattedView + " lượt xem",
         }),
       );
     }
@@ -181,7 +189,7 @@ export class Parser {
     const tagSections: TagSection[] = [
       createTagSection({
         id: "0",
-        label: "Thể Loại (Có thể chọn nhiều hơn 1)",
+        label: "Thể Loại",
         tags: arrayTags.map((x) => createTag(x)),
       }),
     ];
@@ -460,3 +468,7 @@ export class Parser {
     return false;
   }
 }
+
+export const decodeHTMLEntity = (str: string): string => {
+  return entities.decodeHTML(str);
+};

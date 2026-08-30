@@ -31,7 +31,7 @@ export const isLastPage = ($: CheerioStatic): boolean => {
 };
 
 export const NetTruyenInfo: SourceInfo = {
-  version: "3.0.9",
+  version: "3.1.0",
   name: "NetTruyen",
   icon: "icon.png",
   author: "Huynhzip3",
@@ -89,14 +89,29 @@ export class NetTruyen extends Source {
   }
 
   async getChapters(mangaId: string): Promise<Chapter[]> {
-    const url = `${DOMAIN}truyen-tranh/${mangaId}`;
+    const url = `${DOMAIN}`;
+    // const request = createRequestObject({
+    //   url: `${url}Comic/Services/ComicService.asmx/ChapterList?slug=${mangaId}`,
+    //   method: "GET",
+    //   headers: {
+    //     referer: `${url}/truyen-tranh/${mangaId}`,
+    //     "x-requested-with": "XMLHttpRequest",
+    //     accept: "application/json, text/javascript, */*; q=0.01",
+    //   },
+    // });
+    // console.log("💀 ⮕ NetTruyen ⮕ getChapters ⮕ request:", request);
+
     const request = createRequestObject({
-      url: url,
+      url: `${url}Comic/Services/ComicService.asmx/ChapterList?slug=${mangaId}`,
       method: "GET",
     });
+
     const data = await this.requestManager.schedule(request, 1);
-    let $ = this.cheerio.load(data.data);
-    return this.parser.parseChapterList($, mangaId);
+    const json = JSON.parse(data.data);
+
+    const chapterList: any[] = json?.data ?? [];
+    const chapters = this.parser.parseChapterList(chapterList, mangaId);
+    return chapters;
   }
 
   async getChapterDetails(
@@ -120,74 +135,49 @@ export class NetTruyen extends Source {
 
   async getSearchResults(
     query: SearchRequest,
+
     metadata: any,
   ): Promise<PagedResults> {
     let page = metadata?.page ?? 1;
 
-    const search = {
-      genres: "",
-      gender: "-1",
-      status: "-1",
-      minchapter: "1",
-      sort: "0",
-    };
-
     const tags = query.includedTags?.map((tag) => tag.id) ?? [];
+
     const genres: string[] = [];
-    tags.map((value) => {
+
+    tags.forEach((value) => {
       if (value.indexOf(".") === -1) {
         genres.push(value);
-      } else {
-        switch (value.split(".")[0]) {
-          case "minchapter":
-            search.minchapter = value.split(".")[1];
-            break;
-          case "gender":
-            search.gender = value.split(".")[1];
-            break;
-          case "sort":
-            search.sort = value.split(".")[1];
-            break;
-          case "status":
-            search.status = value.split(".")[1];
-            break;
-        }
       }
     });
 
     const url = `${DOMAIN}`;
-    let requestUrl = url + "/tim-truyen-nang-cao";
-    let param = "";
 
-    if (query.title) {
-      requestUrl = url + "/tim-truyen";
-      param = encodeURI(`?keyword=${query.title}&page=${page}`);
-    } else if (genres.length > 0) {
-      // Nếu người dùng chọn tag/thể loại, sử dụng trực tiếp đường dẫn của tag (ví dụ: /tim-truyen/action-95)
-      requestUrl = `${url}/${genres[0]}`;
-      param = encodeURI(`?page=${page}`);
-    } else {
-      requestUrl = url + "/tim-truyen-nang-cao";
-      search.genres = genres.join(",");
-      param = encodeURI(
-        `?genres=${search.genres}&gender=${search.gender}&status=${search.status}&minchapter=${search.minchapter}&sort=${search.sort}&page=${page}`,
-      );
-    }
+    const genrePath = genres.length === 1 ? `${genres[0]}` : "";
 
     const request = createRequestObject({
-      url: requestUrl,
+      url:
+        genres.length === 1 && !query.title
+          ? `${url}${genrePath}`
+          : `${url}tim-truyen`,
+
       method: "GET",
-      param: param,
+
+      param: !query.title
+        ? encodeURI(`?page=${page}`)
+        : encodeURI(`?keyword=${query.title ?? ""}&page=${page}`),
     });
 
     const data = await this.requestManager.schedule(request, 1);
+
     let $ = this.cheerio.load(data.data);
+
     const tiles = this.parser.parseSearchResults($);
 
     metadata = !isLastPage($) ? { page: page + 1 } : undefined;
 
     return createPagedResults({
       results: tiles,
+
       metadata,
     });
   }
@@ -200,6 +190,11 @@ export class NetTruyen extends Source {
       title: "Truyện Đề Cử",
       type: HomeSectionType.featured,
     });
+    let newUpdated: HomeSection = createHomeSection({
+      id: "new_updated",
+      title: "Truyện Mới Cập Nhật",
+      view_more: true,
+    });
     let viewest: HomeSection = createHomeSection({
       id: "viewest",
       title: "Truyện Xem Nhiều Nhất",
@@ -210,11 +205,7 @@ export class NetTruyen extends Source {
       title: "Truyện Hot Nhất",
       view_more: true,
     });
-    let newUpdated: HomeSection = createHomeSection({
-      id: "new_updated",
-      title: "Truyện Mới Cập Nhật",
-      view_more: true,
-    });
+
     let newAdded: HomeSection = createHomeSection({
       id: "new_added",
       title: "Truyện Mới Thêm Gần Đây",
@@ -228,9 +219,9 @@ export class NetTruyen extends Source {
 
     //Load empty sections
     sectionCallback(featured);
+    sectionCallback(newUpdated);
     sectionCallback(viewest);
     sectionCallback(hot);
-    sectionCallback(newUpdated);
     sectionCallback(newAdded);
     sectionCallback(full);
 
@@ -246,6 +237,18 @@ export class NetTruyen extends Source {
 
     featured.items = this.parser.parseFeaturedSection($);
     sectionCallback(featured);
+
+    //New Updates
+    url = `${DOMAIN}`;
+    request = createRequestObject({
+      url: url,
+      method: "GET",
+    });
+    data = await this.requestManager.schedule(request, 1);
+    $ = this.cheerio.load(data.data);
+
+    newUpdated.items = this.parser.parseNewUpdatedSection($);
+    sectionCallback(newUpdated);
 
     //View
     url = `${DOMAIN}tim-truyen?status=-1&sort=10`;
@@ -270,18 +273,6 @@ export class NetTruyen extends Source {
 
     hot.items = this.parser.parseHotSection($);
     sectionCallback(hot);
-
-    //New Updates
-    url = `${DOMAIN}`;
-    request = createRequestObject({
-      url: url,
-      method: "GET",
-    });
-    data = await this.requestManager.schedule(request, 1);
-    $ = this.cheerio.load(data.data);
-
-    newUpdated.items = this.parser.parseNewUpdatedSection($);
-    sectionCallback(newUpdated);
 
     //New added
     url = `${DOMAIN}tim-truyen?status=-1&sort=15`;
@@ -333,8 +324,8 @@ export class NetTruyen extends Source {
         url = `${DOMAIN}tim-truyen`;
         break;
       case "full":
-        param = `?page=${page}`;
-        url = `${DOMAIN}truyen-full`;
+        param = `?status=2&sort=30&page=${page}`;
+        url = `${DOMAIN}tim-truyen`;
         break;
       default:
         throw new Error(
