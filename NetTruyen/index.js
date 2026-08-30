@@ -667,19 +667,18 @@ class NetTruyen extends paperback_extensions_common_1.Source {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const url = `${DOMAIN}`;
-            // const request = createRequestObject({
-            //   url: `${url}Comic/Services/ComicService.asmx/ChapterList?slug=${mangaId}`,
-            //   method: "GET",
-            //   headers: {
-            //     referer: `${url}/truyen-tranh/${mangaId}`,
-            //     "x-requested-with": "XMLHttpRequest",
-            //     accept: "application/json, text/javascript, */*; q=0.01",
-            //   },
-            // });
-            // console.log("💀 ⮕ NetTruyen ⮕ getChapters ⮕ request:", request);
+            // Cần lấy thêm comicId nếu trang web yêu cầu, nhưng nếu API chỉ cần slug và các headers đi kèm:
             const request = createRequestObject({
                 url: `${url}Comic/Services/ComicService.asmx/ChapterList?slug=${mangaId}`,
                 method: "GET",
+                headers: {
+                    accept: "*/*",
+                    "accept-language": "vi,en-US;q=0.9,en;q=0.8,vi-VN;q=0.7",
+                    "x-requested-with": "XMLHttpRequest",
+                    "sec-fetch-dest": "empty",
+                    "sec-fetch-mode": "cors",
+                    "sec-fetch-site": "same-origin",
+                },
             });
             const data = yield this.requestManager.schedule(request, 1);
             const json = JSON.parse(data.data);
